@@ -24,11 +24,12 @@ package com.ahsgaming.spacetactics.screens;
 
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 /**
  * @author jami
@@ -55,22 +56,38 @@ public class SplashScreen extends AbstractScreen {
 	public void show() {
 		super.show();
 		
-		Texture tex = new Texture(Gdx.files.internal("data/libgdx.png"));
+		Texture tex = new Texture(Gdx.files.internal("splash.png"));
 		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		splashImage = new Image(new TextureRegion(tex, 0, 0, 512, 275));
+		splashImage = new Image(tex);
 		
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		stage.addActor(new Label("Test", getSkin()));
-		stage.addActor(splashImage);
 		
-		System.out.println("test");
+		stage.addActor(splashImage);
+		splashImage.setPosition((stage.getWidth() - splashImage.getWidth()) * 0.5f, (stage.getHeight() - splashImage.getHeight()) * 0.5f);
+		splashImage.setColor(1, 1, 1, 0);
+		splashImage.addAction(Actions.sequence(Actions.fadeIn(1.5f), Actions.delay(1.0f), Actions.fadeOut(1.5f), new Action() {
+			public boolean act(float delta) {
+				game.setScreen(game.getMainMenuScreen());
+				return true;
+			}
+		}));
+		
 	}
 	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		
+		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.ENTER) || Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+			game.setScreen(game.getMainMenuScreen());
+		}
+	}
+
 	@Override
 	public void dispose() {
 		super.dispose();
