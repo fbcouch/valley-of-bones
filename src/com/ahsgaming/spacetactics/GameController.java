@@ -25,9 +25,11 @@ package com.ahsgaming.spacetactics;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
@@ -46,6 +48,8 @@ public class GameController {
 	private ArrayList<GameObject> gameObjects;
 	private Group grpRoot, grpMap, grpUnits;
 	
+	private ArrayList<Player> players;
+	
 	private String mapName;
 	private TiledMap map;
 	
@@ -63,16 +67,17 @@ public class GameController {
 		grpRoot.addActor(grpMap);
 		grpRoot.addActor(grpUnits);
 		
+		gameObjects = new ArrayList<GameObject>();
+		
+		players = new ArrayList<Player>();
+		players.add(new Player());
+		players.add(new Player());
+		
 		
 		this.loadMap();
 		this.loadMapObjects();
 		
 		grpRoot.setSize(map.width * map.tileWidth, map.height * map.tileHeight);
-		
-		Texture tex = new Texture(Gdx.files.internal("base-fighter1.png"));
-		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		GameObject testObj = new GameObject(tex); 
-		grpUnits.addActor(testObj);
 	}
 	
 	/**
@@ -88,11 +93,28 @@ public class GameController {
 	}
 	
 	private Group loadMapObjects() {
+		Texture tex = new Texture(Gdx.files.internal("base-fighter1.png"));
+		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
 		for (TiledObjectGroup group : map.objectGroups) {
 			for (TiledObject obj : group.objects) {
 				if (obj.type.contains("team_start")) {
-					
 					Vector2 objPos = mapToLevelCoords(new Vector2(obj.x - obj.width * 0.5f, obj.y - obj.height * 0.5f));
+					Unit unit;
+					try {
+						int owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
+						if (owner >= 0 && owner < players.size()) {
+							unit = new Unit(players.get(owner), new TextureRegion(tex));
+						} else {
+							unit = new Unit(null, new TextureRegion(tex));
+							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
+						}
+					} catch (NumberFormatException e) {
+						unit = new Unit(null, new TextureRegion(tex));
+					}
+					unit.setPosition(objPos.x, objPos.y);
+					addGameUnit(unit);
+					Gdx.app.log("Unit", objPos.toString());
 				}
 			}
 		}
@@ -113,6 +135,20 @@ public class GameController {
 		return grpRoot;
 	}
 	
+	public void addGameUnit(GameObject obj) {
+		if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
+	}
+	
+	public void removeGameUnit(GameObject obj) {
+		gameObjects.remove(obj);
+		grpUnits.removeActor(obj);
+	}
+	
+	public ArrayList<GameObject> getGameObjects() {
+		return gameObjects;
+	}
+	
 	public TiledMap getMap() {
 		return map;
 	}
@@ -129,4 +165,6 @@ public class GameController {
 	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
 		return new Vector2(mapCoords.x, (map.height * map.tileHeight) - mapCoords.y);
 	}
+	
+	
 }

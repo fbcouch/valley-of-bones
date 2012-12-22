@@ -22,8 +22,8 @@ public class SpaceTacticsGame extends Game {
 	
 	private GameController gController = null;
 	
-	private float keyScrollSpeed = 100;
-	private float mouseScrollSpeed = 100;
+	private float keyScrollSpeed = 500;
+	private float mouseScrollSpeed = 500;
 	private float mouseScrollSize = 15;
 	
 	public void startGame() {
@@ -42,7 +42,12 @@ public class SpaceTacticsGame extends Game {
 	
 	@Override
 	public void create() {		
-		setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+		if (DEBUG) {
+			startGame();
+		}
+		else {
+			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+		}
 	}
 
 	@Override

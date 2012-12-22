@@ -26,9 +26,12 @@ import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
  * @author jami
@@ -84,8 +87,14 @@ public class LevelScreen extends AbstractScreen {
 		
 		stage.addActor(grpLevel);
 		
-		// TODO set the grpLevel position rationally
-		grpLevel.setPosition((stage.getWidth() - grpLevel.getWidth()) * 0.5f, (stage.getHeight() - grpLevel.getHeight()) * 0.5f);
+		// TODO set the initial camera position based on the player spawn point
+		
+		
+		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
+		pix.setColor(1, 1, 1, 1);
+		pix.drawRectangle(0, 0, pix.getWidth(), pix.getHeight());
+		Image test = new Image(new Texture(pix));
+		grpLevel.addActor(test);
 	}
 	
 	@Override
@@ -110,9 +119,13 @@ public class LevelScreen extends AbstractScreen {
 			posCamera.x += game.getKeyScrollSpeed() * delta;
 		}
 		
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && SpaceTacticsGame.DEBUG) {
+			game.quitGame();
+		}
+		
 		clampCamera();
 		
-		grpLevel.setPosition(-1 * posCamera.x, -1 * posCamera.y);
+		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 	}
 
 	
