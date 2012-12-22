@@ -37,5 +37,11 @@ public class GameLoadingScreen extends AbstractScreen {
 		super(game);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public void show() {
+		// TODO implement the game loading screen
+		game.setScreen(game.getLevelScreen());
+	}
 
 }

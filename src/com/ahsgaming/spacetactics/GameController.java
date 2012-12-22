@@ -20,31 +20,19 @@
  * Licensed under Apache License, Version 2.0 (see above).
  * 
  */
-package com.ahsgaming.spacetactics.screens;
-
-import com.ahsgaming.spacetactics.SpaceTacticsGame;
+package com.ahsgaming.spacetactics;
 
 /**
  * @author jami
  *
  */
-public class GameSetupScreen extends AbstractScreen {
-
-	/**
-	 * @param game
-	 */
-	public GameSetupScreen(SpaceTacticsGame game) {
-		super(game);
-	}
+public class GameController {
 	
 	/**
-	 * Implemented methods
+	 * 
 	 */
-	
-	@Override
-	public void show() {
-		// TODO implement the setup screen
-		game.setScreen(game.getGameLoadingScreen());
+	public GameController() {
+		// TODO Auto-generated constructor stub
 	}
 
 }
