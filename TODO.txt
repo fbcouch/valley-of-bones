@@ -2,7 +2,7 @@ SPACE TACTICS
 
 GOALS 12.21.12
 + load a blank/test map
-- spawn space-station for both 'teams'
++ spawn space-station for both 'teams'
 + allow camera movement with mouse at border or arrow keys
 
 

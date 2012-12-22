@@ -1,0 +1,18 @@
+{
+  building : {
+    id : "space-station-base",
+    name : "Space Station (Level 1)",
+    health : 1000,
+    shield : 1000,
+    armor : 0,
+    image : "base-fighter1.png"
+  },
+  building : {
+    id : "space-station-lvl2",
+    name : "Space Station (Level 2)",
+    health : 2000,
+    shield : 2000,
+    armor : 1,
+    image : "base-fighter1.png"
+  }
+}

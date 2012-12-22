@@ -22,9 +22,12 @@
  */
 package com.ahsgaming.spacetactics.units;
 
+import java.io.StringWriter;
+
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
@@ -61,5 +64,43 @@ public class Unit extends GameObject {
 		maxShield = shield;
 		curArmor = armor;
 		maxArmor = armor;
+	}
+	
+	
+	public static class JsonUnit {
+		String id, name;
+		int health, shield, armor;
+		String image;
+		JsonUnit subunit;
+	}
+	
+	public static void main(String[] args) {
+		
+		JsonUnit unit = new JsonUnit();
+		unit.id = "space-station-base";
+		unit.name = "Space Station (L1)";
+		unit.health = 1000;
+		unit.armor = 0;
+		unit.shield = 1000;
+		unit.image = "base-fighter1.png";
+		unit.subunit = new JsonUnit();
+		unit.subunit.id = "test";
+		
+		
+		StringWriter writer = new StringWriter();
+		
+		Json json = new Json();
+		
+		json.toJson(unit, unit.getClass(), writer);
+		
+		JsonUnit unit2 = new JsonUnit();
+		unit2 = json.fromJson(JsonUnit.class, writer.toString());
+		System.out.println(writer.toString());
+		System.out.println(unit2.id);
+		System.out.println(unit2.name);
+		System.out.println(unit2.health);
+		System.out.println(unit2.armor);
+		System.out.println(unit2.shield);
+		System.out.println(unit2.image);
 	}
 }

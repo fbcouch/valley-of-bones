@@ -23,6 +23,7 @@
 package com.ahsgaming.spacetactics;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.units.Unit;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
@@ -114,7 +116,9 @@ public class GameController {
 					}
 					unit.setPosition(objPos.x, objPos.y);
 					addGameUnit(unit);
-					Gdx.app.log("Unit", objPos.toString());
+					Json json = new Json();
+					json.toJson(unit);
+					Gdx.app.log(SpaceTacticsGame.LOG, "Json: ");
 				}
 			}
 		}
