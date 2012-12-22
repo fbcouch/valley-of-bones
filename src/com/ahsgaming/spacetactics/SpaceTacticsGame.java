@@ -20,6 +20,17 @@ public class SpaceTacticsGame extends Game {
 	
 	FPSLogger fpsLogger = new FPSLogger();
 	
+	private GameController gController = null;
+	
+	private float keyScrollSpeed = 100;
+	private float mouseScrollSpeed = 100;
+	private float mouseScrollSize = 15;
+	
+	public void startGame() {
+		//TODO this should accept input and then pass it to the GameController
+		gController = new GameController("");
+		setScreen(getLevelScreen());
+	}
 
 	public void quitGame() {
 		Gdx.app.exit();
@@ -86,7 +97,7 @@ public class SpaceTacticsGame extends Game {
 	}
 	
 	public LevelScreen getLevelScreen() {
-		return new LevelScreen(this); // TODO pass in some kind of data here
+		return new LevelScreen(this, gController);
 	}
 	
 	public GameOverScreen getGameOverScreen() {
@@ -109,5 +120,47 @@ public class SpaceTacticsGame extends Game {
 		cfg.resizable = false;
 		
 		new LwjglApplication(new SpaceTacticsGame(), cfg);
+	}
+
+	/**
+	 * @return the keyScrollSpeed
+	 */
+	public float getKeyScrollSpeed() {
+		return keyScrollSpeed;
+	}
+
+	/**
+	 * @param keyScrollSpeed the keyScrollSpeed to set
+	 */
+	public void setKeyScrollSpeed(float keyScrollSpeed) {
+		this.keyScrollSpeed = keyScrollSpeed;
+	}
+
+	/**
+	 * @return the mouseScrollSpeed
+	 */
+	public float getMouseScrollSpeed() {
+		return mouseScrollSpeed;
+	}
+
+	/**
+	 * @param mouseScrollSpeed the mouseScrollSpeed to set
+	 */
+	public void setMouseScrollSpeed(float mouseScrollSpeed) {
+		this.mouseScrollSpeed = mouseScrollSpeed;
+	}
+
+	/**
+	 * @return the mouseScrollSize
+	 */
+	public float getMouseScrollSize() {
+		return mouseScrollSize;
+	}
+
+	/**
+	 * @param mouseScrollSize the mouseScrollSize to set
+	 */
+	public void setMouseScrollSize(float mouseScrollSize) {
+		this.mouseScrollSize = mouseScrollSize;
 	}
 }

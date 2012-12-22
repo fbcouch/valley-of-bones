@@ -22,11 +22,12 @@
  */
 package com.ahsgaming.spacetactics.screens;
 
-import com.ahsgaming.spacetactics.GameObject;
+import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 /**
@@ -34,14 +35,34 @@ import com.badlogic.gdx.scenes.scene2d.Group;
  *
  */
 public class LevelScreen extends AbstractScreen {
-	private Group grpLevel, grpMap, grpUnits;	// a few groups to handle all the game objects --> grpLevel will hold both grpMap and grpUnits, which will hold different types of objects
+	private Group grpLevel;
+	
+	private GameController gController = null;
+	
+	
+	// camera 'center' position - this will always remain within the bounds of the map
+	private Vector2 posCamera = new Vector2();
 	
 	/**
 	 * @param game
 	 */
-	public LevelScreen(SpaceTacticsGame game) {
+	public LevelScreen(SpaceTacticsGame game, GameController gController) {
 		super(game);
-		// TODO implement receiving a loaded level
+		this.gController = gController;
+	}
+	
+	/**
+	 * Methods
+	 */
+	
+	private void clampCamera() {
+		TiledMap map = gController.getMap();
+		
+		if (posCamera.x < 0) posCamera.x = 0;
+		if (posCamera.x > map.width * map.tileWidth) posCamera.x = map.width * map.tileWidth;
+		
+		if (posCamera.y < 0) posCamera.y = 0;
+		if (posCamera.y > map.height * map.tileHeight) posCamera.y = map.height * map.tileHeight;
 	}
 	
 	/**
@@ -53,17 +74,8 @@ public class LevelScreen extends AbstractScreen {
 		super.show();
 		Gdx.app.log(SpaceTacticsGame.LOG, "LevelScreen#show");
 		
-		grpLevel = new Group();
-		grpMap = new Group();
-		grpUnits = new Group();
+		grpLevel = gController.getGroup();
 		
-		grpLevel.addActor(grpMap);
-		grpLevel.addActor(grpUnits);
-		
-		Texture tex = new Texture(Gdx.files.internal("base-fighter1.png"));
-		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		GameObject testObj = new GameObject(tex); 
-		grpUnits.addActor(testObj);
 	}
 	
 	@Override
@@ -75,5 +87,33 @@ public class LevelScreen extends AbstractScreen {
 		// TODO set the grpLevel position rationally
 		grpLevel.setPosition((stage.getWidth() - grpLevel.getWidth()) * 0.5f, (stage.getHeight() - grpLevel.getHeight()) * 0.5f);
 	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		gController.update(delta);
+		
+		// move the camera around
+		if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.getY() <= game.getMouseScrollSize()) {
+			// move 'up'
+			posCamera.y += game.getKeyScrollSpeed() * delta;
+		} else if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.getY() >= stage.getHeight() - game.getMouseScrollSize()) {
+			// move 'down'
+			posCamera.y -= game.getKeyScrollSpeed() * delta;
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.getX() <= game.getMouseScrollSize()) {
+			// move 'left'
+			posCamera.x -= game.getKeyScrollSpeed() * delta;
+		} else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.getX() >= stage.getWidth() - game.getMouseScrollSize()) {
+			// move 'right'
+			posCamera.x += game.getKeyScrollSpeed() * delta;
+		}
+		
+		clampCamera();
+		
+		grpLevel.setPosition(-1 * posCamera.x, -1 * posCamera.y);
+	}
 
+	
 }

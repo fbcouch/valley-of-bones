@@ -88,7 +88,7 @@ public class GameObject extends Actor {
 	
 	@Override
 	public void act(float delta) {
-		Gdx.app.log(SpaceTacticsGame.LOG, "GameObject#act");
+		super.act(delta);
 	}
 	
 	/**
