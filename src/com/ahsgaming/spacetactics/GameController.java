@@ -30,6 +30,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 /**
@@ -62,6 +65,8 @@ public class GameController {
 		
 		
 		this.loadMap();
+		this.loadMapObjects();
+		
 		grpRoot.setSize(map.width * map.tileWidth, map.height * map.tileHeight);
 		
 		Texture tex = new Texture(Gdx.files.internal("base-fighter1.png"));
@@ -82,8 +87,20 @@ public class GameController {
 		return map;
 	}
 	
-	public void update(float delta) {
+	private Group loadMapObjects() {
+		for (TiledObjectGroup group : map.objectGroups) {
+			for (TiledObject obj : group.objects) {
+				if (obj.type.contains("team_start")) {
+					
+					Vector2 objPos = mapToLevelCoords(new Vector2(obj.x - obj.width * 0.5f, obj.y - obj.height * 0.5f));
+				}
+			}
+		}
 		
+		return grpUnits;
+	}
+	
+	public void update(float delta) {
 		
 	}
 
@@ -98,5 +115,18 @@ public class GameController {
 	
 	public TiledMap getMap() {
 		return map;
+	}
+	
+	/**
+	 * static methods
+	 */
+	
+	/**
+	 * converts TiledMap coordinates to LibGDX coordinates
+	 * @param mapCoords - Vector2 coordinates in a TiledMap reference frame (0,0 is top-left)
+	 * @return Vector2 coordinates in Level/GDX reference frame (0,0 is bottom-left)
+	 */
+	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
+		return new Vector2(mapCoords.x, (map.height * map.tileHeight) - mapCoords.y);
 	}
 }
