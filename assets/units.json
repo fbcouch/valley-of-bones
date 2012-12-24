@@ -7,7 +7,7 @@
     armor : 0,
     image : "base-fighter1.png"
   },
-  building : {
+  building1 : {
     id : "space-station-lvl2",
     name : "Space Station (Level 2)",
     health : 2000,

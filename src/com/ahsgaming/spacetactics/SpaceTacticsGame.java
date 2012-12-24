@@ -7,6 +7,7 @@ import com.ahsgaming.spacetactics.screens.LevelScreen;
 import com.ahsgaming.spacetactics.screens.MainMenuScreen;
 import com.ahsgaming.spacetactics.screens.OptionsScreen;
 import com.ahsgaming.spacetactics.screens.SplashScreen;
+import com.ahsgaming.spacetactics.units.Prototypes;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -42,6 +43,7 @@ public class SpaceTacticsGame extends Game {
 	
 	@Override
 	public void create() {		
+		Prototypes.loadUnits("units.json");
 		if (DEBUG) {
 			startGame();
 		}
@@ -119,8 +121,8 @@ public class SpaceTacticsGame extends Game {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Space Tactics";
 		cfg.useGL20 = true;
-		cfg.width = 1440;
-		cfg.height = 900;
+		cfg.width = 1000;
+		cfg.height = 550;
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 		
