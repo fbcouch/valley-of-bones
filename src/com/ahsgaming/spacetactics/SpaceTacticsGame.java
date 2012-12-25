@@ -45,7 +45,7 @@ public class SpaceTacticsGame extends Game {
 	public void create() {		
 		Prototypes.loadUnits("units.json");
 		if (DEBUG) {
-			startGame();
+			//startGame();
 		}
 		else {
 			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
