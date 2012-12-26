@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -14,9 +15,32 @@ public class Prototypes {
 
 	public static class JsonProto {
 		static final String TYPE = "none";
+		String id = "", name = "", image = "";
+		int cost = 0;
+		
+		ArrayList<String> depends;
 		
 		static JsonProto createFromMap(String id, ObjectMap<String, Object> map) {
-			return null;
+			JsonProto retProto = new JsonProto();
+			
+			retProto.id = id;
+			for (String key: map.keys()) {
+				if (key.equals("name")) {
+					retProto.name = map.get(key).toString();
+				} else if (key.equals("image")) {
+					retProto.image = map.get(key).toString();
+				} else if (key.equals("cost")) {
+					retProto.cost = (int)Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("depends")) {
+					retProto.depends = new ArrayList<String>();
+					Array<String> deps = (Array<String>)map.get(key);
+					for (String dep: deps) {
+						retProto.depends.add(dep);
+					}
+				}
+			}
+			
+			return retProto;
 		}
 	}
 	
@@ -27,20 +51,20 @@ public class Prototypes {
 	 */
 	public static class JsonUnit extends JsonProto {
 		static final String TYPE = "unit";
-		String id, name, image;
-		int health, shield, armor;
-		
-		ArrayList<String> depends; // list of id's that are required for this to be built 
+		int health = 0, shield = 0, armor = 0;
 		
 		public static JsonUnit createFromMap(String id, ObjectMap<String, Object> map) {
 			JsonUnit retUnit = new JsonUnit();
+			
+			JsonProto proto = JsonProto.createFromMap(id, map);
+			retUnit.name = proto.name;
+			retUnit.image = proto.image;
+			retUnit.cost = proto.cost;
+			retUnit.depends = proto.depends;
+			
 			retUnit.id = id;
 			for (String key : map.keys()) {
-				if (key.equals("name")) {
-					retUnit.name = (String) map.get(key);
-				} else if (key.equals("image")) {
-					retUnit.image = (String) map.get(key);
-				} else if (key.equals("health")) {
+				if (key.equals("health")) {
 					retUnit.health = (int)Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("armor")) {
 					retUnit.armor = (int)Float.parseFloat(map.get(key).toString());
@@ -59,13 +83,30 @@ public class Prototypes {
 		static final String TYPE = "station";
 		
 		public static JsonStation createFromMap(String id, ObjectMap<String, Object> map) {
+			JsonStation retStation = new JsonStation();
+			retStation.id = id;
+			
+			JsonUnit unit = JsonUnit.createFromMap(id, map);
+			retStation.name = unit.name;
+			retStation.image = unit.image;
+			retStation.depends = unit.depends;
+			retStation.cost = unit.cost;
+			retStation.health = unit.health;
+			retStation.shield = unit.shield;
+			retStation.armor = unit.armor;
 			
 			for (String key : map.keys()) {
 				if (key.equals("hardpoints")) {
-					
+					ObjectMap<String, Object> hpMap = (ObjectMap)map.get(key);
+					ArrayList<JsonHardpoint> hardPts = new ArrayList<JsonHardpoint>();
+					for (String hpid: hpMap.keys()) {
+						
+						hardPts.add(JsonHardpoint.createFromMap(hpid, (ObjectMap)hpMap.get(hpid)));
+					}
+					retStation.hardpoints = hardPts;
 				}
 			}
-			return null;
+			return retStation;
 		}
 	}
 	
@@ -73,9 +114,39 @@ public class Prototypes {
 		static final String TYPE = "ship";
 		
 		ArrayList<JsonHardpoint> hardpoints;
+		ArrayList<String> weapons;
 		
 		public static JsonShip createFromMap(String id, ObjectMap<String, Object> map) {
-			return null;
+			JsonShip retShip = new JsonShip();
+			retShip.id = id;
+			
+			JsonUnit unit = JsonUnit.createFromMap(id, map);
+			retShip.name = unit.name;
+			retShip.image = unit.image;
+			retShip.depends = unit.depends;
+			retShip.cost = unit.cost;
+			retShip.health = unit.health;
+			retShip.shield = unit.shield;
+			retShip.armor = unit.armor;
+			
+			for (String key: map.keys()) {
+				if (key.equals("weapons")) {
+					Array<String> wepArray = (Array<String>)map.get(key);
+					retShip.weapons = new ArrayList<String>();
+					for (String weapon: wepArray) {
+						retShip.weapons.add(weapon);
+					}
+				} else if (key.equals("hardpoints")) {
+					ObjectMap<String, Object> hpMap = (ObjectMap)map.get(key);
+					ArrayList<JsonHardpoint> hardPts = new ArrayList<JsonHardpoint>();
+					for (String hpid: hpMap.keys()) {
+						hardPts.add(JsonHardpoint.createFromMap(hpid, (ObjectMap)hpMap.get(key)));
+					}
+					retShip.hardpoints = hardPts;
+				}
+			}
+			
+			return retShip;
 		}
 	}
 	
@@ -87,7 +158,28 @@ public class Prototypes {
 		String weapon;
 		
 		public static JsonHardpoint createFromMap(String id, ObjectMap<String, Object> map) {
-			return null;
+			JsonHardpoint retPoint = new JsonHardpoint();
+			retPoint.id = id;
+			
+			JsonUnit unit = JsonUnit.createFromMap(id, map);
+			retPoint.name = unit.name;
+			retPoint.image = unit.image;
+			retPoint.depends = unit.depends;
+			retPoint.cost = unit.cost;
+			retPoint.health = unit.health;
+			retPoint.shield = unit.shield;
+			retPoint.armor = unit.armor;
+			
+			for (String key: map.keys()) {
+				if (key.equals("offset")) {
+					Array<Float> offsetArray = (Array<Float>)map.get(key);
+					retPoint.offset = new Vector2(offsetArray.get(0), offsetArray.get(1));
+				} else if (key.equals("weapon")) {
+					retPoint.weapon = map.get(key).toString();
+				}
+			}
+			
+			return retPoint;
 		}
 	}
 	
@@ -97,28 +189,82 @@ public class Prototypes {
 		ArrayList<String> weapons;
 		
 		public static JsonSquadron createFromMap(String id, ObjectMap<String, Object> map) {
-			return null;
+			JsonSquadron retSquad = new JsonSquadron();
+			retSquad.id = id;
+			
+			JsonUnit unit = JsonUnit.createFromMap(id, map);
+			retSquad.name = unit.name;
+			retSquad.image = unit.image;
+			retSquad.depends = unit.depends;
+			retSquad.cost = unit.cost;
+			retSquad.health = unit.health;
+			retSquad.shield = unit.shield;
+			retSquad.armor = unit.armor;
+			
+			for (String key: map.keys()) {
+				if (key.equals("weapons")) {
+					Array<String> wepArray = (Array<String>)map.get(key);
+					retSquad.weapons = new ArrayList<String>();
+					for (String weapon: wepArray) {
+						retSquad.weapons.add(weapon);
+					}
+				}
+			}
+			
+			return retSquad;
 		}
 	}
 	
 	public static class JsonWeapon extends JsonProto {
 		static final String TYPE = "weapon";
 		
-		String id, name;
+		float damage = 0;
 		
 		public static JsonWeapon createFromMap(String id, ObjectMap<String, Object> map) {
-			return null;
+			JsonWeapon retWep = new JsonWeapon();
+			
+			JsonProto proto = JsonProto.createFromMap(id, map);
+			retWep.name = proto.name;
+			retWep.image = proto.image;
+			retWep.cost = proto.cost;
+			retWep.depends = proto.depends;
+			
+			retWep.id = id;
+			for (String key: map.keys()) {
+				if (key.equals("damage")) {
+					retWep.damage = Float.parseFloat(map.get(key).toString());
+				}
+			}
+			
+			return retWep;
 		}
 	}
 	
 	public static class JsonUpgrade extends JsonProto {
 		static final String TYPE = "upgrade";
 		
-		String id, name, fromId, toId;
-		int cost;
+		String id = "", name = "", fromId = "", toId = "";
+		int cost = 0;
 		
 		public static JsonUpgrade createFromMap(String id, ObjectMap<String, Object> map) {
-			return null;
+			JsonUpgrade retUp = new JsonUpgrade();
+			
+			JsonProto proto = JsonProto.createFromMap(id, map);
+			retUp.name = proto.name;
+			retUp.image = proto.image;
+			retUp.cost = proto.cost;
+			retUp.depends = proto.depends;
+			
+			retUp.id = id;
+			for (String key: map.keys()) {
+				if (key.equals("from")) {
+					retUp.fromId = map.get(key).toString();
+				} else if (key.equals("to")) {
+					retUp.toId = map.get(key).toString();
+				}
+			}
+			
+			return retUp;
 		}
 	}
 	
