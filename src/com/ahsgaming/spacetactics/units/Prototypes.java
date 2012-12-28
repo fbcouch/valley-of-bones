@@ -12,7 +12,15 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 
 public class Prototypes {
-
+	static final String UNIT_FILE = "units.json";
+	static ObjectMap<String, JsonProto> protos = null; 
+	
+	public static JsonProto getProto(String id) {
+		if (protos == null) protos = loadUnits(UNIT_FILE);
+		
+		return protos.get(id);
+	}
+	
 	public static class JsonProto {
 		static final String TYPE = "none";
 		String id = "", name = "", image = "";
@@ -22,7 +30,7 @@ public class Prototypes {
 		
 		static JsonProto createFromMap(String id, ObjectMap<String, Object> map) {
 			JsonProto retProto = new JsonProto();
-			
+
 			retProto.id = id;
 			for (String key: map.keys()) {
 				if (key.equals("name")) {
@@ -269,8 +277,8 @@ public class Prototypes {
 	}
 	
 	
-	public static ArrayList<JsonProto> loadUnits(String file) {
-		ArrayList<JsonProto> unitList = new ArrayList<JsonProto>();
+	public static ObjectMap<String, JsonProto> loadUnits(String file) {
+		ObjectMap<String, JsonProto> unitList = new ObjectMap<String, JsonProto>();
 		
 		Json json = new Json();
 		//json.fromJson(JsonUnit.class, Gdx.files.internal(file));
@@ -282,20 +290,20 @@ public class Prototypes {
 			if (createObj.containsKey("type")) {
 				String type = (String)createObj.get("type");
 				if (type.equals("station")) {
-					unitList.add(JsonStation.createFromMap(key, (ObjectMap)mapObjs.get(key)));
+					unitList.put(key, JsonStation.createFromMap(key, (ObjectMap)mapObjs.get(key)));
 				} else if (type.equals("ship")) {
-					unitList.add(JsonShip.createFromMap(key, (ObjectMap)mapObjs.get(key)));
+					unitList.put(key, JsonShip.createFromMap(key, (ObjectMap)mapObjs.get(key)));
 				} else if (type.equals("squadron")) {
-					unitList.add(JsonSquadron.createFromMap(key, (ObjectMap)mapObjs.get(key)));
+					unitList.put(key, JsonSquadron.createFromMap(key, (ObjectMap)mapObjs.get(key)));
 				} else if (type.equals("weapon")) {
-					unitList.add(JsonWeapon.createFromMap(key, (ObjectMap)mapObjs.get(key)));
+					unitList.put(key, JsonWeapon.createFromMap(key, (ObjectMap)mapObjs.get(key)));
 				} else if (type.equals("upgrade")) {
-					unitList.add(JsonUpgrade.createFromMap(key, (ObjectMap)mapObjs.get(key)));
+					unitList.put(key, JsonUpgrade.createFromMap(key, (ObjectMap)mapObjs.get(key)));
 				} else {
 					Gdx.app.log(SpaceTacticsGame.LOG, "loadUnits: Unknown type: " + type);
 				}
 			} else {
-				unitList.add(JsonUnit.createFromMap(key, (ObjectMap)mapObjs.get(key)));
+				unitList.put(key, JsonUnit.createFromMap(key, (ObjectMap)mapObjs.get(key)));
 			}
 		}
 		

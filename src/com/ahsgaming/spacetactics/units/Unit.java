@@ -22,12 +22,12 @@
  */
 package com.ahsgaming.spacetactics.units;
 
-import java.io.StringWriter;
-
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
+import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
@@ -64,5 +64,17 @@ public class Unit extends GameObject {
 		maxShield = shield;
 		curArmor = armor;
 		maxArmor = armor;
+	}
+	
+	public Unit(Player owner, JsonUnit proto) {
+		super(new TextureRegion(new Texture(Gdx.files.internal(proto.image))));
+		this.owner = owner;
+		
+		curHealth = proto.health;
+		maxHealth = proto.health;
+		curShield = proto.shield;
+		maxShield = proto.shield;
+		curArmor = proto.armor;
+		maxArmor = proto.armor;
 	}
 }

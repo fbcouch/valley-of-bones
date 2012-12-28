@@ -23,9 +23,10 @@
 package com.ahsgaming.spacetactics;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.util.ArrayList;
 
+import com.ahsgaming.spacetactics.units.Prototypes;
+import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -106,9 +107,9 @@ public class GameController {
 					try {
 						int owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
 						if (owner >= 0 && owner < players.size()) {
-							unit = new Unit(players.get(owner), new TextureRegion(tex));
+							unit = new Unit(players.get(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
 						} else {
-							unit = new Unit(null, new TextureRegion(tex));
+							unit = new Unit(null, (JsonUnit)Prototypes.getProto("space-station-base"));
 							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
 						}
 					} catch (NumberFormatException e) {
@@ -116,9 +117,6 @@ public class GameController {
 					}
 					unit.setPosition(objPos.x, objPos.y);
 					addGameUnit(unit);
-					Json json = new Json();
-					json.toJson(unit);
-					Gdx.app.log(SpaceTacticsGame.LOG, "Json: ");
 				}
 			}
 		}
