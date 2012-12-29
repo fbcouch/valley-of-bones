@@ -5,7 +5,7 @@
     health : 1000,
     shield : 1000,
     armor : 0,
-    image : "station-base.png",
+    image : "base-fighter1.png",
     cost: 1000,
     depends: ["one", "two", "three"],
     hardpoints: {
@@ -22,5 +22,36 @@
         offset: [10, 0]
       }
     }
+  },
+  space-station-lvl2 : {
+    type : "station",
+    name : "Space Station (Level 2)",
+    health : 2000,
+    shield : 2000,
+    armor : 1,
+    image : "base-fighter1.png"
+  },
+  fighters-base : {
+  	type: "squadron",
+  	name: "Basic Fighter Squadron",
+  	health: 100,
+  	shield: 100,
+  	armor: 1,
+  	image: "base-fighter1.png",
+  	weapons: [laser-base-red],
+  	cost: 25
+  },
+  laser-base-red: {
+  	type: "weapon",
+  	name: "Basic Red Laser",
+  	damage: 10,
+  	image: "laser-red.png"
+  },
+  station-upgrade-lvl2: {
+  	type: "upgrade",
+  	name: "Upgrade to Station Lvl 2",
+  	from: space-station-base,
+  	to: space-station-lvl2,
+  	cost: 1000
   }
 }
