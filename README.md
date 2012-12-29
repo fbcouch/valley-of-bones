@@ -20,9 +20,16 @@ limitations under the License.
 
 This project uses:
 
-LibGDX
-Copyright 2011 see LibGDX AUTHORS file
+LibGDX		http://libgdx.badlogicgames.com
+Copyright 2011, Mario Zechner and Nathan Sweet
 Licensed under Apache License, Version 2.0 (see above).
+
+Kryonet		http://code.google.com/p/kryonet
+Copyright 2008, Nathan Sweet
+All rights reserved.
+See New BSD License at 
+
+	   http://opensource.org/licenses/BSD-3-Clause
 
 All other art assets are original creations by Jami Couch and are licensed as CC-BY-SA.
 

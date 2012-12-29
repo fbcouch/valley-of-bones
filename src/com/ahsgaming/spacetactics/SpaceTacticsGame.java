@@ -27,8 +27,19 @@ public class SpaceTacticsGame extends Game {
 	private float mouseScrollSpeed = 500;
 	private float mouseScrollSize = 15;
 	
+	private GameServer localServer;
+	
 	public void startGame() {
 		//TODO this should accept input and then pass it to the GameController
+		
+		// TODO for now, assuming single player, so we need to start and manage the server
+		localServer = new GameServer();
+		new Thread() {
+			public void run() {
+				while(localServer.update()) { }
+			}
+		}.start();
+		
 		gController = new GameController("");
 		setScreen(getLevelScreen());
 	}

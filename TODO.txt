@@ -1,11 +1,17 @@
 SPACE TACTICS
 
+TASKS
+- allow camera movement with 3rd mouse button down
+
+GOALS 12.29.12
+- Work out client/server lockstep model
+- Work out command model
+- Implement basic client/server connection
+- Implement ux to allow map movement
+- MILESTONE 1: Move a unit around the map using the client-server lockstep setup
+
 GOALS 12.21.12
 + load a blank/test map
 + spawn space-station for both 'teams'
 + allow camera movement with mouse at border or arrow keys
 
-
-
-TASKS
-- allow camera movement with 3rd mouse button down
