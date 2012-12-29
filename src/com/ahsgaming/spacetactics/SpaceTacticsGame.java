@@ -1,5 +1,8 @@
 package com.ahsgaming.spacetactics;
 
+import java.io.IOException;
+
+import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen;
@@ -7,12 +10,14 @@ import com.ahsgaming.spacetactics.screens.LevelScreen;
 import com.ahsgaming.spacetactics.screens.MainMenuScreen;
 import com.ahsgaming.spacetactics.screens.OptionsScreen;
 import com.ahsgaming.spacetactics.screens.SplashScreen;
-import com.ahsgaming.spacetactics.units.Prototypes;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
 public class SpaceTacticsGame extends Game {
 	public static final boolean DEBUG = true;
@@ -27,7 +32,16 @@ public class SpaceTacticsGame extends Game {
 	private float mouseScrollSpeed = 500;
 	private float mouseScrollSize = 15;
 	
+	// SERVER
 	private GameServer localServer;
+	
+	// CLIENT
+	private Client client;
+	private String host;
+	private Connection clientConn;
+	private String playerName = "NetPlayer";
+	private int playerId = -1;
+	
 	
 	public void startGame() {
 		//TODO this should accept input and then pass it to the GameController
@@ -39,6 +53,35 @@ public class SpaceTacticsGame extends Game {
 				while(localServer.update()) { }
 			}
 		}.start();
+		
+		// TODO refactor this
+		client = new Client();
+		client.start();
+		
+		KryoCommon.register(client);
+		
+		client.addListener(new Listener() {
+			public void connected (Connection c) {
+				
+			}
+			
+			public void received (Connection c, Object obj) {
+				
+			}
+			
+			public void disconnected (Connection c) {
+				
+			}
+		});
+		
+		host = "localhost";
+		try {
+			client.connect(5000, host, KryoCommon.tcpPort);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
+			e.printStackTrace();
+		}
 		
 		gController = new GameController("");
 		setScreen(getLevelScreen());
