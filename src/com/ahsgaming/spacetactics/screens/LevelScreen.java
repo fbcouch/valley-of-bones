@@ -105,6 +105,17 @@ public class LevelScreen extends AbstractScreen {
 			Vector2 start = mapToScreenCoords(obj.getX() + obj.getCollideBox().x, obj.getY() + obj.getCollideBox().y);
 			shapeRenderer.rect(start.x, start.y, obj.getCollideBox().width, obj.getCollideBox().height);
 			shapeRenderer.end();
+			
+			shapeRenderer.begin(ShapeType.FilledRectangle);
+			// TODO move this elsewhere?
+			for (Vector2 waypt: obj.getPath()) {
+				Vector2 point = mapToScreenCoords(waypt.x, waypt.y);
+				
+				shapeRenderer.setColor(1f, 0.7f, 0.7f, 1.0f);
+				shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
+				
+			}
+			shapeRenderer.end();
 		}
 	}
 	
@@ -165,7 +176,22 @@ public class LevelScreen extends AbstractScreen {
 					mv.owner = 0;
 					mv.tick = gController.getGameTick();
 					mv.unit = obj.getObjId();
-					mv.toLocation = screenToMapCoords(Gdx.input.getX(), Gdx.input.getY());
+					mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+					
+					Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
+					if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
+						// the destination is outside the map
+						if ((mv.toLocation.x < 0 || mv.toLocation.x > grpLevel.getWidth())) {
+							// X is out of bounds
+							if (mv.toLocation.x < 0) mv.toLocation.set(0, mv.toLocation.y);
+							if (mv.toLocation.x > grpLevel.getWidth()) mv.toLocation.set(grpLevel.getWidth(), mv.toLocation.y);
+						} 
+						if ((mv.toLocation.y < 0 || mv.toLocation.y > grpLevel.getHeight())) {
+							// Y is out of bounds
+							if (mv.toLocation.y < 0) mv.toLocation.set(mv.toLocation.x, 0);
+							if (mv.toLocation.y > grpLevel.getHeight()) mv.toLocation.set(mv.toLocation.x, grpLevel.getHeight());
+						}
+					}
 					
 					game.sendCommand(mv);
 				}
@@ -176,7 +202,7 @@ public class LevelScreen extends AbstractScreen {
 	
 	
 	public Vector2 screenToMapCoords(float x, float y) {
-		return new Vector2(x + posCamera.x - stage.getWidth() * 0.5f, y + posCamera.y - stage.getHeight() * 0.5f);  
+		return new Vector2(x + (posCamera.x - stage.getWidth() * 0.5f), y + (posCamera.y - stage.getHeight() * 0.5f));  
 	}
 	
 	public Vector2 mapToScreenCoords(float x, float y) {
@@ -194,7 +220,6 @@ public class LevelScreen extends AbstractScreen {
 		Gdx.app.log(SpaceTacticsGame.LOG, "LevelScreen#show");
 		
 		grpLevel = gController.getGroup();
-		
 	}
 	
 	@Override
@@ -204,6 +229,7 @@ public class LevelScreen extends AbstractScreen {
 		stage.addActor(grpLevel);
 		
 		// TODO set the initial camera position based on the player spawn point
+		
 		
 		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
 		pix.setColor(1, 1, 1, 1);
@@ -224,7 +250,8 @@ public class LevelScreen extends AbstractScreen {
 		sinceLastNetTick += delta * 1000;
 		
 		if(sinceLastGameTick > GameServer.GAME_TICK_LENGTH) {
-			gController.update(GameServer.GAME_TICK_LENGTH);
+			System.out.println("Client tick");
+			gController.update(GameServer.GAME_TICK_LENGTH * 0.001f);
 			sinceLastGameTick -= GameServer.GAME_TICK_LENGTH;
 		}
 		

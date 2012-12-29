@@ -37,9 +37,9 @@
   	health: 100,
   	shield: 100,
   	armor: 1,
-  	speed: 100,
-  	accel: 10,
-  	turn: 10,
+  	speed: 10,
+  	accel: 1,
+  	turn: 100,
   	image: "base-fighter1.png",
   	weapons: [laser-base-red],
   	cost: 25

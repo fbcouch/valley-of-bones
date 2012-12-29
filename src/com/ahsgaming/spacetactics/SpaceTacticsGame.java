@@ -189,8 +189,8 @@ public class SpaceTacticsGame extends Game {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Space Tactics";
 		cfg.useGL20 = true;
-		cfg.width = 1000;
-		cfg.height = 550;
+		cfg.width = 1440;
+		cfg.height = 900;
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 		

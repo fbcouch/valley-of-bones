@@ -24,11 +24,12 @@ package com.ahsgaming.spacetactics;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -110,19 +111,31 @@ public class GameObject extends Actor {
 	}
 	
 	private void accelToward(Vector2 loc, float delta) {
-		Vector2 moveVector = new Vector2(loc.x - getX(), loc.y - getY());
+		Vector2 moveVector = new Vector2(loc.x - (getX() + getWidth() * 0.5f), loc.y - (getY() + getHeight() * 0.5f));
+		
 		rotateToAngle(moveVector.angle(), delta);
+		
+		this.accel.set(this.maxAccel, 0);
+		this.accel.rotate(this.getRotation());
 	}
 	
 	private void rotateToAngle(float degrees, float delta) {
 		// TODO deal with special cases
-		float dTheta = (degrees - this.getRotation()) % 360;
+		
+		if (getRotation() > 360) setRotation(getRotation() % 360);
+		while (getRotation() < 0) setRotation(getRotation() + 360);
+		
+		float dTheta = (degrees - this.getRotation());
+	
+		if (dTheta > 180) dTheta -= 360;
+		if (dTheta < -180) dTheta += 360;
+		
 		if (dTheta > this.turnSpeed * delta) {
-			this.localRotation -= this.turnSpeed * delta;
+			this.rotate(this.turnSpeed * delta);
 		} else if (dTheta < -1 * this.turnSpeed * delta) {
-			this.localRotation += this.turnSpeed * delta;
+			this.rotate(-1 * this.turnSpeed * delta);
 		} else {
-			this.localRotation = degrees;
+			this.setRotation(degrees);
 		}
 	}
 	
@@ -288,4 +301,12 @@ public class GameObject extends Actor {
 	public int getObjId() {
 		return objId;
 	}
+
+	/**
+	 * @return the path
+	 */
+	public ArrayList<Vector2> getPath() {
+		return path;
+	}
+	
 }
