@@ -46,16 +46,16 @@ public class Unit extends GameObject {
 	 * Constructors
 	 */
 	
-	public Unit(TextureRegion region) {
-		this(null, region, 10, 0, 0);
+	public Unit(int id, TextureRegion region) {
+		this(id, null, region, 10, 0, 0);
 	}
 	
-	public Unit(Player owner, TextureRegion region) {
-		this(owner, region, 10, 0, 0);
+	public Unit(int id, Player owner, TextureRegion region) {
+		this(id, owner, region, 10, 0, 0);
 	}
 	
-	public Unit(Player owner, TextureRegion region, float health, float shield, float armor) {
-		super(region);
+	public Unit(int id, Player owner, TextureRegion region, float health, float shield, float armor) {
+		super(id, region);
 		this.owner = owner;
 		
 		curHealth = health;
@@ -66,8 +66,8 @@ public class Unit extends GameObject {
 		maxArmor = armor;
 	}
 	
-	public Unit(Player owner, JsonUnit proto) {
-		super(new TextureRegion(new Texture(Gdx.files.internal(proto.image))));
+	public Unit(int id, Player owner, JsonUnit proto) {
+		super(id, new TextureRegion(new Texture(Gdx.files.internal(proto.image))));
 		this.owner = owner;
 		
 		curHealth = proto.health;
@@ -76,5 +76,9 @@ public class Unit extends GameObject {
 		maxShield = proto.shield;
 		curArmor = proto.armor;
 		maxArmor = proto.armor;
+		maxSpeed = proto.speed;
+		maxAccel = proto.accel;
+		turnSpeed = proto.turn;
+		
 	}
 }

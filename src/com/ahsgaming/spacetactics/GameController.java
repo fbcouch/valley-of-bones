@@ -25,6 +25,13 @@ package com.ahsgaming.spacetactics;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.ahsgaming.spacetactics.network.Attack;
+import com.ahsgaming.spacetactics.network.Build;
+import com.ahsgaming.spacetactics.network.Command;
+import com.ahsgaming.spacetactics.network.Move;
+import com.ahsgaming.spacetactics.network.Pause;
+import com.ahsgaming.spacetactics.network.Unpause;
+import com.ahsgaming.spacetactics.network.Upgrade;
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Unit;
@@ -36,9 +43,9 @@ import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
@@ -48,13 +55,23 @@ public class GameController {
 	public static final String DEFAULT_MAP = "blank.tmx";
 	public static final String MAP_DIRECTORY = "maps";
 	
-	private ArrayList<GameObject> gameObjects;
-	private Group grpRoot, grpMap, grpUnits;
+	public String LOG = "GameController";
 	
-	private ArrayList<Player> players;
+	ArrayList<GameObject> gameObjects, selectedObjects;
+	Group grpRoot, grpMap, grpUnits;
 	
-	private String mapName;
-	private TiledMap map;
+	ArrayList<Player> players;
+	
+	String mapName;
+	TiledMap map;
+	
+	GameStates state;
+	
+	ArrayList<Command> commandHistory;
+	ArrayList<Command> commandQueue;
+	int gameTick = 0;
+	
+	int nextObjectId = 0;
 	
 	
 	/**
@@ -71,6 +88,10 @@ public class GameController {
 		grpRoot.addActor(grpUnits);
 		
 		gameObjects = new ArrayList<GameObject>();
+		selectedObjects = new ArrayList<GameObject>();
+		
+		commandHistory = new ArrayList<Command>();
+		commandQueue = new ArrayList<Command>();
 		
 		players = new ArrayList<Player>();
 		players.add(new Player());
@@ -81,6 +102,9 @@ public class GameController {
 		this.loadMapObjects();
 		
 		grpRoot.setSize(map.width * map.tileWidth, map.height * map.tileHeight);
+		
+		// TODO start paused
+		state = GameStates.PAUSED;
 	}
 	
 	/**
@@ -104,18 +128,24 @@ public class GameController {
 				if (obj.type.contains("team_start")) {
 					Vector2 objPos = mapToLevelCoords(new Vector2(obj.x - obj.width * 0.5f, obj.y - obj.height * 0.5f));
 					Unit unit;
+					int owner = -1;
 					try {
-						int owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
+						owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
 						if (owner >= 0 && owner < players.size()) {
-							unit = new Unit(players.get(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
+							unit = new Unit(getNextObjectId(), players.get(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
 						} else {
-							unit = new Unit(null, (JsonUnit)Prototypes.getProto("space-station-base"));
+							unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
 							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
 						}
 					} catch (NumberFormatException e) {
-						unit = new Unit(null, new TextureRegion(tex));
+						owner = -1;
+						unit = new Unit(getNextObjectId(), null, new TextureRegion(tex));
 					}
 					unit.setPosition(objPos.x, objPos.y);
+					addGameUnit(unit);
+					
+					unit = new Unit(getNextObjectId(), players.get(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
+					unit.setPosition(objPos.x + 100,  objPos.y + 100);
 					addGameUnit(unit);
 				}
 			}
@@ -126,8 +156,101 @@ public class GameController {
 	
 	public void update(float delta) {
 		
+		// TODO process commands
+		ArrayList<Command> toRemove = new ArrayList<Command>();
+		for (Command command: commandQueue) {
+			Gdx.app.log(LOG, "Command: " + Integer.toString(command.tick));
+			if (command.tick < gameTick) {
+				// remove commands in the past without executing
+				toRemove.add(command);
+			} else if (command.tick == gameTick) {
+				// execute current commands and remove
+				// TODO execute the command
+				//Gdx.app.log(SpaceTacticsGame.LOG, "Executing command on tick " + Integer.toString(command.tick) + "==" + Integer.toString(gameTick));
+				if (state == GameStates.RUNNING || command instanceof Unpause) { 
+					executeCommand(command);
+				}
+				toRemove.add(command);
+				commandHistory.add(command);
+			} // future commands are left alone
+		}
+		commandQueue.removeAll(toRemove);
+		
+		if (state == GameStates.RUNNING) {
+			gameTick += 1;
+			//Gdx.app.log(GameController.class.getSimpleName(), "Game Tick: " + Integer.toString(gameTick));
+			for (GameObject obj : gameObjects) {
+				// update physics
+				if (obj.getAccel().len() > obj.getMaxAccel()) {
+					// clamp acceleration to max
+					float angle = obj.getAccel().angle();
+					obj.getAccel().set(obj.getMaxAccel(), 0);
+					obj.getAccel().rotate(angle);
+				}
+				
+				obj.getVelocity().add(obj.getAccel());
+				if (obj.getVelocity().len() > obj.getMaxSpeed()) {
+					// clamp velocity to max
+					float angle = obj.getVelocity().angle();
+					obj.getVelocity().set(obj.getMaxSpeed(), 0);
+					obj.getVelocity().rotate(angle);
+				}
+				
+				obj.setPosition(obj.getX() + obj.getVelocity().x, obj.getY() + obj.getVelocity().y);
+				
+				obj.update(delta);
+			}
+		}
 	}
 
+	
+	public void executeCommand(Command cmd) {
+		if (cmd instanceof Attack) {
+			executeAttack((Attack)cmd);
+		} else if (cmd instanceof Build) {
+			executeBuild((Build)cmd);
+		} else if (cmd instanceof Move) {
+			executeMove((Move)cmd);
+		} else if (cmd instanceof Pause) {
+			executePause((Pause)cmd);
+		} else if (cmd instanceof Unpause) {
+			executeUnpause((Unpause)cmd);
+		} else if (cmd instanceof Upgrade) {
+			executeUpgrade((Upgrade)cmd);
+		} else {
+			Gdx.app.log(SpaceTacticsGame.LOG, "Unknown command");
+		}
+	}
+	
+	public void executeAttack(Attack cmd) {
+		
+	}
+	
+	public void executeBuild(Build cmd) {
+			
+	}
+	
+	public void executeMove(Move cmd) {
+		Gdx.app.log(this.getClass().getSimpleName(), "Move unit: " + Integer.toString(cmd.unit)+ " to: " + cmd.toLocation.toString());
+		GameObject obj = getObjById(cmd.unit);
+		if (obj == null) {
+			Gdx.app.log(this.getClass().getSimpleName(), "Error: unknown unit id");
+		} else {
+			obj.moveTo(cmd.toLocation, false); // TODO implement shift-click to add to path
+		}
+	}
+	
+	public void executePause(Pause cmd) {
+		state = GameStates.PAUSED;
+	}
+	
+	public void executeUnpause(Unpause cmd) {
+		state = GameStates.RUNNING;
+	}
+	
+	public void executeUpgrade(Upgrade cmd) {
+		
+	}
 	
 	/**
 	 * Getters/Setters
@@ -151,14 +274,82 @@ public class GameController {
 		return gameObjects;
 	}
 	
+	public GameObject getObjById(int id) {
+		for (GameObject obj: getGameObjects()) {
+			if (obj.getObjId() == id) {
+				return obj;
+			}
+		}
+		
+		return null;
+	}
+	
+	public ArrayList<GameObject> getSelectedObjects() {
+		return selectedObjects;
+	}
+	
+	public void selectObjectsInArea(Rectangle box, boolean addToSelection) {
+		if (!addToSelection) {
+			selectedObjects.clear();
+		}
+		// TODO check owner
+		for (GameObject obj: gameObjects) {
+			if (obj.isColliding(box) && !selectedObjects.contains(obj)) {
+				selectedObjects.add(obj);
+			}
+		}
+	}
+	
 	public TiledMap getMap() {
 		return map;
 	}
 	
 	/**
+	 * @return the gameTick
+	 */
+	public int getGameTick() {
+		return gameTick;
+	}
+
+	/**
+	 * @param gameTick the gameTick to set
+	 */
+	public void setGameTick(int gameTick) {
+		this.gameTick = gameTick;
+	}
+	
+	public ArrayList<Command> getCommandHistory() {
+		return this.commandHistory;
+	}
+	
+	public ArrayList<Command> getCommandQueue() {
+		return this.commandQueue;
+	}
+	
+	public void queueCommand(Command cmd) {
+		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
+			commandQueue.add(cmd);
+		}
+	}
+	
+	private int getNextObjectId() {
+		int id = this.nextObjectId;
+		this.nextObjectId += 1;
+		return id;
+	}
+	
+	public GameStates getState() {
+		return state;
+	}
+	
+	public void setState(GameStates state) {
+		this.state = state;
+	}
+	
+	/**
 	 * static methods
 	 */
-	
+
 	/**
 	 * converts TiledMap coordinates to LibGDX coordinates
 	 * @param mapCoords - Vector2 coordinates in a TiledMap reference frame (0,0 is top-left)
@@ -167,6 +358,4 @@ public class GameController {
 	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
 		return new Vector2(mapCoords.x, (map.height * map.tileHeight) - mapCoords.y);
 	}
-	
-	
 }

@@ -22,6 +22,8 @@
  */
 package com.ahsgaming.spacetactics;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,27 +38,45 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  *
  */
 public class GameObject extends Actor {
-	private Vector2 accel, velocity;
+	protected Vector2 accel, velocity;
+	protected float maxSpeed;
+	protected float maxAccel;
+	protected float turnSpeed;
 	
-	private TextureRegion image;
+	protected TextureRegion image;
 	
-	private Rectangle collideBox = new Rectangle(0, 0, 0, 0);
+	protected Rectangle collideBox = new Rectangle(0, 0, 0, 0);
 	
-	private boolean remove = false;
+	protected boolean remove = false;
+	
+	protected final int objId;
+	
+	protected ArrayList<Vector2> path;
+	
+	protected float localRotation = 0;
 	
 	/**
 	 * Constructors
 	 */
 	
-	public GameObject() {
+	public GameObject(int id) {
 		super();
+		objId = id;
+		accel = new Vector2();
+		velocity = new Vector2();
+		maxSpeed = 0;
+		maxAccel = 0;
+		turnSpeed = 0;
+		image = null;
+		path = new ArrayList<Vector2>();
 	}
 	
-	public GameObject(Texture texture) {
-		this(new TextureRegion(texture));
+	public GameObject(int id, Texture texture) {
+		this(id, new TextureRegion(texture));
 	}
 	
-	public GameObject(TextureRegion region) {
+	public GameObject(int id, TextureRegion region) {
+		this(id);
 		image = region;
 		this.setBounds(0, 0, image.getRegionWidth(), image.getRegionHeight());
 		collideBox.set(0, 0, image.getRegionWidth(), image.getRegionHeight());
@@ -65,6 +85,47 @@ public class GameObject extends Actor {
 	/**
 	 * Methods
 	 */
+	
+	/**
+	 * Use this for game loop updates so that it can be easily controlled (unlike act, which will be called regardless of gamestate)
+	 * @param delta
+	 */
+	public void update(float delta) {
+		// TODO do other stuff...
+		
+		// Move to the first location in the path
+		if (path.size() > 0) {
+			Vector2 loc = path.get(0);
+			Rectangle box = new Rectangle(getX() + collideBox.x, getY() + collideBox.y, collideBox.width, collideBox.height);
+			if (box.contains(loc.x, loc.y)) {
+				// we made it, remove this point from the path
+				path.remove(loc);
+			} else {
+				accelToward(loc, delta);
+			}
+		} else {
+			this.velocity.set(0,0);
+			this.accel.set(0,0);
+		}
+	}
+	
+	private void accelToward(Vector2 loc, float delta) {
+		Vector2 moveVector = new Vector2(loc.x - getX(), loc.y - getY());
+		rotateToAngle(moveVector.angle(), delta);
+	}
+	
+	private void rotateToAngle(float degrees, float delta) {
+		// TODO deal with special cases
+		float dTheta = (degrees - this.getRotation()) % 360;
+		if (dTheta > this.turnSpeed * delta) {
+			this.localRotation -= this.turnSpeed * delta;
+		} else if (dTheta < -1 * this.turnSpeed * delta) {
+			this.localRotation += this.turnSpeed * delta;
+		} else {
+			this.localRotation = degrees;
+		}
+	}
+	
 	public boolean canCollide(GameObject obj) {
 		return true;
 	}
@@ -73,16 +134,30 @@ public class GameObject extends Actor {
 		
 	}
 	
+	public boolean isColliding(Rectangle box) {
+		Rectangle thisBox = new Rectangle(this.getX() + collideBox.x, this.getY() + collideBox.y, collideBox.width, collideBox.height);
+		return thisBox.overlaps(box);
+	}
+	
+	public void moveTo(Vector2 location, boolean add) {
+		if (!add) {
+			path.clear();
+		}
+		path.add(location);
+	}
+	
 	/**
 	 * Implemented methods
 	 */
 	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
+		
 		if (image != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			batch.draw(image, getX(), getY(), image.getU(), image.getV(), image.getRegionWidth(), image.getRegionHeight(), 1, 1, getRotation());
+			//batch.draw(image, getX(), getY(), image.getU(), image.getV(), image.getRegionWidth(), image.getRegionHeight(), 1, 1, getRotation());
+			batch.draw(image, getX(), getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
 		}
 	}
 	
@@ -163,5 +238,54 @@ public class GameObject extends Actor {
 	 */
 	public void setRemove(boolean remove) {
 		this.remove = remove;
+	}
+
+	/**
+	 * @return the maxSpeed
+	 */
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	/**
+	 * @param maxSpeed the maxSpeed to set
+	 */
+	public void setMaxSpeed(float maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	}
+
+	/**
+	 * @return the maxAccel
+	 */
+	public float getMaxAccel() {
+		return maxAccel;
+	}
+
+	/**
+	 * @param maxAccel the maxAccel to set
+	 */
+	public void setMaxAccel(float maxAccel) {
+		this.maxAccel = maxAccel;
+	}
+
+	/**
+	 * @return the turnSpeed
+	 */
+	public float getTurnSpeed() {
+		return turnSpeed;
+	}
+
+	/**
+	 * @param turnSpeed the turnSpeed to set
+	 */
+	public void setTurnSpeed(float turnSpeed) {
+		this.turnSpeed = turnSpeed;
+	}
+	
+	/**
+	 * @return the objId
+	 */
+	public int getObjId() {
+		return objId;
 	}
 }

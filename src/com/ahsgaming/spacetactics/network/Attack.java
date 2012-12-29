@@ -1,6 +1,6 @@
 package com.ahsgaming.spacetactics.network;
 
 public class Attack extends Command {
-	int unit;
-	int target;
+	public int unit;
+	public int target;
 }

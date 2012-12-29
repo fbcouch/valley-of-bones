@@ -3,6 +3,6 @@ package com.ahsgaming.spacetactics.network;
 import com.badlogic.gdx.math.Vector2;
 
 public class Build extends Command {
-	String building;
-	Vector2 location;
+	public String building;
+	public Vector2 location;
 }

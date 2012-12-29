@@ -5,7 +5,7 @@
     health : 1000,
     shield : 1000,
     armor : 0,
-    image : "base-fighter1.png",
+    image : "station-base.png",
     cost: 1000,
     depends: ["one", "two", "three"],
     hardpoints: {
@@ -29,7 +29,7 @@
     health : 2000,
     shield : 2000,
     armor : 1,
-    image : "base-fighter1.png"
+    image : "station-base.png"
   },
   fighters-base : {
   	type: "squadron",
@@ -37,6 +37,9 @@
   	health: 100,
   	shield: 100,
   	armor: 1,
+  	speed: 100,
+  	accel: 10,
+  	turn: 10,
   	image: "base-fighter1.png",
   	weapons: [laser-base-red],
   	cost: 25

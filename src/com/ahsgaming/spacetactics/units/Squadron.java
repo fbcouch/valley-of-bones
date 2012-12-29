@@ -31,9 +31,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Squadron extends Unit {
 
-	public Squadron(Player owner, TextureRegion region, float health,
+	public Squadron(int id, Player owner, TextureRegion region, float health,
 			float shield, float armor) {
-		super(owner, region, health, shield, armor);
+		super(id, owner, region, health, shield, armor);
 		// TODO Auto-generated constructor stub
 	}
 

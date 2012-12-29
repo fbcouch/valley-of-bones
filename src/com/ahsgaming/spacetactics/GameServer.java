@@ -24,7 +24,9 @@ package com.ahsgaming.spacetactics;
 
 import java.io.IOException;
 
+import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.KryoCommon;
+import com.ahsgaming.spacetactics.network.Unpause;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -65,7 +67,13 @@ public class GameServer {
 		server.addListener(new Listener() {
 			
 			public void received(Connection c, Object obj) {
-				
+				// TODO need to check this for validity
+				if (obj instanceof Command) {
+					Command cmd = (Command)obj;
+					cmd.tick = controller.getGameTick() + (cmd instanceof Unpause ? 0 : 2);
+					controller.queueCommand(cmd);
+					server.sendToAllTCP(cmd);
+				}
 			}
 			
 			public void disconnected (Connection c) {
@@ -74,6 +82,7 @@ public class GameServer {
 		});
 		
 		controller = new GameController("");
+		controller.LOG = controller.LOG + "#Server";
 		
 		lastTimeMillis = System.currentTimeMillis();
 	}
@@ -86,7 +95,7 @@ public class GameServer {
 		sinceLastNetTick += delta;
 		sinceLastGameTick += delta;
 		
-		while (sinceLastNetTick >= GameServer.NET_TICK_LENGTH) {
+		while (sinceLastNetTick >= GameServer.NET_TICK_LENGTH * 0.001f) {
 			// TODO net tick
 			sinceLastNetTick -= GameServer.NET_TICK_LENGTH;
 			//Gdx.app.log("Server", "NET TICK");
@@ -94,7 +103,7 @@ public class GameServer {
 		
 		while (sinceLastGameTick >= GameServer.GAME_TICK_LENGTH) {
 			// TODO game tick
-			controller.update(GameServer.GAME_TICK_LENGTH);
+			controller.update(GameServer.GAME_TICK_LENGTH * 0.001f);
 			sinceLastGameTick -= GameServer.GAME_TICK_LENGTH;
 			//Gdx.app.log("Server", "GAME TICK");
 		}

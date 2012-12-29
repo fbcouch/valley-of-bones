@@ -20,22 +20,12 @@
  * Licensed under Apache License, Version 2.0 (see above).
  * 
  */
-package com.ahsgaming.spacetactics.units;
-
-import com.ahsgaming.spacetactics.Player;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+package com.ahsgaming.spacetactics;
 
 /**
  * @author jami
  *
  */
-public class Ship extends Unit {
-
-	public Ship(int id, Player owner, TextureRegion region, float health, float shield,
-			float armor) {
-		super(id, owner, region, health, shield, armor);
-		// TODO Auto-generated constructor stub
-	}
-
-	
+public enum GameStates {
+	NONE, RUNNING, PAUSED, GAMEOVER
 }

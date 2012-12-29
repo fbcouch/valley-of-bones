@@ -2,7 +2,9 @@ package com.ahsgaming.spacetactics;
 
 import java.io.IOException;
 
+import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.KryoCommon;
+import com.ahsgaming.spacetactics.network.Unpause;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen;
@@ -66,7 +68,11 @@ public class SpaceTacticsGame extends Game {
 			}
 			
 			public void received (Connection c, Object obj) {
-				
+				if (obj instanceof Command) {
+					Command cmd = (Command)obj;
+					if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.tick));
+					gController.queueCommand(cmd);
+				}
 			}
 			
 			public void disconnected (Connection c) {
@@ -84,11 +90,20 @@ public class SpaceTacticsGame extends Game {
 		}
 		
 		gController = new GameController("");
+		gController.LOG = gController.LOG + "#Client";
 		setScreen(getLevelScreen());
+		
+		Command cmd = new Unpause();
+		cmd.tick = 0;
+		sendCommand(cmd);
 	}
 
 	public void quitGame() {
 		Gdx.app.exit();
+	}
+	
+	public void sendCommand(Command cmd) {
+		client.sendTCP(cmd);
 	}
 	
 	/**

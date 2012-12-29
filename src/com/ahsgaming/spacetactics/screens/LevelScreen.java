@@ -23,12 +23,20 @@
 package com.ahsgaming.spacetactics.screens;
 
 import com.ahsgaming.spacetactics.GameController;
+import com.ahsgaming.spacetactics.GameObject;
+import com.ahsgaming.spacetactics.GameServer;
+import com.ahsgaming.spacetactics.GameStates;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.Move;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -42,9 +50,20 @@ public class LevelScreen extends AbstractScreen {
 	
 	private GameController gController = null;
 	
+	// input stuff
+	private Vector2 boxOrigin = null, boxFinal = null;
+	private boolean rightBtnDown = false;
+	
+	ShapeRenderer shapeRenderer;
+	
 	
 	// camera 'center' position - this will always remain within the bounds of the map
 	private Vector2 posCamera = new Vector2();
+	
+	
+	// game stuff
+	int sinceLastGameTick = 0;
+	int sinceLastNetTick = 0;
 	
 	/**
 	 * @param game
@@ -52,6 +71,7 @@ public class LevelScreen extends AbstractScreen {
 	public LevelScreen(SpaceTacticsGame game, GameController gController) {
 		super(game);
 		this.gController = gController;
+		shapeRenderer = new ShapeRenderer();
 	}
 	
 	/**
@@ -67,6 +87,102 @@ public class LevelScreen extends AbstractScreen {
 		if (posCamera.y < 0) posCamera.y = 0;
 		if (posCamera.y > map.height * map.tileHeight) posCamera.y = map.height * map.tileHeight;
 	}
+	
+	private void drawSelectionBox() {
+		if (!(boxOrigin == null || boxFinal == null)) {
+			shapeRenderer.begin(ShapeType.Rectangle);
+			shapeRenderer.setColor(1, 1, 1, 1);
+			Vector2 start = mapToScreenCoords(boxOrigin.x, boxOrigin.y), end = mapToScreenCoords(boxFinal.x, boxFinal.y);
+			shapeRenderer.rect(start.x, start.y, end.x - start.x, end.y - start.y);
+			shapeRenderer.end();
+		}
+	}
+	
+	private void drawUnitBoxes() {
+		for (GameObject obj: gController.getSelectedObjects()) {
+			shapeRenderer.begin(ShapeType.Rectangle);
+			shapeRenderer.setColor(1, 1, 1, 1); // TODO set to the player's color
+			Vector2 start = mapToScreenCoords(obj.getX() + obj.getCollideBox().x, obj.getY() + obj.getCollideBox().y);
+			shapeRenderer.rect(start.x, start.y, obj.getCollideBox().width, obj.getCollideBox().height);
+			shapeRenderer.end();
+		}
+	}
+	
+	private void doCameraMovement(float delta) {
+		if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.getY() <= game.getMouseScrollSize()) {
+			// move 'up'
+			posCamera.y += game.getKeyScrollSpeed() * delta;
+		} else if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.getY() >= stage.getHeight() - game.getMouseScrollSize()) {
+			// move 'down'
+			posCamera.y -= game.getKeyScrollSpeed() * delta;
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.getX() <= game.getMouseScrollSize()) {
+			// move 'left'
+			posCamera.x -= game.getKeyScrollSpeed() * delta;
+		} else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.getX() >= stage.getWidth() - game.getMouseScrollSize()) {
+			// move 'right'
+			posCamera.x += game.getKeyScrollSpeed() * delta;
+		}
+		
+		clampCamera();
+	}
+	
+	private void doProcessInput(float delta) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			if (boxOrigin == null) {
+				boxOrigin = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+				boxFinal = new Vector2(boxOrigin);
+			}
+			boxFinal.set(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
+		} else {
+			if (!(boxOrigin == null || boxFinal == null)) {
+				// select any units in the box
+				
+				Rectangle box = new Rectangle(boxOrigin.x, boxOrigin.y, boxFinal.x - boxOrigin.x, boxFinal.y - boxOrigin.y);
+				if (box.width < 0) {
+					box.x += box.width;
+					box.width *= -1;
+				}
+				
+				if (box.height < 0) {
+					box.y += box.height;
+					box.height *= -1;
+				}
+				gController.selectObjectsInArea(box, Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+			}
+			boxOrigin = null;
+			boxFinal = null;
+		}
+		
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
+			rightBtnDown = true;
+		} else {
+			if (rightBtnDown) {
+				// TODO issue context-dependent commands
+				for (GameObject obj: gController.getSelectedObjects()) {
+					Move mv = new Move();
+					mv.owner = 0;
+					mv.tick = gController.getGameTick();
+					mv.unit = obj.getObjId();
+					mv.toLocation = screenToMapCoords(Gdx.input.getX(), Gdx.input.getY());
+					
+					game.sendCommand(mv);
+				}
+				rightBtnDown = false;
+			}
+		}
+	}
+	
+	
+	public Vector2 screenToMapCoords(float x, float y) {
+		return new Vector2(x + posCamera.x - stage.getWidth() * 0.5f, y + posCamera.y - stage.getHeight() * 0.5f);  
+	}
+	
+	public Vector2 mapToScreenCoords(float x, float y) {
+		return new Vector2(x - (posCamera.x - stage.getWidth() * 0.5f), y - (posCamera.y - stage.getHeight() * 0.5f));
+	}
+
 	
 	/**
 	 * Implemented methods
@@ -89,7 +205,6 @@ public class LevelScreen extends AbstractScreen {
 		
 		// TODO set the initial camera position based on the player spawn point
 		
-		
 		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
 		pix.setColor(1, 1, 1, 1);
 		pix.drawRectangle(0, 0, pix.getWidth(), pix.getHeight());
@@ -100,33 +215,37 @@ public class LevelScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		gController.update(delta);
+		
+		// DRAW BOXES
+		drawSelectionBox();
+		drawUnitBoxes();
+		
+		sinceLastGameTick += delta * 1000;
+		sinceLastNetTick += delta * 1000;
+		
+		if(sinceLastGameTick > GameServer.GAME_TICK_LENGTH) {
+			gController.update(GameServer.GAME_TICK_LENGTH);
+			sinceLastGameTick -= GameServer.GAME_TICK_LENGTH;
+		}
+		
+		if (sinceLastNetTick > GameServer.NET_TICK_LENGTH) {
+			sinceLastNetTick -= GameServer.NET_TICK_LENGTH;
+		}
 		
 		// move the camera around
-		if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.getY() <= game.getMouseScrollSize()) {
-			// move 'up'
-			posCamera.y += game.getKeyScrollSpeed() * delta;
-		} else if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.getY() >= stage.getHeight() - game.getMouseScrollSize()) {
-			// move 'down'
-			posCamera.y -= game.getKeyScrollSpeed() * delta;
-		}
+		doCameraMovement(delta);
 		
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.getX() <= game.getMouseScrollSize()) {
-			// move 'left'
-			posCamera.x -= game.getKeyScrollSpeed() * delta;
-		} else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.getX() >= stage.getWidth() - game.getMouseScrollSize()) {
-			// move 'right'
-			posCamera.x += game.getKeyScrollSpeed() * delta;
-		}
+		// get input
+		doProcessInput(delta);
 		
+		// update level position
+		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
+		
+		// easy exit for debug purposes
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && SpaceTacticsGame.DEBUG) {
 			game.quitGame();
 		}
 		
-		clampCamera();
-		
-		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 	}
 
-	
 }

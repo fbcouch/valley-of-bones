@@ -60,6 +60,9 @@ public class Prototypes {
 	public static class JsonUnit extends JsonProto {
 		static final String TYPE = "unit";
 		int health = 0, shield = 0, armor = 0;
+		float speed = 0;
+		float accel = 0;
+		float turn = 0;
 		
 		public static JsonUnit createFromMap(String id, ObjectMap<String, Object> map) {
 			JsonUnit retUnit = new JsonUnit();
@@ -78,11 +81,16 @@ public class Prototypes {
 					retUnit.armor = (int)Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("shield")) {
 					retUnit.shield = (int)Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("speed")) {
+					retUnit.speed = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("accel")) {
+					retUnit.accel = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("turn")) {
+					retUnit.turn = Float.parseFloat(map.get(key).toString());
 				} else {
 					Gdx.app.log(SpaceTacticsGame.LOG, JsonUnit.class.getSimpleName() + "#createFromMap: Unknown key");
 				}
 			}
-			
 			return retUnit;
 		}
 	}
@@ -208,6 +216,9 @@ public class Prototypes {
 			retSquad.health = unit.health;
 			retSquad.shield = unit.shield;
 			retSquad.armor = unit.armor;
+			retSquad.speed = unit.speed;
+			retSquad.accel = unit.accel;
+			retSquad.turn = unit.turn;
 			
 			for (String key: map.keys()) {
 				if (key.equals("weapons")) {
