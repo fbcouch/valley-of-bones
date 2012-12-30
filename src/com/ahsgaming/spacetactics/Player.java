@@ -22,17 +22,124 @@
  */
 package com.ahsgaming.spacetactics;
 
+import com.badlogic.gdx.graphics.Color;
+
 /**
  * @author jami
  * TODO theoretically, this class should probably handle inputs for the player or something...
  */
 public class Player {
-
+	public static final Color COLOR_RED = new Color(1, 0, 0, 1);
+	public static final Color COLOR_BLUE = new Color(0, 0, 1, 1);
+	public static final Color COLOR_GREEN = new Color(0, 1, 0, 1);
+	public static final Color COLOR_PURPLE = new Color(1, 0, 1, 1);
+	public static final Color[] AUTOCOLORS = {COLOR_RED, COLOR_BLUE, COLOR_GREEN, COLOR_PURPLE};
+	
+	int playerId = -1;
+	Color playerColor = new Color(1, 1, 1, 1);
+	String name = "New Cadet";
+	
+	float bankMoney = 0, rateMoney = 0;
+	float curFood = 0, maxFood = 0;
+	
 	/**
 	 * 
 	 */
-	public Player() {
-		// TODO Auto-generated constructor stub
+	public Player(int id, String name, Color color) {
+		this(id, color);
+		this.name = name;
+	}
+	
+	public Player(int id, Color color) {
+		playerId = id;
+		playerColor = color;
+	}
+	
+	public String getPlayerName() {
+		return name;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("(%d)%s $%05d // Food: %03d/%03d", playerId, name, (int)bankMoney, (int)curFood, (int)maxFood);
+	}
+	
+	
+	public void setPlayerName(String name) {
+		this.name = name;
+	}
+	
+	public int getPlayerId() {
+		return playerId;
+	}
+	
+	public void setPlayerId(int id) {
+		playerId = id;
+	}
+	
+	public Color getPlayerColor() {
+		return playerColor;
+	}
+	
+	public void setPlayerColor(Color color) {
+		playerColor = color;
 	}
 
+	/**
+	 * @return the bankMoney
+	 */
+	public float getBankMoney() {
+		return bankMoney;
+	}
+
+	/**
+	 * @param bankMoney the bankMoney to set
+	 */
+	public void setBankMoney(float bankMoney) {
+		this.bankMoney = bankMoney;
+	}
+
+	/**
+	 * @return the rateMoney
+	 */
+	public float getRateMoney() {
+		return rateMoney;
+	}
+
+	/**
+	 * @param rateMoney the rateMoney to set
+	 */
+	public void setRateMoney(float rateMoney) {
+		this.rateMoney = rateMoney;
+	}
+
+	/**
+	 * @return the curFood
+	 */
+	public float getCurFood() {
+		return curFood;
+	}
+
+	/**
+	 * @param curFood the curFood to set
+	 */
+	public void setCurFood(float curFood) {
+		this.curFood = curFood;
+	}
+
+	/**
+	 * @return the maxFood
+	 */
+	public float getMaxFood() {
+		return maxFood;
+	}
+
+	/**
+	 * @param maxFood the maxFood to set
+	 */
+	public void setMaxFood(float maxFood) {
+		this.maxFood = maxFood;
+	}
+	
+	
 }

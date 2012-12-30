@@ -38,7 +38,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer {
 	public static final int NET_TICK_LENGTH = 100; // ms
-	public static final int GAME_TICK_LENGTH = 50; // ms
+	public static final int GAME_TICK_LENGTH = 20; // ms
 	
 	Server server;
 	GameController controller;

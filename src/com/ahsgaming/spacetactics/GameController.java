@@ -94,8 +94,8 @@ public class GameController {
 		commandQueue = new ArrayList<Command>();
 		
 		players = new ArrayList<Player>();
-		players.add(new Player());
-		players.add(new Player());
+		players.add(new Player(0, Player.AUTOCOLORS[0]));
+		players.add(new Player(1, Player.AUTOCOLORS[1]));
 		
 		
 		this.loadMap();
@@ -178,7 +178,7 @@ public class GameController {
 		
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;
-			//Gdx.app.log(GameController.class.getSimpleName(), "Game Tick: " + Integer.toString(gameTick));
+			Gdx.app.log(LOG, "Game Tick: " + Integer.toString(gameTick));
 			for (GameObject obj : gameObjects) {
 				// update physics
 				if (obj.getAccel().len() > obj.getMaxAccel()) {
@@ -188,7 +188,7 @@ public class GameController {
 					obj.getAccel().rotate(angle);
 				}
 				
-				obj.getVelocity().add(obj.getAccel());
+				obj.getVelocity().add(obj.getAccel().mul(delta));
 				if (obj.getVelocity().len() > obj.getMaxSpeed()) {
 					// clamp velocity to max
 					float angle = obj.getVelocity().angle();
@@ -196,7 +196,7 @@ public class GameController {
 					obj.getVelocity().rotate(angle);
 				}
 				
-				obj.setPosition(obj.getX() + obj.getVelocity().x, obj.getY() + obj.getVelocity().y);
+				obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
 				
 				obj.update(delta);
 			}
@@ -258,6 +258,17 @@ public class GameController {
 	
 	public Group getGroup() {
 		return grpRoot;
+	}
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+	
+	public Player getPlayerById(int id) {
+		for (Player player: players) {
+			if (player.getPlayerId() == id) return player;
+		}
+		return null;
 	}
 	
 	public void addGameUnit(GameObject obj) {

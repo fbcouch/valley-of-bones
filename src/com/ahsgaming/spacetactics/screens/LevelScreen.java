@@ -25,7 +25,7 @@ package com.ahsgaming.spacetactics.screens;
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.GameServer;
-import com.ahsgaming.spacetactics.GameStates;
+import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.Move;
 import com.badlogic.gdx.Gdx;
@@ -40,6 +40,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * @author jami
@@ -64,6 +66,10 @@ public class LevelScreen extends AbstractScreen {
 	// game stuff
 	int sinceLastGameTick = 0;
 	int sinceLastNetTick = 0;
+	
+	// UX stuff
+	Group grpScorePane = new Group();
+	ObjectMap<Player, Label> mapScoreLbls = new ObjectMap<Player, Label>();
 	
 	/**
 	 * @param game
@@ -236,6 +242,24 @@ public class LevelScreen extends AbstractScreen {
 		pix.drawRectangle(0, 0, pix.getWidth(), pix.getHeight());
 		Image test = new Image(new Texture(pix));
 		grpLevel.addActor(test);
+		
+		// generate the score panel
+		grpScorePane = new Group();
+		mapScoreLbls = new ObjectMap<Player, Label>();
+		int y = 0;
+		if (SpaceTacticsGame.DEBUG) {
+			for (Player player: gController.getPlayers()) {
+				Label lbl = new Label(player.toString(), getSkin());
+				lbl.setColor(player.getPlayerColor());
+				lbl.setY(y);
+				y += lbl.getHeight() + 5;
+				mapScoreLbls.put(player, lbl);
+				grpScorePane.addActor(lbl);
+				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
+			}
+		}
+		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
+		stage.addActor(grpScorePane);
 	}
 	
 	@Override
@@ -250,7 +274,6 @@ public class LevelScreen extends AbstractScreen {
 		sinceLastNetTick += delta * 1000;
 		
 		if(sinceLastGameTick > GameServer.GAME_TICK_LENGTH) {
-			System.out.println("Client tick");
 			gController.update(GameServer.GAME_TICK_LENGTH * 0.001f);
 			sinceLastGameTick -= GameServer.GAME_TICK_LENGTH;
 		}

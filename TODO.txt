@@ -3,6 +3,25 @@ SPACE TACTICS
 TASKS
 - allow camera movement with 3rd mouse button down
 
+MILESTONE 3: All basic gameplay systems in place (start adding units!)
+
+MILESTONE 2: Basic player/owner, resources, and build units in place
+
+GOALS (future)
+- Attack-unit
+- Basic weapons (fire at x rate, do x damage, etc)
+- Destroy units
+- Build units
+- Upgrade units
+- Build stations?
+- UX stuff
+
+GOALS 12.30.12
+- Implement Player system (with color-coded boxes)
+- Server side: assign player id's to connections and ensure that connection is the 'owner' of any commands it sends
+- Resources: implement 'money' and 'food' resources for Player
+- UX: (debug) display player name, ID, and resources
+
 GOALS 12.29.12
 + Work out client/server lockstep model
 + Work out command model
