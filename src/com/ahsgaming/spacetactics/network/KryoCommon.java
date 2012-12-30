@@ -22,6 +22,8 @@
  */
 package com.ahsgaming.spacetactics.network;
 
+import com.ahsgaming.spacetactics.Player;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -34,6 +36,9 @@ public class KryoCommon {
 	public static final int tcpPort = 54556;
 	public static final int udpPort = 54557;
 	
+	public static final int NET_TICK_LENGTH = 100; // ms
+	public static final int GAME_TICK_LENGTH = 20; // ms
+	
 	public static void register (EndPoint endPoint) {
 		Kryo kryo = endPoint.getKryo();
 		kryo.register(String.class);
@@ -44,6 +49,20 @@ public class KryoCommon {
 		kryo.register(Upgrade.class);
 		kryo.register(Pause.class);
 		kryo.register(Unpause.class);
+		kryo.register(Color.class);
+		kryo.register(RegisterPlayer.class);
+		kryo.register(RegisteredPlayer.class);
+		kryo.register(RegisteredPlayer[].class);
+		
 	}
-
+	
+	public static class RegisterPlayer {
+		public String name;
+	}
+	
+	public static class RegisteredPlayer {
+		public int id;
+		public String name;
+		public Color color;
+	}
 }

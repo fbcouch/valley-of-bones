@@ -78,7 +78,7 @@ public class GameController {
 	 * Constructors
 	 */
 	
-	public GameController(String mapName) {
+	public GameController(String mapName, ArrayList<Player> players) {
 		// TODO load map
 		this.mapName = mapName;
 		grpRoot = new Group();
@@ -93,10 +93,7 @@ public class GameController {
 		commandHistory = new ArrayList<Command>();
 		commandQueue = new ArrayList<Command>();
 		
-		players = new ArrayList<Player>();
-		players.add(new Player(0, Player.AUTOCOLORS[0]));
-		players.add(new Player(1, Player.AUTOCOLORS[1]));
-		
+		this.players = players;
 		
 		this.loadMap();
 		this.loadMapObjects();
@@ -132,7 +129,7 @@ public class GameController {
 					try {
 						owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
 						if (owner >= 0 && owner < players.size()) {
-							unit = new Unit(getNextObjectId(), players.get(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
+							unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
 						} else {
 							unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
 							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
@@ -144,7 +141,7 @@ public class GameController {
 					unit.setPosition(objPos.x, objPos.y);
 					addGameUnit(unit);
 					
-					unit = new Unit(getNextObjectId(), players.get(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
+					unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
 					unit.setPosition(objPos.x + 100,  objPos.y + 100);
 					addGameUnit(unit);
 				}
@@ -155,7 +152,7 @@ public class GameController {
 	}
 	
 	public void update(float delta) {
-		
+		//Gdx.app.log(LOG, "update...");
 		// TODO process commands
 		ArrayList<Command> toRemove = new ArrayList<Command>();
 		for (Command command: commandQueue) {

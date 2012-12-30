@@ -35,8 +35,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Unit extends GameObject {
 	
-	private Player owner;
-	
 	private float curHealth, maxHealth;
 	private float curShield, maxShield;
 	private float curArmor, maxArmor;
@@ -55,8 +53,7 @@ public class Unit extends GameObject {
 	}
 	
 	public Unit(int id, Player owner, TextureRegion region, float health, float shield, float armor) {
-		super(id, region);
-		this.owner = owner;
+		super(id, owner, region);
 		
 		curHealth = health;
 		maxHealth = health;
@@ -67,8 +64,7 @@ public class Unit extends GameObject {
 	}
 	
 	public Unit(int id, Player owner, JsonUnit proto) {
-		super(id, new TextureRegion(new Texture(Gdx.files.internal(proto.image))));
-		this.owner = owner;
+		super(id, owner, new TextureRegion(new Texture(Gdx.files.internal(proto.image))));
 		
 		curHealth = proto.health;
 		maxHealth = proto.health;

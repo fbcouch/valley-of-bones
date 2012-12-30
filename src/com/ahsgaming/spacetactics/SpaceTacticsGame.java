@@ -1,9 +1,13 @@
 package com.ahsgaming.spacetactics;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.network.Command;
+import com.ahsgaming.spacetactics.network.GameClient;
+import com.ahsgaming.spacetactics.network.GameServer;
 import com.ahsgaming.spacetactics.network.KryoCommon;
+import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.spacetactics.network.Unpause;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
@@ -35,67 +39,60 @@ public class SpaceTacticsGame extends Game {
 	private float mouseScrollSize = 15;
 	
 	// SERVER
-	private GameServer localServer;
+	GameServer localServer;
 	
 	// CLIENT
-	private Client client;
-	private String host;
-	private Connection clientConn;
-	private String playerName = "NetPlayer";
-	private int playerId = -1;
+	GameClient localClient;
 	
 	
-	public void startGame() {
+	boolean started = false;
+	
+	public void createGame() {
 		//TODO this should accept input and then pass it to the GameController
 		
 		// TODO for now, assuming single player, so we need to start and manage the server
+		
 		localServer = new GameServer();
 		new Thread() {
 			public void run() {
-				while(localServer.update()) { }
+				boolean cont = true;
+				while(cont) {
+					cont = localServer.update();
+					try {
+						Thread.sleep(0);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}.start();
 		
-		// TODO refactor this
-		client = new Client();
-		client.start();
-		
-		KryoCommon.register(client);
-		
-		client.addListener(new Listener() {
-			public void connected (Connection c) {
-				
-			}
-			
-			public void received (Connection c, Object obj) {
-				if (obj instanceof Command) {
-					Command cmd = (Command)obj;
-					if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.tick));
-					gController.queueCommand(cmd);
+		localClient = new GameClient(this, "New Player");
+		new Thread() {
+			public void run() {
+				boolean cont = true;
+				while(cont) {
+					cont = localClient.update();
+					try {
+						Thread.sleep(0);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
-			
-			public void disconnected (Connection c) {
-				
-			}
-		});
+		}.start();
 		
-		host = "localhost";
-		try {
-			client.connect(5000, host, KryoCommon.tcpPort);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
-			e.printStackTrace();
-		}
+		//gController = new GameController("", new ArrayList<Player>());
+		//gController.LOG = gController.LOG + "#Client";
+	}
+	
+	public void startGame() {
+		localServer.startGame();
+		localClient.startGame();
 		
-		gController = new GameController("");
-		gController.LOG = gController.LOG + "#Client";
 		setScreen(getLevelScreen());
-		
-		Command cmd = new Unpause();
-		cmd.tick = 0;
-		sendCommand(cmd);
 	}
 
 	public void quitGame() {
@@ -103,7 +100,7 @@ public class SpaceTacticsGame extends Game {
 	}
 	
 	public void sendCommand(Command cmd) {
-		client.sendTCP(cmd);
+		localClient.sendCommand(cmd);
 	}
 	
 	/**
@@ -113,7 +110,7 @@ public class SpaceTacticsGame extends Game {
 	@Override
 	public void create() {		
 		if (DEBUG) {
-			startGame();
+			createGame();
 		}
 		else {
 			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
@@ -130,6 +127,10 @@ public class SpaceTacticsGame extends Game {
 		super.render();
 		if (DEBUG) fpsLogger.log();
 		
+		if (localClient.getPlayers().size() > 0 && !started) {
+			started = true;
+			startGame();
+		}
 	}
 
 	@Override
@@ -172,7 +173,7 @@ public class SpaceTacticsGame extends Game {
 	}
 	
 	public LevelScreen getLevelScreen() {
-		return new LevelScreen(this, gController);
+		return new LevelScreen(this, localClient.getController());
 	}
 	
 	public GameOverScreen getGameOverScreen() {

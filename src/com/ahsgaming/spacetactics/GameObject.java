@@ -51,18 +51,21 @@ public class GameObject extends Actor {
 	protected boolean remove = false;
 	
 	protected final int objId;
+	protected Player owner;
 	
 	protected ArrayList<Vector2> path;
 	
 	protected float localRotation = 0;
 	
+	
 	/**
 	 * Constructors
 	 */
 	
-	public GameObject(int id) {
+	public GameObject(int id, Player owner) {
 		super();
 		objId = id;
+		this.owner = owner;
 		accel = new Vector2();
 		velocity = new Vector2();
 		maxSpeed = 0;
@@ -72,12 +75,12 @@ public class GameObject extends Actor {
 		path = new ArrayList<Vector2>();
 	}
 	
-	public GameObject(int id, Texture texture) {
-		this(id, new TextureRegion(texture));
+	public GameObject(int id, Player owner, Texture texture) {
+		this(id, owner, new TextureRegion(texture));
 	}
 	
-	public GameObject(int id, TextureRegion region) {
-		this(id);
+	public GameObject(int id, Player owner, TextureRegion region) {
+		this(id, owner);
 		image = region;
 		this.setBounds(0, 0, image.getRegionWidth(), image.getRegionHeight());
 		collideBox.set(0, 0, image.getRegionWidth(), image.getRegionHeight());
@@ -307,6 +310,20 @@ public class GameObject extends Actor {
 	 */
 	public ArrayList<Vector2> getPath() {
 		return path;
+	}
+
+	/**
+	 * @return the ownerId
+	 */
+	public Player getOwner() {
+		return owner;
+	}
+
+	/**
+	 * @param ownerId the ownerId to set
+	 */
+	public void setOwner(Player owner) {
+		this.owner = owner;
 	}
 	
 }

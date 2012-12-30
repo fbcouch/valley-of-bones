@@ -24,9 +24,9 @@ package com.ahsgaming.spacetactics.screens;
 
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
-import com.ahsgaming.spacetactics.GameServer;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.network.Move;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -107,7 +107,7 @@ public class LevelScreen extends AbstractScreen {
 	private void drawUnitBoxes() {
 		for (GameObject obj: gController.getSelectedObjects()) {
 			shapeRenderer.begin(ShapeType.Rectangle);
-			shapeRenderer.setColor(1, 1, 1, 1); // TODO set to the player's color
+			shapeRenderer.setColor(obj.getOwner().getPlayerColor());
 			Vector2 start = mapToScreenCoords(obj.getX() + obj.getCollideBox().x, obj.getY() + obj.getCollideBox().y);
 			shapeRenderer.rect(start.x, start.y, obj.getCollideBox().width, obj.getCollideBox().height);
 			shapeRenderer.end();
@@ -117,7 +117,7 @@ public class LevelScreen extends AbstractScreen {
 			for (Vector2 waypt: obj.getPath()) {
 				Vector2 point = mapToScreenCoords(waypt.x, waypt.y);
 				
-				shapeRenderer.setColor(1f, 0.7f, 0.7f, 1.0f);
+				shapeRenderer.setColor(obj.getOwner().getPlayerColor());
 				shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
 				
 			}
@@ -273,13 +273,13 @@ public class LevelScreen extends AbstractScreen {
 		sinceLastGameTick += delta * 1000;
 		sinceLastNetTick += delta * 1000;
 		
-		if(sinceLastGameTick > GameServer.GAME_TICK_LENGTH) {
-			gController.update(GameServer.GAME_TICK_LENGTH * 0.001f);
-			sinceLastGameTick -= GameServer.GAME_TICK_LENGTH;
+		if(sinceLastGameTick > KryoCommon.GAME_TICK_LENGTH) {
+			//gController.update(KryoCommon.GAME_TICK_LENGTH * 0.001f);
+			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
 		}
 		
-		if (sinceLastNetTick > GameServer.NET_TICK_LENGTH) {
-			sinceLastNetTick -= GameServer.NET_TICK_LENGTH;
+		if (sinceLastNetTick > KryoCommon.NET_TICK_LENGTH) {
+			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
 		}
 		
 		// move the camera around
