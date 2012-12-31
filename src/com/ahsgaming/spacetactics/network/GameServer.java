@@ -161,9 +161,10 @@ public class GameServer {
 			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
 			//Gdx.app.log("Server", "NET TICK");
 			for (Player p: players) {
-				if (p instanceof AIPlayer) {
-					((AIPlayer)p).update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
-				}
+				//if (p instanceof AIPlayer) {
+				//	((AIPlayer)p).update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
+				//}
+				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
 			}
 		}
 		

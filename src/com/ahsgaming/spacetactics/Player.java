@@ -22,6 +22,7 @@
  */
 package com.ahsgaming.spacetactics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -29,6 +30,7 @@ import com.badlogic.gdx.graphics.Color;
  * TODO theoretically, this class should probably handle inputs for the player or something...
  */
 public class Player {
+	public String LOG = "Player"; 
 	public static final Color COLOR_RED = new Color(1, 0, 0, 1);
 	public static final Color COLOR_BLUE = new Color(0, 0, 1, 1);
 	public static final Color COLOR_GREEN = new Color(0, 1, 0, 1);
@@ -39,7 +41,7 @@ public class Player {
 	Color playerColor = new Color(1, 1, 1, 1);
 	String name = "New Cadet";
 	
-	float bankMoney = 0, rateMoney = 0;
+	float bankMoney = 0, rateMoney = 1;
 	float curFood = 0, maxFood = 0;
 	
 	/**
@@ -54,6 +56,11 @@ public class Player {
 		playerId = id;
 		playerColor = color;
 	}
+	
+	public void update(GameController controller, float delta) {
+		bankMoney += rateMoney * delta;
+	}
+	
 	
 	public String getPlayerName() {
 		return name;

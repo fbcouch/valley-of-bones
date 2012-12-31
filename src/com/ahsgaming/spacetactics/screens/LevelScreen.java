@@ -266,6 +266,15 @@ public class LevelScreen extends AbstractScreen {
 		stage.addActor(grpScorePane);
 	}
 	
+	public void updateScorePane() {
+		for (Player player: gController.getPlayers()) {
+			Label lbl = mapScoreLbls.get(player);
+			lbl.setText(player.toString());
+			if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
+		}
+		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
+	}
+	
 	@Override
 	public void render(float delta) {
 		super.render(delta);
@@ -294,6 +303,8 @@ public class LevelScreen extends AbstractScreen {
 		
 		// update level position
 		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
+		
+		updateScorePane();
 		
 		// easy exit for debug purposes
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && SpaceTacticsGame.DEBUG) {

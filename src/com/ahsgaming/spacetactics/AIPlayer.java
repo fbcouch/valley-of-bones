@@ -50,8 +50,9 @@ public class AIPlayer extends Player {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
+	@Override
 	public void update(GameController controller, float delta) {
+		super.update(controller, delta);
 		//Gdx.app.log(LOG, "Update");
 	}
 }

@@ -16,12 +16,17 @@ GOALS (future)
 - Build stations?
 - UX stuff
 
+GOALS 1.4.13
+- Basic weapons
+- Attack unit
+- Destroy unit
+
 GOALS 12.30.12
 + Implement Player system (with color-coded boxes)
 + Server side: assign player id's to connections and ensure that connection is the 'owner' of any commands it sends
 + Smart-selection
 + Add AI player(s)
-- Resources: implement 'money' and 'food' resources for Player
++ Resources: implement 'money' and 'food' resources for Player
 + UX: (debug) display player name, ID, and resources
 
 GOALS 12.29.12

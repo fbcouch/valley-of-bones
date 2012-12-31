@@ -152,6 +152,9 @@ public class GameClient {
 		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
 			// TODO net tick
 			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
+			for (Player p: players) {
+				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
+			}
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
