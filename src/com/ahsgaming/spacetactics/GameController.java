@@ -64,6 +64,7 @@ public class GameController {
 	
 	String mapName;
 	TiledMap map;
+	Vector2[] spawnPoints;
 	
 	GameStates state;
 	
@@ -141,6 +142,11 @@ public class GameController {
 					unit.setPosition(objPos.x, objPos.y);
 					addGameUnit(unit);
 					
+					if (owner > -1) {
+						addSpawnPoint(owner, new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
+					}
+					
+					// TODO remove this
 					unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
 					unit.setPosition(objPos.x + 100,  objPos.y + 100);
 					addGameUnit(unit);
@@ -175,7 +181,7 @@ public class GameController {
 		
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;
-			Gdx.app.log(LOG, "Game Tick: " + Integer.toString(gameTick));
+			//Gdx.app.log(LOG, "Game Tick: " + Integer.toString(gameTick));
 			for (GameObject obj : gameObjects) {
 				// update physics
 				if (obj.getAccel().len() > obj.getMaxAccel()) {
@@ -228,12 +234,14 @@ public class GameController {
 	}
 	
 	public void executeMove(Move cmd) {
-		Gdx.app.log(this.getClass().getSimpleName(), "Move unit: " + Integer.toString(cmd.unit)+ " to: " + cmd.toLocation.toString());
+		Gdx.app.log(LOG, "Move unit: " + Integer.toString(cmd.unit)+ " to: " + cmd.toLocation.toString());
 		GameObject obj = getObjById(cmd.unit);
 		if (obj == null) {
 			Gdx.app.log(this.getClass().getSimpleName(), "Error: unknown unit id");
+		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
+			Gdx.app.log(LOG, "Error: object owner does not match command owner");
 		} else {
-			obj.moveTo(cmd.toLocation, false); // TODO implement shift-click to add to path
+			obj.moveTo(cmd.toLocation, cmd.isAdd); // TODO implement shift-click to add to path
 		}
 	}
 	
@@ -296,15 +304,41 @@ public class GameController {
 		return selectedObjects;
 	}
 	
-	public void selectObjectsInArea(Rectangle box, boolean addToSelection) {
+	public void selectObjectsInArea(Rectangle box, Player owner, boolean addToSelection) {
 		if (!addToSelection) {
 			selectedObjects.clear();
 		}
 		// TODO check owner
+		boolean hasOwnerObjs = false;
+		for (GameObject obj: selectedObjects) {
+			if (obj.getOwner() == owner) hasOwnerObjs = true;
+		}
+		
+		GameObject firstNewObj = null;
 		for (GameObject obj: gameObjects) {
 			if (obj.isColliding(box) && !selectedObjects.contains(obj)) {
-				selectedObjects.add(obj);
+				if (obj.getOwner() == owner) hasOwnerObjs = true;
+				
+				if (obj.getOwner() == owner || !hasOwnerObjs) {
+					selectedObjects.add(obj);
+				}
+				
+				if (firstNewObj == null) firstNewObj = obj;
 			}
+		}
+		
+		
+		if (hasOwnerObjs) {
+			// only select owner objs
+			ArrayList<GameObject> toRemove = new ArrayList<GameObject>();
+			for (GameObject obj: selectedObjects) {
+				if (obj.getOwner() != owner) toRemove.add(obj);
+			}
+			selectedObjects.removeAll(toRemove);
+		} else if (firstNewObj != null){
+			// only select one
+			selectedObjects.clear();
+			selectedObjects.add(firstNewObj);
 		}
 	}
 	
@@ -352,6 +386,26 @@ public class GameController {
 	
 	public void setState(GameStates state) {
 		this.state = state;
+	}
+	
+	public void addSpawnPoint(int id, Vector2 point) {
+		if (id < 0) return;
+		
+		if (spawnPoints == null) {
+			spawnPoints = new Vector2[id + 1];
+		} else if (spawnPoints.length <= id) {
+			Vector2[] tmp = new Vector2[id + 1];
+			for (int i=0;i<spawnPoints.length;i++) tmp[i] = spawnPoints[i];
+			spawnPoints = tmp;
+		}
+		spawnPoints[id] = point;
+	}
+	
+	public Vector2 getSpawnPoint(int id) {
+		if (id >= 0 && id < spawnPoints.length){
+			return spawnPoints[id];
+		}
+		return null;
 	}
 	
 	/**

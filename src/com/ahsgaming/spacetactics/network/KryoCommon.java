@@ -53,7 +53,7 @@ public class KryoCommon {
 		kryo.register(RegisterPlayer.class);
 		kryo.register(RegisteredPlayer.class);
 		kryo.register(RegisteredPlayer[].class);
-		
+		kryo.register(AddAIPlayer.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -65,4 +65,6 @@ public class KryoCommon {
 		public String name;
 		public Color color;
 	}
+	
+	public static class AddAIPlayer {}
 }

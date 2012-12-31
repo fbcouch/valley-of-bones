@@ -180,6 +180,13 @@ public class SpaceTacticsGame extends Game {
 		return new GameOverScreen(this); // TODO pass in data here
 	}
 	
+	public Player getPlayer() {
+		if (localClient != null) {
+			return localClient.getPlayer();
+		}
+		return null;
+	}
+	
 	
 	/**
 	 * Program entry point

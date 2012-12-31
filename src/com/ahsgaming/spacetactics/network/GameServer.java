@@ -25,12 +25,15 @@ package com.ahsgaming.spacetactics.network;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.ahsgaming.spacetactics.AIPlayer;
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -48,6 +51,7 @@ public class GameServer {
 	long lastTimeMillis = 0;
 	
 	ArrayList<Player> players = new ArrayList<Player>();
+	ObjectMap<Connection, Player> connMap = new ObjectMap<Connection, Player>();
 	int nextPlayerId = 0;
 	
 	/**
@@ -70,6 +74,8 @@ public class GameServer {
 			Gdx.app.exit();
 		}
 		
+		
+		
 		server.addListener(new Listener() {
 			
 			public void received(Connection c, Object obj) {
@@ -85,10 +91,11 @@ public class GameServer {
 					}
 					
 					// TODO need to check that this color isn't already taken
-					Player p = new Player(nextPlayerId, rp.name, Player.AUTOCOLORS[nextPlayerId]);
-					nextPlayerId += 1;
+					int id = getNextPlayerId();
+					Player p = new Player(id, rp.name, Player.AUTOCOLORS[id]);
 					
 					players.add(p);
+					connMap.put(c, p);
 					
 					RegisteredPlayer reg = new RegisteredPlayer();
 					reg.id = p.getPlayerId();
@@ -98,12 +105,23 @@ public class GameServer {
 					sendPlayerList();
 				}
 				
+				if (obj instanceof AddAIPlayer) {
+					// TODO need to add AI players through the UX
+					int id = getNextPlayerId();
+					players.add(new AIPlayer(id, "AI Player", Player.AUTOCOLORS[id]));
+					
+					sendPlayerList();
+				}
+				
 				// TODO need to check this for validity
-				if (obj instanceof Command) {
-					Command cmd = (Command)obj;
-					cmd.tick = controller.getGameTick() + (cmd instanceof Unpause ? 0 : 2);
-					controller.queueCommand(cmd);
-					server.sendToAllTCP(cmd);
+				if (controller != null) {
+					if (obj instanceof Command) {
+						Command cmd = (Command)obj;
+						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
+						cmd.tick = controller.getGameTick() + (cmd instanceof Unpause ? 0 : 2);
+						controller.queueCommand(cmd);
+						server.sendToAllTCP(cmd);
+					}
 				}
 			}
 			
@@ -138,10 +156,15 @@ public class GameServer {
 		sinceLastNetTick += delta;
 		sinceLastGameTick += delta;
 		
-		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH * 0.001f) {
+		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
 			// TODO net tick
 			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
 			//Gdx.app.log("Server", "NET TICK");
+			for (Player p: players) {
+				if (p instanceof AIPlayer) {
+					((AIPlayer)p).update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
+				}
+			}
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
@@ -175,5 +198,11 @@ public class GameServer {
 		}
 		
 		server.sendToAllTCP(list);
+	}
+	
+	protected int getNextPlayerId() {
+		int id = nextPlayerId;
+		nextPlayerId += 1;
+		return id;
 	}
 }

@@ -31,6 +31,7 @@ import com.ahsgaming.spacetactics.network.Move;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
@@ -107,7 +108,7 @@ public class LevelScreen extends AbstractScreen {
 	private void drawUnitBoxes() {
 		for (GameObject obj: gController.getSelectedObjects()) {
 			shapeRenderer.begin(ShapeType.Rectangle);
-			shapeRenderer.setColor(obj.getOwner().getPlayerColor());
+			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
 			Vector2 start = mapToScreenCoords(obj.getX() + obj.getCollideBox().x, obj.getY() + obj.getCollideBox().y);
 			shapeRenderer.rect(start.x, start.y, obj.getCollideBox().width, obj.getCollideBox().height);
 			shapeRenderer.end();
@@ -117,7 +118,7 @@ public class LevelScreen extends AbstractScreen {
 			for (Vector2 waypt: obj.getPath()) {
 				Vector2 point = mapToScreenCoords(waypt.x, waypt.y);
 				
-				shapeRenderer.setColor(obj.getOwner().getPlayerColor());
+				shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
 				shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
 				
 			}
@@ -166,7 +167,9 @@ public class LevelScreen extends AbstractScreen {
 					box.y += box.height;
 					box.height *= -1;
 				}
-				gController.selectObjectsInArea(box, Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+				
+				gController.selectObjectsInArea(box, game.getPlayer(), Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+				
 			}
 			boxOrigin = null;
 			boxFinal = null;
@@ -179,10 +182,11 @@ public class LevelScreen extends AbstractScreen {
 				// TODO issue context-dependent commands
 				for (GameObject obj: gController.getSelectedObjects()) {
 					Move mv = new Move();
-					mv.owner = 0;
+					mv.owner = game.getPlayer().getPlayerId();
 					mv.tick = gController.getGameTick();
 					mv.unit = obj.getObjId();
 					mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+					mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
 					
 					Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
 					if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
@@ -235,7 +239,7 @@ public class LevelScreen extends AbstractScreen {
 		stage.addActor(grpLevel);
 		
 		// TODO set the initial camera position based on the player spawn point
-		
+		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
 		
 		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
 		pix.setColor(1, 1, 1, 1);

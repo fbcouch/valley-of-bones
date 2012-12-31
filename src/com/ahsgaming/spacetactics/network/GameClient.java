@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.badlogic.gdx.Gdx;
@@ -90,6 +91,9 @@ public class GameClient {
 					RegisteredPlayer reg = (RegisteredPlayer)obj;
 					playerId = reg.id;
 					Gdx.app.log(LOG, "RegisteredPlayer rec'd");
+					
+					// TODO add AI players through the UX
+					client.sendTCP(new AddAIPlayer());
 				}
 				
 				if (obj instanceof RegisteredPlayer[]) {
@@ -177,5 +181,9 @@ public class GameClient {
 	
 	public ArrayList<Player> getPlayers() {
 		return players;
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 }
