@@ -150,6 +150,10 @@ public class GameController {
 					unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
 					unit.setPosition(objPos.x + 100,  objPos.y + 100);
 					addGameUnit(unit);
+					
+					unit = new Unit(getNextObjectId(), getPlayerById(owner + 1), (JsonUnit)Prototypes.getProto("fighters-base"));
+					unit.setPosition(objPos.x + 100, objPos.y + 200);
+					addGameUnit(unit);
 				}
 			}
 		}
@@ -201,7 +205,7 @@ public class GameController {
 				
 				obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
 				
-				obj.update(delta);
+				obj.update(this, delta);
 			}
 		}
 	}
@@ -221,12 +225,12 @@ public class GameController {
 		} else if (cmd instanceof Upgrade) {
 			executeUpgrade((Upgrade)cmd);
 		} else {
-			Gdx.app.log(SpaceTacticsGame.LOG, "Unknown command");
+			Gdx.app.log(LOG, "Unknown command");
 		}
 	}
 	
 	public void executeAttack(Attack cmd) {
-		
+		Gdx.app.log(LOG, "Attack!");
 	}
 	
 	public void executeBuild(Build cmd) {
@@ -340,6 +344,18 @@ public class GameController {
 			selectedObjects.clear();
 			selectedObjects.add(firstNewObj);
 		}
+	}
+	
+	public ArrayList<GameObject> getObjsAtPosition(Vector2 mapCoords) {
+		ArrayList<GameObject> returnVal = new ArrayList<GameObject>();
+		
+		for (GameObject obj: gameObjects) {
+			if (obj.isColliding(mapCoords)) {
+				returnVal.add(obj);
+			}
+		}
+		
+		return returnVal;
 	}
 	
 	public TiledMap getMap() {

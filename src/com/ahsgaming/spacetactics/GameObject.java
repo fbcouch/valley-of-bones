@@ -94,7 +94,7 @@ public class GameObject extends Actor {
 	 * Use this for game loop updates so that it can be easily controlled (unlike act, which will be called regardless of gamestate)
 	 * @param delta
 	 */
-	public void update(float delta) {
+	public void update(GameController controller, float delta) {
 		// TODO do other stuff...
 		
 		// Move to the first location in the path
@@ -153,6 +153,12 @@ public class GameObject extends Actor {
 	public boolean isColliding(Rectangle box) {
 		Rectangle thisBox = new Rectangle(this.getX() + collideBox.x, this.getY() + collideBox.y, collideBox.width, collideBox.height);
 		return thisBox.overlaps(box);
+	}
+	
+	public boolean isColliding(Vector2 mapCoords) {
+		Vector2 local = new Vector2(mapCoords);
+		local.set(local.x - getX(), local.y - getY());
+		return collideBox.contains(local.x, local.y);
 	}
 	
 	public void moveTo(Vector2 location, boolean add) {
@@ -326,4 +332,11 @@ public class GameObject extends Actor {
 		this.owner = owner;
 	}
 	
+	
+	public static float getDistanceSq(GameObject obj1, GameObject obj2) {
+		return (float) (Math.pow((obj1.getX() + obj1.getCollideBox().getX() + obj1.getCollideBox().getWidth() * 0.5f)
+				- (obj2.getX() + obj2.getCollideBox().getX() + obj2.getCollideBox().getWidth() * 0.5f), 2)
+				+ Math.pow((obj1.getY() + obj1.getCollideBox().getY() + obj1.getCollideBox().getHeight() * 0.5f)
+						- (obj2.getY() + obj2.getCollideBox().getY() + obj2.getCollideBox().getHeight() * 0.5f), 2));
+	}
 }

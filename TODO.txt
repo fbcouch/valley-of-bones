@@ -18,7 +18,9 @@ GOALS (future)
 
 GOALS 1.4.13
 - Basic weapons
+  - need to finish adding bullets
 - Attack unit
+  - need to write code for executing attack command
 - Destroy unit
 
 GOALS 12.30.12

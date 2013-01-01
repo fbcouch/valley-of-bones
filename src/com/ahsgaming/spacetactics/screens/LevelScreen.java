@@ -22,10 +22,13 @@
  */
 package com.ahsgaming.spacetactics.screens;
 
+import java.util.ArrayList;
+
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.Attack;
 import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.network.Move;
 import com.badlogic.gdx.Gdx;
@@ -180,30 +183,56 @@ public class LevelScreen extends AbstractScreen {
 		} else {
 			if (rightBtnDown) {
 				// TODO issue context-dependent commands
+				ArrayList<GameObject> objsUnderCursor = null;
+				GameObject target = null;
+				
 				for (GameObject obj: gController.getSelectedObjects()) {
-					Move mv = new Move();
-					mv.owner = game.getPlayer().getPlayerId();
-					mv.tick = gController.getGameTick();
-					mv.unit = obj.getObjId();
-					mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-					mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+					if (objsUnderCursor == null) {
+						objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
 					
-					Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
-					if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
-						// the destination is outside the map
-						if ((mv.toLocation.x < 0 || mv.toLocation.x > grpLevel.getWidth())) {
-							// X is out of bounds
-							if (mv.toLocation.x < 0) mv.toLocation.set(0, mv.toLocation.y);
-							if (mv.toLocation.x > grpLevel.getWidth()) mv.toLocation.set(grpLevel.getWidth(), mv.toLocation.y);
-						} 
-						if ((mv.toLocation.y < 0 || mv.toLocation.y > grpLevel.getHeight())) {
-							// Y is out of bounds
-							if (mv.toLocation.y < 0) mv.toLocation.set(mv.toLocation.x, 0);
-							if (mv.toLocation.y > grpLevel.getHeight()) mv.toLocation.set(mv.toLocation.x, grpLevel.getHeight());
+						for (GameObject cur: objsUnderCursor) {
+							if (cur.getOwner() != game.getPlayer()) {
+								// TODO find the object with the highest 'threat'?
+								target = cur;
+							}
 						}
 					}
 					
-					game.sendCommand(mv);
+					if (target != null) {
+						// attack this target!
+						Attack at = new Attack();
+						at.owner = game.getPlayer().getPlayerId();
+						at.tick = gController.getGameTick();
+						at.unit = obj.getObjId();
+						at.target = target.getObjId();
+						
+						game.sendCommand(at);
+					} else {
+						// move to this location
+						Move mv = new Move();
+						mv.owner = game.getPlayer().getPlayerId();
+						mv.tick = gController.getGameTick();
+						mv.unit = obj.getObjId();
+						mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+						
+						Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
+						if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
+							// the destination is outside the map
+							if ((mv.toLocation.x < 0 || mv.toLocation.x > grpLevel.getWidth())) {
+								// X is out of bounds
+								if (mv.toLocation.x < 0) mv.toLocation.set(0, mv.toLocation.y);
+								if (mv.toLocation.x > grpLevel.getWidth()) mv.toLocation.set(grpLevel.getWidth(), mv.toLocation.y);
+							} 
+							if ((mv.toLocation.y < 0 || mv.toLocation.y > grpLevel.getHeight())) {
+								// Y is out of bounds
+								if (mv.toLocation.y < 0) mv.toLocation.set(mv.toLocation.x, 0);
+								if (mv.toLocation.y > grpLevel.getHeight()) mv.toLocation.set(mv.toLocation.x, grpLevel.getHeight());
+							}
+						}
+						
+						game.sendCommand(mv);
+					}
 				}
 				rightBtnDown = false;
 			}

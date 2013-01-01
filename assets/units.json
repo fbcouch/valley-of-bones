@@ -48,6 +48,10 @@
   	type: "weapon",
   	name: "Basic Red Laser",
   	damage: 10,
+	lifetime: 10,
+	speed: 300,
+	accel: 0,
+	turn: 0,
   	image: "laser-red.png"
   },
   station-upgrade-lvl2: {

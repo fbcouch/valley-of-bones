@@ -237,7 +237,7 @@ public class Prototypes {
 	public static class JsonWeapon extends JsonProto {
 		static final String TYPE = "weapon";
 		
-		float damage = 0;
+		public float damage = 0, lifetime = 0, speed = 0, accel = 0, turn = 0, fireRate = 0;
 		
 		public static JsonWeapon createFromMap(String id, ObjectMap<String, Object> map) {
 			JsonWeapon retWep = new JsonWeapon();
@@ -251,6 +251,16 @@ public class Prototypes {
 			retWep.id = id;
 			for (String key: map.keys()) {
 				if (key.equals("damage")) {
+					retWep.damage = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("lifetime")) {
+					retWep.damage = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("speed")) {
+					retWep.damage = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("accel")) {
+					retWep.damage = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("turn")) {
+					retWep.damage = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("fire-rate")) {
 					retWep.damage = Float.parseFloat(map.get(key).toString());
 				}
 			}
