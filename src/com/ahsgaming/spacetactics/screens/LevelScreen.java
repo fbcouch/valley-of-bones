@@ -29,8 +29,10 @@ import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.Attack;
+import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.network.Move;
+import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -118,12 +120,33 @@ public class LevelScreen extends AbstractScreen {
 			
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			// TODO move this elsewhere?
-			for (Vector2 waypt: obj.getPath()) {
-				Vector2 point = mapToScreenCoords(waypt.x, waypt.y);
-				
-				shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-				shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
-				
+			if (obj instanceof Unit) {
+				for (Command cmd: ((Unit)obj).getCommandQueue()) {
+					Vector2 point = null;
+					if (cmd instanceof Attack) {
+						Unit target = (Unit) gController.getObjById(((Attack) cmd).target);
+						if (target != null) {
+							point = target.getPosition("center");
+						}
+					} else if (cmd instanceof Move) {
+						point = ((Move)cmd).toLocation;
+					}
+					
+					if (point != null) {
+						point = mapToScreenCoords(point.x, point.y);
+						
+						shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+						shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
+					}
+				}
+			} else {
+				for (Vector2 waypt: obj.getPath()) {
+					Vector2 point = mapToScreenCoords(waypt.x, waypt.y);
+					
+					shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+					shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
+					
+				}
 			}
 			shapeRenderer.end();
 		}
@@ -205,6 +228,7 @@ public class LevelScreen extends AbstractScreen {
 						at.tick = gController.getGameTick();
 						at.unit = obj.getObjId();
 						at.target = target.getObjId();
+						at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 						
 						game.sendCommand(at);
 					} else {

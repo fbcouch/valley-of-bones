@@ -27,6 +27,11 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
+import com.ahsgaming.spacetactics.network.Attack;
+import com.ahsgaming.spacetactics.network.Build;
+import com.ahsgaming.spacetactics.network.Command;
+import com.ahsgaming.spacetactics.network.Move;
+import com.ahsgaming.spacetactics.network.Upgrade;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonWeapon;
 import com.badlogic.gdx.Gdx;
@@ -45,9 +50,11 @@ public class Unit extends GameObject {
 	float curHealth, maxHealth;
 	float curShield, maxShield;
 	float curArmor, maxArmor;
-	
-	Unit target;
+
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+	
+	ArrayList<Command> commandQueue = new ArrayList<Command>();
+	Unit commandTarget;
 	
 	/**
 	 * Constructors
@@ -100,7 +107,7 @@ public class Unit extends GameObject {
 	public void takeDamage(Bullet b) {
 		// TODO take into account damage type here
 		if (this.curShield > 0) {
-			curShield -= b.getDamage();
+			curShield -= b.getDamage() - curArmor;
 			if (curShield < 0) {
 				curHealth += curShield;
 				curShield = 0;
@@ -109,14 +116,9 @@ public class Unit extends GameObject {
 				// TODO add a hit effect
 			}
 		} else {
-			curHealth -= b.getDamage();
+			curHealth -= b.getDamage() - curArmor;
 			// TODO add a hit effect
 		}
-		Gdx.app.log(LOG, String.format("takeDamage (%.0f/%.0f) (%.0f/%.0f)", curShield, maxShield, curHealth, maxHealth));
-	}
-	
-	public void attackTarget(Unit target) {
-		this.target = target;
 	}
 	
 	/* (non-Javadoc)
@@ -126,7 +128,7 @@ public class Unit extends GameObject {
 	public void moveTo(Vector2 location, boolean add) {
 		super.moveTo(location, add);
 		// TODO fix this when implementing command queue
-		this.target = null;
+		
 	}
 
 	/* (non-Javadoc)
@@ -134,37 +136,71 @@ public class Unit extends GameObject {
 	 */
 	@Override
 	public void update(GameController controller, float delta) {
-		super.update(controller, delta);
-		
-		// TODO fire weapons if in range of target
 		
 		if (curHealth <= 0) {
 			// remove self
 			remove = true;
-			
 			// TODO add explosion anim or something
+			return;
 		}
 		
-		if (target != null) {
-			if (target.isRemove()) {
-				target = null;
-			} else {
+		if (commandQueue.size() > 0) {
+			Command cur = commandQueue.get(0);
+			
+			if (cur instanceof Attack) {
+				// check for completion conditions
+				if (commandTarget == null) {
+					commandTarget = (Unit)controller.getObjById(((Attack)cur).target);
+				} else if (commandTarget.isRemove()) {
+					commandTarget = null;
+				}
 				
-				accelToward(target.getPosition("center"), delta);
-				
-				for (Weapon w: weapons) {
-					if (getDistanceSq(this, target) < Math.pow(w.getRange(), 2) && w.canFire()) {
-						w.fire(controller);
+				if (commandTarget == null) {
+					commandQueue.remove(cur);
+				} else {
+					accelToward(commandTarget.getPosition("center"), delta);
+					
+					for (Weapon w: weapons) {
+						if (getDistanceSq(this, commandTarget) < Math.pow(w.getRange(), 2) && w.canFire()) {
+							w.fire(controller);
+						}
 					}
 				}
+				
+			} else if (cur instanceof Build) {
+				
+			} else if (cur instanceof Move) {
+				if (getRectangle().contains(((Move)cur).toLocation.x, ((Move)cur).toLocation.y)) {
+					commandQueue.remove(cur);
+				} else {
+					accelToward(((Move)cur).toLocation, delta);
+				}
+			} else if (cur instanceof Upgrade) {
+				
+			}
+		} else {
+			
+			// Don't have anything to do - stop moving
+			if (velocity.len2() > 0) {
+				accel.set(-1 * maxAccel, 0);
+				accel.rotate(velocity.angle());
 			}
 		}
 	}
-
-	public Unit getTarget() {
-		return target;
+	
+	public ArrayList<Command> getCommandQueue() {
+		return commandQueue;
 	}
-
 	
+	public void doCommand(Command cmd, boolean add) {
+		if (!add) commandQueue.clear();
+		commandQueue.add(cmd);
+	}
 	
+	public Unit getTarget() {
+		if (commandTarget != null && commandTarget.getOwner().getPlayerId() == getOwner().getPlayerId()) {
+			return null;
+		}
+		return commandTarget;
+	}
 }

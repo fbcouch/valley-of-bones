@@ -8,20 +8,21 @@ MILESTONE 3: All basic gameplay systems in place (start adding units!)
 MILESTONE 2: Basic player/owner, resources, and build units in place
 
 GOALS (future)
-- Attack-unit
-- Basic weapons (fire at x rate, do x damage, etc)
-- Destroy units
 - Build units
 - Upgrade units
-- Build stations?
+- Build stations
 - UX stuff
+- Interfaces (Selectable/Targetable)
+- Unit subclasses (Squadron, Ship, Station)
 
 GOALS 1.4.13
-- Basic weapons
-  - need to finish adding bullets
-- Attack unit
-  - need to write code for executing attack command
-- Destroy unit
++ Basic weapons
++ Attack unit
++ Destroy unit
++ Command queue
+- Attack move
+- Build units
+- Upgrade units
 
 GOALS 12.30.12
 + Implement Player system (with color-coded boxes)

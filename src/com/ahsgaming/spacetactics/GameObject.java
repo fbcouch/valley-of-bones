@@ -404,6 +404,10 @@ public class GameObject extends Actor {
 		this.owner = owner;
 	}
 	
+	public Rectangle getRectangle() {
+		return new Rectangle(getX(), getY(), getWidth(), getHeight());
+	}
+	
 	
 	public static float getDistanceSq(GameObject obj1, GameObject obj2) {
 		return (float) (Math.pow((obj1.getX() + obj1.getCollideBox().getX() + obj1.getCollideBox().getWidth() * 0.5f)

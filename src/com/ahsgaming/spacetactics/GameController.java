@@ -259,7 +259,7 @@ public class GameController {
 			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
 		} else {
 			if (obj instanceof Unit && tar instanceof Unit) {
-				((Unit)obj).attackTarget((Unit)tar);
+				((Unit)obj).doCommand(cmd, cmd.isAdd);// TODO implement shift-click to add to queue
 			} else {
 				if (!(obj instanceof Unit)) {
 					Gdx.app.log(LOG, "Error: unit is not a Unit");
@@ -284,7 +284,11 @@ public class GameController {
 		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
 			Gdx.app.log(LOG, "Error: object owner does not match command owner");
 		} else {
-			obj.moveTo(cmd.toLocation, cmd.isAdd); // TODO implement shift-click to add to path
+			if (obj instanceof Unit) {
+				((Unit)obj).doCommand(cmd, cmd.isAdd);
+			} else {
+				obj.moveTo(cmd.toLocation, cmd.isAdd);
+			}
 		}
 	}
 	
