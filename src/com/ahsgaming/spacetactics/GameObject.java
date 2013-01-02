@@ -28,8 +28,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -113,7 +111,7 @@ public class GameObject extends Actor {
 		}
 	}
 	
-	private void accelToward(Vector2 loc, float delta) {
+	protected void accelToward(Vector2 loc, float delta) {
 		Vector2 moveVector = new Vector2(loc.x - (getX() + getWidth() * 0.5f), loc.y - (getY() + getHeight() * 0.5f));
 		
 		rotateToAngle(moveVector.angle(), delta);
@@ -217,9 +215,83 @@ public class GameObject extends Actor {
 	 * @param velocity set the object's velocity
 	 */
 	public void setVelocity(Vector2 velocity) {
-		this.velocity.set(velocity);;
+		this.velocity.set(velocity);
 	}
 
+	public Vector2 getPosition() {
+		return new Vector2(getX(), getY());
+	}
+	
+	/**
+	 * 
+	 * @param loc bottom-left, bottom-center, bottom-right, middle-left, center, middle-right, top-left, top-center, top-right
+	 * @return
+	 */
+	public Vector2 getPosition(String loc) {
+		if (loc.equals("bottom-left")) {
+			return new Vector2(getX(), getY());
+		} else if (loc.equals("bottom-center")) {
+			return new Vector2(getX() + getWidth() * 0.5f, getY());
+		} else if (loc.equals("bottom-right")) {
+			return new Vector2(getX() + getWidth(), getY());
+		} else if (loc.equals("middle-left")) {
+			return new Vector2(getX(), getY() + getHeight() * 0.5f);
+		} else if (loc.equals("center")) {
+			return new Vector2(getX() + getWidth() * 0.5f, getY() + getHeight() * 0.5f);
+		} else if (loc.equals("middle-right")) {
+			return new Vector2(getX() + getWidth(), getY() + getHeight() * 0.5f);
+		} else if (loc.equals("top-left")) {
+			return new Vector2(getX(), getY() + getHeight());
+		} else if (loc.equals("top-center")) {
+			return new Vector2(getX() + getWidth() * 0.5f, getY() + getHeight());
+		} else if (loc.equals("top-right")) {
+			return new Vector2(getX() + getWidth(), getY() + getHeight());
+		}
+		return getPosition();
+	}
+	
+	public void setPosition(Vector2 position) {
+		setX(position.x);
+		setY(position.y);
+	}
+	
+	/**
+	 * 
+	 * @param pos
+	 * @param loc bottom-left, bottom-center, bottom-right, middle-left, center, middle-right, top-left, top-center, top-right
+	 * @return
+	 */
+	public void setPosition(Vector2 pos, String loc) {
+		if (loc.equals("bottom-left")) {
+			setX(pos.x);
+			setY(pos.y);
+		} else if (loc.equals("bottom-center")) {
+			setX(pos.x - getWidth() * 0.5f);
+			setY(pos.y);
+		} else if (loc.equals("bottom-right")) {
+			setX(pos.x - getWidth());
+			setY(pos.y);
+		} else if (loc.equals("middle-left")) {
+			setX(pos.x);
+			setY(pos.y - getHeight() * 0.5f);
+		} else if (loc.equals("center")) {
+			setX(pos.x - getWidth() * 0.5f);
+			setY(pos.y - getHeight() * 0.5f);
+		} else if (loc.equals("middle-right")) {
+			setX(pos.x - getWidth());
+			setY(pos.y - getHeight() * 0.5f);
+		} else if (loc.equals("top-left")) {
+			setX(pos.x);
+			setY(pos.y - getHeight());
+		} else if (loc.equals("top-center")) {
+			setX(pos.x - getWidth() * 0.5f);
+			setY(pos.y - getHeight());
+		} else if (loc.equals("top-right")) {
+			setX(pos.x - getWidth());
+			setY(pos.y - getHeight());
+		}
+	}
+	
 	/**
 	 * @return the image
 	 */

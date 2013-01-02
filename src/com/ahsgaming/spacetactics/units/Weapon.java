@@ -81,14 +81,12 @@ public class Weapon {
 	
 	public void fire(GameController controller) {
 		if (canFire()) {
-			Gdx.app.log(LOG, "Firing");
+			// TODO implement hardpoints
 			Bullet b = new Bullet(controller.getNextObjectId(), 
 					this.parent.getOwner(),	this.parent, this.parent.getTarget(), 
-					new Vector2(parent.getX(), parent.getY()), bulletProto);
+					parent.getPosition("center"), bulletProto);
+			
 			controller.addGameUnit(b);
-			b.setAccel(new Vector2(accel, 0));
-			b.setVelocity(new Vector2(b.getMaxSpeed(), 0));
-			b.setPosition(parent.getX(), parent.getY());
 			lastFireMillis = System.currentTimeMillis();
 		}
 	}

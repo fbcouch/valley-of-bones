@@ -47,10 +47,10 @@
   laser-base-red: {
   	type: "weapon",
   	name: "Basic Red Laser",
-  	damage: 10,
+  	damage: 100,
 	lifetime: 1,
 	speed: 300,
-	accel: 1,
+	accel: 0,
 	turn: 0,
 	fire-rate: 2,
   	image: "laser-red.png"

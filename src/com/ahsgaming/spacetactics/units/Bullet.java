@@ -26,7 +26,9 @@ import com.ahsgaming.spacetactics.DamageTypes;
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -34,6 +36,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  */
 public class Bullet extends GameObject {
+	public String LOG = "Bullet";
 	
 	Unit parentUnit, target;
 	float ticksRemaining = 0;
@@ -59,7 +62,29 @@ public class Bullet extends GameObject {
 		this.maxAccel = proto.accel;
 		this.turnSpeed = proto.turn;
 		
-		this.setPosition(position.x, position.y);
+		this.setPosition(position.x - getWidth() * 0.5f, position.y - getHeight() * 0.5f);
+		
+		if (target != null) {
+			Vector2 toTarget = new Vector2();
+			toTarget.set(target.getPosition("center"));
+			toTarget.sub(parentUnit.getPosition("center"));
+			setRotation(toTarget.angle());
+		} else {
+			setRotation(parentUnit.getRotation());
+		}
+		
+		if (maxAccel == 0) {
+			// start at max speed (not accelerating)
+			Vector2 vel = new Vector2(maxSpeed, 0);
+			vel.rotate(getRotation());
+			setVelocity(vel);
+			setAccel(new Vector2());
+		} else {
+			Vector2 accel = new Vector2(maxAccel, 0);
+			accel.rotate(getRotation());
+			setAccel(accel);
+			setVelocity(new Vector2());
+		}
 	}
 	
 	@Override
@@ -68,8 +93,20 @@ public class Bullet extends GameObject {
 		
 		ticksRemaining -= delta;
 		if (ticksRemaining <= 0) {
-			if (target != null) target.takeDamage(this);
+			if (target != null) {
+				target.takeDamage(this);
+			} else {
+				Gdx.app.log(LOG, "Target is null");
+			}
 			this.setRemove(true);
+		} else {
+			if (target != null) {
+				Rectangle tRect = new Rectangle(target.getX(), target.getY(), target.getWidth(), target.getHeight());
+				if (tRect.overlaps(new Rectangle(getX(), getY(), getWidth(), getHeight()))) {
+					target.takeDamage(this);
+					this.setRemove(true);
+				}
+			}
 		}
 	}
 

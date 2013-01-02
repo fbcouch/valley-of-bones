@@ -112,6 +112,7 @@ public class Unit extends GameObject {
 			curHealth -= b.getDamage();
 			// TODO add a hit effect
 		}
+		Gdx.app.log(LOG, String.format("takeDamage (%.0f/%.0f) (%.0f/%.0f)", curShield, maxShield, curHealth, maxHealth));
 	}
 	
 	public void attackTarget(Unit target) {
@@ -137,19 +138,31 @@ public class Unit extends GameObject {
 		
 		// TODO fire weapons if in range of target
 		
-		if (target != null) {
+		if (curHealth <= 0) {
+			// remove self
+			remove = true;
 			
-			for (Weapon w: weapons) {
-				if (getDistanceSq(this, target) < Math.pow(w.getRange(), 2) && w.canFire()) {
-					w.fire(controller);
+			// TODO add explosion anim or something
+		}
+		
+		if (target != null) {
+			if (target.isRemove()) {
+				target = null;
+			} else {
+				
+				accelToward(target.getPosition("center"), delta);
+				
+				for (Weapon w: weapons) {
+					if (getDistanceSq(this, target) < Math.pow(w.getRange(), 2) && w.canFire()) {
+						w.fire(controller);
+					}
 				}
 			}
 		}
 	}
 
 	public Unit getTarget() {
-		// TODO Auto-generated method stub
-		return null;
+		return target;
 	}
 
 	
