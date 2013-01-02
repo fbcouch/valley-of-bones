@@ -22,17 +22,21 @@
  */
 package com.ahsgaming.spacetactics.units;
 
+import com.ahsgaming.spacetactics.DamageTypes;
 import com.ahsgaming.spacetactics.GameController;
+import com.ahsgaming.spacetactics.units.Bullet.BulletProto;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonWeapon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author jami
  *
  */
 public class Weapon {
+	public String LOG = "Weapon";	
 	
 	Unit parent;
 	String name, id;
@@ -41,7 +45,9 @@ public class Weapon {
 	float fireRate;
 	TextureRegion image;
 	
-	long lastFireMillis;
+	long lastFireMillis = 0;
+	
+	BulletProto bulletProto = new BulletProto();
 	
 	/**
 	 * 
@@ -57,6 +63,15 @@ public class Weapon {
 		this.turn = proto.turn;
 		this.fireRate = proto.fireRate;
 		this.image = new TextureRegion(new Texture(Gdx.files.internal(proto.image)));
+		
+		bulletProto.damage = damage;
+		bulletProto.damageType = DamageTypes.NORMAL; // TODO fix this when implementing damage types
+		bulletProto.lifetime = lifetime;
+		bulletProto.speed = speed;
+		bulletProto.accel = accel;
+		bulletProto.turn = turn;
+		bulletProto.image = image;
+		
 	}
 
 	public boolean canFire() {
@@ -65,22 +80,34 @@ public class Weapon {
 	}
 	
 	public void fire(GameController controller) {
-		// TODO add a bullet!
+		if (canFire()) {
+			Gdx.app.log(LOG, "Firing");
+			Bullet b = new Bullet(controller.getNextObjectId(), 
+					this.parent.getOwner(),	this.parent, this.parent.getTarget(), 
+					new Vector2(parent.getX(), parent.getY()), bulletProto);
+			controller.addGameUnit(b);
+			b.setAccel(new Vector2(accel, 0));
+			b.setVelocity(new Vector2(b.getMaxSpeed(), 0));
+			b.setPosition(parent.getX(), parent.getY());
+			lastFireMillis = System.currentTimeMillis();
+		}
 	}
 	
 	public float getRange() {
 		float dist = 0;
 		float time = lifetime;
 		
-		float accelTime = speed / accel;
-		
-		if (accelTime < time) {
-			dist = (time - accelTime) * speed;
-			time -= accelTime;
+		if (accel != 0) {
+			float accelTime = speed / accel;
+			
+			if (accelTime < time) {
+				dist = (time - accelTime) * speed;
+				time -= accelTime;
+			}
 		}
 		
 		dist += (0.5f * accel * time * time) + speed * time;
 		
-		return dist;
+		return speed * lifetime;
 	}
 }

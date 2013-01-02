@@ -63,6 +63,7 @@ public class Prototypes {
 		float speed = 0;
 		float accel = 0;
 		float turn = 0;
+		Array<String> weapons;
 		
 		public static JsonUnit createFromMap(String id, ObjectMap<String, Object> map) {
 			JsonUnit retUnit = new JsonUnit();
@@ -87,6 +88,11 @@ public class Prototypes {
 					retUnit.accel = Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("turn")) {
 					retUnit.turn = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("weapons")) {
+					retUnit.weapons = (Array<String>)map.get(key);
+				} else if (key.equals("weapon")) {
+					retUnit.weapons = new Array<String>();
+					retUnit.weapons.add(map.get(key).toString());
 				} else {
 					Gdx.app.log(SpaceTacticsGame.LOG, JsonUnit.class.getSimpleName() + "#createFromMap: Unknown key");
 				}
@@ -202,8 +208,6 @@ public class Prototypes {
 	public static class JsonSquadron extends JsonUnit {
 		static final String TYPE = "squadron";
 		
-		ArrayList<String> weapons;
-		
 		public static JsonSquadron createFromMap(String id, ObjectMap<String, Object> map) {
 			JsonSquadron retSquad = new JsonSquadron();
 			retSquad.id = id;
@@ -219,7 +223,8 @@ public class Prototypes {
 			retSquad.speed = unit.speed;
 			retSquad.accel = unit.accel;
 			retSquad.turn = unit.turn;
-			
+			retSquad.weapons = unit.weapons;
+			/*
 			for (String key: map.keys()) {
 				if (key.equals("weapons")) {
 					Array<String> wepArray = (Array<String>)map.get(key);
@@ -228,7 +233,7 @@ public class Prototypes {
 						retSquad.weapons.add(weapon);
 					}
 				}
-			}
+			}*/
 			
 			return retSquad;
 		}
@@ -253,15 +258,15 @@ public class Prototypes {
 				if (key.equals("damage")) {
 					retWep.damage = Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("lifetime")) {
-					retWep.damage = Float.parseFloat(map.get(key).toString());
+					retWep.lifetime = Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("speed")) {
-					retWep.damage = Float.parseFloat(map.get(key).toString());
+					retWep.speed = Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("accel")) {
-					retWep.damage = Float.parseFloat(map.get(key).toString());
+					retWep.accel = Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("turn")) {
-					retWep.damage = Float.parseFloat(map.get(key).toString());
+					retWep.turn = Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("fire-rate")) {
-					retWep.damage = Float.parseFloat(map.get(key).toString());
+					retWep.fireRate = Float.parseFloat(map.get(key).toString());
 				}
 			}
 			

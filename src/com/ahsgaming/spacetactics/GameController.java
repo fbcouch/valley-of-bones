@@ -32,6 +32,7 @@ import com.ahsgaming.spacetactics.network.Move;
 import com.ahsgaming.spacetactics.network.Pause;
 import com.ahsgaming.spacetactics.network.Unpause;
 import com.ahsgaming.spacetactics.network.Upgrade;
+import com.ahsgaming.spacetactics.units.Bullet;
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Unit;
@@ -57,7 +58,7 @@ public class GameController {
 	
 	public String LOG = "GameController";
 	
-	ArrayList<GameObject> gameObjects, selectedObjects;
+	ArrayList<GameObject> gameObjects, selectedObjects, objsToAdd, objsToRemove;
 	Group grpRoot, grpMap, grpUnits;
 	
 	ArrayList<Player> players;
@@ -90,6 +91,8 @@ public class GameController {
 		
 		gameObjects = new ArrayList<GameObject>();
 		selectedObjects = new ArrayList<GameObject>();
+		objsToAdd = new ArrayList<GameObject>();
+		objsToRemove = new ArrayList<GameObject>();
 		
 		commandHistory = new ArrayList<Command>();
 		commandQueue = new ArrayList<Command>();
@@ -186,8 +189,22 @@ public class GameController {
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;
 			//Gdx.app.log(LOG, "Game Tick: " + Integer.toString(gameTick));
+			
+			// update collection
+			gameObjects.removeAll(objsToRemove);
+			for (GameObject obj: objsToRemove) {
+				grpUnits.removeActor(obj);
+			}
+			objsToRemove.clear();
+			
+			for (GameObject obj: objsToAdd) {
+				addGameUnitNow(obj);
+			}
+			objsToAdd.clear();
+			
 			for (GameObject obj : gameObjects) {
 				// update physics
+				
 				if (obj.getAccel().len() > obj.getMaxAccel()) {
 					// clamp acceleration to max
 					float angle = obj.getAccel().angle();
@@ -206,6 +223,8 @@ public class GameController {
 				obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
 				
 				obj.update(this, delta);
+				
+				if (obj.isRemove()) objsToRemove.add(obj);
 			}
 		}
 	}
@@ -230,7 +249,27 @@ public class GameController {
 	}
 	
 	public void executeAttack(Attack cmd) {
-		Gdx.app.log(LOG, "Attack!");
+		Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
+		GameObject obj = getObjById(cmd.unit);
+		GameObject tar = getObjById(cmd.target);
+		if (obj == null || tar == null) {
+			if (obj == null) Gdx.app.log(LOG, String.format("Attack: cannot find unit(%d)", cmd.unit));
+			if (tar == null) Gdx.app.log(LOG, String.format("Attack: cannot find target(%d)", cmd.target));
+		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
+			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
+		} else {
+			if (obj instanceof Unit && tar instanceof Unit) {
+				((Unit)obj).attackTarget((Unit)tar);
+			} else {
+				if (!(obj instanceof Unit)) {
+					Gdx.app.log(LOG, "Error: unit is not a Unit");
+				}
+				
+				if (!(tar instanceof Unit)) {
+					Gdx.app.log(LOG, "Error: target is not a Unit");
+				}
+			}
+		}
 	}
 	
 	public void executeBuild(Build cmd) {
@@ -280,9 +319,13 @@ public class GameController {
 		return null;
 	}
 	
-	public void addGameUnit(GameObject obj) {
+	private void addGameUnitNow(GameObject obj) {
 		if (!gameObjects.contains(obj)) gameObjects.add(obj);
 		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
+	}
+	
+	public void addGameUnit(GameObject obj) {
+		if (!objsToAdd.contains(obj)) objsToAdd.add(obj);
 	}
 	
 	public void removeGameUnit(GameObject obj) {
@@ -390,7 +433,7 @@ public class GameController {
 		}
 	}
 	
-	private int getNextObjectId() {
+	public int getNextObjectId() {
 		int id = this.nextObjectId;
 		this.nextObjectId += 1;
 		return id;

@@ -27,6 +27,7 @@ import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author jami
@@ -44,23 +45,30 @@ public class Bullet extends GameObject {
 	 * @param owner
 	 * @param region
 	 */
-	public Bullet(int id, Player owner, TextureRegion region, Unit parentUnit, Unit target, float lifetime, float damage, DamageTypes damageType) {
-		super(id, owner, region);
+	public Bullet(int id, Player owner, Unit parentUnit, 
+			Unit target, Vector2 position, BulletProto proto) {
+		super(id, owner, proto.image);
 		
 		this.parentUnit = parentUnit;
 		this.target = target;
-		this.ticksRemaining = lifetime;
-		this.damage = damage;
-		this.damageType = damageType;
+		
+		this.ticksRemaining = proto.lifetime;
+		this.damage = proto.damage;
+		this.damageType = proto.damageType;
+		this.maxSpeed = proto.speed;
+		this.maxAccel = proto.accel;
+		this.turnSpeed = proto.turn;
+		
+		this.setPosition(position.x, position.y);
 	}
 	
 	@Override
 	public void update(GameController controller, float delta) {
-		super.update(controller, delta);
+		//super.update(controller, delta);
 		
 		ticksRemaining -= delta;
 		if (ticksRemaining <= 0) {
-			target.takeDamage(this);
+			if (target != null) target.takeDamage(this);
 			this.setRemove(true);
 		}
 	}
@@ -135,5 +143,10 @@ public class Bullet extends GameObject {
 		this.damageType = damageType;
 	}
 	
-	
+	public static class BulletProto {
+		public float damage = 0, lifetime = 0;
+		public float speed = 0, accel = 0, turn = 0;
+		public TextureRegion image = null;
+		public DamageTypes damageType = DamageTypes.NORMAL;
+	}
 }

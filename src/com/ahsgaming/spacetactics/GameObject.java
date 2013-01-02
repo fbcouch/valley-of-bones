@@ -203,7 +203,7 @@ public class GameObject extends Actor {
 	 * @param accel set the object's acceleration
 	 */
 	public void setAccel(Vector2 accel) {
-		this.accel = accel;
+		this.accel.set(accel);
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class GameObject extends Actor {
 	 * @param velocity set the object's velocity
 	 */
 	public void setVelocity(Vector2 velocity) {
-		this.velocity = velocity;
+		this.velocity.set(velocity);;
 	}
 
 	/**

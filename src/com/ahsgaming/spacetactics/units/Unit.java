@@ -32,12 +32,15 @@ import com.ahsgaming.spacetactics.units.Prototypes.JsonWeapon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author jami
  *
  */
 public class Unit extends GameObject {
+	public String LOG = "Unit";
+	
 	
 	float curHealth, maxHealth;
 	float curShield, maxShield;
@@ -82,6 +85,16 @@ public class Unit extends GameObject {
 		maxAccel = proto.accel;
 		turnSpeed = proto.turn;
 		
+		if (proto.weapons != null) {
+			for (String w: proto.weapons) {
+				JsonWeapon jw = (JsonWeapon)Prototypes.getProto(w);
+				if (jw == null) {
+					Gdx.app.log(LOG, "Could not find weapon " + w);
+				} else {
+					weapons.add(new Weapon(this, jw));
+				}
+			}
+		}
 	}
 	
 	public void takeDamage(Bullet b) {
@@ -100,6 +113,20 @@ public class Unit extends GameObject {
 			// TODO add a hit effect
 		}
 	}
+	
+	public void attackTarget(Unit target) {
+		this.target = target;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ahsgaming.spacetactics.GameObject#moveTo(com.badlogic.gdx.math.Vector2, boolean)
+	 */
+	@Override
+	public void moveTo(Vector2 location, boolean add) {
+		super.moveTo(location, add);
+		// TODO fix this when implementing command queue
+		this.target = null;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.ahsgaming.spacetactics.GameObject#update(com.ahsgaming.spacetactics.GameController, float)
@@ -109,11 +136,22 @@ public class Unit extends GameObject {
 		super.update(controller, delta);
 		
 		// TODO fire weapons if in range of target
-		for (Weapon w: weapons) {
-			if (getDistanceSq(this, target) < Math.pow(w.getRange(), 2) && w.canFire()) {
-				w.fire(controller);
+		
+		if (target != null) {
+			
+			for (Weapon w: weapons) {
+				if (getDistanceSq(this, target) < Math.pow(w.getRange(), 2) && w.canFire()) {
+					w.fire(controller);
+				}
 			}
 		}
 	}
+
+	public Unit getTarget() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 	
 }
