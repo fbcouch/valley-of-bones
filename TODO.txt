@@ -20,8 +20,10 @@ GOALS 1.4.13
 + Attack unit
 + Destroy unit
 + Command queue
-- Attack move
++ Attack move
 - Build units
+  + basic command in place
+  - actually check that resources, etc are there...
 - Upgrade units
 
 GOALS 12.30.12

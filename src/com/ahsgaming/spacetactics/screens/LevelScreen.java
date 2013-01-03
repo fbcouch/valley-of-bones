@@ -29,6 +29,7 @@ import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.Attack;
+import com.ahsgaming.spacetactics.network.Build;
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.network.Move;
@@ -174,11 +175,27 @@ public class LevelScreen extends AbstractScreen {
 	
 	private void doProcessInput(float delta) {
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			if (boxOrigin == null) {
-				boxOrigin = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-				boxFinal = new Vector2(boxOrigin);
+			// TODO fix this - should be able to press (not hold) a key to build
+			if (Gdx.input.isKeyPressed(Keys.B)){
+				// TODO more buttons for more things
+				// TODO check that the player can build this and the space is unoccupied
+				if (game.getPlayer().canBuild("fighters-base")) {
+					Build bld = new Build();
+					bld.owner = game.getPlayer().getPlayerId();
+					bld.tick = gController.getGameTick();
+					bld.building = "fighters-base";
+					bld.location = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+					game.sendCommand(bld);
+				}
+				
+			} else {
+				
+				if (boxOrigin == null) {
+					boxOrigin = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+					boxFinal = new Vector2(boxOrigin);
+				}
+				boxFinal.set(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
 			}
-			boxFinal.set(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
 		} else {
 			if (!(boxOrigin == null || boxFinal == null)) {
 				// select any units in the box

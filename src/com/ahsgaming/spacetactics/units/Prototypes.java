@@ -3,6 +3,7 @@ package com.ahsgaming.spacetactics.units;
 import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.TextureManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -47,6 +48,7 @@ public class Prototypes {
 					}
 				}
 			}
+			if (retProto.image != null && !retProto.image.equals("")) TextureManager.loadTexture(retProto.image);
 			
 			return retProto;
 		}
@@ -100,35 +102,37 @@ public class Prototypes {
 			return retUnit;
 		}
 	}
-
-	public static class JsonStation extends JsonShip {
-		static final String TYPE = "station";
+	
+	public static class JsonHardpoint extends JsonUnit {
+		static final String TYPE = "hardpoint";
 		
-		public static JsonStation createFromMap(String id, ObjectMap<String, Object> map) {
-			JsonStation retStation = new JsonStation();
-			retStation.id = id;
+		Vector2 offset;
+		
+		String weapon;
+		
+		public static JsonHardpoint createFromMap(String id, ObjectMap<String, Object> map) {
+			JsonHardpoint retPoint = new JsonHardpoint();
+			retPoint.id = id;
 			
 			JsonUnit unit = JsonUnit.createFromMap(id, map);
-			retStation.name = unit.name;
-			retStation.image = unit.image;
-			retStation.depends = unit.depends;
-			retStation.cost = unit.cost;
-			retStation.health = unit.health;
-			retStation.shield = unit.shield;
-			retStation.armor = unit.armor;
+			retPoint.name = unit.name;
+			retPoint.image = unit.image;
+			retPoint.depends = unit.depends;
+			retPoint.cost = unit.cost;
+			retPoint.health = unit.health;
+			retPoint.shield = unit.shield;
+			retPoint.armor = unit.armor;
 			
-			for (String key : map.keys()) {
-				if (key.equals("hardpoints")) {
-					ObjectMap<String, Object> hpMap = (ObjectMap)map.get(key);
-					ArrayList<JsonHardpoint> hardPts = new ArrayList<JsonHardpoint>();
-					for (String hpid: hpMap.keys()) {
-						
-						hardPts.add(JsonHardpoint.createFromMap(hpid, (ObjectMap)hpMap.get(hpid)));
-					}
-					retStation.hardpoints = hardPts;
+			for (String key: map.keys()) {
+				if (key.equals("offset")) {
+					Array<Float> offsetArray = (Array<Float>)map.get(key);
+					retPoint.offset = new Vector2(offsetArray.get(0), offsetArray.get(1));
+				} else if (key.equals("weapon")) {
+					retPoint.weapon = map.get(key).toString();
 				}
 			}
-			return retStation;
+			
+			return retPoint;
 		}
 	}
 	
@@ -172,36 +176,34 @@ public class Prototypes {
 		}
 	}
 	
-	public static class JsonHardpoint extends JsonUnit {
-		static final String TYPE = "hardpoint";
+	public static class JsonStation extends JsonShip {
+		static final String TYPE = "station";
 		
-		Vector2 offset;
-		
-		String weapon;
-		
-		public static JsonHardpoint createFromMap(String id, ObjectMap<String, Object> map) {
-			JsonHardpoint retPoint = new JsonHardpoint();
-			retPoint.id = id;
+		public static JsonStation createFromMap(String id, ObjectMap<String, Object> map) {
+			JsonStation retStation = new JsonStation();
+			retStation.id = id;
 			
 			JsonUnit unit = JsonUnit.createFromMap(id, map);
-			retPoint.name = unit.name;
-			retPoint.image = unit.image;
-			retPoint.depends = unit.depends;
-			retPoint.cost = unit.cost;
-			retPoint.health = unit.health;
-			retPoint.shield = unit.shield;
-			retPoint.armor = unit.armor;
+			retStation.name = unit.name;
+			retStation.image = unit.image;
+			retStation.depends = unit.depends;
+			retStation.cost = unit.cost;
+			retStation.health = unit.health;
+			retStation.shield = unit.shield;
+			retStation.armor = unit.armor;
 			
-			for (String key: map.keys()) {
-				if (key.equals("offset")) {
-					Array<Float> offsetArray = (Array<Float>)map.get(key);
-					retPoint.offset = new Vector2(offsetArray.get(0), offsetArray.get(1));
-				} else if (key.equals("weapon")) {
-					retPoint.weapon = map.get(key).toString();
+			for (String key : map.keys()) {
+				if (key.equals("hardpoints")) {
+					ObjectMap<String, Object> hpMap = (ObjectMap)map.get(key);
+					ArrayList<JsonHardpoint> hardPts = new ArrayList<JsonHardpoint>();
+					for (String hpid: hpMap.keys()) {
+						
+						hardPts.add(JsonHardpoint.createFromMap(hpid, (ObjectMap)hpMap.get(hpid)));
+					}
+					retStation.hardpoints = hardPts;
 				}
 			}
-			
-			return retPoint;
+			return retStation;
 		}
 	}
 	

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
+import com.ahsgaming.spacetactics.TextureManager;
 import com.ahsgaming.spacetactics.network.Attack;
 import com.ahsgaming.spacetactics.network.Build;
 import com.ahsgaming.spacetactics.network.Command;
@@ -81,7 +82,7 @@ public class Unit extends GameObject {
 	}
 	
 	public Unit(int id, Player owner, JsonUnit proto) {
-		super(id, owner, new TextureRegion(new Texture(Gdx.files.internal(proto.image))));
+		super(id, owner, TextureManager.getTexture(proto.image));
 		
 		curHealth = proto.health;
 		maxHealth = proto.health;

@@ -61,6 +61,11 @@ public class Player {
 		bankMoney += rateMoney * delta;
 	}
 	
+	public boolean canBuild(String protoId) {
+		// TODO implement this
+		return true;
+	}
+	
 	
 	public String getPlayerName() {
 		return name;

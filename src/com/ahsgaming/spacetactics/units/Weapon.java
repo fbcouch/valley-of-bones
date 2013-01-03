@@ -24,6 +24,7 @@ package com.ahsgaming.spacetactics.units;
 
 import com.ahsgaming.spacetactics.DamageTypes;
 import com.ahsgaming.spacetactics.GameController;
+import com.ahsgaming.spacetactics.TextureManager;
 import com.ahsgaming.spacetactics.units.Bullet.BulletProto;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonWeapon;
 import com.badlogic.gdx.Gdx;
@@ -62,7 +63,7 @@ public class Weapon {
 		this.accel = proto.accel;
 		this.turn = proto.turn;
 		this.fireRate = proto.fireRate;
-		this.image = new TextureRegion(new Texture(Gdx.files.internal(proto.image)));
+		this.image = TextureManager.getTexture(proto.image);
 		
 		bulletProto.damage = damage;
 		bulletProto.damageType = DamageTypes.NORMAL; // TODO fix this when implementing damage types

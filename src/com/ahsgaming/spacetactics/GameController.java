@@ -71,6 +71,7 @@ public class GameController {
 	
 	ArrayList<Command> commandHistory;
 	ArrayList<Command> commandQueue;
+	ArrayList<Command> cmdsToAdd;
 	int gameTick = 0;
 	
 	int nextObjectId = 0;
@@ -96,6 +97,7 @@ public class GameController {
 		
 		commandHistory = new ArrayList<Command>();
 		commandQueue = new ArrayList<Command>();
+		cmdsToAdd = new ArrayList<Command>();
 		
 		this.players = players;
 		
@@ -167,6 +169,10 @@ public class GameController {
 	public void update(float delta) {
 		//Gdx.app.log(LOG, "update...");
 		// TODO process commands
+		ArrayList<Command> toAdd = cmdsToAdd;
+		cmdsToAdd = new ArrayList<Command>();
+		commandQueue.addAll(toAdd);
+		
 		ArrayList<Command> toRemove = new ArrayList<Command>();
 		for (Command command: commandQueue) {
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.tick));
@@ -273,7 +279,11 @@ public class GameController {
 	}
 	
 	public void executeBuild(Build cmd) {
-			
+		// TODO place builder
+		// for now, just add the unit
+		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
+		unit.setPosition(cmd.location, "center");
+		objsToAdd.add(unit);
 	}
 	
 	public void executeMove(Move cmd) {
@@ -433,7 +443,7 @@ public class GameController {
 	
 	public void queueCommand(Command cmd) {
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
-			commandQueue.add(cmd);
+			cmdsToAdd.add(cmd);
 		}
 	}
 	
