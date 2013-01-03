@@ -38,6 +38,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -121,14 +122,61 @@ public class Unit extends GameObject {
 		}
 	}
 	
+	/**
+	 * Determines if the target is in range of any weapons
+	 * @param target
+	 * @return
+	 */
+	public boolean isInRange(Unit target) {
+		for (Weapon w: weapons) {
+			if (GameObject.getDistanceSq(this, target) <= Math.pow(w.getRange(), 2)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Finds the nearest Unit not owned by the same player
+	 * @param controller
+	 * @return
+	 */
+	public Unit findTarget(GameController controller) {
+		float maxRange = 0;
+		for (Weapon w: weapons) {
+			float range = w.getRange();
+			if (range > maxRange) maxRange = range;
+		}
+		
+		float maxRangeSq = maxRange * maxRange;
+		Unit candidate = null;
+		float candidateVal = 0;
+		
+		for (GameObject obj: controller.getGameObjects()) {
+			// TODO fix this to use some kind of threat assessment rather than just distance
+			float objVal = GameObject.getDistanceSq(this, obj);
+			if (obj instanceof Unit && obj.getOwner() != this.getOwner() && objVal <= maxRangeSq) {
+				if (candidate == null || objVal < candidateVal) {
+					candidate = (Unit)obj;
+				}
+			}
+		}
+		
+		return candidate;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.ahsgaming.spacetactics.GameObject#moveTo(com.badlogic.gdx.math.Vector2, boolean)
 	 */
 	@Override
 	public void moveTo(Vector2 location, boolean add) {
-		super.moveTo(location, add);
-		// TODO fix this when implementing command queue
-		
+		// add to the command queue, no longer using path
+		Move mv = new Move();
+		mv.unit = getObjId();
+		mv.toLocation = location;
+		mv.isAdd = add;
+		mv.isAttack = false;
+		doCommand(mv, mv.isAdd);
 	}
 
 	/* (non-Javadoc)
@@ -170,10 +218,33 @@ public class Unit extends GameObject {
 			} else if (cur instanceof Build) {
 				
 			} else if (cur instanceof Move) {
-				if (getRectangle().contains(((Move)cur).toLocation.x, ((Move)cur).toLocation.y)) {
-					commandQueue.remove(cur);
+				Move mv = (Move)cur;
+				if (mv.isAttack) {
+					if (commandTarget != null && !commandTarget.isRemove() 
+							&& isInRange(commandTarget)) {
+						// attack this target
+						Attack at = new Attack();
+						at.unit = getObjId();
+						at.target = commandTarget.getObjId();
+						commandQueue.add(0, at);
+					} else {
+						commandTarget = findTarget(controller);
+						
+						if (commandTarget == null) {
+							if (getRectangle().contains(mv.toLocation.x, mv.toLocation.y)) {
+								commandQueue.remove(cur);
+							} else {
+								accelToward(mv.toLocation, delta);
+							}
+						}
+					}
 				} else {
-					accelToward(((Move)cur).toLocation, delta);
+					// not attack move, just move there
+					if (getRectangle().contains(mv.toLocation.x, mv.toLocation.y)) {
+						commandQueue.remove(cur);
+					} else {
+						accelToward(mv.toLocation, delta);
+					}
 				}
 			} else if (cur instanceof Upgrade) {
 				
@@ -198,7 +269,7 @@ public class Unit extends GameObject {
 	}
 	
 	public Unit getTarget() {
-		if (commandTarget != null && commandTarget.getOwner().getPlayerId() == getOwner().getPlayerId()) {
+		if (commandTarget != null && (commandTarget.getOwner() != null && commandTarget.getOwner().getPlayerId() == getOwner().getPlayerId())) {
 			return null;
 		}
 		return commandTarget;

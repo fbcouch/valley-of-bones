@@ -239,6 +239,7 @@ public class LevelScreen extends AbstractScreen {
 						mv.unit = obj.getObjId();
 						mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
 						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
 						
 						Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
 						if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
