@@ -8,7 +8,6 @@ MILESTONE 3: All basic gameplay systems in place (start adding units!)
 MILESTONE 2: Basic player/owner, resources, and build units in place
 
 GOALS (future)
-- Build units
 - Upgrade units
 - Build stations
 - UX stuff
@@ -24,7 +23,7 @@ GOALS 1.4.13
 - Build units
   + basic command in place
   - actually check that resources, etc are there...
-- Upgrade units
+- create a small 
 
 GOALS 12.30.12
 + Implement Player system (with color-coded boxes)
