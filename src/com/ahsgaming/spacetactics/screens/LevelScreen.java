@@ -22,8 +22,6 @@
  */
 package com.ahsgaming.spacetactics.screens;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
@@ -50,6 +48,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -231,7 +230,7 @@ public class LevelScreen extends AbstractScreen {
 		} else {
 			if (rightBtnDown) {
 				// TODO issue context-dependent commands
-				ArrayList<GameObject> objsUnderCursor = null;
+				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
 				for (GameObject obj: gController.getSelectedObjects()) {
