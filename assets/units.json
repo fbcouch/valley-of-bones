@@ -7,6 +7,7 @@
     armor : 0,
     image : "station-base.png",
     cost: 1000,
+    food: 0,
     depends: ["one", "two", "three"],
     hardpoints: {
       weapon-hp1: {
@@ -42,7 +43,9 @@
   	turn: 1000,
   	image: "base-fighter1.png",
   	weapons: [laser-base-red],
-  	cost: 25
+  	cost: 25,
+  	food: 1,
+  	bounds: [0, 0, 64, 80]
   },
   laser-base-red: {
   	type: "weapon",

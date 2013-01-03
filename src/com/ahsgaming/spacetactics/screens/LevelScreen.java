@@ -33,6 +33,8 @@ import com.ahsgaming.spacetactics.network.Build;
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.network.Move;
+import com.ahsgaming.spacetactics.units.Prototypes;
+import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -179,12 +181,18 @@ public class LevelScreen extends AbstractScreen {
 			if (Gdx.input.isKeyPressed(Keys.B)){
 				// TODO more buttons for more things
 				// TODO check that the player can build this and the space is unoccupied
-				if (game.getPlayer().canBuild("fighters-base")) {
+				JsonUnit unit = (JsonUnit) Prototypes.getProto("fighters-base");
+				Rectangle bounds = unit.bounds;
+				Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+				bounds.setX(loc.x - bounds.getWidth() * 0.5f);
+				bounds.setY(loc.y - bounds.getHeight() * 0.5f);
+				System.out.println(gController.getObjsInArea(bounds).size);
+				if (game.getPlayer().canBuild(unit.id) && gController.getObjsInArea(bounds).size == 0) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.tick = gController.getGameTick();
-					bld.building = "fighters-base";
-					bld.location = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+					bld.building = unit.id;
+					bld.location = loc;
 					game.sendCommand(bld);
 				}
 				

@@ -48,7 +48,6 @@ import com.badlogic.gdx.utils.Array;
 public class Unit extends GameObject {
 	public String LOG = "Unit";
 	
-	
 	float curHealth, maxHealth;
 	float curShield, maxShield;
 	float curArmor, maxArmor;
@@ -103,6 +102,10 @@ public class Unit extends GameObject {
 					weapons.add(new Weapon(this, jw));
 				}
 			}
+		}
+		
+		if (proto.bounds != null) {
+			collideBox = proto.bounds;
 		}
 	}
 	

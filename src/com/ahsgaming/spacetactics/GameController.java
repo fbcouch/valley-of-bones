@@ -32,7 +32,6 @@ import com.ahsgaming.spacetactics.network.Move;
 import com.ahsgaming.spacetactics.network.Pause;
 import com.ahsgaming.spacetactics.network.Unpause;
 import com.ahsgaming.spacetactics.network.Upgrade;
-import com.ahsgaming.spacetactics.units.Bullet;
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Unit;
@@ -47,6 +46,7 @@ import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -415,6 +415,16 @@ public class GameController {
 		return returnVal;
 	}
 	
+	public Array<GameObject> getObjsInArea(Rectangle bounds) {
+		Array<GameObject> ret = new Array<GameObject>();
+		for (GameObject obj: gameObjects) {
+			if (obj.isColliding(bounds)) {
+				ret.add(obj);
+			}
+		}
+		return ret;
+	}
+	
 	public TiledMap getMap() {
 		return map;
 	}
@@ -493,4 +503,6 @@ public class GameController {
 	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
 		return new Vector2(mapCoords.x, (map.height * map.tileHeight) - mapCoords.y);
 	}
+
+	
 }

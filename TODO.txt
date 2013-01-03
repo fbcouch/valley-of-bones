@@ -23,7 +23,7 @@ GOALS 1.4.13
 - Build units
   + basic command in place
   - actually check that resources, etc are there...
-- create a small 
+
 
 GOALS 12.30.12
 + Implement Player system (with color-coded boxes)

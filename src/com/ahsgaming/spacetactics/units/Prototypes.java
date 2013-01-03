@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.TextureManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -23,11 +24,12 @@ public class Prototypes {
 	}
 	
 	public static class JsonProto {
-		static final String TYPE = "none";
-		String id = "", name = "", image = "";
-		int cost = 0;
+		public static final String TYPE = "none";
+		public String id = "", name = "", image = "";
+		public int cost = 0;
+		public int food = 0;
 		
-		Array<String> depends;
+		public Array<String> depends;
 		
 		public JsonProto() {}
 		
@@ -41,6 +43,8 @@ public class Prototypes {
 					image = map.get(key).toString();
 				} else if (key.equals("cost")) {
 					cost = (int)Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("food")) {
+					food = (int)Float.parseFloat(map.get(key).toString());
 				} else if (key.equals("depends")) {
 					depends = (Array<String>)map.get(key);
 				}
@@ -60,12 +64,13 @@ public class Prototypes {
 	 *
 	 */
 	public static class JsonUnit extends JsonProto {
-		static final String TYPE = "unit";
-		int health = 0, shield = 0, armor = 0;
-		float speed = 0;
-		float accel = 0;
-		float turn = 0;
-		Array<String> weapons;
+		public static final String TYPE = "unit";
+		public int health = 0, shield = 0, armor = 0;
+		public float speed = 0;
+		public float accel = 0;
+		public float turn = 0;
+		public Array<String> weapons;
+		public Rectangle bounds;
 		
 		public JsonUnit() {	}
 		
@@ -90,8 +95,13 @@ public class Prototypes {
 				} else if (key.equals("weapon")) {
 					weapons = new Array<String>();
 					weapons.add(map.get(key).toString());
-				} else {
-					Gdx.app.log(JsonUnit.class.getSimpleName(),  "Unknown key");
+				} else if (key.equals("bounds")) {
+					Array<Float> b = (Array<Float>)map.get(key);
+					if (b.size == 4) {
+						bounds = new Rectangle(b.get(0), b.get(1), b.get(2), b.get(3));
+					} else {
+						Gdx.app.log(JsonUnit.class.getSimpleName(), "key bounds must be an array of 4 floats");
+					}
 				}
 			}
 		}
@@ -102,9 +112,9 @@ public class Prototypes {
 	}
 	
 	public static class JsonHardpoint extends JsonUnit {
-		static final String TYPE = "hardpoint";
+		public static final String TYPE = "hardpoint";
 		
-		Vector2 offset;
+		public Vector2 offset;
 		
 		public JsonHardpoint() { }
 		
@@ -124,9 +134,9 @@ public class Prototypes {
 	}
 	
 	public static class JsonShip extends JsonUnit {
-		static final String TYPE = "ship";
+		public static final String TYPE = "ship";
 		
-		Array<JsonHardpoint> hardpoints;
+		public Array<JsonHardpoint> hardpoints;
 		
 		public JsonShip() { }
 		
@@ -151,7 +161,7 @@ public class Prototypes {
 	}
 	
 	public static class JsonStation extends JsonShip {
-		static final String TYPE = "station";
+		public static final String TYPE = "station";
 		
 		public JsonStation() { }
 		
@@ -165,7 +175,7 @@ public class Prototypes {
 	}
 	
 	public static class JsonSquadron extends JsonUnit {
-		static final String TYPE = "squadron";
+		public static final String TYPE = "squadron";
 		
 		public JsonSquadron() { }
 		
@@ -179,7 +189,7 @@ public class Prototypes {
 	}
 	
 	public static class JsonWeapon extends JsonProto {
-		static final String TYPE = "weapon";
+		public static final String TYPE = "weapon";
 		
 		public float damage = 0, lifetime = 0, speed = 0, accel = 0, turn = 0, fireRate = 0;
 		
@@ -211,9 +221,9 @@ public class Prototypes {
 	}
 	
 	public static class JsonUpgrade extends JsonProto {
-		static final String TYPE = "upgrade";
+		public static final String TYPE = "upgrade";
 		
-		String fromId = "", toId = "";
+		public String fromId = "", toId = "";
 		
 		
 		public JsonUpgrade() { }

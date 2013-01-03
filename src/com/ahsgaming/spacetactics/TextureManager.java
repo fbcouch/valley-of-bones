@@ -37,7 +37,6 @@ public class TextureManager {
 	private static ObjectMap<String, TextureRegion> map = new ObjectMap<String, TextureRegion>(); 
 	
 	public static TextureRegion getTexture(String file) {
-		Gdx.app.log(LOG, "getTexture: " + file);
 		if (map.containsKey(file)) return map.get(file);
 		
 		TextureRegion reg = new TextureRegion(new Texture(Gdx.files.internal(file))); 
