@@ -181,11 +181,11 @@ public class LevelScreen extends AbstractScreen {
 				// TODO more buttons for more things
 				// TODO check that the player can build this and the space is unoccupied
 				JsonUnit unit = (JsonUnit) Prototypes.getProto("fighters-base");
-				Rectangle bounds = unit.bounds;
+				Rectangle bounds = new Rectangle(unit.bounds);
 				Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
 				bounds.setX(loc.x - bounds.getWidth() * 0.5f);
 				bounds.setY(loc.y - bounds.getHeight() * 0.5f);
-				System.out.println(gController.getObjsInArea(bounds).size);
+				//System.out.println(gController.getObjsInArea(bounds).size);
 				if (game.getPlayer().canBuild(unit.id) && gController.getObjsInArea(bounds).size == 0) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
