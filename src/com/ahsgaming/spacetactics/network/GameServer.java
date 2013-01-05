@@ -32,6 +32,7 @@ import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
+import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Connection;
@@ -50,14 +51,19 @@ public class GameServer {
 	int sinceLastGameTick = 0;
 	long lastTimeMillis = 0;
 	
+	GameSetupConfig gameConfig;
+	
 	ArrayList<Player> players = new ArrayList<Player>();
 	ObjectMap<Connection, Player> connMap = new ObjectMap<Connection, Player>();
 	int nextPlayerId = 0;
 	
+	boolean stopServer = false;
+	
 	/**
 	 * 
 	 */
-	public GameServer() {
+	public GameServer(GameSetupConfig cfg) {
+		gameConfig = cfg;
 		// setup the KryoNet server
 		server = new Server();
 		KryoCommon.register(server);
@@ -70,7 +76,7 @@ public class GameServer {
 			server.bind(KryoCommon.tcpPort);
 			server.start();
 		} catch (IOException ex) {
-			Gdx.app.log(SpaceTacticsGame.LOG + ":GameServer", ex.getStackTrace().toString());
+			Gdx.app.log(SpaceTacticsGame.LOG + ":GameServer", ex.getMessage());
 			Gdx.app.exit();
 		}
 		
@@ -135,14 +141,21 @@ public class GameServer {
 	}
 	
 	public void startGame() {
-		controller = new GameController("", players);
+		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Server";
 		
 		lastTimeMillis = System.currentTimeMillis();
 	}
+	
+	public void stop() {
+		stopServer = true;
+	}
 
 	public boolean update() {
-		
+		if (stopServer) {
+			server.stop();
+			return false;
+		}
 		
 		if ((controller == null)) return true;
 		

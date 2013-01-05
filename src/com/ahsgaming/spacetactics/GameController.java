@@ -205,8 +205,6 @@ public class GameController {
 	}
 	
 	public void update(float delta) {
-		//Gdx.app.log(LOG, "update...");
-		
 		
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;

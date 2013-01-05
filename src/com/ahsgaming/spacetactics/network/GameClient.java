@@ -31,6 +31,7 @@ import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
+import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -55,15 +56,20 @@ public class GameClient {
 	int sinceLastGameTick = 0;
 	long lastTimeMillis = 0;
 	
+	GameSetupConfig gameConfig;
+	
 	ArrayList<Player> players = new ArrayList<Player>();
 	
 	SpaceTacticsGame game;
 	
+	boolean stopClient = false;
+	
 	/**
 	 * 
 	 */
-	public GameClient(SpaceTacticsGame g, final String playerName) {
+	public GameClient(SpaceTacticsGame g, final GameSetupConfig cfg) {
 		this.game = g;
+		gameConfig = cfg;
 		
 		client = new Client();
 		client.start();
@@ -74,7 +80,7 @@ public class GameClient {
 			
 			public void connected (Connection c) {
 				RegisterPlayer rp = new RegisterPlayer();
-				rp.name = playerName;
+				rp.name = cfg.playerName;
 				client.sendTCP(rp);
 			}
 			
@@ -113,7 +119,7 @@ public class GameClient {
 			}
 		});
 		
-		host = "localhost";
+		host = cfg.hostName;
 		new Thread() {
 			public void run() {
 				try {
@@ -141,7 +147,16 @@ public class GameClient {
 		sendCommand(cmd);
 	}
 	
+	public void stop() {
+		stopClient = true;
+	}
+	
 	public boolean update() {
+		if (stopClient) {
+			client.stop();
+			return false;
+		}
+		
 		if (controller == null) return true;
 		
 		long time = System.currentTimeMillis();

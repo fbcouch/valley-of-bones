@@ -32,37 +32,42 @@ public class SpaceTacticsGame extends Game {
 	
 	// SERVER
 	GameServer localServer;
+	Thread serverThread;
 	
 	// CLIENT
 	GameClient localClient;
-	
+	Thread clientThread;
 	
 	boolean started = false;
 	
-	public void createGame() {
+	public void createGame(GameSetupConfig cfg) {
 		//TODO this should accept input and then pass it to the GameController
 		
 		// TODO for now, assuming single player, so we need to start and manage the server
 		
-		localServer = new GameServer();
-		new Thread() {
-			public void run() {
-				boolean cont = true;
-				while(cont) {
-					cont = localServer.update();
-					try {
-						Thread.sleep(0);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+		if (!cfg.isMulti || cfg.isHost) { 
+			localServer = new GameServer(cfg);
+			serverThread = new Thread() {
+				public void run() {
+					boolean cont = true;
+					while(cont) {
+						cont = localServer.update();
+						try {
+							Thread.sleep(0);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
+					localServer = null;
 				}
-			}
-		}.start();
+			};
+			serverThread.start();
+		}
 		
-		localClient = new GameClient(this, "New Player");
+		localClient = new GameClient(this, cfg);
 		
-		new Thread() {
+		clientThread = new Thread() {
 			public void run() {
 				boolean cont = true;
 				while(cont) {
@@ -74,16 +79,27 @@ public class SpaceTacticsGame extends Game {
 						e.printStackTrace();
 					}
 				}
+				localClient = null;
 			}
-		}.start();
+		};
+		clientThread.start();
 		
 		//gController = new GameController("", new ArrayList<Player>());
 		//gController.LOG = gController.LOG + "#Client";
 	}
 	
+	public void closeGame() {
+		if (localServer != null) {
+			localServer.stop();
+		}
+		if (localClient != null) {
+			localClient.stop();
+		}
+	}
+	
 	public void startGame() {
-		localServer.startGame();
-		localClient.startGame();
+		if (localServer != null) localServer.startGame();
+		if (localClient != null) localClient.startGame();
 		
 		setScreen(getLevelScreen());
 	}
@@ -102,12 +118,9 @@ public class SpaceTacticsGame extends Game {
 	
 	@Override
 	public void create() {		
-		if (false) {
-			createGame();
-		}
-		else {
-			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
-		}
+		
+		setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+		
 	}
 
 	@Override
@@ -120,10 +133,10 @@ public class SpaceTacticsGame extends Game {
 		super.render();
 		if (DEBUG) fpsLogger.log();
 		
-		if (localClient != null && localClient.getPlayers().size() > 0 && !started) {
+		/*if (localClient != null && localClient.getPlayers().size() > 0 && !started) {
 			started = true;
 			startGame();
-		}
+		}*/
 	}
 
 	@Override

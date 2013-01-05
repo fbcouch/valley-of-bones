@@ -23,6 +23,7 @@
 package com.ahsgaming.spacetactics.screens;
 
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -37,7 +39,7 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class GameSetupScreen extends AbstractScreen {
-	
+	public String LOG = "GameSetupScreen";
 	GameSetupConfig config;
 	
 	/**
@@ -46,6 +48,7 @@ public class GameSetupScreen extends AbstractScreen {
 	public GameSetupScreen(SpaceTacticsGame game, GameSetupConfig cfg) {
 		super(game);
 		config = cfg;
+		game.createGame(cfg);
 	}
 	
 	/**
@@ -107,13 +110,47 @@ public class GameSetupScreen extends AbstractScreen {
 		
 		table.add(new ScrollPane(vg)).fillX().colspan(6);
 		
-		table.add(new TextButton("Start Game", getSkin())).right().bottom();
+		TextButton start = new TextButton("Start Game",getSkin());
+		start.addListener(new ClickListener() {
+
+			/* (non-Javadoc)
+			 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
+			 */
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				super.touchUp(event, x, y, pointer, button);
+				
+				game.startGame();
+			}
+			
+		});
+		
+		table.add(start).right().bottom();
 		
 		table.row();
 		
 		table.add(new TextField("", getSkin())).fill().colspan(6);
 		
-		table.add(new TextButton("Cancel", getSkin())).right();
+		TextButton cancel = new TextButton("Cancel", getSkin());
+		cancel.addListener(new ClickListener() {
+
+			/* (non-Javadoc)
+			 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
+			 */
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				super.touchUp(event, x, y, pointer, button);
+				
+				game.setScreen(game.getMainMenuScreen());
+				game.closeGame();
+				
+			}
+			
+		});
+		
+		table.add(cancel).right();
 		
 		table.row();
 	}
@@ -122,6 +159,8 @@ public class GameSetupScreen extends AbstractScreen {
 		public String mapName = "blank.tmx";
 		public boolean isMulti = false;
 		public boolean isHost = true;
+		public String hostName = "localhost";
+		public String playerName = "New Player";
 	}
 
 }

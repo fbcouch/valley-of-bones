@@ -62,12 +62,12 @@ public class MainMenuScreen extends AbstractScreen {
 		});
 		
 		TextButton btnMPGame = new TextButton("Multilayer", skin);
-		btnNewGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		btnNewGame.addListener(new ClickListener() {
+		btnMPGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		btnMPGame.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				Gdx.app.log(SpaceTacticsGame.LOG, "btnMPGame touched");
-				game.setScreen(game.getGameSetupScreen());
+				game.setScreen(game.getGameSetupScreen()); // TODO implement a multiplayer version of this
 			}
 		});
 		
