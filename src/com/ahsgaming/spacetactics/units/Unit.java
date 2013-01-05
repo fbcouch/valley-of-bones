@@ -45,8 +45,10 @@ import com.badlogic.gdx.utils.Array;
  * @author jami
  *
  */
-public class Unit extends GameObject {
+public class Unit extends GameObject implements Selectable, Targetable {
 	public String LOG = "Unit";
+	
+	boolean selectable = true, targetable = true;
 	
 	float curHealth, maxHealth;
 	float curShield, maxShield;
@@ -57,7 +59,7 @@ public class Unit extends GameObject {
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 	
 	ArrayList<Command> commandQueue = new ArrayList<Command>();
-	Unit commandTarget;
+	GameObject commandTarget;
 	
 	/**
 	 * Constructors
@@ -135,7 +137,7 @@ public class Unit extends GameObject {
 	 * @param target
 	 * @return
 	 */
-	public boolean isInRange(Unit target) {
+	public boolean isInRange(GameObject target) {
 		for (Weapon w: weapons) {
 			if (GameObject.getDistanceSq(this, target) <= Math.pow(w.getRange(), 2)) {
 				return true;
@@ -149,7 +151,7 @@ public class Unit extends GameObject {
 	 * @param controller
 	 * @return
 	 */
-	public Unit findTarget(GameController controller) {
+	public GameObject findTarget(GameController controller) {
 		float maxRange = 0;
 		for (Weapon w: weapons) {
 			float range = w.getRange();
@@ -157,15 +159,16 @@ public class Unit extends GameObject {
 		}
 		
 		float maxRangeSq = maxRange * maxRange;
-		Unit candidate = null;
+		GameObject candidate = null;
 		float candidateVal = 0;
 		
 		for (GameObject obj: controller.getGameObjects()) {
 			// TODO fix this to use some kind of threat assessment rather than just distance
 			float objVal = GameObject.getDistanceSq(this, obj);
-			if (obj instanceof Unit && obj.getOwner() != this.getOwner() && objVal <= maxRangeSq) {
+			if (obj instanceof Targetable && ((Targetable)obj).isTargetable()
+					&& obj.getOwner() != this.getOwner() && objVal <= maxRangeSq) {
 				if (candidate == null || objVal < candidateVal) {
-					candidate = (Unit)obj;
+					candidate = obj;
 				}
 			}
 		}
@@ -276,7 +279,7 @@ public class Unit extends GameObject {
 		commandQueue.add(cmd);
 	}
 	
-	public Unit getTarget() {
+	public GameObject getTarget() {
 		if (commandTarget != null && (commandTarget.getOwner() != null && commandTarget.getOwner().getPlayerId() == getOwner().getPlayerId())) {
 			return null;
 		}
@@ -285,5 +288,26 @@ public class Unit extends GameObject {
 	
 	public String getProtoId() {
 		return protoId;
+	}
+
+	@Override
+	public boolean isTargetable() {
+		return this.targetable;
+	}
+
+	@Override
+	public void setTargetable(boolean targetable) {
+		this.targetable = targetable;
+		
+	}
+
+	@Override
+	public boolean isSelectable() {
+		return selectable;
+	}
+
+	@Override
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
 	}
 }

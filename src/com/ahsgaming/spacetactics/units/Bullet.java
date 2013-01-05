@@ -38,7 +38,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Bullet extends GameObject {
 	public String LOG = "Bullet";
 	
-	Unit parentUnit, target;
+	GameObject parentUnit, target;
 	float ticksRemaining = 0;
 	float damage = 0;
 	DamageTypes damageType = DamageTypes.NORMAL;
@@ -48,8 +48,8 @@ public class Bullet extends GameObject {
 	 * @param owner
 	 * @param region
 	 */
-	public Bullet(int id, Player owner, Unit parentUnit, 
-			Unit target, Vector2 position, BulletProto proto) {
+	public Bullet(int id, Player owner, GameObject parentUnit, 
+			GameObject target, Vector2 position, BulletProto proto) {
 		super(id, owner, proto.image);
 		
 		this.parentUnit = parentUnit;
@@ -113,7 +113,7 @@ public class Bullet extends GameObject {
 	/**
 	 * @return the parent
 	 */
-	public Unit getParentUnit() {
+	public GameObject getParentUnit() {
 		return parentUnit;
 	}
 
@@ -127,7 +127,7 @@ public class Bullet extends GameObject {
 	/**
 	 * @return the target
 	 */
-	public Unit getTarget() {
+	public GameObject getTarget() {
 		return target;
 	}
 

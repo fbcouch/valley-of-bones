@@ -24,6 +24,7 @@ package com.ahsgaming.spacetactics;
 
 import java.util.ArrayList;
 
+import com.ahsgaming.spacetactics.units.Bullet;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -165,6 +166,8 @@ public class GameObject extends Actor {
 		}
 		path.add(location);
 	}
+	
+	public void takeDamage(Bullet b) {}
 	
 	/**
 	 * Implemented methods

@@ -36,6 +36,7 @@ import com.ahsgaming.spacetactics.network.Unpause;
 import com.ahsgaming.spacetactics.network.Upgrade;
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
+import com.ahsgaming.spacetactics.units.Selectable;
 import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -446,13 +447,15 @@ public class GameController {
 		// TODO check owner
 		boolean hasOwnerObjs = false;
 		for (GameObject obj: selectedObjects) {
-			if (obj.getOwner() == owner) hasOwnerObjs = true;
+			if (obj.getOwner() == owner && obj instanceof Selectable 
+					&& ((Selectable)obj).isSelectable()) hasOwnerObjs = true;
 		}
 		
 		GameObject firstNewObj = null;
 		synchronized (gameObjects) {
 			for (GameObject obj: gameObjects) {
-				if (obj.isColliding(box) && !selectedObjects.contains(obj)) {
+				if (obj instanceof Selectable && ((Selectable)obj).isSelectable() 
+						&& obj.isColliding(box) && !selectedObjects.contains(obj)) {
 					if (obj.getOwner() == owner) hasOwnerObjs = true;
 					
 					if (obj.getOwner() == owner || !hasOwnerObjs) {
