@@ -1,17 +1,12 @@
 package com.ahsgaming.spacetactics;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.GameClient;
 import com.ahsgaming.spacetactics.network.GameServer;
-import com.ahsgaming.spacetactics.network.KryoCommon;
-import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
-import com.ahsgaming.spacetactics.network.Unpause;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen;
+import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.ahsgaming.spacetactics.screens.LevelScreen;
 import com.ahsgaming.spacetactics.screens.MainMenuScreen;
 import com.ahsgaming.spacetactics.screens.OptionsScreen;
@@ -21,9 +16,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 
 public class SpaceTacticsGame extends Game {
 	public static final boolean DEBUG = true;
@@ -110,7 +102,7 @@ public class SpaceTacticsGame extends Game {
 	
 	@Override
 	public void create() {		
-		if (DEBUG) {
+		if (false) {
 			createGame();
 		}
 		else {
@@ -128,7 +120,7 @@ public class SpaceTacticsGame extends Game {
 		super.render();
 		if (DEBUG) fpsLogger.log();
 		
-		if (localClient.getPlayers().size() > 0 && !started) {
+		if (localClient != null && localClient.getPlayers().size() > 0 && !started) {
 			started = true;
 			startGame();
 		}
@@ -166,7 +158,7 @@ public class SpaceTacticsGame extends Game {
 	}
 	
 	public GameSetupScreen getGameSetupScreen() {
-		return new GameSetupScreen(this);
+		return new GameSetupScreen(this, new GameSetupConfig());
 	}
 	
 	public GameLoadingScreen getGameLoadingScreen() {

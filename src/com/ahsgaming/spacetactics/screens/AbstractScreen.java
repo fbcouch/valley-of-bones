@@ -39,7 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class AbstractScreen implements Screen {
 
 	protected final SpaceTacticsGame game;
-	protected final Stage stage;
+	protected Stage stage;
 	protected Skin skin;
 	protected BitmapFont fontSmall;
 	protected BitmapFont fontMed;
@@ -112,7 +112,7 @@ public class AbstractScreen implements Screen {
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+		dispose();
 	}
 	
 	

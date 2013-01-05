@@ -51,14 +51,23 @@ public class MainMenuScreen extends AbstractScreen {
 		
 		Skin skin = getSkin();
 		
-		TextButton btnNewGame = new TextButton("New Game", skin);
+		TextButton btnNewGame = new TextButton("Single Player", skin);
 		btnNewGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		btnNewGame.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				Gdx.app.log(SpaceTacticsGame.LOG, "btnNewGame touched");
-				game.startGame();
+				game.setScreen(game.getGameSetupScreen());
+			}
+		});
 		
+		TextButton btnMPGame = new TextButton("Multilayer", skin);
+		btnNewGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		btnNewGame.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				Gdx.app.log(SpaceTacticsGame.LOG, "btnMPGame touched");
+				game.setScreen(game.getGameSetupScreen());
 			}
 		});
 		
@@ -90,6 +99,10 @@ public class MainMenuScreen extends AbstractScreen {
 		table.row();
 		
 		table.add(btnNewGame).size(BUTTON_WIDTH, BUTTON_HEIGHT).uniform().fill().spaceBottom(BUTTON_SPACING);
+		
+		table.row();
+		
+		table.add(btnMPGame).uniform().fill().spaceBottom(BUTTON_SPACING);
 		
 		table.row();
 		

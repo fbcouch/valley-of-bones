@@ -11,7 +11,7 @@ GOALS (future)
 - Upgrade units
 - Build stations
 - UX stuff
-- Interfaces (Selectable/Targetable)
+- Interfaces (Damageable?)
 - Unit subclasses (Squadron, Ship, Station)
 
 GOALS 1.5.13
