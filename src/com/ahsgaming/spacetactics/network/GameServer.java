@@ -118,9 +118,11 @@ public class GameServer {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
-						cmd.tick = controller.getGameTick() + (cmd instanceof Unpause ? 0 : 2);
-						controller.queueCommand(cmd);
-						server.sendToAllTCP(cmd);
+						cmd.tick = controller.getNetTick() + (cmd instanceof Unpause ? 0 : 2);
+						if (controller.validate(cmd)) {
+							controller.queueCommand(cmd);
+							server.sendToAllTCP(cmd);
+						}
 					}
 				}
 			}
@@ -166,6 +168,8 @@ public class GameServer {
 				//}
 				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
 			}
+			
+			controller.netUpdate(KryoCommon.NET_TICK_LENGTH * 0.001f);
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {

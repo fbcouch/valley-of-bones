@@ -51,6 +51,8 @@ public class Unit extends GameObject {
 	float curHealth, maxHealth;
 	float curShield, maxShield;
 	float curArmor, maxArmor;
+	
+	String protoId = "";
 
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 	
@@ -93,6 +95,8 @@ public class Unit extends GameObject {
 		maxAccel = proto.accel;
 		turnSpeed = proto.turn;
 		
+		protoId = proto.id;
+		
 		if (proto.weapons != null) {
 			for (String w: proto.weapons) {
 				JsonWeapon jw = (JsonWeapon)Prototypes.getProto(w);
@@ -105,7 +109,7 @@ public class Unit extends GameObject {
 		}
 		
 		if (proto.bounds != null) {
-			collideBox = proto.bounds;
+			collideBox.set(proto.bounds);
 		}
 	}
 	
@@ -277,5 +281,9 @@ public class Unit extends GameObject {
 			return null;
 		}
 		return commandTarget;
+	}
+	
+	public String getProtoId() {
+		return protoId;
 	}
 }

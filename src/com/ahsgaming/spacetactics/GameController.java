@@ -75,6 +75,7 @@ public class GameController {
 	List<Command> commandQueue;
 	List<Command> cmdsToAdd;
 	int gameTick = 0;
+	int netTick = 0;
 	
 	int nextObjectId = 0;
 	
@@ -168,9 +169,11 @@ public class GameController {
 		return grpUnits;
 	}
 	
-	public void update(float delta) {
-		//Gdx.app.log(LOG, "update...");
-		// TODO process commands
+	public void netUpdate(float delta) {
+		// process commands
+		
+		if (state == GameStates.RUNNING) netTick += 1; 
+		
 		synchronized (commandQueue) {
 			List<Command> toAdd = cmdsToAdd;
 			cmdsToAdd = new ArrayList<Command>();
@@ -181,10 +184,10 @@ public class GameController {
 			List<Command> toRemove = new ArrayList<Command>();
 			for (Command command: commandQueue) {
 				Gdx.app.log(LOG, "Command: " + Integer.toString(command.tick));
-				if (command.tick < gameTick) {
+				if (command.tick < netTick) {
 					// remove commands in the past without executing
 					toRemove.add(command);
-				} else if (command.tick == gameTick) {
+				} else if (command.tick == netTick) {
 					// execute current commands and remove
 					// TODO execute the command
 					//Gdx.app.log(SpaceTacticsGame.LOG, "Executing command on tick " + Integer.toString(command.tick) + "==" + Integer.toString(gameTick));
@@ -197,6 +200,12 @@ public class GameController {
 			}
 			commandQueue.removeAll(toRemove);
 		}
+		
+	}
+	
+	public void update(float delta) {
+		//Gdx.app.log(LOG, "update...");
+		
 		
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;
@@ -244,10 +253,34 @@ public class GameController {
 	}
 
 	
+	public boolean validate(Command cmd) {
+		
+		if (cmd instanceof Attack) {
+			return true;
+		} else if (cmd instanceof Build) {
+			Build b = (Build)cmd;
+			Rectangle bounds = new Rectangle(((JsonUnit)Prototypes.getProto(b.building)).bounds);
+			bounds.set(bounds.x + b.location.x - bounds.width * 0.5f, bounds.y + b.location.y - bounds.height * 0.5f, bounds.width, bounds.height);
+			Gdx.app.log(LOG, Integer.toString(b.tick) + ": " + Boolean.toString(getObjsInArea(bounds).size == 0));
+			return (getPlayerById(b.owner).canBuild(b.building, this) && getObjsInArea(bounds).size == 0);
+		} else if (cmd instanceof Move) {
+			return true;
+		} else if (cmd instanceof Pause) {
+			return true;
+		} else if (cmd instanceof Unpause) {
+			return true;
+		} else if (cmd instanceof Upgrade) {
+			return true;
+		}
+		return false;
+	}
+	
 	public void executeCommand(Command cmd) {
+		if (!validate(cmd)) return;
 		if (cmd instanceof Attack) {
 			executeAttack((Attack)cmd);
 		} else if (cmd instanceof Build) {
+			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.tick));
 			executeBuild((Build)cmd);
 		} else if (cmd instanceof Move) {
 			executeMove((Move)cmd);
@@ -263,7 +296,7 @@ public class GameController {
 	}
 	
 	public void executeAttack(Attack cmd) {
-		Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
+		//Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
 		GameObject obj = getObjById(cmd.unit);
 		GameObject tar = getObjById(cmd.target);
 		if (obj == null || tar == null) {
@@ -287,11 +320,22 @@ public class GameController {
 	}
 	
 	public void executeBuild(Build cmd) {
-		// TODO place builder
-		// for now, just add the unit
-		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
-		unit.setPosition(cmd.location, "center");
-		objsToAdd.add(unit);
+		// check that this can be built
+		JsonUnit junit = (JsonUnit) Prototypes.getProto("fighters-base");
+		Rectangle bounds = new Rectangle(junit.bounds);
+		bounds.set(cmd.location.x + bounds.x - bounds.width * 0.5f, cmd.location.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
+		Player owner = getPlayerById(cmd.owner);
+		if (owner.canBuild(junit.id, this) && getObjsInArea(bounds).size == 0) {
+			
+			// TODO place builder
+			// for now, just add the unit
+			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
+			unit.setPosition(cmd.location, "center");
+			
+			addGameUnitNow(unit);
+			owner.setBankMoney(owner.getBankMoney() - junit.cost);
+		}
+		
 	}
 	
 	public void executeMove(Move cmd) {
@@ -342,7 +386,10 @@ public class GameController {
 	}
 	
 	private void addGameUnitNow(GameObject obj) {
-		if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		synchronized(gameObjects) {
+			if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		}
+		
 		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
 	}
 	
@@ -374,6 +421,18 @@ public class GameController {
 			}
 		}
 		return null;
+	}
+	
+	public Array<Unit> getUnitsByPlayerId(int id) {
+		Array<Unit> ret = new Array<Unit>();
+		synchronized(gameObjects) {
+			for (GameObject obj: gameObjects) {
+				if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == id) {
+					ret.add((Unit)obj);
+				}
+			}
+		}
+		return ret;
 	}
 	
 	public List<GameObject> getSelectedObjects() {
@@ -465,6 +524,10 @@ public class GameController {
 	 */
 	public void setGameTick(int gameTick) {
 		this.gameTick = gameTick;
+	}
+	
+	public int getNetTick() {
+		return netTick;
 	}
 	
 	public List<Command> getCommandHistory() {
