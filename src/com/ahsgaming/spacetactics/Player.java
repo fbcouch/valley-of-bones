@@ -22,7 +22,9 @@
  */
 package com.ahsgaming.spacetactics;
 
-import com.badlogic.gdx.Gdx;
+import com.ahsgaming.spacetactics.units.Prototypes;
+import com.ahsgaming.spacetactics.units.Prototypes.JsonProto;
+import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -41,7 +43,7 @@ public class Player {
 	Color playerColor = new Color(1, 1, 1, 1);
 	String name = "New Cadet";
 	
-	float bankMoney = 0, rateMoney = 1;
+	float bankMoney = 2000, rateMoney = 1;
 	float curFood = 0, maxFood = 0;
 	
 	/**
@@ -59,11 +61,24 @@ public class Player {
 	
 	public void update(GameController controller, float delta) {
 		bankMoney += rateMoney * delta;
+		
+		float food = 0, mFood = 0;
+		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
+			JsonProto up = Prototypes.getProto(unit.getProtoId());
+			if (up.food < 0) mFood -= up.food;
+			else food += up.food;
+		}
+		curFood = food;
+		maxFood = mFood;
 	}
 	
-	public boolean canBuild(String protoId) {
+	public boolean canBuild(String protoId, GameController controller) {
 		// TODO implement this
-		return true;
+		JsonProto proto = Prototypes.getProto(protoId);
+		if ((proto.food <= 0 || proto.food <= maxFood - curFood) && bankMoney >= proto.cost) {
+			return true;
+		}
+		return false;
 	}
 	
 	

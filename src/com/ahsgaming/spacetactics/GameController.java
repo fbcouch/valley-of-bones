@@ -24,6 +24,8 @@ package com.ahsgaming.spacetactics;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.ahsgaming.spacetactics.network.Attack;
 import com.ahsgaming.spacetactics.network.Build;
@@ -58,10 +60,10 @@ public class GameController {
 	
 	public String LOG = "GameController";
 	
-	ArrayList<GameObject> gameObjects, selectedObjects, objsToAdd, objsToRemove;
+	List<GameObject> gameObjects, selectedObjects, objsToAdd, objsToRemove;
 	Group grpRoot, grpMap, grpUnits;
 	
-	ArrayList<Player> players;
+	List<Player> players;
 	
 	String mapName;
 	TiledMap map;
@@ -69,10 +71,11 @@ public class GameController {
 	
 	GameStates state;
 	
-	ArrayList<Command> commandHistory;
-	ArrayList<Command> commandQueue;
-	ArrayList<Command> cmdsToAdd;
+	List<Command> commandHistory;
+	List<Command> commandQueue;
+	List<Command> cmdsToAdd;
 	int gameTick = 0;
+	int netTick = 0;
 	
 	int nextObjectId = 0;
 	
@@ -81,7 +84,7 @@ public class GameController {
 	 * Constructors
 	 */
 	
-	public GameController(String mapName, ArrayList<Player> players) {
+	public GameController(String mapName, List<Player> players) {
 		// TODO load map
 		this.mapName = mapName;
 		grpRoot = new Group();
@@ -90,14 +93,14 @@ public class GameController {
 		grpRoot.addActor(grpMap);
 		grpRoot.addActor(grpUnits);
 		
-		gameObjects = new ArrayList<GameObject>();
-		selectedObjects = new ArrayList<GameObject>();
-		objsToAdd = new ArrayList<GameObject>();
-		objsToRemove = new ArrayList<GameObject>();
+		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
+		selectedObjects = Collections.synchronizedList(new ArrayList<GameObject>());
+		objsToAdd = Collections.synchronizedList(new ArrayList<GameObject>());
+		objsToRemove = Collections.synchronizedList(new ArrayList<GameObject>());
 		
-		commandHistory = new ArrayList<Command>();
-		commandQueue = new ArrayList<Command>();
-		cmdsToAdd = new ArrayList<Command>();
+		commandHistory = Collections.synchronizedList(new ArrayList<Command>());
+		commandQueue = Collections.synchronizedList(new ArrayList<Command>());
+		cmdsToAdd = Collections.synchronizedList(new ArrayList<Command>());
 		
 		this.players = players;
 		
@@ -166,80 +169,118 @@ public class GameController {
 		return grpUnits;
 	}
 	
+	public void netUpdate(float delta) {
+		// process commands
+		
+		if (state == GameStates.RUNNING) netTick += 1; 
+		
+		synchronized (commandQueue) {
+			List<Command> toAdd = cmdsToAdd;
+			cmdsToAdd = new ArrayList<Command>();
+		
+			commandQueue.addAll(toAdd);
+		
+		
+			List<Command> toRemove = new ArrayList<Command>();
+			for (Command command: commandQueue) {
+				Gdx.app.log(LOG, "Command: " + Integer.toString(command.tick));
+				if (command.tick < netTick) {
+					// remove commands in the past without executing
+					toRemove.add(command);
+				} else if (command.tick == netTick) {
+					// execute current commands and remove
+					// TODO execute the command
+					//Gdx.app.log(SpaceTacticsGame.LOG, "Executing command on tick " + Integer.toString(command.tick) + "==" + Integer.toString(gameTick));
+					if (state == GameStates.RUNNING || command instanceof Unpause) { 
+						executeCommand(command);
+					}
+					toRemove.add(command);
+					commandHistory.add(command);
+				} // future commands are left alone
+			}
+			commandQueue.removeAll(toRemove);
+		}
+		
+	}
+	
 	public void update(float delta) {
 		//Gdx.app.log(LOG, "update...");
-		// TODO process commands
-		ArrayList<Command> toAdd = cmdsToAdd;
-		cmdsToAdd = new ArrayList<Command>();
-		commandQueue.addAll(toAdd);
 		
-		ArrayList<Command> toRemove = new ArrayList<Command>();
-		for (Command command: commandQueue) {
-			Gdx.app.log(LOG, "Command: " + Integer.toString(command.tick));
-			if (command.tick < gameTick) {
-				// remove commands in the past without executing
-				toRemove.add(command);
-			} else if (command.tick == gameTick) {
-				// execute current commands and remove
-				// TODO execute the command
-				//Gdx.app.log(SpaceTacticsGame.LOG, "Executing command on tick " + Integer.toString(command.tick) + "==" + Integer.toString(gameTick));
-				if (state == GameStates.RUNNING || command instanceof Unpause) { 
-					executeCommand(command);
-				}
-				toRemove.add(command);
-				commandHistory.add(command);
-			} // future commands are left alone
-		}
-		commandQueue.removeAll(toRemove);
 		
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;
 			//Gdx.app.log(LOG, "Game Tick: " + Integer.toString(gameTick));
-			
-			// update collection
-			gameObjects.removeAll(objsToRemove);
-			for (GameObject obj: objsToRemove) {
-				grpUnits.removeActor(obj);
-			}
-			objsToRemove.clear();
-			
-			for (GameObject obj: objsToAdd) {
-				addGameUnitNow(obj);
-			}
-			objsToAdd.clear();
-			
-			for (GameObject obj : gameObjects) {
-				// update physics
-				
-				if (obj.getAccel().len() > obj.getMaxAccel()) {
-					// clamp acceleration to max
-					float angle = obj.getAccel().angle();
-					obj.getAccel().set(obj.getMaxAccel(), 0);
-					obj.getAccel().rotate(angle);
+			synchronized (gameObjects) {
+				// update collection
+				gameObjects.removeAll(objsToRemove);
+				for (GameObject obj: objsToRemove) {
+					grpUnits.removeActor(obj);
 				}
+				objsToRemove.clear();
 				
-				obj.getVelocity().add(obj.getAccel().mul(delta));
-				if (obj.getVelocity().len() > obj.getMaxSpeed()) {
-					// clamp velocity to max
-					float angle = obj.getVelocity().angle();
-					obj.getVelocity().set(obj.getMaxSpeed(), 0);
-					obj.getVelocity().rotate(angle);
+				for (GameObject obj: objsToAdd) {
+					addGameUnitNow(obj);
 				}
+				objsToAdd.clear();
 				
-				obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
-				
-				obj.update(this, delta);
-				
-				if (obj.isRemove()) objsToRemove.add(obj);
+				for (GameObject obj : gameObjects) {
+					// update physics
+					
+					if (obj.getAccel().len() > obj.getMaxAccel()) {
+						// clamp acceleration to max
+						float angle = obj.getAccel().angle();
+						obj.getAccel().set(obj.getMaxAccel(), 0);
+						obj.getAccel().rotate(angle);
+					}
+					
+					obj.getVelocity().add(obj.getAccel().mul(delta));
+					if (obj.getVelocity().len() > obj.getMaxSpeed()) {
+						// clamp velocity to max
+						float angle = obj.getVelocity().angle();
+						obj.getVelocity().set(obj.getMaxSpeed(), 0);
+						obj.getVelocity().rotate(angle);
+					}
+					
+					obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
+					
+					obj.update(this, delta);
+					
+					if (obj.isRemove()) objsToRemove.add(obj);
+				}
 			}
 		}
+		
 	}
 
 	
+	public boolean validate(Command cmd) {
+		
+		if (cmd instanceof Attack) {
+			return true;
+		} else if (cmd instanceof Build) {
+			Build b = (Build)cmd;
+			Rectangle bounds = new Rectangle(((JsonUnit)Prototypes.getProto(b.building)).bounds);
+			bounds.set(bounds.x + b.location.x - bounds.width * 0.5f, bounds.y + b.location.y - bounds.height * 0.5f, bounds.width, bounds.height);
+			Gdx.app.log(LOG, Integer.toString(b.tick) + ": " + Boolean.toString(getObjsInArea(bounds).size == 0));
+			return (getPlayerById(b.owner).canBuild(b.building, this) && getObjsInArea(bounds).size == 0);
+		} else if (cmd instanceof Move) {
+			return true;
+		} else if (cmd instanceof Pause) {
+			return true;
+		} else if (cmd instanceof Unpause) {
+			return true;
+		} else if (cmd instanceof Upgrade) {
+			return true;
+		}
+		return false;
+	}
+	
 	public void executeCommand(Command cmd) {
+		if (!validate(cmd)) return;
 		if (cmd instanceof Attack) {
 			executeAttack((Attack)cmd);
 		} else if (cmd instanceof Build) {
+			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.tick));
 			executeBuild((Build)cmd);
 		} else if (cmd instanceof Move) {
 			executeMove((Move)cmd);
@@ -255,7 +296,7 @@ public class GameController {
 	}
 	
 	public void executeAttack(Attack cmd) {
-		Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
+		//Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
 		GameObject obj = getObjById(cmd.unit);
 		GameObject tar = getObjById(cmd.target);
 		if (obj == null || tar == null) {
@@ -279,11 +320,22 @@ public class GameController {
 	}
 	
 	public void executeBuild(Build cmd) {
-		// TODO place builder
-		// for now, just add the unit
-		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
-		unit.setPosition(cmd.location, "center");
-		objsToAdd.add(unit);
+		// check that this can be built
+		JsonUnit junit = (JsonUnit) Prototypes.getProto("fighters-base");
+		Rectangle bounds = new Rectangle(junit.bounds);
+		bounds.set(cmd.location.x + bounds.x - bounds.width * 0.5f, cmd.location.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
+		Player owner = getPlayerById(cmd.owner);
+		if (owner.canBuild(junit.id, this) && getObjsInArea(bounds).size == 0) {
+			
+			// TODO place builder
+			// for now, just add the unit
+			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
+			unit.setPosition(cmd.location, "center");
+			
+			addGameUnitNow(unit);
+			owner.setBankMoney(owner.getBankMoney() - junit.cost);
+		}
+		
 	}
 	
 	public void executeMove(Move cmd) {
@@ -322,7 +374,7 @@ public class GameController {
 		return grpRoot;
 	}
 	
-	public ArrayList<Player> getPlayers() {
+	public List<Player> getPlayers() {
 		return players;
 	}
 	
@@ -334,7 +386,10 @@ public class GameController {
 	}
 	
 	private void addGameUnitNow(GameObject obj) {
-		if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		synchronized(gameObjects) {
+			if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		}
+		
 		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
 	}
 	
@@ -347,21 +402,40 @@ public class GameController {
 		grpUnits.removeActor(obj);
 	}
 	
-	public ArrayList<GameObject> getGameObjects() {
-		return gameObjects;
+	public Array<GameObject> getGameObjects() {
+		Array<GameObject> ret = new Array<GameObject>();
+		synchronized(gameObjects) {
+			for(GameObject obj: gameObjects) {
+				ret.add(obj);
+			}
+		}
+		return ret;
 	}
 	
 	public GameObject getObjById(int id) {
-		for (GameObject obj: getGameObjects()) {
-			if (obj.getObjId() == id) {
-				return obj;
+		synchronized(gameObjects) {
+			for (GameObject obj: gameObjects) {
+				if (obj.getObjId() == id) {
+					return obj;
+				}
 			}
 		}
-		
 		return null;
 	}
 	
-	public ArrayList<GameObject> getSelectedObjects() {
+	public Array<Unit> getUnitsByPlayerId(int id) {
+		Array<Unit> ret = new Array<Unit>();
+		synchronized(gameObjects) {
+			for (GameObject obj: gameObjects) {
+				if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == id) {
+					ret.add((Unit)obj);
+				}
+			}
+		}
+		return ret;
+	}
+	
+	public List<GameObject> getSelectedObjects() {
 		return selectedObjects;
 	}
 	
@@ -376,15 +450,17 @@ public class GameController {
 		}
 		
 		GameObject firstNewObj = null;
-		for (GameObject obj: gameObjects) {
-			if (obj.isColliding(box) && !selectedObjects.contains(obj)) {
-				if (obj.getOwner() == owner) hasOwnerObjs = true;
-				
-				if (obj.getOwner() == owner || !hasOwnerObjs) {
-					selectedObjects.add(obj);
+		synchronized (gameObjects) {
+			for (GameObject obj: gameObjects) {
+				if (obj.isColliding(box) && !selectedObjects.contains(obj)) {
+					if (obj.getOwner() == owner) hasOwnerObjs = true;
+					
+					if (obj.getOwner() == owner || !hasOwnerObjs) {
+						selectedObjects.add(obj);
+					}
+					
+					if (firstNewObj == null) firstNewObj = obj;
 				}
-				
-				if (firstNewObj == null) firstNewObj = obj;
 			}
 		}
 		
@@ -392,10 +468,12 @@ public class GameController {
 		if (hasOwnerObjs) {
 			// only select owner objs
 			ArrayList<GameObject> toRemove = new ArrayList<GameObject>();
-			for (GameObject obj: selectedObjects) {
-				if (obj.getOwner() != owner) toRemove.add(obj);
+			synchronized(selectedObjects) {
+				for (GameObject obj: selectedObjects) {
+					if (obj.getOwner() != owner) toRemove.add(obj);
+				}
+				selectedObjects.removeAll(toRemove);
 			}
-			selectedObjects.removeAll(toRemove);
 		} else if (firstNewObj != null){
 			// only select one
 			selectedObjects.clear();
@@ -403,12 +481,14 @@ public class GameController {
 		}
 	}
 	
-	public ArrayList<GameObject> getObjsAtPosition(Vector2 mapCoords) {
-		ArrayList<GameObject> returnVal = new ArrayList<GameObject>();
+	public Array<GameObject> getObjsAtPosition(Vector2 mapCoords) {
+		Array<GameObject> returnVal = new Array<GameObject>();
 		
-		for (GameObject obj: gameObjects) {
-			if (obj.isColliding(mapCoords)) {
-				returnVal.add(obj);
+		synchronized(gameObjects) {
+			for (GameObject obj: gameObjects) {
+				if (obj.isColliding(mapCoords)) {
+					returnVal.add(obj);
+				}
 			}
 		}
 		
@@ -417,9 +497,12 @@ public class GameController {
 	
 	public Array<GameObject> getObjsInArea(Rectangle bounds) {
 		Array<GameObject> ret = new Array<GameObject>();
-		for (GameObject obj: gameObjects) {
-			if (obj.isColliding(bounds)) {
-				ret.add(obj);
+		
+		synchronized(gameObjects) {
+			for (GameObject obj: gameObjects) {
+				if (obj.isColliding(bounds)) {
+					ret.add(obj);
+				}
 			}
 		}
 		return ret;
@@ -443,11 +526,15 @@ public class GameController {
 		this.gameTick = gameTick;
 	}
 	
-	public ArrayList<Command> getCommandHistory() {
+	public int getNetTick() {
+		return netTick;
+	}
+	
+	public List<Command> getCommandHistory() {
 		return this.commandHistory;
 	}
 	
-	public ArrayList<Command> getCommandQueue() {
+	public List<Command> getCommandQueue() {
 		return this.commandQueue;
 	}
 	

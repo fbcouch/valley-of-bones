@@ -7,7 +7,7 @@
     armor : 0,
     image : "station-base.png",
     cost: 1000,
-    food: 0,
+    food: -20,
     depends: ["one", "two", "three"],
     hardpoints: {
       weapon-hp1: {

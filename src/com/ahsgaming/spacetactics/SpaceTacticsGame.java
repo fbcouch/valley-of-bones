@@ -69,6 +69,7 @@ public class SpaceTacticsGame extends Game {
 		}.start();
 		
 		localClient = new GameClient(this, "New Player");
+		
 		new Thread() {
 			public void run() {
 				boolean cont = true;

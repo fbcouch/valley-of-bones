@@ -22,8 +22,6 @@
  */
 package com.ahsgaming.spacetactics.screens;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.spacetactics.GameController;
 import com.ahsgaming.spacetactics.GameObject;
 import com.ahsgaming.spacetactics.Player;
@@ -50,6 +48,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -180,17 +179,17 @@ public class LevelScreen extends AbstractScreen {
 			// TODO fix this - should be able to press (not hold) a key to build
 			if (Gdx.input.isKeyPressed(Keys.B)){
 				// TODO more buttons for more things
-				// TODO check that the player can build this and the space is unoccupied
+				
 				JsonUnit unit = (JsonUnit) Prototypes.getProto("fighters-base");
-				Rectangle bounds = unit.bounds;
+				Rectangle bounds = new Rectangle(unit.bounds);
 				Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
 				bounds.setX(loc.x - bounds.getWidth() * 0.5f);
 				bounds.setY(loc.y - bounds.getHeight() * 0.5f);
-				System.out.println(gController.getObjsInArea(bounds).size);
-				if (game.getPlayer().canBuild(unit.id) && gController.getObjsInArea(bounds).size == 0) {
+				
+				if (game.getPlayer().canBuild(unit.id, gController) && gController.getObjsInArea(bounds).size == 0) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
-					bld.tick = gController.getGameTick();
+					bld.tick = gController.getNetTick();
 					bld.building = unit.id;
 					bld.location = loc;
 					game.sendCommand(bld);
@@ -231,7 +230,7 @@ public class LevelScreen extends AbstractScreen {
 		} else {
 			if (rightBtnDown) {
 				// TODO issue context-dependent commands
-				ArrayList<GameObject> objsUnderCursor = null;
+				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
 				for (GameObject obj: gController.getSelectedObjects()) {
@@ -250,7 +249,7 @@ public class LevelScreen extends AbstractScreen {
 						// attack this target!
 						Attack at = new Attack();
 						at.owner = game.getPlayer().getPlayerId();
-						at.tick = gController.getGameTick();
+						at.tick = gController.getNetTick();
 						at.unit = obj.getObjId();
 						at.target = target.getObjId();
 						at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
@@ -260,7 +259,7 @@ public class LevelScreen extends AbstractScreen {
 						// move to this location
 						Move mv = new Move();
 						mv.owner = game.getPlayer().getPlayerId();
-						mv.tick = gController.getGameTick();
+						mv.tick = gController.getNetTick();
 						mv.unit = obj.getObjId();
 						mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
 						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);

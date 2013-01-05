@@ -114,13 +114,19 @@ public class GameClient {
 		});
 		
 		host = "localhost";
-		try {
-			client.connect(5000, host, KryoCommon.tcpPort);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
-			e.printStackTrace();
-		}
+		new Thread() {
+			public void run() {
+				try {
+					
+					client.connect(5000, host, KryoCommon.tcpPort);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		
 	}
 	
 	public void startGame() {
@@ -155,6 +161,7 @@ public class GameClient {
 			for (Player p: players) {
 				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
 			}
+			controller.netUpdate(KryoCommon.NET_TICK_LENGTH * 0.001f);
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
