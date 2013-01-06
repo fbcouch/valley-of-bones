@@ -46,6 +46,8 @@ public class Player {
 	float bankMoney = 2000, rateMoney = 1;
 	float curFood = 0, maxFood = 0;
 	
+	int teamId = 0;
+	
 	/**
 	 * 
 	 */
@@ -57,6 +59,11 @@ public class Player {
 	public Player(int id, Color color) {
 		playerId = id;
 		playerColor = color;
+	}
+	
+	public Player(int id, String name, Color color, int team) {
+		this(id, name, color);
+		this.teamId = team;
 	}
 	
 	public void update(GameController controller, float delta) {
@@ -168,5 +175,11 @@ public class Player {
 		this.maxFood = maxFood;
 	}
 	
+	public int getTeam() {
+		return teamId;
+	}
 	
+	public void setTeam(int teamId) {
+		this.teamId = teamId;
+	}
 }

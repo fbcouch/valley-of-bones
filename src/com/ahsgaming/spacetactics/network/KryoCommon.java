@@ -64,7 +64,10 @@ public class KryoCommon {
 		public int id;
 		public String name;
 		public Color color;
+		public int team;
 	}
 	
-	public static class AddAIPlayer {}
+	public static class AddAIPlayer {
+		public int team;
+	}
 }

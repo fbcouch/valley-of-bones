@@ -50,6 +50,10 @@ public class AIPlayer extends Player {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public AIPlayer(int id, String name, Color color, int team) {
+		super(id, name, color, team);
+	}
+	
 	@Override
 	public void update(GameController controller, float delta) {
 		super.update(controller, delta);

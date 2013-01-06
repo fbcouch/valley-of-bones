@@ -97,9 +97,6 @@ public class GameClient {
 					RegisteredPlayer reg = (RegisteredPlayer)obj;
 					playerId = reg.id;
 					Gdx.app.log(LOG, "RegisteredPlayer rec'd");
-					
-					// TODO add AI players through the UX
-					client.sendTCP(new AddAIPlayer());
 				}
 				
 				if (obj instanceof RegisteredPlayer[]) {
@@ -107,7 +104,7 @@ public class GameClient {
 					RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
 					players.clear();
 					for (int p=0;p<plist.length;p++) {
-						Player pl = new Player(plist[p].id, plist[p].name, plist[p].color);
+						Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
 						players.add(pl);
 						if (pl.getPlayerId() == playerId) player = pl;
 					}
@@ -194,6 +191,12 @@ public class GameClient {
 		}
 		
 		return true;
+	}
+	
+	public void addAIPlayer(int team) {
+		AddAIPlayer add = new AddAIPlayer();
+		add.team = team;
+		client.sendTCP(add);
 	}
 	
 	public void sendCommand(Command cmd) {

@@ -1,8 +1,11 @@
 package com.ahsgaming.spacetactics;
 
+import java.util.ArrayList;
+
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.GameClient;
 import com.ahsgaming.spacetactics.network.GameServer;
+import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen;
@@ -112,6 +115,10 @@ public class SpaceTacticsGame extends Game {
 		localClient.sendCommand(cmd);
 	}
 	
+	public void addAIPlayer(int team) {
+		localClient.addAIPlayer(team);
+	}
+	
 	/**
 	 * Implemented methods
 	 */
@@ -191,6 +198,13 @@ public class SpaceTacticsGame extends Game {
 			return localClient.getPlayer();
 		}
 		return null;
+	}
+	
+	public ArrayList<Player> getPlayers() {
+		if (localClient != null) {
+			return localClient.getPlayers();
+		}
+		return new ArrayList<Player>();
 	}
 	
 	

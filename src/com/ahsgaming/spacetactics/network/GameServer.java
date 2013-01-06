@@ -112,10 +112,11 @@ public class GameServer {
 				}
 				
 				if (obj instanceof AddAIPlayer) {
-					// TODO need to add AI players through the UX
-					int id = getNextPlayerId();
-					players.add(new AIPlayer(id, "AI Player", Player.AUTOCOLORS[id]));
-					
+					// TODO implement teams/player limits more robustly
+					if (players.size() < 4) {
+						int id = getNextPlayerId();
+						players.add(new AIPlayer(id, "AI Player", Player.AUTOCOLORS[id], ((AddAIPlayer)obj).team));
+					}
 					sendPlayerList();
 				}
 				
@@ -212,6 +213,7 @@ public class GameServer {
 			rp.id = pl.getPlayerId();
 			rp.name = pl.getPlayerName();
 			rp.color = pl.getPlayerColor();
+			rp.team = pl.getTeam();
 			list[p] = rp;
 		}
 		
