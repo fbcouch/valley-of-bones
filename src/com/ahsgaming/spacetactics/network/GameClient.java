@@ -31,6 +31,7 @@ import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
+import com.ahsgaming.spacetactics.network.KryoCommon.RemovePlayer;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
@@ -197,6 +198,12 @@ public class GameClient {
 		AddAIPlayer add = new AddAIPlayer();
 		add.team = team;
 		client.sendTCP(add);
+	}
+	
+	public void removePlayer(int playerId) {
+		RemovePlayer rem = new RemovePlayer();
+		rem.id = playerId;
+		client.sendTCP(rem);
 	}
 	
 	public void sendCommand(Command cmd) {

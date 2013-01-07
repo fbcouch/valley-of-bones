@@ -25,6 +25,7 @@ package com.ahsgaming.spacetactics.screens;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -51,7 +52,7 @@ public class MainMenuScreen extends AbstractScreen {
 		
 		Skin skin = getSkin();
 		
-		TextButton btnNewGame = new TextButton("Single Player", skin);
+		TextButton btnNewGame = new TextButton("New Game", skin);
 		btnNewGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		btnNewGame.addListener(new ClickListener() {
 			@Override
@@ -61,12 +62,22 @@ public class MainMenuScreen extends AbstractScreen {
 			}
 		});
 		
-		TextButton btnMPGame = new TextButton("Multilayer", skin);
-		btnMPGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		btnMPGame.addListener(new ClickListener() {
+		TextButton btnHostMPGame = new TextButton("Host", skin);
+		btnHostMPGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		btnHostMPGame.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				Gdx.app.log(SpaceTacticsGame.LOG, "btnMPGame touched");
+				Gdx.app.log(SpaceTacticsGame.LOG, "btnHostMPGame touched");
+				game.setScreen(game.getGameSetupScreen()); // TODO implement a multiplayer version of this
+			}
+		});
+		
+		TextButton btnJoinMPGame = new TextButton("Join", skin);
+		btnJoinMPGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		btnJoinMPGame.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				Gdx.app.log(SpaceTacticsGame.LOG, "btnJointMPGame touched");
 				game.setScreen(game.getGameSetupScreen()); // TODO implement a multiplayer version of this
 			}
 		});
@@ -94,23 +105,33 @@ public class MainMenuScreen extends AbstractScreen {
 		Table table = new Table(skin);
 		table.setFillParent(true);
 		stage.addActor(table);
-		table.add("Welcome to Space Tactics").spaceBottom(50f);
+		table.add("Welcome to Space Tactics").spaceBottom(50f).colspan(2);
 		
 		table.row();
 		
-		table.add(btnNewGame).size(BUTTON_WIDTH, BUTTON_HEIGHT).uniform().fill().spaceBottom(BUTTON_SPACING);
+		table.add(new Label("Single Player", getSkin())).colspan(2);
 		
 		table.row();
 		
-		table.add(btnMPGame).uniform().fill().spaceBottom(BUTTON_SPACING);
+		table.add(btnNewGame).size(BUTTON_WIDTH, BUTTON_HEIGHT).uniform().fill().spaceBottom(BUTTON_SPACING).colspan(2);
 		
 		table.row();
 		
-		table.add(btnOptions).uniform().fill().spaceBottom(BUTTON_SPACING);
+		table.add(new Label("Multiplayer", getSkin())).colspan(2);
 		
 		table.row();
 		
-		table.add(btnExit).uniform().fill().spaceBottom(BUTTON_SPACING);
+		table.add(btnHostMPGame).uniform().fill().spaceBottom(BUTTON_SPACING);
+		
+		table.add(btnJoinMPGame).uniform().fill().spaceBottom(BUTTON_SPACING);
+		
+		table.row();
+		
+		table.add(btnOptions).uniform().fill().spaceBottom(BUTTON_SPACING).colspan(2);
+		
+		table.row();
+		
+		table.add(btnExit).uniform().fill().spaceBottom(BUTTON_SPACING).colspan(2);
 		
 		table.row();
 	}

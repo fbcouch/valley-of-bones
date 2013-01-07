@@ -119,6 +119,10 @@ public class SpaceTacticsGame extends Game {
 		localClient.addAIPlayer(team);
 	}
 	
+	public void removePlayer(int playerId) {
+		localClient.removePlayer(playerId);
+	}
+	
 	/**
 	 * Implemented methods
 	 */
@@ -202,7 +206,7 @@ public class SpaceTacticsGame extends Game {
 	
 	public ArrayList<Player> getPlayers() {
 		if (localClient != null) {
-			return localClient.getPlayers();
+			return (ArrayList<Player>) localClient.getPlayers().clone();
 		}
 		return new ArrayList<Player>();
 	}
@@ -266,4 +270,6 @@ public class SpaceTacticsGame extends Game {
 	public void setMouseScrollSize(float mouseScrollSize) {
 		this.mouseScrollSize = mouseScrollSize;
 	}
+
+	
 }

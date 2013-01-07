@@ -27,7 +27,10 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -36,6 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /**
  * @author jami
@@ -108,20 +112,28 @@ public class GameSetupScreen extends AbstractScreen {
 		table.row();
 		
 		
-		ArrayList<String> team1 = new ArrayList<String>();
-		ArrayList<String> team2 = new ArrayList<String>();
+		ArrayList<Player> team1 = new ArrayList<Player>();
+		ArrayList<Player> team2 = new ArrayList<Player>();
 		
 		pList = new ArrayList<Player>();
 		pList.addAll(game.getPlayers());
 		
 		for (Player p: pList) {
-			if (p.getTeam() == 0) team1.add(String.format("%s (%d)", p.getPlayerName(), p.getTeam()));
-			if (p.getTeam() == 1) team2.add(String.format("%s (%d)", p.getPlayerName(), p.getTeam()));
+			if (p.getTeam() == 0) team1.add(p);//team1.add(String.format("%s (%d)", p.getPlayerName(), p.getTeam()));
+			if (p.getTeam() == 1) team2.add(p);//team2.add(String.format("%s (%d)", p.getPlayerName(), p.getTeam()));
 		}
 		
 		for (int i=0; i < team1.size() || i < team2.size(); i++) {
 			if (i < team1.size()) {
-				table.add(new Label(team1.get(i), getSkin())).left().colspan(3);
+				table.add(new Label(String.format("%s (%d)", team1.get(i).getPlayerName(), team1.get(i).getPlayerId()), getSkin())).left().colspan(2);
+				
+				if (team1.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
+					table.add(getRemovePlayerButton(team1.get(i))).right();
+				} else {
+					table.add();
+				}
+				
+				
 			} else {
 				table.add().colspan(3);
 			}
@@ -129,7 +141,13 @@ public class GameSetupScreen extends AbstractScreen {
 			table.add();
 			
 			if (i < team2.size()) {
-				table.add(new Label(team2.get(i), getSkin())).left().colspan(3);
+				table.add(new Label(String.format("%s (%d)", team2.get(i).getPlayerName(), team2.get(i).getPlayerId()), getSkin())).left().colspan(2);
+				
+				if (team2.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
+					table.add(getRemovePlayerButton(team2.get(i))).right();
+				} else {
+					table.add();
+				}
 			} else {
 				table.add().colspan(3);
 			}
@@ -203,6 +221,25 @@ public class GameSetupScreen extends AbstractScreen {
 		table.row();
 	}
 	
+	private ImageButton getRemovePlayerButton(final Player p) {
+		ImageButton remove = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("data/tread32.png"))))); 
+		remove.addListener(new ClickListener() {
+
+			/* (non-Javadoc)
+			 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
+			 */
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Gdx.app.log(LOG, String.format("remove (%d)", p.getPlayerId()));
+				game.removePlayer(p.getPlayerId());
+			}
+			
+		});
+		
+		return remove;
+	}
+
 	/**
 	 * Implemented methods
 	 */
@@ -227,10 +264,13 @@ public class GameSetupScreen extends AbstractScreen {
 		super.render(delta);
 		
 		//Gdx.app.log(LOG, Integer.toString(game.getPlayers().size()));
+		ArrayList<Player> players = game.getPlayers();
 		
-		if (!pList.equals(game.getPlayers())) {
-			stage.clear();
-			setupScreen();
+		synchronized (players) {
+			if (!pList.equals(players)) {
+				stage.clear();
+				setupScreen();
+			}
 		}
 	}
 	

@@ -32,8 +32,10 @@ import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
+import com.ahsgaming.spacetactics.network.KryoCommon.RemovePlayer;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -113,10 +115,38 @@ public class GameServer {
 				
 				if (obj instanceof AddAIPlayer) {
 					// TODO implement teams/player limits more robustly
+					// TODO make sure this is from the host
 					if (players.size() < 4) {
 						int id = getNextPlayerId();
-						players.add(new AIPlayer(id, "AI Player", Player.AUTOCOLORS[id], ((AddAIPlayer)obj).team));
+						ArrayList<Color> usedC = new ArrayList<Color>();
+						for (Player p: players) {
+							usedC.add(p.getPlayerColor());
+						}
+						
+						Color use = Player.AUTOCOLORS[0];
+						for (Color color: Player.AUTOCOLORS) {
+							if (!usedC.contains(color)) {
+								use = color;
+								break;
+							}
+						}
+						
+						players.add(new AIPlayer(id, "AI Player", use, ((AddAIPlayer)obj).team));
 					}
+					sendPlayerList();
+				}
+				
+				if (obj instanceof RemovePlayer) {
+					// TODO make sure this is from the host
+					RemovePlayer rem = (RemovePlayer)obj;
+					ArrayList<Player> remove = new ArrayList<Player>();
+					for (Player p: players) {
+						if (p.getPlayerId() == rem.id) {
+							remove.add(p);
+						}
+					}
+					
+					players.removeAll(remove);
 					sendPlayerList();
 				}
 				
