@@ -20,7 +20,7 @@ GOALS 1.5.13
   + selectable
   + targetable
 - UI/UX
-  - SP setup
+  + SP setup
   - MP setup
 
 GOALS 1.4.13

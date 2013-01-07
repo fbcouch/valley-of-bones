@@ -185,6 +185,13 @@ public class SpaceTacticsGame extends Game {
 		return new GameSetupScreen(this, new GameSetupConfig());
 	}
 	
+	public GameSetupScreen getGameSetupScreenMP(boolean isHost) {
+		GameSetupConfig cfg = new GameSetupConfig();
+		cfg.isMulti = true;
+		cfg.isHost = isHost;
+		return new GameSetupScreen(this, cfg);
+	}
+	
 	public GameLoadingScreen getGameLoadingScreen() {
 		return new GameLoadingScreen(this);
 	}
