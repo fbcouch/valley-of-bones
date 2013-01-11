@@ -14,14 +14,19 @@ GOALS (future)
 - Interfaces (Damageable?)
 - Unit subclasses (Squadron, Ship, Station)
 
+GOALS 1.12.13
+- UI/UX
+  + MP setup (part 1 - laying the groundwork)
+  - MP setup (part 2 - the UX for entering an IP)
+- Upgrade units
+
 GOALS 1.5.13
 + Implement net-tick
 + Interfaces
   + selectable
   + targetable
-- UI/UX
++ UI/UX
   + SP setup
-  - MP setup
 
 GOALS 1.4.13
 + Basic weapons

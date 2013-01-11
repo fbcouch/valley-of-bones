@@ -32,6 +32,7 @@ import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RemovePlayer;
+import com.ahsgaming.spacetactics.network.KryoCommon.StartGame;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
@@ -110,6 +111,11 @@ public class GameClient {
 						if (pl.getPlayerId() == playerId) player = pl;
 					}
 				}
+				
+				if (obj instanceof StartGame) {
+					// we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
+					game.setLoadGame();
+				}
 			}
 			
 			public void disconnected (Connection c) {
@@ -134,15 +140,18 @@ public class GameClient {
 	}
 	
 	public void startGame() {
+		// OK, this should be called within an opengl context, so we can create everything
 		controller = new GameController("", players);
 		controller.LOG = controller.LOG + "#Client";
 		
 		lastTimeMillis = System.currentTimeMillis();
 		
-		Unpause cmd = new Unpause();
-		cmd.owner = playerId;
-		cmd.tick = 0;
-		sendCommand(cmd);
+		sendStartGame();
+	}
+	
+	public void sendStartGame() {
+		// report that we're ready
+		client.sendTCP(new StartGame());
 	}
 	
 	public void stop() {

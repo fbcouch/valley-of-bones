@@ -22,6 +22,8 @@
  */
 package com.ahsgaming.spacetactics;
 
+import java.util.ArrayList;
+
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonProto;
 import com.ahsgaming.spacetactics.units.Unit;
@@ -181,5 +183,22 @@ public class Player {
 	
 	public void setTeam(int teamId) {
 		this.teamId = teamId;
+	}
+	
+	public static Color getUnusedColor(ArrayList<Player> players) {
+		ArrayList<Color> usedColors = new ArrayList<Color>();
+		for (Player p: players) {
+			usedColors.add(p.getPlayerColor());
+		}
+		
+		Color use = Player.AUTOCOLORS[0];
+		for (Color color: Player.AUTOCOLORS) {
+			if (!usedColors.contains(color)) {
+				use = color;
+				break;
+			}
+		}
+		
+		return use;
 	}
 }

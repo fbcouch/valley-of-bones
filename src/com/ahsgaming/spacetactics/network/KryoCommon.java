@@ -55,6 +55,7 @@ public class KryoCommon {
 		kryo.register(RegisteredPlayer[].class);
 		kryo.register(AddAIPlayer.class);
 		kryo.register(RemovePlayer.class);
+		kryo.register(StartGame.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -75,4 +76,6 @@ public class KryoCommon {
 	public static class RemovePlayer {
 		public int id;
 	}
+	
+	public static class StartGame { }
 }

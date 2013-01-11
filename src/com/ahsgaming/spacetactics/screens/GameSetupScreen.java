@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.KryoCommon.StartGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -105,10 +106,18 @@ public class GameSetupScreen extends AbstractScreen {
 		});
 		
 		table.add(new Label("Team One", getSkin())).colspan(2);
-		table.add(addTeam1AI).right();
+		if (!config.isMulti || config.isHost) {
+			table.add(addTeam1AI).right();
+		} else {
+			table.add();
+		}
 		table.add();
 		table.add(new Label("Team Two", getSkin())).colspan(2);
-		table.add(addTeam2AI).right();
+		if (!config.isMulti || config.isHost) {
+			table.add(addTeam2AI).right();
+		} else {
+			table.add();
+		}
 		table.row();
 		
 		
@@ -127,7 +136,7 @@ public class GameSetupScreen extends AbstractScreen {
 			if (i < team1.size()) {
 				table.add(new Label(String.format("%s (%d)", team1.get(i).getPlayerName(), team1.get(i).getPlayerId()), getSkin())).left().colspan(2);
 				
-				if (team1.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
+				if (config.isHost && team1.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
 					table.add(getRemovePlayerButton(team1.get(i))).right();
 				} else {
 					table.add();
@@ -143,7 +152,7 @@ public class GameSetupScreen extends AbstractScreen {
 			if (i < team2.size()) {
 				table.add(new Label(String.format("%s (%d)", team2.get(i).getPlayerName(), team2.get(i).getPlayerId()), getSkin())).left().colspan(2);
 				
-				if (team2.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
+				if (config.isHost && team2.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
 					table.add(getRemovePlayerButton(team2.get(i))).right();
 				} else {
 					table.add();
@@ -171,25 +180,26 @@ public class GameSetupScreen extends AbstractScreen {
 			table.add().colspan(6);
 		}
 		
-		
+		if (!config.isMulti || config.isHost) {
 		TextButton start = new TextButton("Start Game",getSkin());
-		start.addListener(new ClickListener() {
-
-			/* (non-Javadoc)
-			 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
-			 */
-			@Override
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
-				super.touchUp(event, x, y, pointer, button);
+			start.addListener(new ClickListener() {
+	
+				/* (non-Javadoc)
+				 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
+				 */
+				@Override
+				public void touchUp(InputEvent event, float x, float y,
+						int pointer, int button) {
+					super.touchUp(event, x, y, pointer, button);
+					
+					game.sendStartGame();
+				}
 				
-				game.startGame();
-			}
+			});
 			
-		});
-		
 		table.add(start).right().bottom();
 		
+		}
 		table.row();
 		
 		if (config.isMulti) { 

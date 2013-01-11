@@ -41,7 +41,8 @@ public class GameLoadingScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		// TODO implement the game loading screen
-		
+		game.startGame();
+		game.setScreen(game.getLevelScreen());
 	}
 
 }

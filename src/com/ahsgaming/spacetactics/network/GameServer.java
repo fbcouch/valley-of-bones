@@ -27,12 +27,14 @@ import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.AIPlayer;
 import com.ahsgaming.spacetactics.GameController;
+import com.ahsgaming.spacetactics.NetPlayer;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RemovePlayer;
+import com.ahsgaming.spacetactics.network.KryoCommon.StartGame;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -56,10 +58,13 @@ public class GameServer {
 	GameSetupConfig gameConfig;
 	
 	ArrayList<Player> players = new ArrayList<Player>();
-	ObjectMap<Connection, Player> connMap = new ObjectMap<Connection, Player>();
+	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 	int nextPlayerId = 0;
+	Connection host = null;
 	
 	boolean stopServer = false;
+	
+	boolean gameStarted = false;
 	
 	/**
 	 * 
@@ -98,9 +103,25 @@ public class GameServer {
 						if (p.getPlayerName() == rp.name) return; // TODO maybe drop the connection?
 					}
 					
-					// TODO need to check that this color isn't already taken
 					int id = getNextPlayerId();
-					Player p = new Player(id, rp.name, Player.AUTOCOLORS[id]);
+					Color use = new Color(1, 1, 1, 1);
+					int team = -1;
+					if (players.size() <= 4) {
+						use = Player.getUnusedColor(players);
+						int cntTeam1 = 0, cntTeam2 = 0;
+						for (Player p: players) {
+							if (p.getTeam() == 0) cntTeam1++;
+							if (p.getTeam() == 1) cntTeam2++;
+						}
+						
+						if (cntTeam1 > cntTeam2) {
+							team = 1;
+						} else {
+							team = 0;
+						}
+					}
+					
+					NetPlayer p = new NetPlayer(id, rp.name, use, team);
 					
 					players.add(p);
 					connMap.put(c, p);
@@ -109,27 +130,19 @@ public class GameServer {
 					reg.id = p.getPlayerId();
 					reg.name = p.getPlayerName();
 					reg.color = p.getPlayerColor();
+					reg.team = p.getTeam();
 					server.sendToTCP(c.getID(), reg);
 					sendPlayerList();
 				}
 				
 				if (obj instanceof AddAIPlayer) {
 					// TODO implement teams/player limits more robustly
-					// TODO make sure this is from the host
+					// make sure this is from the host
+					if (c != host) return;
+					
 					if (players.size() < 4) {
 						int id = getNextPlayerId();
-						ArrayList<Color> usedC = new ArrayList<Color>();
-						for (Player p: players) {
-							usedC.add(p.getPlayerColor());
-						}
-						
-						Color use = Player.AUTOCOLORS[0];
-						for (Color color: Player.AUTOCOLORS) {
-							if (!usedC.contains(color)) {
-								use = color;
-								break;
-							}
-						}
+						Color use = Player.getUnusedColor(players);
 						
 						players.add(new AIPlayer(id, "AI Player", use, ((AddAIPlayer)obj).team));
 					}
@@ -137,7 +150,9 @@ public class GameServer {
 				}
 				
 				if (obj instanceof RemovePlayer) {
-					// TODO make sure this is from the host
+					// make sure this is from the host
+					if (c != host) return;
+					
 					RemovePlayer rem = (RemovePlayer)obj;
 					ArrayList<Player> remove = new ArrayList<Player>();
 					for (Player p: players) {
@@ -152,6 +167,11 @@ public class GameServer {
 				
 				// TODO need to check this for validity
 				if (controller != null) {
+					// the player represented by this connection is ready
+					if (obj instanceof StartGame) {
+						connMap.get(c).setReady(true);
+					}
+					
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
@@ -164,18 +184,33 @@ public class GameServer {
 				}
 			}
 			
-			public void disconnected (Connection c) {
+			public void connected (Connection c) {
+				if (host == null) host = c;
 				
+				if (gameStarted) c.close();
+			}
+			
+			public void disconnected (Connection c) {
+				Player p = connMap.get(c);
+				if (players.contains(p)) players.remove(p);
+				sendPlayerList();
+				
+				if (host == c) {
+					stopServer = true;
+				}
 			}
 		});
 		
 	}
 	
 	public void startGame() {
+		// the host clicked startGame --> send out the StartGame message so that the clients load and report
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Server";
 		
 		lastTimeMillis = System.currentTimeMillis();
+		
+		server.sendToAllTCP(new StartGame());
 	}
 	
 	public void stop() {
@@ -190,7 +225,26 @@ public class GameServer {
 		
 		if ((controller == null)) return true;
 		
-		
+		// once the controller exists, we need to check to make sure all players are ready
+		if (!gameStarted) {
+			boolean allReady = true;
+			for (int p=0;p<players.size();p++) {
+				if (players.get(p) instanceof NetPlayer && !((NetPlayer)players.get(p)).isReady()) {
+					allReady = false;
+				}
+			}
+			
+			// once all are ready, we need to unpause the game
+			if (allReady) {
+				Unpause up = new Unpause();
+				up.owner = -1;
+				up.tick = controller.getNetTick();
+				// important to both send the command out and add to the local queue!
+				server.sendToAllTCP(up);
+				controller.queueCommand(up);
+				gameStarted = true;
+			}
+		}
 		
 		long time = System.currentTimeMillis();
 		int delta = (int)(time - lastTimeMillis);

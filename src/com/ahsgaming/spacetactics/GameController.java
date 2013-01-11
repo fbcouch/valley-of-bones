@@ -127,8 +127,7 @@ public class GameController {
 	}
 	
 	private Group loadMapObjects() {
-		Texture tex = new Texture(Gdx.files.internal("base-fighter1.png"));
-		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
 		
 		for (TiledObjectGroup group : map.objectGroups) {
 			for (TiledObject obj : group.objects) {
@@ -144,25 +143,27 @@ public class GameController {
 							unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
 							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
 						}
+						
+						unit.setPosition(objPos.x, objPos.y);
+						addGameUnit(unit);
+						
+						if (owner > -1) {
+							addSpawnPoint(owner, new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
+						}
+						
+						// TODO remove this
+						unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
+						unit.setPosition(objPos.x + 100,  objPos.y + 100);
+						addGameUnit(unit);
+						
+						unit = new Unit(getNextObjectId(), getPlayerById(owner + 1), (JsonUnit)Prototypes.getProto("fighters-base"));
+						unit.setPosition(objPos.x + 100, objPos.y + 200);
+						addGameUnit(unit);
 					} catch (NumberFormatException e) {
 						owner = -1;
-						unit = new Unit(getNextObjectId(), null, new TextureRegion(tex));
-					}
-					unit.setPosition(objPos.x, objPos.y);
-					addGameUnit(unit);
-					
-					if (owner > -1) {
-						addSpawnPoint(owner, new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
+						//unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("fighters-base"));
 					}
 					
-					// TODO remove this
-					unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
-					unit.setPosition(objPos.x + 100,  objPos.y + 100);
-					addGameUnit(unit);
-					
-					unit = new Unit(getNextObjectId(), getPlayerById(owner + 1), (JsonUnit)Prototypes.getProto("fighters-base"));
-					unit.setPosition(objPos.x + 100, objPos.y + 200);
-					addGameUnit(unit);
 				}
 			}
 		}

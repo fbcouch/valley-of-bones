@@ -44,6 +44,8 @@ public class SpaceTacticsGame extends Game {
 	boolean started = false;
 	
 	boolean isServerOnly = false;
+
+	boolean loadGame = false;
 	
 	/*
 	 * Constructors
@@ -115,10 +117,14 @@ public class SpaceTacticsGame extends Game {
 	}
 	
 	public void startGame() {
-		if (localServer != null) localServer.startGame();
+		//if (localServer != null) localServer.startGame();
 		if (localClient != null) localClient.startGame();
 		
 		setScreen(getLevelScreen());
+	}
+	
+	public void sendStartGame() {
+		if (localServer != null) localServer.startGame();
 	}
 
 	public void quitGame() {
@@ -166,6 +172,11 @@ public class SpaceTacticsGame extends Game {
 			started = true;
 			startGame();
 		}*/
+		
+		if (loadGame) {
+			startGame();
+			loadGame = false;
+		}
 	}
 
 	@Override
@@ -240,6 +251,11 @@ public class SpaceTacticsGame extends Game {
 		return new ArrayList<Player>();
 	}
 	
+	public void setLoadGame() {
+		// TODO Auto-generated method stub
+		loadGame  = true;
+	}
+	
 	
 	/**
 	 * Program entry point
@@ -305,6 +321,8 @@ public class SpaceTacticsGame extends Game {
 	public void setMouseScrollSize(float mouseScrollSize) {
 		this.mouseScrollSize = mouseScrollSize;
 	}
+
+	
 
 	
 }
