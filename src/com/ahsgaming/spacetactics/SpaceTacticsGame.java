@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.GameClient;
 import com.ahsgaming.spacetactics.network.GameServer;
-import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen;
@@ -13,6 +12,7 @@ import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.ahsgaming.spacetactics.screens.LevelScreen;
 import com.ahsgaming.spacetactics.screens.MainMenuScreen;
 import com.ahsgaming.spacetactics.screens.OptionsScreen;
+import com.ahsgaming.spacetactics.screens.ServerScreen;
 import com.ahsgaming.spacetactics.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -42,6 +42,20 @@ public class SpaceTacticsGame extends Game {
 	Thread clientThread;
 	
 	boolean started = false;
+	
+	boolean isServerOnly = false;
+	
+	/*
+	 * Constructors
+	 */
+	
+	public SpaceTacticsGame(boolean isServer) {
+		isServerOnly = isServer;
+	}
+	
+	/*
+	 * Methods
+	 */
 	
 	public void createGame(GameSetupConfig cfg) {
 		//TODO this should accept input and then pass it to the GameController
@@ -130,7 +144,11 @@ public class SpaceTacticsGame extends Game {
 	@Override
 	public void create() {		
 		
-		setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+		if (isServerOnly) {
+			setScreen(getServerScreen());
+		} else {
+			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+		}
 		
 	}
 
@@ -196,6 +214,10 @@ public class SpaceTacticsGame extends Game {
 		return new GameLoadingScreen(this);
 	}
 	
+	public ServerScreen getServerScreen() {
+		return new ServerScreen(this);
+	}
+	
 	public LevelScreen getLevelScreen() {
 		return new LevelScreen(this, localClient.getController());
 	}
@@ -225,6 +247,12 @@ public class SpaceTacticsGame extends Game {
 	 */
 	
 	public static void main(String[] args) {
+		boolean isServer = false;
+		
+		for (int i=0;i<args.length;i++) {
+			if (args[i].equals("server")) isServer = true;
+		}
+		
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Space Tactics";
 		cfg.useGL20 = true;
@@ -233,7 +261,7 @@ public class SpaceTacticsGame extends Game {
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 		
-		new LwjglApplication(new SpaceTacticsGame(), cfg);
+		new LwjglApplication(new SpaceTacticsGame(isServer), cfg);
 	}
 
 	/**
