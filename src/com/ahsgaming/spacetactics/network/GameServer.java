@@ -34,6 +34,7 @@ import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RemovePlayer;
+import com.ahsgaming.spacetactics.network.KryoCommon.SetupInfo;
 import com.ahsgaming.spacetactics.network.KryoCommon.StartGame;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
@@ -133,6 +134,7 @@ public class GameServer {
 					reg.team = p.getTeam();
 					server.sendToTCP(c.getID(), reg);
 					sendPlayerList();
+					sendSetupInfo();
 				}
 				
 				if (obj instanceof AddAIPlayer) {
@@ -163,6 +165,15 @@ public class GameServer {
 					
 					players.removeAll(remove);
 					sendPlayerList();
+				}
+				
+				if (obj instanceof SetupInfo) {
+					if (c != host) return;
+					
+					if (controller == null) {
+						gameConfig.mapName = ((SetupInfo)obj).mapName;
+						sendSetupInfo();
+					}
 				}
 				
 				// TODO need to check this for validity
@@ -302,6 +313,12 @@ public class GameServer {
 		}
 		
 		server.sendToAllTCP(list);
+	}
+	
+	public void sendSetupInfo() {
+		SetupInfo si = new SetupInfo();
+		si.mapName = gameConfig.mapName;
+		server.sendToAllTCP(si);
 	}
 	
 	protected int getNextPlayerId() {

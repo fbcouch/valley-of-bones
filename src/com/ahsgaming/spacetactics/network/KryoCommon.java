@@ -56,6 +56,7 @@ public class KryoCommon {
 		kryo.register(AddAIPlayer.class);
 		kryo.register(RemovePlayer.class);
 		kryo.register(StartGame.class);
+		kryo.register(SetupInfo.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -78,4 +79,8 @@ public class KryoCommon {
 	}
 	
 	public static class StartGame { }
+	
+	public static class SetupInfo {
+		public String mapName = "blank.tmx";
+	}
 }

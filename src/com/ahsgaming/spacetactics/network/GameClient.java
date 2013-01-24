@@ -32,6 +32,7 @@ import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.spacetactics.network.KryoCommon.RemovePlayer;
+import com.ahsgaming.spacetactics.network.KryoCommon.SetupInfo;
 import com.ahsgaming.spacetactics.network.KryoCommon.StartGame;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
@@ -65,6 +66,8 @@ public class GameClient {
 	SpaceTacticsGame game;
 	
 	boolean stopClient = false;
+	
+	boolean isConnecting = false;
 	
 	/**
 	 * 
@@ -116,6 +119,12 @@ public class GameClient {
 					// we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
 					game.setLoadGame();
 				}
+				
+				if (obj instanceof SetupInfo) {
+					 
+					gameConfig.mapName = ((SetupInfo) obj).mapName;
+					
+				}
 			}
 			
 			public void disconnected (Connection c) {
@@ -123,20 +132,22 @@ public class GameClient {
 			}
 		});
 		
+		isConnecting = true;
 		host = cfg.hostName;
 		new Thread() {
 			public void run() {
 				try {
 					
 					client.connect(5000, host, KryoCommon.tcpPort);
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
 					e.printStackTrace();
 				}
+				isConnecting = false;
 			}
 		}.start();
-		
 	}
 	
 	public void startGame() {
@@ -229,5 +240,15 @@ public class GameClient {
 	
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public boolean isConnected() {
+		if (client == null) return false;
+		
+		return client.isConnected();
+	}
+	
+	public boolean isConnecting() {
+		return isConnecting;
 	}
 }

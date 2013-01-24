@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.GameClient;
 import com.ahsgaming.spacetactics.network.GameServer;
+import com.ahsgaming.spacetactics.screens.GameJoinScreen;
 import com.ahsgaming.spacetactics.screens.GameLoadingScreen;
 import com.ahsgaming.spacetactics.screens.GameOverScreen;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen;
@@ -102,6 +103,8 @@ public class SpaceTacticsGame extends Game {
 			}
 		};
 		clientThread.start();
+		
+		
 		
 		//gController = new GameController("", new ArrayList<Player>());
 		//gController.LOG = gController.LOG + "#Client";
@@ -211,7 +214,8 @@ public class SpaceTacticsGame extends Game {
 	}
 	
 	public GameSetupScreen getGameSetupScreen() {
-		return new GameSetupScreen(this, new GameSetupConfig());
+		
+		return getGameSetupScreenMP(false);
 	}
 	
 	public GameSetupScreen getGameSetupScreenMP(boolean isHost) {
@@ -219,6 +223,14 @@ public class SpaceTacticsGame extends Game {
 		cfg.isMulti = true;
 		cfg.isHost = isHost;
 		return new GameSetupScreen(this, cfg);
+	}
+	
+	public GameSetupScreen getGameSetupScreenMP(GameSetupConfig cfg) {
+		return new GameSetupScreen(this, cfg);
+	}
+	
+	public GameJoinScreen getGameJoinScreen() {
+		return new GameJoinScreen(this);
 	}
 	
 	public GameLoadingScreen getGameLoadingScreen() {
@@ -254,6 +266,18 @@ public class SpaceTacticsGame extends Game {
 	public void setLoadGame() {
 		// TODO Auto-generated method stub
 		loadGame  = true;
+	}
+	
+	public boolean isConnected() {
+		if (localClient == null) return false;
+		
+		return localClient.isConnected();
+	}
+	
+	public boolean isConnecting() {
+		if (localClient == null) return false;
+		
+		return localClient.isConnecting();
 	}
 	
 	
