@@ -23,6 +23,7 @@
 package com.ahsgaming.spacetactics.network;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.GameController;
@@ -144,7 +145,7 @@ public class GameClient {
 					// TODO Auto-generated catch block
 					Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
 					e.printStackTrace();
-				}
+				} 
 				isConnecting = false;
 			}
 		}.start();

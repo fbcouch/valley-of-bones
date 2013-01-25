@@ -24,6 +24,7 @@ package com.ahsgaming.spacetactics.screens;
 
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -38,7 +39,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * (autodetect these) or WAN games (grab a list from ahsgaming.com?) 
  */
 public class GameJoinScreen extends AbstractScreen {
-
+	public String LOG = "GameJoinScreen";
+	
 	Label lblNickname;
 	TextField txtNickname;
 	
@@ -104,6 +106,7 @@ public class GameJoinScreen extends AbstractScreen {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
+				super.touchUp(event, x, y, pointer, button);
 				game.setScreen(game.getMainMenuScreen());
 			}
 		});
@@ -116,6 +119,8 @@ public class GameJoinScreen extends AbstractScreen {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
+				super.touchUp(event, x, y, pointer, button);
+				Gdx.app.log(LOG, "btnConnect touched");
 				GameSetupConfig cfg = new GameSetupConfig();
 				cfg.hostName = txtJoinHostname.getText();
 				cfg.isHost = false;
@@ -123,6 +128,7 @@ public class GameJoinScreen extends AbstractScreen {
 				cfg.playerName = txtNickname.getText();
 				gsScreen = game.getGameSetupScreenMP(cfg);
 				lblStatus.setText(String.format("Connecting to host %s", cfg.hostName));
+				Gdx.app.log(LOG, String.format("Attempting connection to host %s", cfg.hostName));
 			}
 			
 		});
