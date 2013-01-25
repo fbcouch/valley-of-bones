@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonProto;
+import com.ahsgaming.spacetactics.units.Prototypes.JsonUpgrade;
 import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.graphics.Color;
 
@@ -85,6 +86,15 @@ public class Player {
 		// TODO implement this
 		JsonProto proto = Prototypes.getProto(protoId);
 		if ((proto.food <= 0 || proto.food <= maxFood - curFood) && bankMoney >= proto.cost) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
+		JsonUpgrade upgrade = (JsonUpgrade)Prototypes.getProto(protoId);
+		if (upgrade.fromId.equals(unit.getProtoId()) && bankMoney >= upgrade.cost) {
+			// TODO probably need to have some sort of dependency checking more than just that this is being applied to the correct unit etc
 			return true;
 		}
 		return false;

@@ -31,6 +31,7 @@ import com.ahsgaming.spacetactics.network.Build;
 import com.ahsgaming.spacetactics.network.Command;
 import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.network.Move;
+import com.ahsgaming.spacetactics.network.Upgrade;
 import com.ahsgaming.spacetactics.units.Prototypes;
 import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Unit;
@@ -56,6 +57,8 @@ import com.badlogic.gdx.utils.ObjectMap;
  *
  */
 public class LevelScreen extends AbstractScreen {
+	public String LOG = "LevelScreen";
+	
 	private Group grpLevel;
 	
 	private GameController gController = null;
@@ -78,6 +81,8 @@ public class LevelScreen extends AbstractScreen {
 	// UX stuff
 	Group grpScorePane = new Group();
 	ObjectMap<Player, Label> mapScoreLbls = new ObjectMap<Player, Label>();
+
+	private boolean vKeyDown;
 	
 	/**
 	 * @param game
@@ -194,7 +199,6 @@ public class LevelScreen extends AbstractScreen {
 					bld.location = loc;
 					game.sendCommand(bld);
 				}
-				
 			} else {
 				
 				if (boxOrigin == null) {
@@ -285,6 +289,32 @@ public class LevelScreen extends AbstractScreen {
 				}
 				rightBtnDown = false;
 			}
+		}
+		
+		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
+			vKeyDown = true;
+			
+			for (GameObject obj: gController.getSelectedObjects()) {
+				if (obj instanceof Unit) {
+					Unit u = (Unit)obj;
+					
+					if (game.getPlayer().canUpgrade(u, "station-upgrade-lvl2", gController)) {
+						Upgrade upg = new Upgrade();
+						upg.tick = gController.getNetTick();
+						upg.owner = game.getPlayer().getPlayerId();
+						upg.unit = u.getObjId();
+						upg.upgrade = "station-upgrade-lvl2";
+						game.sendCommand(upg);
+					}
+				}
+			}
+		}
+		
+		
+		// TODO make a list of flags or something rather than creating fields for every key that might get pressed...
+		// TODO reset keys 'n' things
+		if (vKeyDown && !Gdx.input.isKeyPressed(Keys.V)) {
+			vKeyDown = false;
 		}
 	}
 	

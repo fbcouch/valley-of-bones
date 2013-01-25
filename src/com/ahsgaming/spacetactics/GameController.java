@@ -270,7 +270,15 @@ public class GameController {
 		} else if (cmd instanceof Unpause) {
 			return true;
 		} else if (cmd instanceof Upgrade) {
-			return true;
+			Upgrade u = (Upgrade)cmd;
+			// TODO check dependencies here
+			Player player = this.getPlayerById(u.owner);
+			GameObject obj = this.getObjById(u.unit);
+			if (obj instanceof Unit) {
+				return player.canUpgrade((Unit)obj, u.upgrade, this);
+			}
+			
+			return false;
 		}
 		return false;
 	}

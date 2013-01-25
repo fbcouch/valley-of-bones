@@ -21,8 +21,8 @@ GOALS 1.25.13
   + MP setup (part 1 - laying the groundwork)
   + MP setup (part 2 - the UX for entering an IP)
 - Upgrade units
-  - send/receive upgrade commands
-  - validation
+  + send/receive upgrade commands
+  + validation
   - apply on-unit upgrades (ie: +3 armor)
   - apply change-unit upgrades (ie: space-station-base --> space-station-two)
 
