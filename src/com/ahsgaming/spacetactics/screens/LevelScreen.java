@@ -347,8 +347,11 @@ public class LevelScreen extends AbstractScreen {
 	public void updateScorePane() {
 		for (Player player: gController.getPlayers()) {
 			Label lbl = mapScoreLbls.get(player);
-			lbl.setText(player.toString());
-			if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
+			if (lbl != null)
+			{
+				lbl.setText(player.toString());
+				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
+			}
 		}
 		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
 	}

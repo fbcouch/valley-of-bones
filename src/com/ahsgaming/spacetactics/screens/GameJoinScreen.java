@@ -22,7 +22,10 @@
  */
 package com.ahsgaming.spacetactics.screens;
 
+import java.net.InetAddress;
+
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
+import com.ahsgaming.spacetactics.network.KryoCommon;
 import com.ahsgaming.spacetactics.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.esotericsoftware.kryonet.Client;
 
 /**
  * @author jami
@@ -132,6 +136,22 @@ public class GameJoinScreen extends AbstractScreen {
 			}
 			
 		});
+		
+		// discover host
+		new Thread() {
+			public void run() {
+				// for whatever reason, without this line the discoverHost call cant
+				// access the network...not very forward compatible I guess
+				System.setProperty("java.net.preferIPv4Stack", "true");
+				Client c = new Client();
+				c.start();
+				
+				InetAddress iAddress = c.discoverHost(KryoCommon.udpPort, 5000);
+				if (iAddress != null && txtJoinHostname.getText().equals("")) {
+					txtJoinHostname.setText(iAddress.getHostAddress());
+				}
+			}
+		}.start();
 		
 		
 	}

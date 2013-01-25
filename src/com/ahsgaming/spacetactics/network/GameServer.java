@@ -50,7 +50,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer {
 	
-	Server server;
+	Server server, broadcastServer;
 	GameController controller;
 	int sinceLastNetTick = 0;
 	int sinceLastGameTick = 0;
@@ -76,6 +76,8 @@ public class GameServer {
 		server = new Server();
 		KryoCommon.register(server);
 		
+		broadcastServer = new Server();
+		
 		// TODO set up a broadcast server for LAN stuff
 		//players.add(new Player(0, Player.AUTOCOLORS[0]));
 		//players.add(new Player(1, Player.AUTOCOLORS[1]));
@@ -83,6 +85,9 @@ public class GameServer {
 		try {
 			server.bind(KryoCommon.tcpPort);
 			server.start();
+			
+			broadcastServer.bind(0, KryoCommon.udpPort);
+			broadcastServer.start();
 		} catch (IOException ex) {
 			Gdx.app.log(SpaceTacticsGame.LOG + ":GameServer", ex.getMessage());
 			Gdx.app.exit();
@@ -220,6 +225,9 @@ public class GameServer {
 		controller.LOG = controller.LOG + "#Server";
 		
 		lastTimeMillis = System.currentTimeMillis();
+		
+		// don't need to broadcast on UDP anymore - thats just confusing
+		broadcastServer.close();
 		
 		server.sendToAllTCP(new StartGame());
 	}

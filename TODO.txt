@@ -13,12 +13,18 @@ GOALS (future)
 - UX stuff
 - Interfaces (Damageable?)
 - Unit subclasses (Squadron, Ship, Station)
+- Victory/Defeat conditions
+- End game
 
-GOALS 1.12.13
-- UI/UX
+GOALS 1.25.13
++ UI/UX
   + MP setup (part 1 - laying the groundwork)
-  - MP setup (part 2 - the UX for entering an IP)
+  + MP setup (part 2 - the UX for entering an IP)
 - Upgrade units
+  - send/receive upgrade commands
+  - validation
+  - apply on-unit upgrades (ie: +3 armor)
+  - apply change-unit upgrades (ie: space-station-base --> space-station-two)
 
 GOALS 1.5.13
 + Implement net-tick
