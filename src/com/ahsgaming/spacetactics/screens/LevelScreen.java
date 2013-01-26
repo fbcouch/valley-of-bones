@@ -41,6 +41,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -338,6 +339,9 @@ public class LevelScreen extends AbstractScreen {
 		Gdx.app.log(SpaceTacticsGame.LOG, "LevelScreen#show");
 		
 		grpLevel = gController.getGroup();
+		
+		// TODO set the initial camera position based on the player spawn point
+		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
 	}
 	
 	@Override
@@ -346,14 +350,24 @@ public class LevelScreen extends AbstractScreen {
 		
 		stage.addActor(grpLevel);
 		
-		// TODO set the initial camera position based on the player spawn point
-		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
-		
 		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
 		pix.setColor(1, 1, 1, 1);
 		pix.drawRectangle(0, 0, pix.getWidth(), pix.getHeight());
 		Image test = new Image(new Texture(pix));
 		grpLevel.addActor(test);
+		
+		// generate the command card
+		Image ccardbg = new Image(new TextureRegion(new Texture(Gdx.files.internal("data/command_card_background.png"))));
+		ccardbg.setPosition(stage.getWidth() - 266, -2);
+		stage.addActor(ccardbg);
+		for (int x=0;x<4;x++) {
+			for (int y=0;y<4;y++) {
+				Image img = new Image(new TextureRegion(new Texture(Gdx.files.internal("data/command_card_empty.png"))));
+				img.setPosition(stage.getWidth() - 262 + x * 66, 262 - (y + 1) * 66);
+				stage.addActor(img);
+			}
+		}
+		
 		
 		// generate the score panel
 		grpScorePane = new Group();
@@ -370,7 +384,7 @@ public class LevelScreen extends AbstractScreen {
 				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
 			}
 		}
-		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
+		grpScorePane.setPosition(stage.getWidth() - grpScorePane.getWidth() - 10, 264);
 		stage.addActor(grpScorePane);
 	}
 	
