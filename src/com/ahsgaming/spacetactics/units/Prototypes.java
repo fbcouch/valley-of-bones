@@ -245,6 +245,45 @@ public class Prototypes {
 		}
 	}
 	
+	public static class JsonUpgradeAttr extends JsonProto {
+		public static final String TYPE = "upgrade-attr";
+		
+		public String attr = "";
+		public String attrClass = "";
+		public float armor = 0, damage = 0, shield = 0;
+		
+		public JsonUpgradeAttr() { }
+		
+		public JsonUpgradeAttr(String id, ObjectMap<String, Object> map) {
+			super (id, map);
+			
+			for (String key: map.keys()) {
+				if (key.equals("type")) {
+					String type = map.get(key).toString();
+					if (type.equals("upgrade-armor")) {
+						attr = "armor";
+					} else if (type.equals("upgrade-weapon")) {
+						attr = "weapon";
+					} else if (type.equals("upgrade-shield")) {
+						attr = "shield";
+					}
+				} else if (key.equals("class")) {
+					attrClass = map.get(key).toString();
+				} else if (key.equals("shield")) {
+					shield = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("damage")) {
+					damage = Float.parseFloat(map.get(key).toString());
+				} else if (key.equals("armor")) {
+					armor = Float.parseFloat(map.get(key).toString());
+				}
+			}
+		}
+		
+		public static JsonUpgradeAttr createFromMap(String id, ObjectMap<String, Object> map) {
+			return new JsonUpgradeAttr(id, map);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static ObjectMap<String, JsonProto> loadUnits(String file) {
 		ObjectMap<String, JsonProto> unitList = new ObjectMap<String, JsonProto>();
@@ -266,6 +305,8 @@ public class Prototypes {
 					unitList.put(key, JsonWeapon.createFromMap(key, (ObjectMap<String, Object>)mapObjs.get(key)));
 				} else if (type.equals("upgrade")) {
 					unitList.put(key, JsonUpgrade.createFromMap(key, (ObjectMap<String, Object>)mapObjs.get(key)));
+				} else if (type.equals("upgrade-armor") || type.equals("upgrade-weapon") || type.equals("upgrade-shield")) {
+					unitList.put(key, JsonUpgradeAttr.createFromMap(key, (ObjectMap<String, Object>)mapObjs.get(key)));
 				} else {
 					Gdx.app.log(SpaceTacticsGame.LOG, "loadUnits: Unknown type: " + type);
 				}

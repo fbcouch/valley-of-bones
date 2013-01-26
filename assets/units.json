@@ -37,7 +37,9 @@
   	name: "Basic Fighter Squadron",
   	health: 100,
   	shield: 100,
+  	shield-class: "light",
   	armor: 1,
+  	armor-class: "light",
   	speed: 200,
   	accel: 100,
   	turn: 1000,
@@ -50,6 +52,7 @@
   laser-base-red: {
   	type: "weapon",
   	name: "Basic Red Laser",
+  	weapon-class: "light",
   	damage: 100,
 	lifetime: 1,
 	speed: 300,
@@ -64,5 +67,34 @@
   	from: space-station-base,
   	to: space-station-lvl2,
   	cost: 1000
-  }
+  },
+  light-armor-1: {
+    type: "upgrade-armor",
+    name: "Upgrade Light Armor Lvl 1",
+    class: "light",
+    armor: 2,
+    cost: 100
+  },
+  light-armor-2: {
+    type: "upgrade-armor",
+    name: "Upgrade Light Armor Lvl 2",
+    class: "light",
+    armor: 4,
+    cost: 200,
+    depends: ["light-armor-1"],
+  },
+  light-weapon-1: {
+    type: "upgrade-weapon",
+    name: "Upgrade Light Weapons Lvl 1",
+    class: "light",
+    damage: 50,
+    cost: 200
+  },
+  light-shield-1: {
+    type: "upgrade-shield",
+    name: "Upgrade Light Shields Lvl 1",
+    class: "light",
+    shield: 20,
+    cost: 100,
+  },
 }
