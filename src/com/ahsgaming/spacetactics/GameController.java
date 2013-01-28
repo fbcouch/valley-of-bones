@@ -39,9 +39,6 @@ import com.ahsgaming.spacetactics.units.Prototypes.JsonUnit;
 import com.ahsgaming.spacetactics.units.Selectable;
 import com.ahsgaming.spacetactics.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
@@ -65,6 +62,7 @@ public class GameController {
 	Group grpRoot, grpMap, grpUnits;
 	
 	List<Player> players;
+	List<Team> teams;
 	
 	String mapName;
 	TiledMap map;
@@ -80,6 +78,50 @@ public class GameController {
 	
 	int nextObjectId = 0;
 	
+	public static class Team {
+		int id;
+		List<Player> players;
+		
+		public Team(int id) {
+			this.id = id;
+			players = Collections.synchronizedList(new ArrayList<Player>());
+		}
+		
+		public Team addPlayer(Player player) {
+			players.add(player);
+			return this;
+		}
+		
+		public Team removePlayer(Player player) {
+			synchronized(this.players){
+				if (players.contains(player)) {
+					players.remove(player);
+				}
+			}
+			return this;
+		}
+		
+		public List<Player> getPlayers() {
+			synchronized(this.players) {
+				return players.subList(0, players.size());
+			}
+		}
+		
+		public boolean hasPlayerAlive() {
+			synchronized(this.players){
+				for (Player p: players) {
+					if (p.isAlive()) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public int getId() {
+			return this.id;
+		}
+	}
 	
 	/**
 	 * Constructors
@@ -104,6 +146,8 @@ public class GameController {
 		cmdsToAdd = Collections.synchronizedList(new ArrayList<Command>());
 		
 		this.players = players;
+		
+		this.createTeams();
 		
 		this.loadMap();
 		this.loadMapObjects();
@@ -139,6 +183,7 @@ public class GameController {
 						owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
 						if (owner >= 0 && owner < players.size()) {
 							unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
+							getPlayerById(owner).setBaseUnit(unit); // for some game types, when this unit dies, this player is out
 						} else {
 							unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
 							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
@@ -169,6 +214,39 @@ public class GameController {
 		}
 		
 		return grpUnits;
+	}
+	
+	public void createTeams() {
+		teams = Collections.synchronizedList(new ArrayList<Team>());
+		synchronized (players) {
+			for (Player p: players) {
+				if (teams.size() == 0) {
+					// create a new team and add this player
+					Team t = new Team(p.getTeam());
+					t.addPlayer(p);
+					teams.add(t);
+				} else {
+					// search the list of teams for a match
+					synchronized(teams) {
+						boolean foundTeam = false;
+						for (Team t: teams) {
+							if (t.getId() == p.getTeam()) {
+								t.addPlayer(p);
+								foundTeam = true;
+								break;
+							}
+						}
+						
+						// no match? create a new team
+						if (!foundTeam) {
+							Team t = new Team(p.getTeam());
+							t.addPlayer(p);
+							teams.add(t);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void netUpdate(float delta) {

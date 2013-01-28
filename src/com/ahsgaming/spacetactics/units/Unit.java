@@ -289,6 +289,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	public String getProtoId() {
 		return protoId;
 	}
+	
+	public boolean isAlive() {
+		return (!this.isRemove() && this.curHealth > 0);
+	}
 
 	@Override
 	public boolean isTargetable() {

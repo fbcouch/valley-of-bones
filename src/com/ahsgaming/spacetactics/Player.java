@@ -51,6 +51,8 @@ public class Player {
 	
 	int teamId = 0;
 	
+	Unit baseUnit = null; // when this unit dies, this player is out (in some game types)
+	
 	/**
 	 * 
 	 */
@@ -210,5 +212,28 @@ public class Player {
 		}
 		
 		return use;
+	}
+
+	/**
+	 * @return the baseUnit
+	 */
+	public Unit getBaseUnit() {
+		return baseUnit;
+	}
+
+	/**
+	 * @param baseUnit the baseUnit to set
+	 */
+	public void setBaseUnit(Unit baseUnit) {
+		this.baseUnit = baseUnit;
+	}
+	
+	/**
+	 * Return true if the base unit is still alive
+	 * @return
+	 */
+	public boolean isAlive() {
+		if (baseUnit == null) return false;
+		return baseUnit.isAlive();
 	}
 }
