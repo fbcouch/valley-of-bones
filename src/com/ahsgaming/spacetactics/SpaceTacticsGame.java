@@ -48,6 +48,8 @@ public class SpaceTacticsGame extends Game {
 
 	boolean loadGame = false;
 	
+	GameResult gameResult = null; // client sets this when a game ends
+	
 	/*
 	 * Constructors
 	 */
@@ -180,6 +182,11 @@ public class SpaceTacticsGame extends Game {
 			startGame();
 			loadGame = false;
 		}
+		
+		if (gameResult != null) {
+			this.setScreen(this.getGameOverScreen(gameResult));
+			gameResult = null;
+		}
 	}
 
 	@Override
@@ -249,8 +256,8 @@ public class SpaceTacticsGame extends Game {
 		return new LevelScreen(this, localClient.getController());
 	}
 	
-	public GameOverScreen getGameOverScreen() {
-		return new GameOverScreen(this); // TODO pass in data here
+	public GameOverScreen getGameOverScreen(GameResult result) {
+		return new GameOverScreen(this, result);
 	}
 	
 	public Player getPlayer() {
@@ -348,6 +355,10 @@ public class SpaceTacticsGame extends Game {
 	 */
 	public void setMouseScrollSize(float mouseScrollSize) {
 		this.mouseScrollSize = mouseScrollSize;
+	}
+
+	public void setGameResult(GameResult gameResult) {
+		this.gameResult = gameResult;
 	}
 
 	

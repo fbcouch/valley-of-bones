@@ -23,10 +23,11 @@
 package com.ahsgaming.spacetactics.network;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.GameController;
+import com.ahsgaming.spacetactics.GameResult;
+import com.ahsgaming.spacetactics.GameStates;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 import com.ahsgaming.spacetactics.network.KryoCommon.AddAIPlayer;
@@ -69,6 +70,8 @@ public class GameClient {
 	boolean stopClient = false;
 	
 	boolean isConnecting = false;
+	
+	GameResult gameResult = null;
 	
 	/**
 	 * 
@@ -126,6 +129,11 @@ public class GameClient {
 					gameConfig.mapName = ((SetupInfo) obj).mapName;
 					
 				}
+				
+				if (obj instanceof GameResult) {
+					Gdx.app.log(LOG, "GameResult rec'd");
+					gameResult = (GameResult)obj;
+				}
 			}
 			
 			public void disconnected (Connection c) {
@@ -166,6 +174,12 @@ public class GameClient {
 		client.sendTCP(new StartGame());
 	}
 	
+	public void endGame() {
+		client.stop();
+		controller.setState(GameStates.GAMEOVER);
+		game.setGameResult(gameResult);
+	}
+	
 	public void stop() {
 		stopClient = true;
 	}
@@ -201,6 +215,11 @@ public class GameClient {
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
 			controller.update(KryoCommon.GAME_TICK_LENGTH * 0.001f);
 			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
+			
+			if (gameResult != null) {
+				endGame();
+				return false;
+			}
 		}
 		
 		long sleepTime = KryoCommon.GAME_TICK_LENGTH - (System.currentTimeMillis() - lastTimeMillis) - sinceLastGameTick;

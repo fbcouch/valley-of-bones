@@ -113,6 +113,16 @@ public class GameController {
 			}
 		}
 		
+		public int[] getPlayerIds() {
+			synchronized (this.players) {
+				int[] idArray = new int[players.size()];
+				for (int p=0; p<players.size(); p++) {
+					idArray[p] = players.get(p).getPlayerId();
+				}
+				return idArray;
+			}
+		}
+		
 		public boolean hasPlayerAlive() {
 			synchronized(this.players){
 				for (Player p: players) {
@@ -126,6 +136,23 @@ public class GameController {
 
 		public int getId() {
 			return this.id;
+		}
+		
+		public static int[] getPlayerIds(ArrayList<Team> teams) {
+			int total = 0;
+			for (Team t: teams) {
+				total += t.getPlayers().length;
+			}
+			int[] players = new int[total];
+			total = 0;
+			for (Team t: teams) {
+				int[] teamPlayers = t.getPlayerIds();
+				for (int p=0;p<teamPlayers.length; p++) {
+					players[p + total] = teamPlayers[p];
+				}
+				total += teamPlayers.length;
+			}
+			return players;
 		}
 	}
 	
@@ -306,22 +333,17 @@ public class GameController {
 				if (alive <= 1) {
 					GameResult result = new GameResult();
 					if (teamAlive != null) {
-						result.winners = teamAlive.getPlayers();
+						result.winners = teamAlive.getPlayerIds();
 						result.winningTeam = teamAlive.getId();
 					}
+					ArrayList<Team> losingTeams = new ArrayList<Team>();
 					for (Team t: teams) {
 						if (!t.hasPlayerAlive()) {
-							// add these players to the array
-							Player[] newArray = new Player[t.getPlayers().length + result.losers.length];
-							for (int p=0; p<result.losers.length; p++) {
-								newArray[p] = result.losers[p];
-							}
-							for (int p=result.losers.length; p<result.losers.length+t.getPlayers().length; p++) {
-								newArray[p] = t.getPlayers()[p - result.losers.length];
-							}
-							result.losers = newArray;
+							losingTeams.add(t);
 						}
 					}
+					result.losers = Team.getPlayerIds(losingTeams);
+					
 					//Gdx.app.log(LOG, String.format("Game Over // Winner: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
 					this.gameResult = result;
 				}
@@ -707,6 +729,10 @@ public class GameController {
 			return spawnPoints[id];
 		}
 		return null;
+	}
+	
+	public GameResult getGameResult() {
+		return gameResult;
 	}
 	
 	/**

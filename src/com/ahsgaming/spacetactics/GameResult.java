@@ -29,16 +29,16 @@ package com.ahsgaming.spacetactics;
 public class GameResult {
 	public String LOG = "GameResult";
 	
-	public Player[] winners;
-	public Player[] losers;
+	public int[] winners;
+	public int[] losers;
 	public int winningTeam;
 	
 	/**
 	 * creates an empty GameResult
 	 */
 	public GameResult() {
-		winners = new Player[0];
-		losers = new Player[0];
+		winners = new int[0];
+		losers = new int[0];
 		winningTeam = -1;
 	}
 	
@@ -48,7 +48,7 @@ public class GameResult {
 	 * @param losers
 	 * @param winningTeam
 	 */
-	public GameResult(Player[] winners, Player[] losers, int winningTeam) {
+	public GameResult(int[] winners, int[] losers, int winningTeam) {
 		this.winners = winners;
 		this.losers = losers;
 		this.winningTeam = winningTeam;

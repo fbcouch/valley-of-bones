@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 import com.ahsgaming.spacetactics.AIPlayer;
 import com.ahsgaming.spacetactics.GameController;
+import com.ahsgaming.spacetactics.GameResult;
+import com.ahsgaming.spacetactics.GameStates;
 import com.ahsgaming.spacetactics.NetPlayer;
 import com.ahsgaming.spacetactics.Player;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
@@ -49,6 +51,7 @@ import com.esotericsoftware.kryonet.Server;
  *
  */
 public class GameServer {
+	public String LOG = "GameServer";
 	
 	Server server, broadcastServer;
 	GameController controller;
@@ -71,6 +74,7 @@ public class GameServer {
 	 * 
 	 */
 	public GameServer(GameSetupConfig cfg) {
+		
 		gameConfig = cfg;
 		// setup the KryoNet server
 		server = new Server();
@@ -232,6 +236,17 @@ public class GameServer {
 		server.sendToAllTCP(new StartGame());
 	}
 	
+	public void endGame() {
+		// the controller has a game result --> broadcast it to everybody and close the server
+		GameResult result = controller.getGameResult();
+		controller.setState(GameStates.GAMEOVER);
+		
+		Gdx.app.log(LOG, String.format("GameResult: winningTeam: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
+		
+		server.sendToAllTCP(result);
+		server.close();
+	}
+	
 	public void stop() {
 		stopServer = true;
 	}
@@ -294,6 +309,11 @@ public class GameServer {
 			controller.update(KryoCommon.GAME_TICK_LENGTH * 0.001f);
 			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
 			//Gdx.app.log("Server", "GAME TICK");
+			
+			if (controller.getGameResult() != null) {
+				endGame();
+				return false;
+			}
 		}
 		
 		long sleepTime = KryoCommon.GAME_TICK_LENGTH - (System.currentTimeMillis() - lastTimeMillis) - sinceLastGameTick;

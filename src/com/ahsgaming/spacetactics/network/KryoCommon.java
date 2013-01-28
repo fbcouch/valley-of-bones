@@ -22,6 +22,7 @@
  */
 package com.ahsgaming.spacetactics.network;
 
+import com.ahsgaming.spacetactics.AIPlayer;
 import com.ahsgaming.spacetactics.GameResult;
 import com.ahsgaming.spacetactics.Player;
 import com.badlogic.gdx.graphics.Color;
@@ -58,7 +59,7 @@ public class KryoCommon {
 		kryo.register(RemovePlayer.class);
 		kryo.register(StartGame.class);
 		kryo.register(SetupInfo.class);
-		kryo.register(Player[].class);
+		kryo.register(int[].class);
 		kryo.register(GameResult.class);
 	}
 	

@@ -22,6 +22,7 @@
  */
 package com.ahsgaming.spacetactics.screens;
 
+import com.ahsgaming.spacetactics.GameResult;
 import com.ahsgaming.spacetactics.SpaceTacticsGame;
 
 /**
@@ -33,7 +34,7 @@ public class GameOverScreen extends AbstractScreen {
 	/**
 	 * @param game
 	 */
-	public GameOverScreen(SpaceTacticsGame game) {
+	public GameOverScreen(SpaceTacticsGame game, GameResult result) {
 		super(game);
 		// TODO Auto-generated constructor stub
 	}
