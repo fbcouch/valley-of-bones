@@ -78,6 +78,8 @@ public class GameController {
 	
 	int nextObjectId = 0;
 	
+	GameResult gameResult = null;
+	
 	public static class Team {
 		int id;
 		List<Player> players;
@@ -101,9 +103,13 @@ public class GameController {
 			return this;
 		}
 		
-		public List<Player> getPlayers() {
+		public Player[] getPlayers() {
 			synchronized(this.players) {
-				return players.subList(0, players.size());
+				Player[] playerArray = new Player[players.size()];
+				for (int p=0; p<players.size(); p++) {
+					playerArray[p] = players.get(p);
+				}
+				return playerArray;
 			}
 		}
 		
@@ -183,7 +189,7 @@ public class GameController {
 						owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
 						if (owner >= 0 && owner < players.size()) {
 							unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
-							getPlayerById(owner).setBaseUnit(unit); // for some game types, when this unit dies, this player is out
+							if(getPlayerById(owner) != null) getPlayerById(owner).setBaseUnit(unit); // for some game types, when this unit dies, this player is out
 						} else {
 							unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
 							Gdx.app.log(SpaceTacticsGame.LOG, "Map Error: player spawn index out of range");
@@ -284,6 +290,43 @@ public class GameController {
 	}
 	
 	public void update(float delta) {
+		
+		if (state == GameStates.RUNNING || state == GameStates.PAUSED) {
+			// check for game over conditions
+			synchronized (teams) {
+				int alive = 0;
+				Team teamAlive = null;
+				for (Team t: teams) {
+					if (t.hasPlayerAlive()) {
+						alive += 1;
+						teamAlive = t;
+					}
+				}
+				
+				if (alive <= 1) {
+					GameResult result = new GameResult();
+					if (teamAlive != null) {
+						result.winners = teamAlive.getPlayers();
+						result.winningTeam = teamAlive.getId();
+					}
+					for (Team t: teams) {
+						if (!t.hasPlayerAlive()) {
+							// add these players to the array
+							Player[] newArray = new Player[t.getPlayers().length + result.losers.length];
+							for (int p=0; p<result.losers.length; p++) {
+								newArray[p] = result.losers[p];
+							}
+							for (int p=result.losers.length; p<result.losers.length+t.getPlayers().length; p++) {
+								newArray[p] = t.getPlayers()[p - result.losers.length];
+							}
+							result.losers = newArray;
+						}
+					}
+					//Gdx.app.log(LOG, String.format("Game Over // Winner: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
+					this.gameResult = result;
+				}
+			}
+		}
 		
 		if (state == GameStates.RUNNING) {
 			gameTick += 1;
