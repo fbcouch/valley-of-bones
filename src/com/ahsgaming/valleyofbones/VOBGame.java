@@ -119,7 +119,8 @@ public class VOBGame extends Game {
 	}
 	
 	public void sendCommand(Command cmd) {
-		localClient.sendCommand(cmd);
+		// TODO fix this
+		gController.queueCommand(cmd);
 	}
 	
 	public void addAIPlayer(int team) {
@@ -147,6 +148,7 @@ public class VOBGame extends Game {
 				players.add(new AIPlayer(1, Player.getUnusedColor(players)));
 				player = players.get(0);
 				GameController gc = new GameController("", players);
+				this.gController = gc;
 				setScreen(new LevelScreen(this, gc));
 			} else {
 				setScreen(getSplashScreen());

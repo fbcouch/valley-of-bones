@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -127,11 +128,58 @@ public class HexMap {
 		renderer.end();
 	}
 	
-	public Vector2 boardToScreenCoords(int bx, int by) {
+	public Vector2 boardToMapCoords(int bx, int by) {
 		return new Vector2(bx * getTileWidth() + (by % 2 == 1 ? getTileWidth() * 0.5f : 0), by * getTileHeight() * 0.75f);
 	}
 
-	public Vector2 boardToScreenCoords(float x, float y) {
-		return boardToScreenCoords((int)x, (int)y);
+	public Vector2 boardToMapCoords(float x, float y) {
+		return boardToMapCoords((int)x, (int)y);
+	}
+	
+	public Vector2 mapToBoardCoords(float x, float y) {
+		Vector2 boardCoords = new Vector2();
+		
+		float dx = x / getTileWidth();
+		float dy = y / (getTileHeight() * 0.75f);
+		float mx = x % getTileWidth();
+		float my = y % (getTileHeight() * 0.75f);
+		
+		
+		boardCoords.y = (float) Math.floor(dy);
+		if (my < getTileHeight() * 0.25) {
+			if (Math.floor(dy) % 2 == 1) {
+				dx = (x - getTileWidth() * 0.5f) / getTileWidth();
+				mx = (x - getTileWidth() * 0.5f) % getTileWidth();
+			}
+			// if (mx, my) <= (y = -0.5x + .25 * Th) or (mx, my) > (y = 0.5x - 0.25 * Th)
+			if (my <= -0.5 * mx + 0.25f * getTileHeight()) {
+				Gdx.app.log("mapToBoardCoords", "left");
+			} else if (my <= 0.5 * mx - 0.25 * getTileHeight()) {
+				Gdx.app.log("mapToBoardCoords", "right");
+			} else {
+				Gdx.app.log("mapToBoardCoords", "center");
+			}
+			
+			if (my <= -0.5 * mx + 0.25f * getTileHeight() || my <= 0.5 * mx - 0.25 * getTileHeight()) {
+				Gdx.app.log("mapToBoardCoords", boardCoords.toString());
+				boardCoords.y -= 1;
+			}
+		}
+		
+		if (boardCoords.y >= getHeight()) boardCoords.y = getHeight() - 1;
+		if (boardCoords.y < 0) boardCoords.y = 0;
+		
+		if (boardCoords.y % 2 == 1) {
+			dx = (x - getTileWidth() * 0.5f) / getTileWidth();
+			mx = (x - getTileWidth() * 0.5f) % getTileWidth();
+		} else {
+			dx = x / getTileWidth();
+			mx = x % getTileWidth();
+		}
+		boardCoords.x = (float) Math.floor(dx);
+		if (boardCoords.x >= getWidth()) boardCoords.x = getWidth() - 1;
+		if (boardCoords.x < 0) boardCoords.x = 0;
+		
+		return boardCoords;
 	}
 }

@@ -25,9 +25,10 @@ package com.ahsgaming.valleyofbones;
 import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Unit;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonUpgrade;
+import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -88,6 +89,7 @@ public class Player {
 		// TODO implement this
 		JsonProto proto = Prototypes.getProto(protoId);
 		if ((proto.food <= 0 || proto.food <= maxFood - curFood) && bankMoney >= proto.cost) {
+			Gdx.app.log(LOG, "Can build!");
 			return true;
 		}
 		return false;

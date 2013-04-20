@@ -218,7 +218,7 @@ public class GameController {
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
 			Gdx.app.log(LOG, spawn.toString());
-			Vector2 pos = map.boardToScreenCoords((int)spawn.x, (int)spawn.y);
+			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
 			unit.setPosition(pos.x + 8, pos.y);
 			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
 			addGameUnit(unit);
@@ -266,39 +266,7 @@ public class GameController {
 		
 	}
 	
-	public void netUpdate(float delta) {
-		// process commands
-		
-		if (state == GameStates.RUNNING) netTick += 1; 
 	
-	
-		List<Command> toAdd = cmdsToAdd;
-		cmdsToAdd = new ArrayList<Command>();
-	
-		commandQueue.addAll(toAdd);
-	
-	
-		List<Command> toRemove = new ArrayList<Command>();
-		for (Command command: commandQueue) {
-			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
-			if (command.turn < gameTurn) {
-				// remove commands in the past without executing
-				toRemove.add(command);
-			} else if (command.turn == gameTurn) {
-				// execute current commands and remove
-				// TODO execute the command
-				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
-				if (state == GameStates.RUNNING || command instanceof Unpause) { 
-					executeCommand(command);
-				}
-				toRemove.add(command);
-				commandHistory.add(command);
-			} // future commands are left alone
-		}
-		commandQueue.removeAll(toRemove);
-		
-		
-	}
 	
 	public void update(float delta) {
 		if (state == GameStates.RUNNING) {
@@ -308,12 +276,17 @@ public class GameController {
 				turnTimer = turnLength;
 			}
 		}
+		doCommands(delta);
 	}
 	
 	public void doTurn() {
 		Gdx.app.log(LOG, "doTurn");
 		gameTurn += 1;
 		float delta = 1;
+		
+		for (Player p: players) {
+			p.update(this, delta);
+		}
 		
 		// update collection (do simulation for turn)
 		gameObjects.removeAll(objsToRemove);
@@ -385,6 +358,36 @@ public class GameController {
 		}
 	}
 
+	public void doCommands(float delta) {
+		// process commands
+		
+		List<Command> toAdd = cmdsToAdd;
+		cmdsToAdd = new ArrayList<Command>();
+	
+		commandQueue.addAll(toAdd);
+	
+	
+		List<Command> toRemove = new ArrayList<Command>();
+		for (Command command: commandQueue) {
+			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
+			if (command.turn < gameTurn) {
+				// remove commands in the past without executing
+				toRemove.add(command);
+			} else if (command.turn == gameTurn) {
+				// execute current commands and remove
+				// TODO execute the command
+				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
+				if (state == GameStates.RUNNING || command instanceof Unpause) { 
+					executeCommand(command);
+				}
+				toRemove.add(command);
+				commandHistory.add(command);
+			} // future commands are left alone
+		}
+		commandQueue.removeAll(toRemove);
+		
+		
+	}
 	
 	public boolean validate(Command cmd) {
 		
@@ -464,14 +467,16 @@ public class GameController {
 		// check that this can be built
 		JsonUnit junit = (JsonUnit) Prototypes.getProto("fighters-base");
 		Rectangle bounds = new Rectangle(junit.bounds);
-		bounds.set(cmd.location.x + bounds.x - bounds.width * 0.5f, cmd.location.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
+		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
+		bounds.set(levelPos.x + bounds.x - bounds.width * 0.5f, levelPos.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
 		Player owner = getPlayerById(cmd.owner);
 		if (owner.canBuild(junit.id, this) && getObjsInArea(bounds).size == 0) {
 			
 			// TODO place builder
 			// for now, just add the unit
 			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
-			unit.setPosition(cmd.location, "center");
+			unit.setPosition(levelPos);
+			unit.setBoardPosition((int)levelPos.x, (int)levelPos.y);
 			
 			addGameUnitNow(unit);
 			owner.setBankMoney(owner.getBankMoney() - junit.cost);
@@ -689,7 +694,7 @@ public class GameController {
 		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
 			cmdsToAdd.add(cmd);
-			Gdx.app.log(LOG, "queued command");
+			Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
 		}
 	}
 	

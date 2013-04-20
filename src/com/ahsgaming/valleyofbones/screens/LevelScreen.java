@@ -122,7 +122,7 @@ public class LevelScreen extends AbstractScreen {
 		for (GameObject obj: gController.getSelectedObjects()) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-			Vector2 start = gController.getMap().boardToScreenCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
+			Vector2 start = gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
 			start = mapToScreenCoords(start.x, start.y);
 			
 			Vector2 base = new Vector2(start.x, start.y);
@@ -191,6 +191,9 @@ public class LevelScreen extends AbstractScreen {
 	private void doProcessInput(float delta) {
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			// TODO fix this - should be able to press (not hold) a key to build
+			Vector2 mapPos = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+			Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
+			Gdx.app.log(LOG, String.format("[%.0f, %.0f] --> [%.0f, %.0f]", mapPos.x, mapPos.y, boardPos.x, boardPos.y));
 			if (Gdx.input.isKeyPressed(Keys.B)){
 				// TODO more buttons for more things
 				
@@ -200,6 +203,10 @@ public class LevelScreen extends AbstractScreen {
 				bounds.setX(loc.x - bounds.getWidth() * 0.5f);
 				bounds.setY(loc.y - bounds.getHeight() * 0.5f);
 				
+				loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
+				
+				// TODO should get whether the square is open or not
+				
 				if (game.getPlayer().canBuild(unit.id, gController) && gController.getObjsInArea(bounds).size == 0) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
@@ -207,7 +214,7 @@ public class LevelScreen extends AbstractScreen {
 					bld.building = unit.id;
 					bld.location = loc;
 					//game.sendCommand(bld);
-					gController.queueCommand(bld);
+					game.sendCommand(bld);
 				}
 			} else {
 				
@@ -269,7 +276,7 @@ public class LevelScreen extends AbstractScreen {
 						at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 						
 						//game.sendCommand(at);
-						gController.queueCommand(at);
+						game.sendCommand(at);
 					} else {
 						// move to this location
 						Move mv = new Move();
@@ -296,7 +303,7 @@ public class LevelScreen extends AbstractScreen {
 						}
 						
 						//game.sendCommand(mv);
-						gController.queueCommand(mv);
+						game.sendCommand(mv);
 					}
 				}
 				rightBtnDown = false;
@@ -316,8 +323,8 @@ public class LevelScreen extends AbstractScreen {
 						upg.owner = game.getPlayer().getPlayerId();
 						upg.unit = u.getObjId();
 						upg.upgrade = "station-upgrade-lvl2";
-						//game.sendCommand(upg);
-						gController.queueCommand(upg);
+						
+						game.sendCommand(upg);
 					}
 				}
 			}

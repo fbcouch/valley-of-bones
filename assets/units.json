@@ -47,7 +47,7 @@
   	weapons: [laser-base-red],
   	cost: 25,
   	food: 1,
-  	bounds: [0, 0, 64, 80]
+  	bounds: [0, 0, 64, 64]
   },
   laser-base-red: {
   	type: "weapon",

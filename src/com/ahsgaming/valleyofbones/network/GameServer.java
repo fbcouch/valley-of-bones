@@ -306,7 +306,7 @@ public class GameServer implements NetController {
 				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
 			}
 			
-			controller.netUpdate(KryoCommon.NET_TICK_LENGTH * 0.001f);
+			controller.doCommands(KryoCommon.NET_TICK_LENGTH * 0.001f);
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
