@@ -119,7 +119,8 @@ public class LevelScreen extends AbstractScreen {
 	}
 	
 	private void drawUnitBoxes() {
-		for (GameObject obj: gController.getSelectedObjects()) {
+		if (gController.getSelectedObject() != null) {
+			GameObject obj = gController.getSelectedObject();
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
 			Vector2 start = gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
@@ -189,10 +190,12 @@ public class LevelScreen extends AbstractScreen {
 	}
 	
 	private void doProcessInput(float delta) {
+		Vector2 mapPos = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+		Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
+		
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			// TODO fix this - should be able to press (not hold) a key to build
-			Vector2 mapPos = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-			Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
+			
 			
 			if (Gdx.input.isKeyPressed(Keys.B)){
 				// TODO more buttons for more things
@@ -213,37 +216,12 @@ public class LevelScreen extends AbstractScreen {
 					bld.turn = gController.getGameTurn();
 					bld.building = unit.id;
 					bld.location = loc;
-					//game.sendCommand(bld);
 					game.sendCommand(bld);
 				}
-			} else {
-				
-				if (boxOrigin == null) {
-					boxOrigin = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-					boxFinal = new Vector2(boxOrigin);
-				}
-				boxFinal.set(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
-			}
-		} else {
-			if (!(boxOrigin == null || boxFinal == null)) {
-				// select any units in the box
-				
-				Rectangle box = new Rectangle(boxOrigin.x, boxOrigin.y, boxFinal.x - boxOrigin.x, boxFinal.y - boxOrigin.y);
-				if (box.width < 0) {
-					box.x += box.width;
-					box.width *= -1;
-				}
-				
-				if (box.height < 0) {
-					box.y += box.height;
-					box.height *= -1;
-				}
-				
-				gController.selectObjectsInArea(box, game.getPlayer(), Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+			} else {						
+				gController.selectObjAtBoardPos(boardPos);
 				
 			}
-			boxOrigin = null;
-			boxFinal = null;
 		}
 		
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
@@ -254,57 +232,55 @@ public class LevelScreen extends AbstractScreen {
 				ArrayList<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
-				for (GameObject obj: gController.getSelectedObjects()) {
-					if (objsUnderCursor == null) {
-						objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
+				GameObject obj= gController.getSelectedObject();
+				if (objsUnderCursor == null) {
+					objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
+				
+					for (GameObject cur: objsUnderCursor) {
+						if (cur.getOwner() != game.getPlayer()) {
+							// TODO find the object with the highest 'threat'?
+							target = cur;
+						}
+					}
+				}
+				
+				if (target != null) {
+					// attack this target!
+					Attack at = new Attack();
+					at.owner = game.getPlayer().getPlayerId();
+					at.turn = gController.getGameTurn();
+					at.unit = obj.getObjId();
+					at.target = target.getObjId();
+					at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					
-						for (GameObject cur: objsUnderCursor) {
-							if (cur.getOwner() != game.getPlayer()) {
-								// TODO find the object with the highest 'threat'?
-								target = cur;
-							}
+					//game.sendCommand(at);
+					game.sendCommand(at);
+				} else {
+					// move to this location
+					Move mv = new Move();
+					mv.owner = game.getPlayer().getPlayerId();
+					mv.turn = gController.getGameTurn();
+					mv.unit = obj.getObjId();
+					mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+					mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+					mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
+					
+					Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
+					if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
+						// the destination is outside the map
+						if ((mv.toLocation.x < 0 || mv.toLocation.x > grpLevel.getWidth())) {
+							// X is out of bounds
+							if (mv.toLocation.x < 0) mv.toLocation.set(0, mv.toLocation.y);
+							if (mv.toLocation.x > grpLevel.getWidth()) mv.toLocation.set(grpLevel.getWidth(), mv.toLocation.y);
+						} 
+						if ((mv.toLocation.y < 0 || mv.toLocation.y > grpLevel.getHeight())) {
+							// Y is out of bounds
+							if (mv.toLocation.y < 0) mv.toLocation.set(mv.toLocation.x, 0);
+							if (mv.toLocation.y > grpLevel.getHeight()) mv.toLocation.set(mv.toLocation.x, grpLevel.getHeight());
 						}
 					}
 					
-					if (target != null) {
-						// attack this target!
-						Attack at = new Attack();
-						at.owner = game.getPlayer().getPlayerId();
-						at.turn = gController.getGameTurn();
-						at.unit = obj.getObjId();
-						at.target = target.getObjId();
-						at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-						
-						//game.sendCommand(at);
-						game.sendCommand(at);
-					} else {
-						// move to this location
-						Move mv = new Move();
-						mv.owner = game.getPlayer().getPlayerId();
-						mv.turn = gController.getGameTurn();
-						mv.unit = obj.getObjId();
-						mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
-						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
-						
-						Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
-						if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
-							// the destination is outside the map
-							if ((mv.toLocation.x < 0 || mv.toLocation.x > grpLevel.getWidth())) {
-								// X is out of bounds
-								if (mv.toLocation.x < 0) mv.toLocation.set(0, mv.toLocation.y);
-								if (mv.toLocation.x > grpLevel.getWidth()) mv.toLocation.set(grpLevel.getWidth(), mv.toLocation.y);
-							} 
-							if ((mv.toLocation.y < 0 || mv.toLocation.y > grpLevel.getHeight())) {
-								// Y is out of bounds
-								if (mv.toLocation.y < 0) mv.toLocation.set(mv.toLocation.x, 0);
-								if (mv.toLocation.y > grpLevel.getHeight()) mv.toLocation.set(mv.toLocation.x, grpLevel.getHeight());
-							}
-						}
-						
-						//game.sendCommand(mv);
-						game.sendCommand(mv);
-					}
+					game.sendCommand(mv);
 				}
 				rightBtnDown = false;
 			}
@@ -312,22 +288,22 @@ public class LevelScreen extends AbstractScreen {
 		
 		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
 			vKeyDown = true;
-			
-			for (GameObject obj: gController.getSelectedObjects()) {
-				if (obj instanceof Unit) {
-					Unit u = (Unit)obj;
+		
+			GameObject obj = gController.getSelectedObject();
+			if (obj instanceof Unit) {
+				Unit u = (Unit)obj;
+				
+				if (game.getPlayer().canUpgrade(u, "station-upgrade-lvl2", gController)) {
+					Upgrade upg = new Upgrade();
+					upg.turn = gController.getGameTurn();
+					upg.owner = game.getPlayer().getPlayerId();
+					upg.unit = u.getObjId();
+					upg.upgrade = "station-upgrade-lvl2";
 					
-					if (game.getPlayer().canUpgrade(u, "station-upgrade-lvl2", gController)) {
-						Upgrade upg = new Upgrade();
-						upg.turn = gController.getGameTurn();
-						upg.owner = game.getPlayer().getPlayerId();
-						upg.unit = u.getObjId();
-						upg.upgrade = "station-upgrade-lvl2";
-						
-						game.sendCommand(upg);
-					}
+					game.sendCommand(upg);
 				}
 			}
+			
 		}
 		
 		

@@ -56,7 +56,8 @@ public class GameController {
 	
 	public String LOG = "GameController";
 	
-	ArrayList<GameObject> gameObjects, selectedObjects, objsToAdd, objsToRemove;
+	ArrayList<GameObject> gameObjects, objsToAdd, objsToRemove;
+	GameObject selectedObject;
 	Group grpRoot, grpMap, grpUnits;
 	
 	ArrayList<Player> players;
@@ -93,7 +94,7 @@ public class GameController {
 		grpRoot.addActor(grpUnits);
 		
 		gameObjects = new ArrayList<GameObject>();
-		selectedObjects = new ArrayList<GameObject>();
+		selectedObject = null;
 		objsToAdd = new ArrayList<GameObject>();
 		objsToRemove = new ArrayList<GameObject>();
 		
@@ -282,10 +283,7 @@ public class GameController {
 			return true;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
-			Rectangle bounds = new Rectangle(((JsonUnit)Prototypes.getProto(b.building)).bounds);
-			bounds.set(bounds.x + b.location.x - bounds.width * 0.5f, bounds.y + b.location.y - bounds.height * 0.5f, bounds.width, bounds.height);
-			Gdx.app.log(LOG, Integer.toString(b.turn) + ": " + Boolean.toString(getObjsInArea(bounds).size() == 0));
-			return (getPlayerById(b.owner).canBuild(b.building, this) && getObjsInArea(bounds).size() == 0);
+			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
 		} else if (cmd instanceof Move) {
 			return true;
 		} else if (cmd instanceof Pause) {
@@ -469,52 +467,20 @@ public class GameController {
 		return ret;
 	}
 	
-	public ArrayList<GameObject> getSelectedObjects() {
-		return selectedObjects;
+	public GameObject getSelectedObject() {
+		return selectedObject;
 	}
 	
-	public void selectObjectsInArea(Rectangle box, Player owner, boolean addToSelection) {
-		if (!addToSelection) {
-			selectedObjects.clear();
-		}
-		// TODO check owner
-		boolean hasOwnerObjs = false;
-		for (GameObject obj: selectedObjects) {
-			if (obj.getOwner() == owner && obj instanceof Selectable 
-					&& ((Selectable)obj).isSelectable()) hasOwnerObjs = true;
-		}
-		
-		GameObject firstNewObj = null;
-		
-		for (GameObject obj: gameObjects) {
-			if (obj instanceof Selectable && ((Selectable)obj).isSelectable() 
-					&& obj.isColliding(box) && !selectedObjects.contains(obj)) {
-				if (obj.getOwner() == owner) hasOwnerObjs = true;
-				
-				if (obj.getOwner() == owner || !hasOwnerObjs) {
-					selectedObjects.add(obj);
-				}
-				
-				if (firstNewObj == null) firstNewObj = obj;
-			}
-		}
-		
-		
-		
-		if (hasOwnerObjs) {
-			// only select owner objs
-			ArrayList<GameObject> toRemove = new ArrayList<GameObject>();
-			
-			for (GameObject obj: selectedObjects) {
-				if (obj.getOwner() != owner) toRemove.add(obj);
-			}
-			selectedObjects.removeAll(toRemove);
-			
-		} else if (firstNewObj != null){
-			// only select one
-			selectedObjects.clear();
-			selectedObjects.add(firstNewObj);
-		}
+	public void selectObjAtBoardPos(int x, int y) {
+		selectedObject = getObjAtBoardPos(x, y);
+	}
+	
+	public void selectObjAtBoardPos(float x, float y) {
+		selectObjAtBoardPos((int)x, (int)y);
+	}
+	
+	public void selectObjAtBoardPos(Vector2 boardPos) {
+		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
 	}
 	
 	public ArrayList<GameObject> getObjsAtPosition(Vector2 mapCoords) {
@@ -531,17 +497,19 @@ public class GameController {
 		return returnVal;
 	}
 	
-	public ArrayList<GameObject> getObjsInArea(Rectangle bounds) {
-		ArrayList<GameObject> ret = new ArrayList<GameObject>();
-		
-		
+	public GameObject getObjAtBoardPos(int x, int y) {
 		for (GameObject obj: gameObjects) {
-			if (obj.isColliding(bounds)) {
-				ret.add(obj);
-			}
+			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) return obj; 
 		}
-		
-		return ret;
+		return null;
+	}
+	
+	public GameObject getObjAtBoardPos(float x, float y) {
+		return getObjAtBoardPos((int)x, (int)y);
+	}
+	
+	public GameObject getObjAtBoardPos(Vector2 boardPos) {
+		return getObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
 	}
 	
 	public boolean isBoardPosEmpty(int x, int y) {
