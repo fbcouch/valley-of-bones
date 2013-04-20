@@ -188,6 +188,9 @@ public class GameClient implements NetController {
 	public void sendStartGame() {
 		// report that we're ready
 		client.sendTCP(new StartGame());
+		
+		// TODO remove this
+		controller.queueCommand(new Unpause());
 	}
 	
 	public void endGame() {
@@ -207,6 +210,8 @@ public class GameClient implements NetController {
 		}
 		
 		if (controller == null) return true;
+		
+		Gdx.app.log(LOG, controller.getState().toString());
 		
 		long time = System.currentTimeMillis();
 		int delta = (int)(time - lastTimeMillis);

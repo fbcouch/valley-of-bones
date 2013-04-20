@@ -22,11 +22,10 @@
  */
 package com.ahsgaming.valleyofbones;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
@@ -35,11 +34,10 @@ import com.ahsgaming.valleyofbones.network.Pause;
 import com.ahsgaming.valleyofbones.network.Unpause;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
 import com.ahsgaming.valleyofbones.units.Selectable;
 import com.ahsgaming.valleyofbones.units.Unit;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
@@ -65,7 +63,7 @@ public class GameController {
 	ArrayList<Team> teams;
 	
 	String mapName;
-	TiledMap map;
+	HexMap map;
 	Vector2[] spawnPoints;
 	
 	GameStates state;
@@ -187,7 +185,7 @@ public class GameController {
 		this.loadMap();
 		this.loadMapObjects();
 		
-		grpRoot.setSize(map.width * map.tileWidth, map.height * map.tileHeight);
+		grpRoot.setSize(map.getWidth() * map.getTileWidth(), (int) (map.getHeight() * map.getTileHeight() * 0.75f));
 		
 		// TODO start paused
 		state = GameStates.PAUSED;
@@ -197,56 +195,37 @@ public class GameController {
 	 * Methods
 	 */
 	
-	private TiledMap loadMap() {
+	private HexMap loadMap() {
 		// loads the map based on the value in mapName
 		if (mapName == null || mapName.length() == 0) mapName = DEFAULT_MAP;
-		map = TiledLoader.createMap(Gdx.files.internal(MAP_DIRECTORY + File.separator + mapName));
+		// TODO implement loading of maps
+		map = new HexMap(20, 10, 2, 3);
 		
 		return map;
 	}
 	
 	private Group loadMapObjects() {
-		
-		
-		for (TiledObjectGroup group : map.objectGroups) {
-			for (TiledObject obj : group.objects) {
-				if (obj.type.contains("team_start")) {
-					Vector2 objPos = mapToLevelCoords(new Vector2(obj.x - obj.width * 0.5f, obj.y - obj.height * 0.5f));
-					Unit unit;
-					int owner = -1;
-					try {
-						owner = Integer.parseInt(Character.toString(obj.type.charAt(obj.type.length() - 1))) - 1;
-						if (owner >= 0 && owner < players.size()) {
-							unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("space-station-base"));
-							if(getPlayerById(owner) != null) getPlayerById(owner).setBaseUnit(unit); // for some game types, when this unit dies, this player is out
-						} else {
-							unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
-							Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
-						}
-						
-						unit.setPosition(objPos.x, objPos.y);
-						addGameUnit(unit);
-						
-						if (owner > -1) {
-							addSpawnPoint(owner, new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
-						}
-						
-						// TODO remove this
-						unit = new Unit(getNextObjectId(), getPlayerById(owner), (JsonUnit)Prototypes.getProto("fighters-base"));
-						unit.setPosition(objPos.x + 100,  objPos.y + 100);
-						addGameUnit(unit);
-						
-						unit = new Unit(getNextObjectId(), getPlayerById(owner + 1), (JsonUnit)Prototypes.getProto("fighters-base"));
-						unit.setPosition(objPos.x + 100, objPos.y + 200);
-						addGameUnit(unit);
-					} catch (NumberFormatException e) {
-						owner = -1;
-						//unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("fighters-base"));
-					}
-					
-				}
+		int player = 0;
+		for (Vector2 spawn : map.getControlPoints()) {
+			Vector2 objPos = mapToLevelCoords(spawn);
+			Unit unit;
+			if (player >= 0 && player < players.size()) {
+				unit = new Unit(getNextObjectId(), players.get(player), (JsonUnit)Prototypes.getProto("space-station-base"));
+				players.get(player).setBaseUnit(unit);
+			} else {
+				unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
+				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
+			}
+			
+			unit.setPosition(objPos.x, objPos.y);
+			addGameUnit(unit);
+			
+			if (player >= 0 && player < players.size()) {
+				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
 			}
 		}
+		
+		// TODO load capture points
 		
 		return grpUnits;
 	}
@@ -658,7 +637,7 @@ public class GameController {
 		return ret;
 	}
 	
-	public TiledMap getMap() {
+	public HexMap getMap() {
 		return map;
 	}
 	
@@ -748,7 +727,7 @@ public class GameController {
 	 * @return Vector2 coordinates in Level/GDX reference frame (0,0 is bottom-left)
 	 */
 	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
-		return new Vector2(mapCoords.x, (map.height * map.tileHeight) - mapCoords.y);
+		return new Vector2(mapCoords.x, (map.getHeight() * map.getTileHeight()) - mapCoords.y);
 	}
 
 	

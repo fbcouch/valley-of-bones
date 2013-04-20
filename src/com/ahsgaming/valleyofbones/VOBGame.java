@@ -83,7 +83,8 @@ public class VOBGame extends Game {
 					localServer = null;
 				}
 			};
-			serverThread.start();
+			// TODO for now, we're going to run everything locally
+			//serverThread.start();
 		}
 		
 		localClient = new GameClient(this, cfg);
@@ -340,7 +341,4 @@ public class VOBGame extends Game {
 		this.gameResult = gameResult;
 	}
 
-	
-
-	
 }
