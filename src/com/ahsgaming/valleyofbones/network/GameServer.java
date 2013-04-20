@@ -59,6 +59,9 @@ public class GameServer {
 	int sinceLastGameTick = 0;
 	long lastTimeMillis = 0;
 	
+	float turnTimer = 0;
+	float turnLength = 5;
+	
 	GameSetupConfig gameConfig;
 	
 	ArrayList<Player> players = new ArrayList<Player>();
@@ -195,7 +198,7 @@ public class GameServer {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
-						cmd.turn = controller.getNetTick() + (cmd instanceof Unpause ? 0 : 2);
+						cmd.turn = controller.getGameTurn();
 						if (controller.validate(cmd)) {
 							controller.queueCommand(cmd);
 							server.sendToAllTCP(cmd);
@@ -286,6 +289,23 @@ public class GameServer {
 		
 		//Gdx.app.log("Server#Update", String.format("time: %d, lastTime: %d, delta: %d, sinceLastGameTick: %d", time, lastTimeMillis, delta, sinceLastGameTick));
 		if (delta < 0) return true;
+		if (gameStarted) {
+			if (this.turnTimer > 0) {
+				this.turnTimer -= delta * 0.001f;
+			} else {
+				
+				this.turnTimer = this.turnLength;
+				EndTurn et = new EndTurn();
+				et.turn = controller.getGameTurn();
+				server.sendToAllTCP(et);
+				
+				controller.doTurn();
+				
+				StartTurn st = new StartTurn();
+				st.turn = controller.getGameTurn();
+				server.sendToAllTCP(st);
+			}
+		}
 		
 		sinceLastNetTick += delta;
 		sinceLastGameTick += delta;
@@ -306,7 +326,7 @@ public class GameServer {
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
 			// TODO game tick
-			controller.update(KryoCommon.GAME_TICK_LENGTH * 0.001f);
+			
 			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
 			//Gdx.app.log("Server", "GAME TICK");
 			

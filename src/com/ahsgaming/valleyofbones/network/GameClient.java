@@ -61,6 +61,9 @@ public class GameClient {
 	int sinceLastGameTick = 0;
 	long lastTimeMillis = 0;
 	
+	float turnTimer = 0;
+	float turnLength = 5;
+	
 	GameSetupConfig gameConfig;
 	
 	ArrayList<Player> players = new ArrayList<Player>();
@@ -98,7 +101,9 @@ public class GameClient {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
-						controller.queueCommand(cmd);
+						if (!(obj instanceof StartTurn || obj instanceof EndTurn)) {
+							controller.queueCommand(cmd);
+						}
 					}
 				}
 				
@@ -133,6 +138,17 @@ public class GameClient {
 				if (obj instanceof GameResult) {
 					Gdx.app.log(LOG, "GameResult rec'd");
 					gameResult = (GameResult)obj;
+				}
+				
+				if (obj instanceof StartTurn) {
+					Gdx.app.log(LOG, "StartTurn");
+					turnTimer = turnLength;
+				}
+				
+				if (obj instanceof EndTurn) {
+					Gdx.app.log(LOG, "EndTurn");
+					turnTimer = 0;
+					if (controller != null) controller.doTurn();
 				}
 			}
 			
@@ -202,6 +218,10 @@ public class GameClient {
 		sinceLastNetTick += delta;
 		sinceLastGameTick += delta;
 		
+		if (this.turnTimer > 0) {
+			this.turnTimer -= delta * 0.001f;
+		}
+		
 		
 		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
 			// TODO net tick
@@ -213,7 +233,6 @@ public class GameClient {
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
-			controller.update(KryoCommon.GAME_TICK_LENGTH * 0.001f);
 			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
 			
 			if (gameResult != null) {

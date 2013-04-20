@@ -78,6 +78,7 @@ public class GameController {
 	
 	int gameTurn = 0;
 	
+	
 	int nextObjectId = 0;
 	
 	GameResult gameResult = null;
@@ -304,7 +305,7 @@ public class GameController {
 			} else if (command.turn == gameTurn) {
 				// execute current commands and remove
 				// TODO execute the command
-				//Gdx.app.log(SpaceTacticsGame.LOG, "Executing command on tick " + Integer.toString(command.tick) + "==" + Integer.toString(gameTick));
+				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
 					executeCommand(command);
 				}
@@ -317,83 +318,78 @@ public class GameController {
 		
 	}
 	
-	public void update(float delta) {
+	public void doTurn() {
+		gameTurn += 1;
+		float delta = 1;
 		
-		if (state == GameStates.RUNNING || state == GameStates.PAUSED) {
-			// check for game over conditions
+		// update collection (do simulation for turn)
+		gameObjects.removeAll(objsToRemove);
+		for (GameObject obj: objsToRemove) {
+			grpUnits.removeActor(obj);
+		}
+		objsToRemove.clear();
+		
+		for (GameObject obj: objsToAdd) {
+			addGameUnitNow(obj);
+		}
+		objsToAdd.clear();
+		
+		for (GameObject obj : gameObjects) {
+			// update physics
 			
-			int alive = 0;
-			Team teamAlive = null;
+			if (obj.getAccel().len() > obj.getMaxAccel()) {
+				// clamp acceleration to max
+				float angle = obj.getAccel().angle();
+				obj.getAccel().set(obj.getMaxAccel(), 0);
+				obj.getAccel().rotate(angle);
+			}
+			
+			obj.getVelocity().add(obj.getAccel().mul(delta));
+			if (obj.getVelocity().len() > obj.getMaxSpeed()) {
+				// clamp velocity to max
+				float angle = obj.getVelocity().angle();
+				obj.getVelocity().set(obj.getMaxSpeed(), 0);
+				obj.getVelocity().rotate(angle);
+			}
+			
+			obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
+			
+			obj.update(this, delta);
+			
+			if (obj.isRemove()) objsToRemove.add(obj);
+		}
+		
+		
+		checkResult();
+	}
+	
+	public void checkResult() {
+		int alive = 0;
+		Team teamAlive = null;
+		for (Team t: teams) {
+			if (t.hasPlayerAlive()) {
+				alive += 1;
+				teamAlive = t;
+			}
+		}
+		
+		if (alive <= 1) {
+			GameResult result = new GameResult();
+			if (teamAlive != null) {
+				result.winners = teamAlive.getPlayerIds();
+				result.winningTeam = teamAlive.getId();
+			}
+			ArrayList<Team> losingTeams = new ArrayList<Team>();
 			for (Team t: teams) {
-				if (t.hasPlayerAlive()) {
-					alive += 1;
-					teamAlive = t;
+				if (!t.hasPlayerAlive()) {
+					losingTeams.add(t);
 				}
 			}
+			result.losers = Team.getPlayerIds(losingTeams);
 			
-			if (alive <= 1) {
-				GameResult result = new GameResult();
-				if (teamAlive != null) {
-					result.winners = teamAlive.getPlayerIds();
-					result.winningTeam = teamAlive.getId();
-				}
-				ArrayList<Team> losingTeams = new ArrayList<Team>();
-				for (Team t: teams) {
-					if (!t.hasPlayerAlive()) {
-						losingTeams.add(t);
-					}
-				}
-				result.losers = Team.getPlayerIds(losingTeams);
-				
-				//Gdx.app.log(LOG, String.format("Game Over // Winner: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
-				this.gameResult = result;
-			}
-			
+			//Gdx.app.log(LOG, String.format("Game Over // Winner: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
+			this.gameResult = result;
 		}
-		
-		if (state == GameStates.RUNNING) {
-			gameTick += 1;
-			//Gdx.app.log(LOG, "Game Tick: " + Integer.toString(gameTick));
-			
-			// update collection
-			gameObjects.removeAll(objsToRemove);
-			for (GameObject obj: objsToRemove) {
-				grpUnits.removeActor(obj);
-			}
-			objsToRemove.clear();
-			
-			for (GameObject obj: objsToAdd) {
-				addGameUnitNow(obj);
-			}
-			objsToAdd.clear();
-			
-			for (GameObject obj : gameObjects) {
-				// update physics
-				
-				if (obj.getAccel().len() > obj.getMaxAccel()) {
-					// clamp acceleration to max
-					float angle = obj.getAccel().angle();
-					obj.getAccel().set(obj.getMaxAccel(), 0);
-					obj.getAccel().rotate(angle);
-				}
-				
-				obj.getVelocity().add(obj.getAccel().mul(delta));
-				if (obj.getVelocity().len() > obj.getMaxSpeed()) {
-					// clamp velocity to max
-					float angle = obj.getVelocity().angle();
-					obj.getVelocity().set(obj.getMaxSpeed(), 0);
-					obj.getVelocity().rotate(angle);
-				}
-				
-				obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
-				
-				obj.update(this, delta);
-				
-				if (obj.isRemove()) objsToRemove.add(obj);
-			}
-			
-		}
-		
 	}
 
 	
@@ -684,6 +680,10 @@ public class GameController {
 		return netTick;
 	}
 	
+	public int getGameTurn() {
+		return gameTurn;
+	}
+	
 	public List<Command> getCommandHistory() {
 		return this.commandHistory;
 	}
@@ -693,8 +693,10 @@ public class GameController {
 	}
 	
 	public void queueCommand(Command cmd) {
+		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
 			cmdsToAdd.add(cmd);
+			Gdx.app.log(LOG, "queued command");
 		}
 	}
 	

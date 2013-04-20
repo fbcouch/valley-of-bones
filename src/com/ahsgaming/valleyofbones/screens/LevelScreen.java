@@ -195,7 +195,7 @@ public class LevelScreen extends AbstractScreen {
 				if (game.getPlayer().canBuild(unit.id, gController) && gController.getObjsInArea(bounds).size == 0) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
-					bld.turn = gController.getNetTick();
+					bld.turn = gController.getGameTurn();
 					bld.building = unit.id;
 					bld.location = loc;
 					game.sendCommand(bld);
@@ -254,7 +254,7 @@ public class LevelScreen extends AbstractScreen {
 						// attack this target!
 						Attack at = new Attack();
 						at.owner = game.getPlayer().getPlayerId();
-						at.turn = gController.getNetTick();
+						at.turn = gController.getGameTurn();
 						at.unit = obj.getObjId();
 						at.target = target.getObjId();
 						at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
@@ -264,7 +264,7 @@ public class LevelScreen extends AbstractScreen {
 						// move to this location
 						Move mv = new Move();
 						mv.owner = game.getPlayer().getPlayerId();
-						mv.turn = gController.getNetTick();
+						mv.turn = gController.getGameTurn();
 						mv.unit = obj.getObjId();
 						mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
 						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
@@ -301,7 +301,7 @@ public class LevelScreen extends AbstractScreen {
 					
 					if (game.getPlayer().canUpgrade(u, "station-upgrade-lvl2", gController)) {
 						Upgrade upg = new Upgrade();
-						upg.turn = gController.getNetTick();
+						upg.turn = gController.getGameTurn();
 						upg.owner = game.getPlayer().getPlayerId();
 						upg.unit = u.getObjId();
 						upg.upgrade = "station-upgrade-lvl2";
