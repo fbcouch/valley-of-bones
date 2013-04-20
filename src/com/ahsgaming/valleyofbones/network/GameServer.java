@@ -195,7 +195,7 @@ public class GameServer {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
-						cmd.tick = controller.getNetTick() + (cmd instanceof Unpause ? 0 : 2);
+						cmd.turn = controller.getNetTick() + (cmd instanceof Unpause ? 0 : 2);
 						if (controller.validate(cmd)) {
 							controller.queueCommand(cmd);
 							server.sendToAllTCP(cmd);
@@ -272,7 +272,7 @@ public class GameServer {
 			if (allReady) {
 				Unpause up = new Unpause();
 				up.owner = -1;
-				up.tick = controller.getNetTick();
+				up.turn = controller.getNetTick();
 				// important to both send the command out and add to the local queue!
 				server.sendToAllTCP(up);
 				controller.queueCommand(up);

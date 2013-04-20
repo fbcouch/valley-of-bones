@@ -97,7 +97,7 @@ public class GameClient {
 				if (controller != null) {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
-						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.tick));
+						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
 						controller.queueCommand(cmd);
 					}
 				}
