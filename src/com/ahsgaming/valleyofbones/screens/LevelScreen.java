@@ -193,7 +193,7 @@ public class LevelScreen extends AbstractScreen {
 			// TODO fix this - should be able to press (not hold) a key to build
 			Vector2 mapPos = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
 			Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
-			Gdx.app.log(LOG, String.format("[%.0f, %.0f] --> [%.0f, %.0f]", mapPos.x, mapPos.y, boardPos.x, boardPos.y));
+			
 			if (Gdx.input.isKeyPressed(Keys.B)){
 				// TODO more buttons for more things
 				
@@ -207,7 +207,7 @@ public class LevelScreen extends AbstractScreen {
 				
 				// TODO should get whether the square is open or not
 				
-				if (game.getPlayer().canBuild(unit.id, gController) && gController.getObjsInArea(bounds).size == 0) {
+				if (game.getPlayer().canBuild(unit.id, gController) && gController.isBoardPosEmpty(loc)) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.turn = gController.getGameTurn();

@@ -151,17 +151,9 @@ public class HexMap {
 				dx = (x - getTileWidth() * 0.5f) / getTileWidth();
 				mx = (x - getTileWidth() * 0.5f) % getTileWidth();
 			}
-			// if (mx, my) <= (y = -0.5x + .25 * Th) or (mx, my) > (y = 0.5x - 0.25 * Th)
-			if (my <= -0.5 * mx + 0.25f * getTileHeight()) {
-				Gdx.app.log("mapToBoardCoords", "left");
-			} else if (my <= 0.5 * mx - 0.25 * getTileHeight()) {
-				Gdx.app.log("mapToBoardCoords", "right");
-			} else {
-				Gdx.app.log("mapToBoardCoords", "center");
-			}
 			
+			// if (mx, my) <= (y = -0.5x + .25 * Th) or (mx, my) <= (y = 0.5x - 0.25 * Th)
 			if (my <= -0.5 * mx + 0.25f * getTileHeight() || my <= 0.5 * mx - 0.25 * getTileHeight()) {
-				Gdx.app.log("mapToBoardCoords", boardCoords.toString());
 				boardCoords.y -= 1;
 			}
 		}

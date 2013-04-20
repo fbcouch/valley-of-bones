@@ -89,7 +89,6 @@ public class Player {
 		// TODO implement this
 		JsonProto proto = Prototypes.getProto(protoId);
 		if ((proto.food <= 0 || proto.food <= maxFood - curFood) && bankMoney >= proto.cost) {
-			Gdx.app.log(LOG, "Can build!");
 			return true;
 		}
 		return false;

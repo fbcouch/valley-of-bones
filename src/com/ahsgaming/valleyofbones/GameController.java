@@ -465,21 +465,22 @@ public class GameController {
 	
 	public void executeBuild(Build cmd) {
 		// check that this can be built
-		JsonUnit junit = (JsonUnit) Prototypes.getProto("fighters-base");
+		JsonUnit junit = (JsonUnit) Prototypes.getProto(cmd.building);
 		Rectangle bounds = new Rectangle(junit.bounds);
 		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
 		bounds.set(levelPos.x + bounds.x - bounds.width * 0.5f, levelPos.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
 		Player owner = getPlayerById(cmd.owner);
-		if (owner.canBuild(junit.id, this) && getObjsInArea(bounds).size == 0) {
+		if (owner.canBuild(junit.id, this) && isBoardPosEmpty(cmd.location)) {
 			
 			// TODO place builder
 			// for now, just add the unit
 			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
 			unit.setPosition(levelPos);
-			unit.setBoardPosition((int)levelPos.x, (int)levelPos.y);
+			unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
 			
 			addGameUnitNow(unit);
 			owner.setBankMoney(owner.getBankMoney() - junit.cost);
+			owner.update(this, 0);
 		}
 		
 	}
@@ -654,6 +655,23 @@ public class GameController {
 		}
 		
 		return ret;
+	}
+	
+	public boolean isBoardPosEmpty(int x, int y) {
+		for (GameObject obj: this.gameObjects) {
+			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean isBoardPosEmpty(float x, float y) {
+		return isBoardPosEmpty((int)x, (int)y);
+	}
+	
+	public boolean isBoardPosEmpty(Vector2 boardPos) {
+		return isBoardPosEmpty((int)boardPos.x, (int)boardPos.y);
 	}
 	
 	public HexMap getMap() {
