@@ -120,10 +120,18 @@ public class LevelScreen extends AbstractScreen {
 	
 	private void drawUnitBoxes() {
 		for (GameObject obj: gController.getSelectedObjects()) {
-			shapeRenderer.begin(ShapeType.Rectangle);
+			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-			Vector2 start = mapToScreenCoords(obj.getX() + obj.getCollideBox().x, obj.getY() + obj.getCollideBox().y);
-			shapeRenderer.rect(start.x, start.y, obj.getCollideBox().width, obj.getCollideBox().height);
+			Vector2 start = gController.getMap().boardToScreenCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
+			start = mapToScreenCoords(start.x, start.y);
+			
+			Vector2 base = new Vector2(start.x, start.y);
+			shapeRenderer.line(base.x + gController.getMap().getTileWidth() * 0.5f, base.y, base.x, base.y + gController.getMap().getTileHeight() * 0.25f);
+			shapeRenderer.line(base.x, base.y + gController.getMap().getTileHeight() * 0.25f, base.x, base.y + gController.getMap().getTileHeight() * 0.75f);
+			shapeRenderer.line(base.x, base.y + gController.getMap().getTileHeight() * 0.75f, base.x + gController.getMap().getTileWidth() * 0.5f, base.y + gController.getMap().getTileHeight());
+			shapeRenderer.line(base.x + gController.getMap().getTileWidth() * 0.5f, base.y + gController.getMap().getTileHeight(), base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.75f);
+			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.75f, base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f);
+			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f, base.x + gController.getMap().getTileWidth() * 0.5f, base.y);
 			shapeRenderer.end();
 			
 			shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -198,7 +206,8 @@ public class LevelScreen extends AbstractScreen {
 					bld.turn = gController.getGameTurn();
 					bld.building = unit.id;
 					bld.location = loc;
-					game.sendCommand(bld);
+					//game.sendCommand(bld);
+					gController.queueCommand(bld);
 				}
 			} else {
 				
@@ -259,7 +268,8 @@ public class LevelScreen extends AbstractScreen {
 						at.target = target.getObjId();
 						at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 						
-						game.sendCommand(at);
+						//game.sendCommand(at);
+						gController.queueCommand(at);
 					} else {
 						// move to this location
 						Move mv = new Move();
@@ -285,7 +295,8 @@ public class LevelScreen extends AbstractScreen {
 							}
 						}
 						
-						game.sendCommand(mv);
+						//game.sendCommand(mv);
+						gController.queueCommand(mv);
 					}
 				}
 				rightBtnDown = false;
@@ -305,7 +316,8 @@ public class LevelScreen extends AbstractScreen {
 						upg.owner = game.getPlayer().getPlayerId();
 						upg.unit = u.getObjId();
 						upg.upgrade = "station-upgrade-lvl2";
-						game.sendCommand(upg);
+						//game.sendCommand(upg);
+						gController.queueCommand(upg);
 					}
 				}
 			}
@@ -404,6 +416,9 @@ public class LevelScreen extends AbstractScreen {
 	public void render(float delta) {
 		super.render(delta);
 		
+		// draw a debug map
+		gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
+		
 		// DRAW BOXES
 		drawSelectionBox();
 		drawUnitBoxes();
@@ -422,8 +437,7 @@ public class LevelScreen extends AbstractScreen {
 		// update level position
 		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 		
-		// draw a debug map
-		gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
+		
 				
 		updateScorePane();
 		

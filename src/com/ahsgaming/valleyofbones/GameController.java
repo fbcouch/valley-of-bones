@@ -220,6 +220,7 @@ public class GameController {
 			Gdx.app.log(LOG, spawn.toString());
 			Vector2 pos = map.boardToScreenCoords((int)spawn.x, (int)spawn.y);
 			unit.setPosition(pos.x + 8, pos.y);
+			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
 			addGameUnit(unit);
 			
 			if (player >= 0 && player < players.size()) {
