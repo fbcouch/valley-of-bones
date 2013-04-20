@@ -60,7 +60,6 @@ public class GameController {
 	Group grpRoot, grpMap, grpUnits;
 	
 	ArrayList<Player> players;
-	ArrayList<Team> teams;
 	
 	String mapName;
 	HexMap map;
@@ -71,8 +70,6 @@ public class GameController {
 	ArrayList<Command> commandHistory;
 	ArrayList<Command> commandQueue;
 	ArrayList<Command> cmdsToAdd;
-	int gameTick = 0;
-	int netTick = 0;
 	
 	int gameTurn = 0;
 	float turnLength = 5;
@@ -81,81 +78,6 @@ public class GameController {
 	int nextObjectId = 0;
 	
 	GameResult gameResult = null;
-	
-	public static class Team {
-		int id;
-		List<Player> players;
-		
-		public Team(int id) {
-			this.id = id;
-			players = new ArrayList<Player>();
-		}
-		
-		public Team addPlayer(Player player) {
-			players.add(player);
-			return this;
-		}
-		
-		public Team removePlayer(Player player) {
-			
-			if (players.contains(player)) {
-				players.remove(player);
-				}
-			
-			return this;
-		}
-		
-		public Player[] getPlayers() {
-			Player[] playerArray = new Player[players.size()];
-			for (int p=0; p<players.size(); p++) {
-				playerArray[p] = players.get(p);
-			}
-			return playerArray;
-			
-		}
-		
-		public int[] getPlayerIds() {
-		
-			int[] idArray = new int[players.size()];
-			for (int p=0; p<players.size(); p++) {
-				idArray[p] = players.get(p).getPlayerId();
-			}
-			return idArray;
-		
-		}
-		
-		public boolean hasPlayerAlive() {
-		
-			for (Player p: players) {
-				if (p.isAlive()) {
-					return true;
-				}
-			}
-		
-			return false;
-		}
-
-		public int getId() {
-			return this.id;
-		}
-		
-		public static int[] getPlayerIds(ArrayList<Team> teams) {
-			int total = 0;
-			for (Team t: teams) {
-				total += t.getPlayers().length;
-			}
-			int[] players = new int[total];
-			total = 0;
-			for (Team t: teams) {
-				int[] teamPlayers = t.getPlayerIds();
-				for (int p=0;p<teamPlayers.length; p++) {
-					players[p + total] = teamPlayers[p];
-				}
-				total += teamPlayers.length;
-			}
-			return players;
-		}
-	}
 	
 	/**
 	 * Constructors
@@ -180,8 +102,6 @@ public class GameController {
 		cmdsToAdd = new ArrayList<Command>();
 		
 		this.players = players;
-		
-		this.createTeams();
 		
 		this.loadMap();
 		this.loadMapObjects();
@@ -232,41 +152,6 @@ public class GameController {
 		
 		return grpUnits;
 	}
-	
-	public void createTeams() {
-		teams = new ArrayList<Team>();
-		
-		for (Player p: players) {
-			if (teams.size() == 0) {
-				// create a new team and add this player
-				Team t = new Team(p.getTeam());
-				t.addPlayer(p);
-				teams.add(t);
-			} else {
-				// search the list of teams for a match
-				
-				boolean foundTeam = false;
-				for (Team t: teams) {
-					if (t.getId() == p.getTeam()) {
-						t.addPlayer(p);
-						foundTeam = true;
-						break;
-					}
-				}
-				
-				// no match? create a new team
-				if (!foundTeam) {
-					Team t = new Team(p.getTeam());
-					t.addPlayer(p);
-					teams.add(t);
-				}
-				
-			}
-		}
-		
-	}
-	
-	
 	
 	public void update(float delta) {
 		if (state == GameStates.RUNNING) {
@@ -331,27 +216,29 @@ public class GameController {
 	
 	public void checkResult() {
 		int alive = 0;
-		Team teamAlive = null;
-		for (Team t: teams) {
-			if (t.hasPlayerAlive()) {
+		Player playerAlive = null;
+		for (Player p: players) {
+			if (p.isAlive()) {
 				alive += 1;
-				teamAlive = t;
+				playerAlive = p;
 			}
 		}
 		
 		if (alive <= 1) {
 			GameResult result = new GameResult();
-			if (teamAlive != null) {
-				result.winners = teamAlive.getPlayerIds();
-				result.winningTeam = teamAlive.getId();
+			if (playerAlive != null) {
+				result.winner = playerAlive.getPlayerId();
 			}
-			ArrayList<Team> losingTeams = new ArrayList<Team>();
-			for (Team t: teams) {
-				if (!t.hasPlayerAlive()) {
-					losingTeams.add(t);
+			ArrayList<Integer> losingPlayers = new ArrayList<Integer>();
+			for (Player p : players) {
+				if (!p.isAlive()) {
+					losingPlayers.add(p.getPlayerId());
 				}
 			}
-			result.losers = Team.getPlayerIds(losingTeams);
+			result.losers = new int[losingPlayers.size()];
+			for (int i = 0; i < losingPlayers.size(); i++) {
+				result.losers[i] = losingPlayers.get(i);
+			}
 			
 			//Gdx.app.log(LOG, String.format("Game Over // Winner: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
 			this.gameResult = result;
@@ -397,8 +284,8 @@ public class GameController {
 			Build b = (Build)cmd;
 			Rectangle bounds = new Rectangle(((JsonUnit)Prototypes.getProto(b.building)).bounds);
 			bounds.set(bounds.x + b.location.x - bounds.width * 0.5f, bounds.y + b.location.y - bounds.height * 0.5f, bounds.width, bounds.height);
-			Gdx.app.log(LOG, Integer.toString(b.turn) + ": " + Boolean.toString(getObjsInArea(bounds).size == 0));
-			return (getPlayerById(b.owner).canBuild(b.building, this) && getObjsInArea(bounds).size == 0);
+			Gdx.app.log(LOG, Integer.toString(b.turn) + ": " + Boolean.toString(getObjsInArea(bounds).size() == 0));
+			return (getPlayerById(b.owner).canBuild(b.building, this) && getObjsInArea(bounds).size() == 0);
 		} else if (cmd instanceof Move) {
 			return true;
 		} else if (cmd instanceof Pause) {
@@ -521,7 +408,7 @@ public class GameController {
 		return grpRoot;
 	}
 	
-	public List<Player> getPlayers() {
+	public ArrayList<Player> getPlayers() {
 		return players;
 	}
 	
@@ -549,8 +436,8 @@ public class GameController {
 		grpUnits.removeActor(obj);
 	}
 	
-	public Array<GameObject> getGameObjects() {
-		Array<GameObject> ret = new Array<GameObject>();
+	public ArrayList<GameObject> getGameObjects() {
+		ArrayList<GameObject> ret = new ArrayList<GameObject>();
 		
 		for(GameObject obj: gameObjects) {
 			ret.add(obj);
@@ -570,8 +457,8 @@ public class GameController {
 		return null;
 	}
 	
-	public Array<Unit> getUnitsByPlayerId(int id) {
-		Array<Unit> ret = new Array<Unit>();
+	public ArrayList<Unit> getUnitsByPlayerId(int id) {
+		ArrayList<Unit> ret = new ArrayList<Unit>();
 		
 		for (GameObject obj: gameObjects) {
 			if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == id) {
@@ -582,7 +469,7 @@ public class GameController {
 		return ret;
 	}
 	
-	public List<GameObject> getSelectedObjects() {
+	public ArrayList<GameObject> getSelectedObjects() {
 		return selectedObjects;
 	}
 	
@@ -630,8 +517,8 @@ public class GameController {
 		}
 	}
 	
-	public Array<GameObject> getObjsAtPosition(Vector2 mapCoords) {
-		Array<GameObject> returnVal = new Array<GameObject>();
+	public ArrayList<GameObject> getObjsAtPosition(Vector2 mapCoords) {
+		ArrayList<GameObject> returnVal = new ArrayList<GameObject>();
 		
 		
 		for (GameObject obj: gameObjects) {
@@ -644,8 +531,8 @@ public class GameController {
 		return returnVal;
 	}
 	
-	public Array<GameObject> getObjsInArea(Rectangle bounds) {
-		Array<GameObject> ret = new Array<GameObject>();
+	public ArrayList<GameObject> getObjsInArea(Rectangle bounds) {
+		ArrayList<GameObject> ret = new ArrayList<GameObject>();
 		
 		
 		for (GameObject obj: gameObjects) {
@@ -678,33 +565,15 @@ public class GameController {
 		return map;
 	}
 	
-	/**
-	 * @return the gameTick
-	 */
-	public int getGameTick() {
-		return gameTick;
-	}
-
-	/**
-	 * @param gameTick the gameTick to set
-	 */
-	public void setGameTick(int gameTick) {
-		this.gameTick = gameTick;
-	}
-	
-	public int getNetTick() {
-		return netTick;
-	}
-	
 	public int getGameTurn() {
 		return gameTurn;
 	}
 	
-	public List<Command> getCommandHistory() {
+	public ArrayList<Command> getCommandHistory() {
 		return this.commandHistory;
 	}
 	
-	public List<Command> getCommandQueue() {
+	public ArrayList<Command> getCommandQueue() {
 		return this.commandQueue;
 	}
 	
@@ -758,14 +627,4 @@ public class GameController {
 	 * static methods
 	 */
 
-	/**
-	 * converts TiledMap coordinates to LibGDX coordinates
-	 * @param mapCoords - Vector2 coordinates in a TiledMap reference frame (0,0 is top-left)
-	 * @return Vector2 coordinates in Level/GDX reference frame (0,0 is bottom-left)
-	 */
-	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
-		return new Vector2(mapCoords.x, (map.getHeight() * map.getTileHeight()) - mapCoords.y);
-	}
-
-	
 }

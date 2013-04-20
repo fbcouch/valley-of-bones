@@ -229,7 +229,7 @@ public class GameServer implements NetController {
 		GameResult result = controller.getGameResult();
 		controller.setState(GameStates.GAMEOVER);
 		
-		Gdx.app.log(LOG, String.format("GameResult: winningTeam: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
+		Gdx.app.log(LOG, String.format("GameResult: winner: %d; Losers: (%d)", result.winner, result.losers.length));
 		
 		server.sendToAllTCP(result);
 		server.close();
@@ -260,7 +260,7 @@ public class GameServer implements NetController {
 			if (allReady) {
 				Unpause up = new Unpause();
 				up.owner = -1;
-				up.turn = controller.getNetTick();
+				up.turn = controller.getGameTurn();
 				// important to both send the command out and add to the local queue!
 				server.sendToAllTCP(up);
 				controller.queueCommand(up);

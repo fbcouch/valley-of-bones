@@ -22,6 +22,8 @@
  */
 package com.ahsgaming.valleyofbones.screens;
 
+import java.util.ArrayList;
+
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.Player;
@@ -30,7 +32,6 @@ import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
-import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
@@ -50,7 +51,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -251,7 +251,7 @@ public class LevelScreen extends AbstractScreen {
 		} else {
 			if (rightBtnDown) {
 				// TODO issue context-dependent commands
-				Array<GameObject> objsUnderCursor = null;
+				ArrayList<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
 				for (GameObject obj: gController.getSelectedObjects()) {
