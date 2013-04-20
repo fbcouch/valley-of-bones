@@ -408,18 +408,7 @@ public class LevelScreen extends AbstractScreen {
 		drawSelectionBox();
 		drawUnitBoxes();
 		
-		sinceLastGameTick += delta * 1000;
-		sinceLastNetTick += delta * 1000;
-		
-		if(sinceLastGameTick > KryoCommon.GAME_TICK_LENGTH) {
-			//gController.update(KryoCommon.GAME_TICK_LENGTH * 0.001f);
-			game.getClient().update();
-			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
-		}
-		
-		if (sinceLastNetTick > KryoCommon.NET_TICK_LENGTH) {
-			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
-		}
+		gController.update(delta);
 		
 		// move the camera around
 		doCameraMovement(delta);
@@ -427,9 +416,15 @@ public class LevelScreen extends AbstractScreen {
 		// get input
 		doProcessInput(delta);
 		
+		// draw a debug map
+		//gController.getMap().drawDebug(new Vector2(-1 * posCamera.x + stage.getWidth() * 0.5f, gController.getMap().getMapHeight() - posCamera.y));;
+		
 		// update level position
 		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 		
+		// draw a debug map
+		gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
+				
 		updateScorePane();
 		
 		// easy exit for debug purposes

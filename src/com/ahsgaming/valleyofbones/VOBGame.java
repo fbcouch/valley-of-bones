@@ -40,6 +40,7 @@ public class VOBGame extends Game {
 	
 	// CLIENT
 	GameClient localClient;
+	Player player;
 	
 	boolean started = false;
 	
@@ -139,7 +140,17 @@ public class VOBGame extends Game {
 		if (isServerOnly) {
 			setScreen(getServerScreen());
 		} else {
-			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+			//setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+			if (DEBUG) {
+				ArrayList<Player> players = new ArrayList<Player>();
+				players.add(new Player(0, "Player", Player.getUnusedColor(players)));
+				players.add(new AIPlayer(1, Player.getUnusedColor(players)));
+				player = players.get(0);
+				GameController gc = new GameController("", players);
+				setScreen(new LevelScreen(this, gc));
+			} else {
+				setScreen(getSplashScreen());
+			}
 		}
 		
 	}
@@ -242,10 +253,10 @@ public class VOBGame extends Game {
 	}
 	
 	public Player getPlayer() {
-		if (localClient != null) {
-			return localClient.getPlayer();
-		}
-		return null;
+		//if (localClient != null) {
+		//	return localClient.getPlayer();
+		//}
+		return player;
 	}
 	
 	public ArrayList<Player> getPlayers() {

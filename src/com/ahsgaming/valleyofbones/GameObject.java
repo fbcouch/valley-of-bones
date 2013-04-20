@@ -56,6 +56,7 @@ public class GameObject extends Actor {
 	
 	protected float localRotation = 0;
 	
+	protected Vector2 boardPos = new Vector2(0, 0);
 	
 	/**
 	 * Constructors
@@ -110,6 +111,7 @@ public class GameObject extends Actor {
 			this.velocity.set(0,0);
 			this.accel.set(0,0);
 		}
+		
 	}
 	
 	protected void accelToward(Vector2 loc, float delta) {
@@ -293,6 +295,14 @@ public class GameObject extends Actor {
 			setX(pos.x - getWidth());
 			setY(pos.y - getHeight());
 		}
+	}
+	
+	public void setBoardPosition(int x, int y) {
+		boardPos.set(x, y);
+	}
+	
+	public Vector2 getBoardPosition() {
+		return boardPos;
 	}
 	
 	/**

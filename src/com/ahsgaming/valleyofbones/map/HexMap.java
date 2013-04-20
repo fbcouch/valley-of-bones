@@ -24,6 +24,8 @@ package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -46,12 +48,12 @@ public class HexMap {
 		playerSpawns = new ArrayList<Vector2>();
 		this.tileSize = new Vector2(64, 64);
 		
-		int things = players + points + 1;
+		int things = points + 1;
 		Vector2 thingDist = new Vector2(0, 0);
 		Vector2 current = new Vector2(0, 0);
 		if (width > height) {
 			thingDist.set((int) (width / things), 0);
-			current.set(0, (int)(height * 0.5f));
+			current.set(0, (int)(height * 0.5f) - 1);
 		} else if (height > width) {
 			thingDist.set(0, (int) (height / things));
 			current.set((int)(width * 0.5f), 0);
@@ -61,8 +63,8 @@ public class HexMap {
 			thingDist.rotate(45);
 			thingDist.set((int)thingDist.x, (int)thingDist.y);
 		}
-		current.add(thingDist);
-		playerSpawns.add(new Vector2(current));
+		//current.add(thingDist);
+		playerSpawns.add(new Vector2(current.x + (thingDist.x > 0 ? (thingDist.x / thingDist.x) : 0), current.y + (thingDist.y > 0 ? (thingDist.y / thingDist.y) : 0)));
 		
 		for (int i = 0; i < points; i++) {
 			current.add(thingDist);
@@ -70,7 +72,6 @@ public class HexMap {
 		}
 		
 		current.add(thingDist);
-		playerSpawns.add(new Vector2(current));
 		
 		
 	}
@@ -91,6 +92,14 @@ public class HexMap {
 		return (int)tileSize.y;
 	}
 	
+	public int getMapWidth() {
+		return (int)(bounds.x * tileSize.x + tileSize.x * 0.5f);
+	}
+	
+	public int getMapHeight() {
+		return (int)(bounds.y * tileSize.y * 0.75f + tileSize.y * 0.25f);
+	}
+	
 	public ArrayList<Vector2> getPlayerSpawns() {
 		return playerSpawns;
 	}
@@ -98,5 +107,30 @@ public class HexMap {
 	public ArrayList<Vector2> getControlPoints() {
 		return controlPoints;
 	}
-
+	
+	public void drawDebug(Vector2 offset) {
+		ShapeRenderer renderer = new ShapeRenderer();
+		renderer.begin(ShapeType.Line);
+		renderer.setColor(1, 1, 1, 1);
+		for (int x = 0; x < bounds.x; x ++) {
+			for (int y = 0; y < bounds.y; y++) {
+				Vector2 base = new Vector2(offset.x + x * getTileWidth() + (y % 2 == 1 ? getTileWidth() * 0.5f : 0), offset.y + y * getTileHeight() * 0.75f);
+				renderer.line(base.x + getTileWidth() * 0.5f, base.y, base.x, base.y + getTileHeight() * 0.25f);
+				renderer.line(base.x, base.y + getTileHeight() * 0.25f, base.x, base.y + getTileHeight() * 0.75f);
+				renderer.line(base.x, base.y + getTileHeight() * 0.75f, base.x + getTileWidth() * 0.5f, base.y + getTileHeight());
+				//if (y == bounds.y - 1 || x == bounds.x - 1)
+					renderer.line(base.x + getTileWidth() * 0.5f, base.y + getTileHeight(), base.x + getTileWidth(), base.y + getTileHeight() * 0.75f);
+				//if (x == bounds.x - 1)
+					renderer.line(base.x + getTileWidth(), base.y + getTileHeight() * 0.75f, base.x + getTileWidth(), base.y + getTileHeight() * 0.25f);
+				//if (x == 0) 
+					renderer.line(base.x + getTileWidth(), base.y + getTileHeight() * 0.25f, base.x + getTileWidth() * 0.5f, base.y);
+			}
+		}
+		
+		renderer.end();
+	}
+	
+	public Vector2 boardToScreenCoords(int bx, int by) {
+		return new Vector2(bx * getTileWidth() + (by % 2 == 1 ? getTileWidth() * 0.5f : 0), by * getTileHeight() * 0.75f);
+	}
 }

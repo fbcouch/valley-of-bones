@@ -75,7 +75,8 @@ public class GameController {
 	int netTick = 0;
 	
 	int gameTurn = 0;
-	
+	float turnLength = 5;
+	float turnTimer = 0;
 	
 	int nextObjectId = 0;
 	
@@ -185,10 +186,10 @@ public class GameController {
 		this.loadMap();
 		this.loadMapObjects();
 		
-		grpRoot.setSize(map.getWidth() * map.getTileWidth(), (int) (map.getHeight() * map.getTileHeight() * 0.75f));
+		grpRoot.setSize(map.getMapWidth(), map.getMapHeight());
 		
 		// TODO start paused
-		state = GameStates.PAUSED;
+		state = GameStates.RUNNING;
 	}
 	
 	/**
@@ -206,8 +207,8 @@ public class GameController {
 	
 	private Group loadMapObjects() {
 		int player = 0;
-		for (Vector2 spawn : map.getControlPoints()) {
-			Vector2 objPos = mapToLevelCoords(spawn);
+		for (Vector2 spawn : map.getPlayerSpawns()) {
+			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;
 			if (player >= 0 && player < players.size()) {
 				unit = new Unit(getNextObjectId(), players.get(player), (JsonUnit)Prototypes.getProto("space-station-base"));
@@ -216,8 +217,9 @@ public class GameController {
 				unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
-			
-			unit.setPosition(objPos.x, objPos.y);
+			Gdx.app.log(LOG, spawn.toString());
+			Vector2 pos = map.boardToScreenCoords((int)spawn.x, (int)spawn.y);
+			unit.setPosition(pos.x + 8, pos.y);
 			addGameUnit(unit);
 			
 			if (player >= 0 && player < players.size()) {
@@ -297,7 +299,18 @@ public class GameController {
 		
 	}
 	
+	public void update(float delta) {
+		if (state == GameStates.RUNNING) {
+			turnTimer -= delta;
+			if (turnTimer <= 0) {
+				doTurn();
+				turnTimer = turnLength;
+			}
+		}
+	}
+	
 	public void doTurn() {
+		Gdx.app.log(LOG, "doTurn");
 		gameTurn += 1;
 		float delta = 1;
 		
