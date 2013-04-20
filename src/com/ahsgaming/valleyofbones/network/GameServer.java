@@ -50,7 +50,7 @@ import com.esotericsoftware.kryonet.Server;
  * @author jami
  *
  */
-public class GameServer {
+public class GameServer implements NetController {
 	public String LOG = "GameServer";
 	
 	Server server, broadcastServer;
@@ -84,10 +84,6 @@ public class GameServer {
 		KryoCommon.register(server);
 		
 		broadcastServer = new Server();
-		
-		// TODO set up a broadcast server for LAN stuff
-		//players.add(new Player(0, Player.AUTOCOLORS[0]));
-		//players.add(new Player(1, Player.AUTOCOLORS[1]));
 		
 		try {
 			server.bind(KryoCommon.tcpPort);
@@ -154,12 +150,8 @@ public class GameServer {
 					// make sure this is from the host
 					if (c != host) return;
 					
-					if (players.size() < 4) {
-						int id = getNextPlayerId();
-						Color use = Player.getUnusedColor(players);
-						
-						players.add(new AIPlayer(id, "AI Player", use, ((AddAIPlayer)obj).team));
-					}
+					addAIPlayer(((AddAIPlayer)obj).team);
+					
 					sendPlayerList();
 				}
 				
@@ -167,15 +159,8 @@ public class GameServer {
 					// make sure this is from the host
 					if (c != host) return;
 					
-					RemovePlayer rem = (RemovePlayer)obj;
-					ArrayList<Player> remove = new ArrayList<Player>();
-					for (Player p: players) {
-						if (p.getPlayerId() == rem.id) {
-							remove.add(p);
-						}
-					}
+					removePlayer(((RemovePlayer)obj).id);
 					
-					players.removeAll(remove);
 					sendPlayerList();
 				}
 				
@@ -236,7 +221,7 @@ public class GameServer {
 		// don't need to broadcast on UDP anymore - thats just confusing
 		broadcastServer.close();
 		
-		server.sendToAllTCP(new StartGame());
+		sendStartGame();
 	}
 	
 	public void endGame() {
@@ -373,5 +358,65 @@ public class GameServer {
 		int id = nextPlayerId;
 		nextPlayerId += 1;
 		return id;
+	}
+
+	@Override
+	public void setGameController(GameController controller) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public GameController getGameController() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sendStartGame() {
+		server.sendToAllTCP(new StartGame());
+	}
+
+	@Override
+	public void addAIPlayer(int team) {
+		if (players.size() < 4) {
+			int id = getNextPlayerId();
+			Color use = Player.getUnusedColor(players);
+			
+			players.add(new AIPlayer(id, "AI Player", use, team));
+		}
+	}
+
+	@Override
+	public void removePlayer(int playerId) {
+		
+		ArrayList<Player> remove = new ArrayList<Player>();
+		for (Player p: players) {
+			if (p.getPlayerId() == playerId) {
+				remove.add(p);
+			}
+		}
+		
+		players.removeAll(remove);
+	}
+
+	@Override
+	public ArrayList<Player> getPlayers() {
+		return this.players;
+	}
+
+	@Override
+	public void sendCommand(Command cmd) {
+		server.sendToAllTCP(cmd);
+	}
+
+	@Override
+	public boolean isConnected() {
+		return false;
+	}
+
+	@Override
+	public boolean isConnecting() {
+		return false;
 	}
 }

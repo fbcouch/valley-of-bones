@@ -46,7 +46,7 @@ import com.esotericsoftware.kryonet.Listener;
  * @author jami
  *
  */
-public class GameClient {
+public class GameClient implements NetController {
 	public String LOG = "GameClient";
 	
 	Client client;
@@ -289,5 +289,15 @@ public class GameClient {
 	
 	public boolean isConnecting() {
 		return isConnecting;
+	}
+
+	@Override
+	public void setGameController(GameController controller) {
+		this.controller = controller;
+	}
+
+	@Override
+	public GameController getGameController() {
+		return controller;
 	}
 }
