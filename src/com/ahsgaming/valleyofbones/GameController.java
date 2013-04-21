@@ -58,7 +58,7 @@ public class GameController {
 	
 	ArrayList<GameObject> gameObjects, objsToAdd, objsToRemove;
 	GameObject selectedObject;
-	Group grpRoot, grpMap, grpUnits;
+	Group grpRoot, grpUnits;
 	
 	ArrayList<Player> players;
 	
@@ -88,10 +88,8 @@ public class GameController {
 		// TODO load map
 		this.mapName = mapName;
 		grpRoot = new Group();
-		grpMap = new Group();
 		grpUnits = new Group();
-		grpRoot.addActor(grpMap);
-		grpRoot.addActor(grpUnits);
+		
 		
 		gameObjects = new ArrayList<GameObject>();
 		selectedObject = null;
@@ -107,6 +105,8 @@ public class GameController {
 		this.loadMap();
 		this.loadMapObjects();
 		
+		grpRoot.addActor(map.getMapGroup());
+		grpRoot.addActor(grpUnits);
 		grpRoot.setSize(map.getMapWidth(), map.getMapHeight());
 		
 		// TODO start paused
@@ -140,7 +140,7 @@ public class GameController {
 			}
 			Gdx.app.log(LOG, spawn.toString());
 			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
-			unit.setPosition(pos.x + 8, pos.y);
+			unit.setPosition(pos.x, pos.y);
 			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
 			addGameUnit(unit);
 			

@@ -5,7 +5,7 @@
     health : 1000,
     shield : 1000,
     armor : 0,
-    image : "station-base.png",
+    image : "castle.png",
     cost: 1000,
     food: -20,
     depends: ["one", "two", "three"],

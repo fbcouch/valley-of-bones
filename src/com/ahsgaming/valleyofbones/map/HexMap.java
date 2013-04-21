@@ -25,9 +25,13 @@ package com.ahsgaming.valleyofbones.map;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
  * @author jami
@@ -39,6 +43,9 @@ public class HexMap {
 	ArrayList<Vector2> playerSpawns;
 	Vector2 bounds;
 	Vector2 tileSize;
+	
+	Group mapGroup;
+	TextureRegion dirtTexture;
 	
 	/**
 	 * 
@@ -73,8 +80,20 @@ public class HexMap {
 		}
 		
 		current.add(thingDist);
+		playerSpawns.add(new Vector2(current.x - 1 - (thingDist.x > 0 ? (thingDist.x / thingDist.x) : 0), current.y - (thingDist.y > 0 ? (thingDist.y / thingDist.y) : 0)));
 		
 		
+		mapGroup = new Group();
+		mapGroup.setSize(getMapWidth(), getMapHeight());
+		dirtTexture = new TextureRegion(new Texture(Gdx.files.internal("dirt-hex.png")));
+		for (int x = 0; x < bounds.x; x++) {
+			for (int y = 0; y < bounds.y; y++) {
+				Image img = new Image(dirtTexture);
+				Vector2 pos = this.boardToMapCoords(x, y);
+				img.setPosition(pos.x, pos.y);
+				mapGroup.addActor(img);
+			}
+		}
 	}
 	
 	public int getWidth() {
@@ -107,6 +126,10 @@ public class HexMap {
 	
 	public ArrayList<Vector2> getControlPoints() {
 		return controlPoints;
+	}
+	
+	public Group getMapGroup() {
+		return mapGroup;
 	}
 	
 	public void drawDebug(Vector2 offset) {

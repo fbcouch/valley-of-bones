@@ -351,18 +351,6 @@ public class LevelScreen extends AbstractScreen {
 		Image test = new Image(new Texture(pix));
 		grpLevel.addActor(test);
 		
-		// generate the command card
-		Image ccardbg = new Image(new TextureRegion(new Texture(Gdx.files.internal("data/command_card_background.png"))));
-		ccardbg.setPosition(stage.getWidth() - 266, -2);
-		stage.addActor(ccardbg);
-		for (int x=0;x<4;x++) {
-			for (int y=0;y<4;y++) {
-				Image img = new Image(new TextureRegion(new Texture(Gdx.files.internal("data/command_card_empty.png"))));
-				img.setPosition(stage.getWidth() - 262 + x * 66, 262 - (y + 1) * 66);
-				stage.addActor(img);
-			}
-		}
-		
 		
 		// generate the score panel
 		grpScorePane = new Group();
@@ -400,7 +388,7 @@ public class LevelScreen extends AbstractScreen {
 		super.render(delta);
 		
 		// draw a debug map
-		gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
+		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
 		
 		// DRAW BOXES
 		drawSelectionBox();
@@ -413,9 +401,6 @@ public class LevelScreen extends AbstractScreen {
 		
 		// get input
 		doProcessInput(delta);
-		
-		// draw a debug map
-		//gController.getMap().drawDebug(new Vector2(-1 * posCamera.x + stage.getWidth() * 0.5f, gController.getMap().getMapHeight() - posCamera.y));;
 		
 		// update level position
 		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
