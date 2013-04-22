@@ -205,11 +205,11 @@ public class LevelScreen extends AbstractScreen {
 				
 				// TODO should get whether the square is open or not
 				
-				if (game.getPlayer().canBuild("", gController) && gController.isBoardPosEmpty(loc)) {
+				if (game.getPlayer().canBuild("marine-base", gController) && gController.isBoardPosEmpty(loc)) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.turn = gController.getGameTurn();
-					bld.building = "";
+					bld.building = "marine-base";
 					bld.location = loc;
 					game.sendCommand(bld);
 				}

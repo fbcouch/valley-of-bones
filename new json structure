@@ -1,6 +1,6 @@
 UNITS JSON STRUCTURE
-{entities:
-[
+{
+entities: [
     {
         id: "castle-base",
         type: "building",
@@ -40,4 +40,5 @@ UNITS JSON STRUCTURE
             upkeep: 1,
         }
     },
-]}
+]
+}

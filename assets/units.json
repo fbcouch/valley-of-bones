@@ -1,98 +1,43 @@
 {
-  castle-base : {
-    type : station,
-    name : "Space Station (Level 1)",
-    health : 1000,
-    shield : 1000,
-    armor : 0,
-    image : "castle.png",
-    cost: 1000,
-    food: -20,
-    depends: ["one", "two", "three"],
-    hardpoints: {
-      weapon-hp1: {
-        type: hardpoint,
-        name: "Weapon",
-        weapon: laser-base-red,
-      },
-      weapon-hp2: {
-        type: hardpoint,
-        name: "Weapon",
-        weapon: laser-base-red,
-      }
-    }
-  },
-  castle-lvl2 : {
-    type : "station",
-    name : "Space Station (Level 2)",
-    health : 2000,
-    shield : 2000,
-    armor : 1,
-    image : "castle.png"
-  },
-  fighters-base : {
-  	type: "squadron",
-  	name: "Basic Fighter Squadron",
-  	health: 100,
-  	shield: 100,
-  	shield-class: "light",
-  	armor: 1,
-  	armor-class: "light",
-  	speed: 200,
-  	accel: 100,
-  	turn: 1000,
-  	image: "base-fighter1.png",
-  	weapons: [laser-base-red],
-  	cost: 25,
-  	food: 1,
-  	bounds: [0, 0, 64, 64]
-  },
-  laser-base-red: {
-  	type: "weapon",
-  	name: "Basic Red Laser",
-  	weapon-class: "light",
-  	damage: 100,
-	lifetime: 1,
-	speed: 300,
-	accel: 0,
-	turn: 0,
-	fire-rate: 2,
-  	image: "laser-red.png"
-  },
-  station-upgrade-lvl2: {
-  	type: "upgrade",
-  	name: "Upgrade to Station Lvl 2",
-  	from: space-station-base,
-  	to: space-station-lvl2,
-  	cost: 1000
-  },
-  light-armor-1: {
-    type: "upgrade-armor",
-    name: "Upgrade Light Armor Lvl 1",
-    class: "light",
-    armor: 2,
-    cost: 100
-  },
-  light-armor-2: {
-    type: "upgrade-armor",
-    name: "Upgrade Light Armor Lvl 2",
-    class: "light",
-    armor: 4,
-    cost: 200,
-    depends: ["light-armor-1"],
-  },
-  light-weapon-1: {
-    type: "upgrade-weapon",
-    name: "Upgrade Light Weapons Lvl 1",
-    class: "light",
-    damage: 50,
-    cost: 200
-  },
-  light-shield-1: {
-    type: "upgrade-shield",
-    name: "Upgrade Light Shields Lvl 1",
-    class: "light",
-    shield: 20,
-    cost: 100,
-  },
+entities: [
+    {
+        id: "castle-base",
+        type: "building",
+        image: "castle",
+        title: "Castle",
+        desc: "This is your home base.",
+        properties:
+        {
+            curhp: 1000,
+            maxhp: 1000,
+            armor: 0,
+            food: -20,
+            requires: [],
+            attackdamage: 5,
+            attackspeed: 1,
+            movespeed: 0,
+            cost: 1000,
+            upkeep: -20,
+        },
+    },
+    {
+        id: "marine-base",
+        type: "unit",
+        image: "castle",
+        title: "Space Marine",
+        desc: "Basic attacking unit",
+        properties:
+        {
+            health: 100,
+            armor: 1,
+            food: 1,
+            requires: [ "castle-base" ],
+            attackdamage: 1,
+            attackspeed: 1,
+            movespeed: 1,
+            cost: 10,
+            upkeep: 1,
+        }
+    },
+]
 }
