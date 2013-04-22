@@ -68,7 +68,7 @@ public class GameController {
 	ArrayList<Command> cmdsToAdd;
 	
 	int gameTurn = 0;
-	float turnLength = 5;
+	float turnLength = 60;
 	float turnTimer = 0;
 	
 	int nextObjectId = 0;
