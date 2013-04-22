@@ -66,6 +66,14 @@ public class Prototypes {
 			json += "}";
 			return json;
 		}
+		
+		public boolean hasProperty(String name) {
+			return properties.containsKey(name);
+		}
+		
+		public Object getProperty(String name) {
+			return properties.get(name);
+		}
 	}
 	
 	public static void loadUnits(String file) {

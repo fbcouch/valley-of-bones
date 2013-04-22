@@ -24,7 +24,6 @@ package com.ahsgaming.valleyofbones;
 
 import java.util.ArrayList;
 
-import com.ahsgaming.valleyofbones.units.Bullet;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -113,7 +112,7 @@ public class GameObject extends Actor {
 		path.add(location);
 	}
 	
-	public void takeDamage(Bullet b) {}
+	public void takeDamage(float amount) {}
 	
 	/**
 	 * Implemented methods

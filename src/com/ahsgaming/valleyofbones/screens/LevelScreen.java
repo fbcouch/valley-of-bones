@@ -35,7 +35,7 @@ import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
+import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -43,7 +43,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
@@ -200,21 +199,17 @@ public class LevelScreen extends AbstractScreen {
 			if (Gdx.input.isKeyPressed(Keys.B)){
 				// TODO more buttons for more things
 				
-				JsonUnit unit = (JsonUnit) Prototypes.getProto("fighters-base");
-				Rectangle bounds = new Rectangle(unit.bounds);
 				Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-				bounds.setX(loc.x - bounds.getWidth() * 0.5f);
-				bounds.setY(loc.y - bounds.getHeight() * 0.5f);
 				
 				loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
 				
 				// TODO should get whether the square is open or not
 				
-				if (game.getPlayer().canBuild(unit.id, gController) && gController.isBoardPosEmpty(loc)) {
+				if (game.getPlayer().canBuild("", gController) && gController.isBoardPosEmpty(loc)) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.turn = gController.getGameTurn();
-					bld.building = unit.id;
+					bld.building = "";
 					bld.location = loc;
 					game.sendCommand(bld);
 				}

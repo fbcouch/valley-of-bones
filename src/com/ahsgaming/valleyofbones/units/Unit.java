@@ -50,7 +50,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	
 	int attackDamage = 0;
 	float attackSpeed = 0;
-	int armor = 0, curHP = 0, maxHP = 0;
+	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	int moveSpeed = 0;
 	
 	String protoId = "";
@@ -94,8 +94,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		if (properties.containsKey("armor"))
 			armor = (int)Float.parseFloat(properties.get("armor").toString());
 		
+		if (properties.containsKey("cost"))
+			cost = (int)Float.parseFloat(properties.get("cost").toString());
+		
 		if (properties.containsKey("curhp"))
 			curHP = (int)Float.parseFloat(properties.get("curhp").toString());
+		
+		if (properties.containsKey("food"))
+			food = (int)Float.parseFloat(properties.get("food").toString());
 		
 		if (properties.containsKey("maxhp"))
 			maxHP = (int)Float.parseFloat(properties.get("maxhp").toString());
@@ -109,14 +115,17 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("attackdamage", attackDamage);
 		properties.put("attackspeed", attackSpeed);
 		properties.put("armor", armor);
+		properties.put("cost", cost);
 		properties.put("curhp", curHP);
+		properties.put("food", food);
 		properties.put("maxhp", maxHP);
 		properties.put("movespeed", moveSpeed);
 	}
 	
-	public void takeDamage(Bullet b) {
+	@Override
+	public void takeDamage(float amount) {
 		// TODO take into account damage type here
-		float damage = b.getDamage() - getArmor();
+		float damage = amount - getArmor();
 		if (damage > 0)
 			curHP -= damage;
 		// TODO add a hit effect
@@ -146,13 +155,29 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	public void setArmor(int armor) {
 		this.armor = armor;
 	}
-
+	
+	public int getCost() {
+		return cost;
+	}
+	
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+	
 	public int getCurHP() {
 		return curHP;
 	}
 
 	public void setCurHP(int curHP) {
 		this.curHP = curHP;
+	}
+	
+	public int getFood() {
+		return food;
+	}
+	
+	public void setFood(int food) {
+		this.food = food;
 	}
 
 	public int getMaxHP() {

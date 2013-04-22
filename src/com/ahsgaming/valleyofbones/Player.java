@@ -26,9 +26,7 @@ import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUpgrade;
 import com.ahsgaming.valleyofbones.units.Unit;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -77,9 +75,8 @@ public class Player {
 		
 		float food = 0, mFood = 0;
 		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
-			JsonProto up = Prototypes.getProto(unit.getProtoId());
-			if (up.food < 0) mFood -= up.food;
-			else food += up.food;
+			if (unit.getFood() < 0) mFood -= unit.getFood();
+			else food += unit.getFood();
 		}
 		curFood = food;
 		maxFood = mFood;
@@ -88,18 +85,16 @@ public class Player {
 	public boolean canBuild(String protoId, GameController controller) {
 		// TODO implement this
 		JsonProto proto = Prototypes.getProto(protoId);
-		if ((proto.food <= 0 || proto.food <= maxFood - curFood) && bankMoney >= proto.cost) {
-			return true;
-		}
-		return false;
+		int food = 0, cost = 0;
+		if (proto.hasProperty("food"))
+			food = (int)Float.parseFloat(proto.getProperty("food").toString());
+		if (proto.hasProperty("cost"))
+			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
+		return ((food <= 0 || food <= maxFood - curFood) && (cost <= 0 || bankMoney >= cost));
 	}
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
-		JsonUpgrade upgrade = (JsonUpgrade)Prototypes.getProto(protoId);
-		if (upgrade.fromId.equals(unit.getProtoId()) && bankMoney >= upgrade.cost) {
-			// TODO probably need to have some sort of dependency checking more than just that this is being applied to the correct unit etc
-			return true;
-		}
+		// TODO implement this
 		return false;
 	}
 	

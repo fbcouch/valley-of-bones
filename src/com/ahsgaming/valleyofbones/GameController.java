@@ -34,17 +34,12 @@ import com.ahsgaming.valleyofbones.network.Pause;
 import com.ahsgaming.valleyofbones.network.Unpause;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
-import com.ahsgaming.valleyofbones.units.Selectable;
+import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -132,10 +127,10 @@ public class GameController {
 			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;
 			if (player >= 0 && player < players.size()) {
-				unit = new Unit(getNextObjectId(), players.get(player), (JsonUnit)Prototypes.getProto("space-station-base"));
+				unit = new Unit(getNextObjectId(), players.get(player), (JsonProto)Prototypes.getProto("space-station-base"));
 				players.get(player).setBaseUnit(unit);
 			} else {
-				unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
+				unit = new Unit(getNextObjectId(), null, (JsonProto)Prototypes.getProto("space-station-base"));
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
 			Gdx.app.log(LOG, spawn.toString());
@@ -188,24 +183,7 @@ public class GameController {
 		objsToAdd.clear();
 		
 		for (GameObject obj : gameObjects) {
-			// update physics
-			
-			if (obj.getAccel().len() > obj.getMaxAccel()) {
-				// clamp acceleration to max
-				float angle = obj.getAccel().angle();
-				obj.getAccel().set(obj.getMaxAccel(), 0);
-				obj.getAccel().rotate(angle);
-			}
-			
-			obj.getVelocity().add(obj.getAccel().mul(delta));
-			if (obj.getVelocity().len() > obj.getMaxSpeed()) {
-				// clamp velocity to max
-				float angle = obj.getVelocity().angle();
-				obj.getVelocity().set(obj.getMaxSpeed(), 0);
-				obj.getVelocity().rotate(angle);
-			}
-			
-			obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
+			// TODO update object positions
 			
 			obj.update(this, delta);
 			
@@ -351,21 +329,19 @@ public class GameController {
 	
 	public void executeBuild(Build cmd) {
 		// check that this can be built
-		JsonUnit junit = (JsonUnit) Prototypes.getProto(cmd.building);
-		Rectangle bounds = new Rectangle(junit.bounds);
+		JsonProto junit = Prototypes.getProto(cmd.building);
 		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
-		bounds.set(levelPos.x + bounds.x - bounds.width * 0.5f, levelPos.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
 		Player owner = getPlayerById(cmd.owner);
 		if (owner.canBuild(junit.id, this) && isBoardPosEmpty(cmd.location)) {
 			
 			// TODO place builder
 			// for now, just add the unit
-			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
+			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
 			unit.setPosition(levelPos);
 			unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
 			
 			addGameUnitNow(unit);
-			owner.setBankMoney(owner.getBankMoney() - junit.cost);
+			owner.setBankMoney(owner.getBankMoney() - unit.getCost());
 			owner.update(this, 0);
 		}
 		
