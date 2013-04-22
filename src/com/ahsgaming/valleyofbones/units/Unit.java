@@ -33,13 +33,11 @@ import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonWeapon;
+import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * @author jami
@@ -47,72 +45,40 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Unit extends GameObject implements Selectable, Targetable {
 	public String LOG = "Unit";
-	
+
 	boolean selectable = true, targetable = true;
 	
 	float curHealth, maxHealth;
-	float curShield, maxShield;
 	float curArmor, maxArmor;
 	
 	String protoId = "";
-
-	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+	String type = "";
+	String sImage = "";
+	ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
 	
 	ArrayList<Command> commandQueue = new ArrayList<Command>();
 	GameObject commandTarget;
+	
+	final JsonProto proto;
 	
 	/**
 	 * Constructors
 	 */
 	
-	public Unit(int id, TextureRegion region) {
-		this(id, null, region, 10, 0, 0);
+	public Unit(int id, JsonProto proto) {
+		this(id, null, proto);
 	}
 	
-	public Unit(int id, Player owner, TextureRegion region) {
-		this(id, owner, region, 10, 0, 0);
-	}
-	
-	public Unit(int id, Player owner, TextureRegion region, float health, float shield, float armor) {
-		super(id, owner, region);
+	public Unit(int id, Player owner, JsonProto proto) {
+		// TODO load from atlas
+		super(id, owner, TextureManager.getTexture(proto.image + ".png"));
 		
-		curHealth = health;
-		maxHealth = health;
-		curShield = shield;
-		maxShield = shield;
-		curArmor = armor;
-		maxArmor = armor;
-	}
-	
-	public Unit(int id, Player owner, JsonUnit proto) {
-		super(id, owner, TextureManager.getTexture(proto.image));
-		
-		curHealth = proto.health;
-		maxHealth = proto.health;
-		curShield = proto.shield;
-		maxShield = proto.shield;
-		curArmor = proto.armor;
-		maxArmor = proto.armor;
-		maxSpeed = proto.speed;
-		maxAccel = proto.accel;
-		turnSpeed = proto.turn;
-		
-		protoId = proto.id;
-		
-		if (proto.weapons != null) {
-			for (String w: proto.weapons) {
-				JsonWeapon jw = (JsonWeapon)Prototypes.getProto(w);
-				if (jw == null) {
-					Gdx.app.log(LOG, "Could not find weapon " + w);
-				} else {
-					weapons.add(new Weapon(this, jw));
-				}
-			}
-		}
-		
-		if (proto.bounds != null) {
-			collideBox.set(proto.bounds);
-		}
+		this.proto = proto;
+		this.protoId = proto.id;
+		type = proto.type;
+		sImage = proto.image;
+		properties.putAll(proto.properties);
+		parseProperties();
 	}
 	
 	public void takeDamage(Bullet b) {

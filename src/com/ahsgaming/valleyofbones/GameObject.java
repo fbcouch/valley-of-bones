@@ -38,14 +38,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  *
  */
 public class GameObject extends Actor {
-	protected Vector2 accel, velocity;
-	protected float maxSpeed;
-	protected float maxAccel;
-	protected float turnSpeed;
 	
 	protected TextureRegion image;
-	
-	protected Rectangle collideBox = new Rectangle(0, 0, 0, 0);
 	
 	protected boolean remove = false;
 	
@@ -66,11 +60,6 @@ public class GameObject extends Actor {
 		super();
 		objId = id;
 		this.owner = owner;
-		accel = new Vector2();
-		velocity = new Vector2();
-		maxSpeed = 0;
-		maxAccel = 0;
-		turnSpeed = 0;
 		image = null;
 		path = new ArrayList<Vector2>();
 	}
@@ -83,7 +72,6 @@ public class GameObject extends Actor {
 		this(id, owner);
 		image = region;
 		this.setBounds(0, 0, image.getRegionWidth(), image.getRegionHeight());
-		collideBox.set(0, 0, image.getRegionWidth(), image.getRegionHeight());
 	}
 	
 	/**
@@ -95,52 +83,8 @@ public class GameObject extends Actor {
 	 * @param delta
 	 */
 	public void update(GameController controller, float delta) {
-		// TODO do other stuff...
+		// TODO implement this
 		
-		// Move to the first location in the path
-		if (path.size() > 0) {
-			Vector2 loc = path.get(0);
-			Rectangle box = new Rectangle(getX() + collideBox.x, getY() + collideBox.y, collideBox.width, collideBox.height);
-			if (box.contains(loc.x, loc.y)) {
-				// we made it, remove this point from the path
-				path.remove(loc);
-			} else {
-				accelToward(loc, delta);
-			}
-		} else {
-			this.velocity.set(0,0);
-			this.accel.set(0,0);
-		}
-		
-	}
-	
-	protected void accelToward(Vector2 loc, float delta) {
-		Vector2 moveVector = new Vector2(loc.x - (getX() + getWidth() * 0.5f), loc.y - (getY() + getHeight() * 0.5f));
-		
-		rotateToAngle(moveVector.angle(), delta);
-		
-		this.accel.set(this.maxAccel, 0);
-		this.accel.rotate(this.getRotation());
-	}
-	
-	private void rotateToAngle(float degrees, float delta) {
-		// TODO deal with special cases
-		
-		if (getRotation() > 360) setRotation(getRotation() % 360);
-		while (getRotation() < 0) setRotation(getRotation() + 360);
-		
-		float dTheta = (degrees - this.getRotation());
-	
-		if (dTheta > 180) dTheta -= 360;
-		if (dTheta < -180) dTheta += 360;
-		
-		if (dTheta > this.turnSpeed * delta) {
-			this.rotate(this.turnSpeed * delta);
-		} else if (dTheta < -1 * this.turnSpeed * delta) {
-			this.rotate(-1 * this.turnSpeed * delta);
-		} else {
-			this.setRotation(degrees);
-		}
 	}
 	
 	public boolean canCollide(GameObject obj) {
@@ -152,14 +96,14 @@ public class GameObject extends Actor {
 	}
 	
 	public boolean isColliding(Rectangle box) {
-		Rectangle thisBox = new Rectangle(this.getX() + collideBox.x, this.getY() + collideBox.y, collideBox.width, collideBox.height);
+		Rectangle thisBox = new Rectangle(this.getX(), this.getY(), getWidth(), getHeight());
 		return thisBox.overlaps(box);
 	}
 	
 	public boolean isColliding(Vector2 mapCoords) {
 		Vector2 local = new Vector2(mapCoords);
 		local.set(local.x - getX(), local.y - getY());
-		return collideBox.contains(local.x, local.y);
+		return new Rectangle(0, 0, getWidth(), getHeight()).contains(local.x, local.y);
 	}
 	
 	public void moveTo(Vector2 location, boolean add) {
@@ -194,34 +138,6 @@ public class GameObject extends Actor {
 	/**
 	 * Getters & Setters
 	 */
-	
-	/**
-	 * @return the acceleration of the object
-	 */
-	public Vector2 getAccel() {
-		return accel;
-	}
-
-	/**
-	 * @param accel set the object's acceleration
-	 */
-	public void setAccel(Vector2 accel) {
-		this.accel.set(accel);
-	}
-
-	/**
-	 * @return the velocity of the object
-	 */
-	public Vector2 getVelocity() {
-		return velocity;
-	}
-
-	/**
-	 * @param velocity set the object's velocity
-	 */
-	public void setVelocity(Vector2 velocity) {
-		this.velocity.set(velocity);
-	}
 
 	public Vector2 getPosition() {
 		return new Vector2(getX(), getY());
@@ -320,20 +236,6 @@ public class GameObject extends Actor {
 	}
 
 	/**
-	 * @return the collideBox
-	 */
-	public Rectangle getCollideBox() {
-		return collideBox;
-	}
-
-	/**
-	 * @param collideBox the collideBox to set
-	 */
-	public void setCollideBox(Rectangle collideBox) {
-		this.collideBox = collideBox;
-	}
-
-	/**
 	 * @return the remove
 	 */
 	public boolean isRemove() {
@@ -347,48 +249,6 @@ public class GameObject extends Actor {
 		this.remove = remove;
 	}
 
-	/**
-	 * @return the maxSpeed
-	 */
-	public float getMaxSpeed() {
-		return maxSpeed;
-	}
-
-	/**
-	 * @param maxSpeed the maxSpeed to set
-	 */
-	public void setMaxSpeed(float maxSpeed) {
-		this.maxSpeed = maxSpeed;
-	}
-
-	/**
-	 * @return the maxAccel
-	 */
-	public float getMaxAccel() {
-		return maxAccel;
-	}
-
-	/**
-	 * @param maxAccel the maxAccel to set
-	 */
-	public void setMaxAccel(float maxAccel) {
-		this.maxAccel = maxAccel;
-	}
-
-	/**
-	 * @return the turnSpeed
-	 */
-	public float getTurnSpeed() {
-		return turnSpeed;
-	}
-
-	/**
-	 * @param turnSpeed the turnSpeed to set
-	 */
-	public void setTurnSpeed(float turnSpeed) {
-		this.turnSpeed = turnSpeed;
-	}
-	
 	/**
 	 * @return the objId
 	 */
@@ -423,9 +283,9 @@ public class GameObject extends Actor {
 	
 	
 	public static float getDistanceSq(GameObject obj1, GameObject obj2) {
-		return (float) (Math.pow((obj1.getX() + obj1.getCollideBox().getX() + obj1.getCollideBox().getWidth() * 0.5f)
-				- (obj2.getX() + obj2.getCollideBox().getX() + obj2.getCollideBox().getWidth() * 0.5f), 2)
-				+ Math.pow((obj1.getY() + obj1.getCollideBox().getY() + obj1.getCollideBox().getHeight() * 0.5f)
-						- (obj2.getY() + obj2.getCollideBox().getY() + obj2.getCollideBox().getHeight() * 0.5f), 2));
+		return (float) (Math.pow((obj1.getX() + obj1.getWidth() * 0.5f)
+				- (obj2.getX() + obj2.getWidth() * 0.5f), 2)
+				+ Math.pow((obj1.getY() + obj1.getHeight() * 0.5f)
+						- (obj2.getY() + obj2.getHeight() * 0.5f), 2));
 	}
 }

@@ -19,7 +19,7 @@ public class Prototypes {
 	static ObjectMap<String, JsonProto> protos = null; 
 	
 	public static JsonProto getProto(String id) {
-		if (protos == null) protos = loadUnits(UNIT_FILE);
+		if (protos == null) loadUnits(UNIT_FILE);
 		
 		return protos.get(id);
 	}
