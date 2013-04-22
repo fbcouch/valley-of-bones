@@ -48,8 +48,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	boolean selectable = true, targetable = true;
 	
-	float curHealth, maxHealth;
-	float curArmor, maxArmor;
+	int attackDamage = 0;
+	float attackSpeed = 0;
+	int armor = 0, curHP = 0, maxHP = 0;
+	int moveSpeed = 0;
 	
 	String protoId = "";
 	String type = "";
@@ -81,34 +83,109 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		parseProperties();
 	}
 	
-	public void takeDamage(Bullet b) {
-		// TODO take into account damage type here
-		if (this.curShield > 0) {
-			curShield -= b.getDamage() - curArmor;
-			if (curShield < 0) {
-				curHealth += curShield;
-				curShield = 0;
-				// TODO add a hit effect
-			} else {
-				// TODO add a hit effect
-			}
-		} else {
-			curHealth -= b.getDamage() - curArmor;
-			// TODO add a hit effect
-		}
+	public void parseProperties() {
+		
+		if (properties.containsKey("attackdamage"))
+			attackDamage = (int)Float.parseFloat(properties.get("attackdamage").toString());
+		
+		if (properties.containsKey("attackspeed"))
+			attackSpeed = Float.parseFloat(properties.get("attackspeed").toString());
+		
+		if (properties.containsKey("armor"))
+			armor = (int)Float.parseFloat(properties.get("armor").toString());
+		
+		if (properties.containsKey("curhp"))
+			curHP = (int)Float.parseFloat(properties.get("curhp").toString());
+		
+		if (properties.containsKey("maxhp"))
+			maxHP = (int)Float.parseFloat(properties.get("maxhp").toString());
+		
+		if (properties.containsKey("movespeed"))
+			moveSpeed = (int)Float.parseFloat(properties.get("movespeed").toString());
+		
 	}
 	
+	public void updateProperties() { 
+		properties.put("attackdamage", attackDamage);
+		properties.put("attackspeed", attackSpeed);
+		properties.put("armor", armor);
+		properties.put("curhp", curHP);
+		properties.put("maxhp", maxHP);
+		properties.put("movespeed", moveSpeed);
+	}
+	
+	public void takeDamage(Bullet b) {
+		// TODO take into account damage type here
+		float damage = b.getDamage() - getArmor();
+		if (damage > 0)
+			curHP -= damage;
+		// TODO add a hit effect
+		
+	}
+	
+	public int getAttackDamage() {
+		return attackDamage;
+	}
+
+	public void setAttackDamage(int attackDamage) {
+		this.attackDamage = attackDamage;
+	}
+
+	public float getAttackSpeed() {
+		return attackSpeed;
+	}
+
+	public void setAttackSpeed(float attackSpeed) {
+		this.attackSpeed = attackSpeed;
+	}
+
+	public int getArmor() {
+		return armor;
+	}
+
+	public void setArmor(int armor) {
+		this.armor = armor;
+	}
+
+	public int getCurHP() {
+		return curHP;
+	}
+
+	public void setCurHP(int curHP) {
+		this.curHP = curHP;
+	}
+
+	public int getMaxHP() {
+		return maxHP;
+	}
+
+	public void setMaxHP(int maxHP) {
+		this.maxHP = maxHP;
+	}
+
+	public int getMoveSpeed() {
+		return moveSpeed;
+	}
+
+	public void setMoveSpeed(int moveSpeed) {
+		this.moveSpeed = moveSpeed;
+	}
+
+	public ObjectMap<String, Object> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(ObjectMap<String, Object> properties) {
+		this.properties = properties;
+	}
+
 	/**
 	 * Determines if the target is in range of any weapons
 	 * @param target
 	 * @return
 	 */
 	public boolean isInRange(GameObject target) {
-		for (Weapon w: weapons) {
-			if (GameObject.getDistanceSq(this, target) <= Math.pow(w.getRange(), 2)) {
-				return true;
-			}
-		}
+		// TODO implement this
 		return false;
 	}
 	
@@ -119,10 +196,11 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 */
 	public GameObject findTarget(GameController controller) {
 		float maxRange = 0;
-		for (Weapon w: weapons) {
+		// TODO implement this
+		/*for (Weapon w: weapons) {
 			float range = w.getRange();
 			if (range > maxRange) maxRange = range;
-		}
+		}*/
 		
 		float maxRangeSq = maxRange * maxRange;
 		GameObject candidate = null;
@@ -162,78 +240,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	@Override
 	public void update(GameController controller, float delta) {
 		
-		if (curHealth <= 0) {
+		if (getCurHP() <= 0) {
 			// remove self
 			remove = true;
 			// TODO add explosion anim or something
 			return;
 		}
 		
-		if (commandQueue.size() > 0) {
-			Command cur = commandQueue.get(0);
-			
-			if (cur instanceof Attack) {
-				// check for completion conditions
-				if (commandTarget == null) {
-					commandTarget = (Unit)controller.getObjById(((Attack)cur).target);
-				} else if (commandTarget.isRemove()) {
-					commandTarget = null;
-				}
-				
-				if (commandTarget == null) {
-					commandQueue.remove(cur);
-				} else {
-					accelToward(commandTarget.getPosition("center"), delta);
-					
-					for (Weapon w: weapons) {
-						if (getDistanceSq(this, commandTarget) < Math.pow(w.getRange(), 2) && w.canFire()) {
-							w.fire(controller);
-						}
-					}
-				}
-				
-			} else if (cur instanceof Build) {
-				
-			} else if (cur instanceof Move) {
-				Move mv = (Move)cur;
-				if (mv.isAttack) {
-					if (commandTarget != null && !commandTarget.isRemove() 
-							&& isInRange(commandTarget)) {
-						// attack this target
-						Attack at = new Attack();
-						at.unit = getObjId();
-						at.target = commandTarget.getObjId();
-						commandQueue.add(0, at);
-					} else {
-						commandTarget = findTarget(controller);
-						
-						if (commandTarget == null) {
-							if (getRectangle().contains(mv.toLocation.x, mv.toLocation.y)) {
-								commandQueue.remove(cur);
-							} else {
-								accelToward(mv.toLocation, delta);
-							}
-						}
-					}
-				} else {
-					// not attack move, just move there
-					if (getRectangle().contains(mv.toLocation.x, mv.toLocation.y)) {
-						commandQueue.remove(cur);
-					} else {
-						accelToward(mv.toLocation, delta);
-					}
-				}
-			} else if (cur instanceof Upgrade) {
-				
-			}
-		} else {
-			
-			// Don't have anything to do - stop moving
-			if (velocity.len2() > 0) {
-				accel.set(-1 * maxAccel, 0);
-				accel.rotate(velocity.angle());
-			}
-		}
+		// TODO implement this
 	}
 	
 	public ArrayList<Command> getCommandQueue() {
@@ -257,8 +271,12 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public boolean isAlive() {
-		return (!this.isRemove() && this.curHealth > 0);
+		return (!this.isRemove() && this.curHP > 0);
 	}
+	
+	//-------------------------------------------------------------------------
+	// Implemented methods
+	//-------------------------------------------------------------------------
 
 	@Override
 	public boolean isTargetable() {

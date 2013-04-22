@@ -9,7 +9,8 @@ UNITS JSON STRUCTURE
         desc: "This is your home base.",
         properties:
         {
-            health: 1000,
+            curhp: 1000,
+            maxhp: 1000,
             armor: 0,
             food: -20,
             requires: [],
