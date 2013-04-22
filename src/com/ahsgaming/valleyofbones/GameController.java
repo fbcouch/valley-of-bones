@@ -147,6 +147,7 @@ public class GameController {
 			if (player >= 0 && player < players.size()) {
 				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
 			}
+			player ++;
 		}
 		
 		// TODO load capture points

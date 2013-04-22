@@ -1,0 +1,42 @@
+UNITS JSON STRUCTURE
+{entities:
+[
+    {
+        id: "castle-base",
+        type: "building",
+        image: "castle",
+        title: "Castle",
+        desc: "This is your home base.",
+        properties:
+        {
+            health: 1000,
+            armor: 0,
+            food: -20,
+            requires: [],
+            attackdamage: 5,
+            attackspeed: 1,
+            movespeed: 0,
+            cost: 1000,
+            upkeep: -20,
+        },
+    },
+    {
+        id: "marine-base",
+        type: "unit",
+        image: "marine",
+        title: "Space Marine",
+        desc: "Basic attacking unit",
+        properties:
+        {
+            health: 100,
+            armor: 1,
+            food: 1,
+            requires: [ "castle-base" ],
+            attackdamage: 1,
+            attackspeed: 1,
+            movespeed: 1,
+            cost: 10,
+            upkeep: 1,
+        }
+    },
+]}
