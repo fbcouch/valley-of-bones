@@ -22,12 +22,11 @@
  */
 package com.ahsgaming.valleyofbones;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -205,15 +204,15 @@ public class Player {
 		this.teamId = teamId;
 	}
 	
-	public static Color getUnusedColor(ArrayList<Player> players) {
-		ArrayList<Color> usedColors = new ArrayList<Color>();
+	public static Color getUnusedColor(Array<Player> players) {
+		Array<Color> usedColors = new Array<Color>();
 		for (Player p: players) {
 			usedColors.add(p.getPlayerColor());
 		}
 		
 		Color use = Player.AUTOCOLORS[0];
 		for (Color color: Player.AUTOCOLORS) {
-			if (!usedColors.contains(color)) {
+			if (!usedColors.contains(color, true)) {
 				use = color;
 				break;
 			}

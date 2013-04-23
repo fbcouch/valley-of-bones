@@ -1,7 +1,5 @@
 package com.ahsgaming.valleyofbones;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.GameClient;
 import com.ahsgaming.valleyofbones.network.GameServer;
@@ -9,17 +7,18 @@ import com.ahsgaming.valleyofbones.screens.GameJoinScreen;
 import com.ahsgaming.valleyofbones.screens.GameLoadingScreen;
 import com.ahsgaming.valleyofbones.screens.GameOverScreen;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
+import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.screens.MainMenuScreen;
 import com.ahsgaming.valleyofbones.screens.OptionsScreen;
 import com.ahsgaming.valleyofbones.screens.ServerScreen;
 import com.ahsgaming.valleyofbones.screens.SplashScreen;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.utils.Array;
 
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
@@ -90,7 +89,7 @@ public class VOBGame extends Game {
 		
 		localClient = new GameClient(this, cfg);
 		
-		//gController = new GameController("", new ArrayList<Player>());
+		//gController = new GameController("", new Array<Player>());
 		//gController.LOG = gController.LOG + "#Client";
 	}
 	
@@ -143,7 +142,7 @@ public class VOBGame extends Game {
 		} else {
 			//setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
 			if (DEBUG) {
-				ArrayList<Player> players = new ArrayList<Player>();
+				Array<Player> players = new Array<Player>();
 				players.add(new Player(0, "Player", Player.getUnusedColor(players)));
 				players.add(new AIPlayer(1, Player.getUnusedColor(players)));
 				player = players.get(0);
@@ -261,11 +260,13 @@ public class VOBGame extends Game {
 		return player;
 	}
 	
-	public ArrayList<Player> getPlayers() {
+	public Array<Player> getPlayers() {
 		if (localClient != null) {
-			return (ArrayList<Player>) localClient.getPlayers().clone();
+			Array<Player> ret = new Array<Player>();
+			ret.addAll(localClient.getPlayers());
+			return ret;
 		}
-		return new ArrayList<Player>();
+		return new Array<Player>();
 	}
 	
 	public void setLoadGame() {

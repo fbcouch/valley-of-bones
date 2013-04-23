@@ -276,7 +276,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 * @see com.ahsgaming.spacetactics.GameObject#update(com.ahsgaming.spacetactics.GameController, float)
 	 */
 	@Override
-	public void update(GameController controller, float delta) {
+	public void update(GameController controller) {
 		
 		if (getCurHP() <= 0) {
 			// remove self

@@ -1,9 +1,8 @@
 package com.ahsgaming.valleyofbones.network;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
+import com.badlogic.gdx.utils.Array;
 
 public interface NetController {
 	public void setGameController(GameController controller);
@@ -20,7 +19,7 @@ public interface NetController {
 	
 	public void addAIPlayer(int team);
 	public void removePlayer(int playerId);
-	public ArrayList<Player> getPlayers();
+	public Array<Player> getPlayers();
 	
 	public void sendCommand(Command cmd);
 	

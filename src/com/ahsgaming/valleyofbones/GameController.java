@@ -22,7 +22,6 @@
  */
 package com.ahsgaming.valleyofbones;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ahsgaming.valleyofbones.map.HexMap;
@@ -40,6 +39,7 @@ import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -51,11 +51,11 @@ public class GameController {
 	
 	public String LOG = "GameController";
 	
-	ArrayList<GameObject> gameObjects, objsToAdd, objsToRemove;
+	Array<GameObject> gameObjects, objsToAdd, objsToRemove;
 	GameObject selectedObject;
 	Group grpRoot, grpUnits;
 	
-	ArrayList<Player> players;
+	Array<Player> players;
 	
 	String mapName;
 	HexMap map;
@@ -63,9 +63,9 @@ public class GameController {
 	
 	GameStates state;
 	
-	ArrayList<Command> commandHistory;
-	ArrayList<Command> commandQueue;
-	ArrayList<Command> cmdsToAdd;
+	Array<Command> commandHistory;
+	Array<Command> commandQueue;
+	Array<Command> cmdsToAdd;
 	
 	int gameTurn = 0;
 	float turnLength = 60;
@@ -80,21 +80,21 @@ public class GameController {
 	 * Constructors
 	 */
 	
-	public GameController(String mapName, ArrayList<Player> players) {
+	public GameController(String mapName, Array<Player> players) {
 		// TODO load map
 		this.mapName = mapName;
 		grpRoot = new Group();
 		grpUnits = new Group();
 		
 		
-		gameObjects = new ArrayList<GameObject>();
+		gameObjects = new Array<GameObject>();
 		selectedObject = null;
-		objsToAdd = new ArrayList<GameObject>();
-		objsToRemove = new ArrayList<GameObject>();
+		objsToAdd = new Array<GameObject>();
+		objsToRemove = new Array<GameObject>();
 		
-		commandHistory = new ArrayList<Command>();
-		commandQueue = new ArrayList<Command>();
-		cmdsToAdd = new ArrayList<Command>();
+		commandHistory = new Array<Command>();
+		commandQueue = new Array<Command>();
+		cmdsToAdd = new Array<Command>();
 		
 		this.players = players;
 		
@@ -127,7 +127,7 @@ public class GameController {
 		for (Vector2 spawn : map.getPlayerSpawns()) {
 			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;
-			if (player >= 0 && player < players.size()) {
+			if (player >= 0 && player < players.size) {
 				unit = new Unit(getNextObjectId(), players.get(player), (JsonProto)Prototypes.getProto("castle-base"));
 				players.get(player).setBaseUnit(unit);
 			} else {
@@ -140,7 +140,7 @@ public class GameController {
 			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
 			addGameUnit(unit);
 			
-			if (player >= 0 && player < players.size()) {
+			if (player >= 0 && player < players.size) {
 				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
 			}
 			player ++;
@@ -153,9 +153,24 @@ public class GameController {
 	
 	public void update(float delta) {
 		
-		doCommands(delta);
+		
 		
 		if (state == GameStates.RUNNING) {
+
+			commandQueue.addAll(cmdsToAdd);
+			cmdsToAdd.clear();
+			
+			Array<Command> toRemove = new Array<Command>();
+			for (Command c: commandQueue) {
+				if (c instanceof EndTurn && c.turn <= getGameTurn()) {
+					toRemove.add(c);
+					
+					if (c.turn == getGameTurn())
+						nextTurn = true;
+				}
+			}
+			commandQueue.removeAll(toRemove, true);
+			
 			turnTimer -= delta;
 			if (turnTimer <= 0 || nextTurn) {
 				doTurn();
@@ -168,21 +183,19 @@ public class GameController {
 	
 	public void doTurn() {
 		Gdx.app.log(LOG, "doTurn");
-		gameTurn += 1;
-		float delta = 1;
 		
 		// update collection (do simulation for turn)
-		
+		doCommands();
 		
 		for (GameObject obj : gameObjects) {
 			// TODO update object positions
 			
-			obj.update(this, delta);
+			obj.update(this);
 			
 			if (obj.isRemove()) objsToRemove.add(obj);
 		}
 		
-		gameObjects.removeAll(objsToRemove);
+		gameObjects.removeAll(objsToRemove, true);
 		for (GameObject obj: objsToRemove) {
 			grpUnits.removeActor(obj);
 		}
@@ -192,6 +205,8 @@ public class GameController {
 			addGameUnitNow(obj);
 		}
 		objsToAdd.clear();
+		
+		gameTurn += 1;
 		
 		for (Player p: players) {
 			p.update(this);
@@ -215,14 +230,14 @@ public class GameController {
 			if (playerAlive != null) {
 				result.winner = playerAlive.getPlayerId();
 			}
-			ArrayList<Integer> losingPlayers = new ArrayList<Integer>();
+			Array<Integer> losingPlayers = new Array<Integer>();
 			for (Player p : players) {
 				if (!p.isAlive()) {
 					losingPlayers.add(p.getPlayerId());
 				}
 			}
-			result.losers = new int[losingPlayers.size()];
-			for (int i = 0; i < losingPlayers.size(); i++) {
+			result.losers = new int[losingPlayers.size];
+			for (int i = 0; i < losingPlayers.size; i++) {
 				result.losers[i] = losingPlayers.get(i);
 			}
 			
@@ -231,16 +246,10 @@ public class GameController {
 		}
 	}
 
-	public void doCommands(float delta) {
+	public void doCommands() {
 		// process commands
-		
-		List<Command> toAdd = cmdsToAdd;
-		cmdsToAdd = new ArrayList<Command>();
-	
-		commandQueue.addAll(toAdd);
-	
-	
-		List<Command> toRemove = new ArrayList<Command>();
+			
+		Array<Command> toRemove = new Array<Command>();
 		for (Command command: commandQueue) {
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
 			if (command.turn < gameTurn) {
@@ -257,7 +266,7 @@ public class GameController {
 				commandHistory.add(command);
 			} // future commands are left alone
 		}
-		commandQueue.removeAll(toRemove);
+		commandQueue.removeAll(toRemove, true);
 		
 		
 	}
@@ -285,8 +294,6 @@ public class GameController {
 			}
 			
 			return false;
-		} else if (cmd instanceof EndTurn) {
-			return true;
 		}
 		return false;
 	}
@@ -306,8 +313,6 @@ public class GameController {
 			executeUnpause((Unpause)cmd);
 		} else if (cmd instanceof Upgrade) {
 			executeUpgrade((Upgrade)cmd);
-		} else if (cmd instanceof EndTurn) {
-			nextTurn = true;
 		} else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
@@ -393,7 +398,7 @@ public class GameController {
 		return grpRoot;
 	}
 	
-	public ArrayList<Player> getPlayers() {
+	public Array<Player> getPlayers() {
 		return players;
 	}
 	
@@ -406,23 +411,24 @@ public class GameController {
 	
 	private void addGameUnitNow(GameObject obj) {
 		
-		if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		if (!gameObjects.contains(obj, true)) gameObjects.add(obj);
 		
 		
 		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
 	}
 	
 	public void addGameUnit(GameObject obj) {
-		if (!objsToAdd.contains(obj)) objsToAdd.add(obj);
+		if (!objsToAdd.contains(obj, true)) objsToAdd.add(obj);
 	}
 	
 	public void removeGameUnit(GameObject obj) {
-		gameObjects.remove(obj);
+		gameObjects.removeValue(obj, true);
+		
 		grpUnits.removeActor(obj);
 	}
 	
-	public ArrayList<GameObject> getGameObjects() {
-		ArrayList<GameObject> ret = new ArrayList<GameObject>();
+	public Array<GameObject> getGameObjects() {
+		Array<GameObject> ret = new Array<GameObject>();
 		
 		for(GameObject obj: gameObjects) {
 			ret.add(obj);
@@ -442,8 +448,8 @@ public class GameController {
 		return null;
 	}
 	
-	public ArrayList<Unit> getUnitsByPlayerId(int id) {
-		ArrayList<Unit> ret = new ArrayList<Unit>();
+	public Array<Unit> getUnitsByPlayerId(int id) {
+		Array<Unit> ret = new Array<Unit>();
 		
 		for (GameObject obj: gameObjects) {
 			if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == id) {
@@ -470,8 +476,8 @@ public class GameController {
 		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
 	}
 	
-	public ArrayList<GameObject> getObjsAtPosition(Vector2 mapCoords) {
-		ArrayList<GameObject> returnVal = new ArrayList<GameObject>();
+	public Array<GameObject> getObjsAtPosition(Vector2 mapCoords) {
+		Array<GameObject> returnVal = new Array<GameObject>();
 		
 		
 		for (GameObject obj: gameObjects) {
@@ -528,11 +534,11 @@ public class GameController {
 		return turnTimer;
 	}
 	
-	public ArrayList<Command> getCommandHistory() {
+	public Array<Command> getCommandHistory() {
 		return this.commandHistory;
 	}
 	
-	public ArrayList<Command> getCommandQueue() {
+	public Array<Command> getCommandQueue() {
 		return this.commandQueue;
 	}
 	

@@ -81,7 +81,7 @@ public class GameObject extends Actor {
 	 * Use this for game loop updates so that it can be easily controlled (unlike act, which will be called regardless of gamestate)
 	 * @param delta
 	 */
-	public void update(GameController controller, float delta) {
+	public void update(GameController controller) {
 		// TODO implement this
 		
 	}

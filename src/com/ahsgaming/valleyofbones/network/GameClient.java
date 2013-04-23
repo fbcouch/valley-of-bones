@@ -23,7 +23,6 @@
 package com.ahsgaming.valleyofbones.network;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameResult;
@@ -38,6 +37,7 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.SetupInfo;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -66,7 +66,7 @@ public class GameClient implements NetController {
 	
 	GameSetupConfig gameConfig;
 	
-	ArrayList<Player> players = new ArrayList<Player>();
+	Array<Player> players = new Array<Player>();
 	
 	VOBGame game;
 	
@@ -234,7 +234,7 @@ public class GameClient implements NetController {
 			for (Player p: players) {
 				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
 			}
-			controller.doCommands(KryoCommon.NET_TICK_LENGTH * 0.001f);
+			controller.doCommands();
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
@@ -278,7 +278,7 @@ public class GameClient implements NetController {
 		return controller;
 	}
 	
-	public ArrayList<Player> getPlayers() {
+	public Array<Player> getPlayers() {
 		return players;
 	}
 	

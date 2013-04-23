@@ -22,8 +22,6 @@
  */
 package com.ahsgaming.valleyofbones.screens;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.Player;
@@ -54,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -232,7 +231,7 @@ public class LevelScreen extends AbstractScreen {
 		} else {
 			if (rightBtnDown && gController.getSelectedObject() != null) {
 				// TODO issue context-dependent commands
-				ArrayList<GameObject> objsUnderCursor = null;
+				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
 				GameObject obj= gController.getSelectedObject();

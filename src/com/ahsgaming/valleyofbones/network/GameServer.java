@@ -23,7 +23,6 @@
 package com.ahsgaming.valleyofbones.network;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.AIPlayer;
 import com.ahsgaming.valleyofbones.GameController;
@@ -41,6 +40,7 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -64,7 +64,7 @@ public class GameServer implements NetController {
 	
 	GameSetupConfig gameConfig;
 	
-	ArrayList<Player> players = new ArrayList<Player>();
+	Array<Player> players = new Array<Player>();
 	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 	int nextPlayerId = 0;
 	Connection host = null;
@@ -105,7 +105,7 @@ public class GameServer implements NetController {
 				if (obj instanceof RegisterPlayer) {
 					RegisterPlayer rp = (RegisterPlayer)obj;
 					
-					if (players.size() >= Player.AUTOCOLORS.length) return; // TODO should join as spectator? 
+					if (players.size >= Player.AUTOCOLORS.length) return; // TODO should join as spectator? 
 					
 					// is that player already registered?
 					for (Player p: players) {
@@ -115,7 +115,7 @@ public class GameServer implements NetController {
 					int id = getNextPlayerId();
 					Color use = new Color(1, 1, 1, 1);
 					int team = -1;
-					if (players.size() <= 4) {
+					if (players.size <= 4) {
 						use = Player.getUnusedColor(players);
 						int cntTeam1 = 0, cntTeam2 = 0;
 						for (Player p: players) {
@@ -200,7 +200,7 @@ public class GameServer implements NetController {
 			
 			public void disconnected (Connection c) {
 				Player p = connMap.get(c);
-				if (players.contains(p)) players.remove(p);
+				if (players.contains(p, true)) players.removeValue(p, true);
 				sendPlayerList();
 				
 				if (host == c) {
@@ -250,7 +250,7 @@ public class GameServer implements NetController {
 		// once the controller exists, we need to check to make sure all players are ready
 		if (!gameStarted) {
 			boolean allReady = true;
-			for (int p=0;p<players.size();p++) {
+			for (int p=0;p<players.size;p++) {
 				if (players.get(p) instanceof NetPlayer && !((NetPlayer)players.get(p)).isReady()) {
 					allReady = false;
 				}
@@ -306,7 +306,7 @@ public class GameServer implements NetController {
 				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
 			}
 			
-			controller.doCommands(KryoCommon.NET_TICK_LENGTH * 0.001f);
+			controller.doCommands();
 		}
 		
 		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
@@ -334,8 +334,8 @@ public class GameServer implements NetController {
 	}
 	
 	public void sendPlayerList() {
-		RegisteredPlayer[] list = new RegisteredPlayer[players.size()];
-		for (int p = 0; p < players.size(); p++) {
+		RegisteredPlayer[] list = new RegisteredPlayer[players.size];
+		for (int p = 0; p < players.size; p++) {
 			RegisteredPlayer rp = new RegisteredPlayer();
 			Player pl = players.get(p);
 			rp.id = pl.getPlayerId();
@@ -379,7 +379,7 @@ public class GameServer implements NetController {
 
 	@Override
 	public void addAIPlayer(int team) {
-		if (players.size() < 4) {
+		if (players.size < 4) {
 			int id = getNextPlayerId();
 			Color use = Player.getUnusedColor(players);
 			
@@ -390,18 +390,18 @@ public class GameServer implements NetController {
 	@Override
 	public void removePlayer(int playerId) {
 		
-		ArrayList<Player> remove = new ArrayList<Player>();
+		Array<Player> remove = new Array<Player>();
 		for (Player p: players) {
 			if (p.getPlayerId() == playerId) {
 				remove.add(p);
 			}
 		}
 		
-		players.removeAll(remove);
+		players.removeAll(remove, true);
 	}
 
 	@Override
-	public ArrayList<Player> getPlayers() {
+	public Array<Player> getPlayers() {
 		return this.players;
 	}
 
