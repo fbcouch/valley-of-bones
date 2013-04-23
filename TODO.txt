@@ -1,14 +1,11 @@
 VALLEY OF BONES
 
 GOALS 2013-04-22
-- Implement true turn system (with timer)
++ Implement true turn system (with timer)
     + UI button, timer
-    - controller waits for all players to click next or timer expires
-    - update player at beginning of turn
-    - update units at end of turn ('simulation' time)
-
+    
 GOALS 2013-04-23
-- Implement Food, Upkeep (money)
++ Implement Food, Upkeep (money)
 - Implement basic commands
     - Move
     - Build (marine)

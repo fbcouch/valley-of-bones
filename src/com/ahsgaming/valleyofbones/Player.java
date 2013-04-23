@@ -45,7 +45,7 @@ public class Player {
 	Color playerColor = new Color(1, 1, 1, 1);
 	String name = "New Cadet";
 	
-	float bankMoney = 2000, rateMoney = 1;
+	float bankMoney = 0, upkeep = 0;
 	float curFood = 0, maxFood = 0;
 	
 	int teamId = 0;
@@ -70,16 +70,28 @@ public class Player {
 		this.teamId = team;
 	}
 	
-	public void update(GameController controller, float delta) {
-		bankMoney += rateMoney * delta;
-		
+	public void update(GameController controller) {
+		updateFoodAndUpkeep(controller, true);
+	}
+	
+	public void updateFood(GameController controller) {
+		updateFoodAndUpkeep(controller, false);
+	}
+	
+	public void updateFoodAndUpkeep(GameController controller, boolean updateBank) {
+		float upkeep = 0;
 		float food = 0, mFood = 0;
 		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
 			if (unit.getFood() < 0) mFood -= unit.getFood();
 			else food += unit.getFood();
+			
+			upkeep += unit.getUpkeep();
 		}
 		curFood = food;
 		maxFood = mFood;
+		this.upkeep = upkeep;
+		
+		if (updateBank) bankMoney -= upkeep;
 	}
 	
 	public boolean canBuild(String protoId, GameController controller) {
@@ -147,14 +159,14 @@ public class Player {
 	 * @return the rateMoney
 	 */
 	public float getRateMoney() {
-		return rateMoney;
+		return upkeep;
 	}
 
 	/**
 	 * @param rateMoney the rateMoney to set
 	 */
 	public void setRateMoney(float rateMoney) {
-		this.rateMoney = rateMoney;
+		this.upkeep = rateMoney;
 	}
 
 	/**

@@ -23,12 +23,13 @@ entities: [
     {
         id: "marine-base",
         type: "unit",
-        image: "castle",
+        image: "marine",
         title: "Space Marine",
         desc: "Basic attacking unit",
         properties:
         {
-            health: 100,
+            curhp: 100,
+            maxhp: 100,
             armor: 1,
             food: 1,
             requires: [ "castle-base" ],

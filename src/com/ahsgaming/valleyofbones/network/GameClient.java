@@ -232,7 +232,7 @@ public class GameClient implements NetController {
 			// TODO net tick
 			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
 			for (Player p: players) {
-				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
+				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
 			}
 			controller.doCommands(KryoCommon.NET_TICK_LENGTH * 0.001f);
 		}

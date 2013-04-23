@@ -303,7 +303,7 @@ public class GameServer implements NetController {
 				//if (p instanceof AIPlayer) {
 				//	((AIPlayer)p).update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
 				//}
-				p.update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
+				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
 			}
 			
 			controller.doCommands(KryoCommon.NET_TICK_LENGTH * 0.001f);

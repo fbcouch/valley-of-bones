@@ -171,11 +171,17 @@ public class GameController {
 		gameTurn += 1;
 		float delta = 1;
 		
-		for (Player p: players) {
-			p.update(this, delta);
+		// update collection (do simulation for turn)
+		
+		
+		for (GameObject obj : gameObjects) {
+			// TODO update object positions
+			
+			obj.update(this, delta);
+			
+			if (obj.isRemove()) objsToRemove.add(obj);
 		}
 		
-		// update collection (do simulation for turn)
 		gameObjects.removeAll(objsToRemove);
 		for (GameObject obj: objsToRemove) {
 			grpUnits.removeActor(obj);
@@ -187,14 +193,9 @@ public class GameController {
 		}
 		objsToAdd.clear();
 		
-		for (GameObject obj : gameObjects) {
-			// TODO update object positions
-			
-			obj.update(this, delta);
-			
-			if (obj.isRemove()) objsToRemove.add(obj);
+		for (Player p: players) {
+			p.update(this);
 		}
-		
 		
 		checkResult();
 	}
@@ -351,7 +352,7 @@ public class GameController {
 			
 			addGameUnitNow(unit);
 			owner.setBankMoney(owner.getBankMoney() - unit.getCost());
-			owner.update(this, 0);
+			owner.updateFood(this);
 		}
 		
 	}

@@ -52,6 +52,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	float attackSpeed = 0;
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	int moveSpeed = 0;
+	int upkeep = 0;
 	
 	String protoId = "";
 	String type = "";
@@ -109,6 +110,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		if (properties.containsKey("movespeed"))
 			moveSpeed = (int)Float.parseFloat(properties.get("movespeed").toString());
 		
+		if (properties.containsKey("upkeep"))
+			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
+		
 	}
 	
 	public void updateProperties() { 
@@ -120,6 +124,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("food", food);
 		properties.put("maxhp", maxHP);
 		properties.put("movespeed", moveSpeed);
+		properties.put("upkeep", upkeep);
 	}
 	
 	@Override
@@ -194,6 +199,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	public void setMoveSpeed(int moveSpeed) {
 		this.moveSpeed = moveSpeed;
+	}
+	
+	public int getUpkeep() {
+		return upkeep;
+	}
+
+	public void setUpkeep(int upkeep) {
+		this.upkeep = upkeep;
 	}
 
 	public ObjectMap<String, Object> getProperties() {
