@@ -216,6 +216,14 @@ public class GameObject extends Actor {
 		boardPos.set(x, y);
 	}
 	
+	public void setBoardPosition(float x, float y) {
+		setBoardPosition((int)x, (int)y);
+	}
+	
+	public void setBoardPosition(Vector2 boardPos) {
+		setBoardPosition((int)boardPos.x, (int)boardPos.y);
+	}
+	
 	public Vector2 getBoardPosition() {
 		return boardPos;
 	}

@@ -7,8 +7,9 @@ GOALS 2013-04-22
 GOALS 2013-04-23
 + Implement Food, Upkeep (money)
 - Implement basic commands
-    - Move
-    - Build (marine)
+    + Move
+    + Build (marine)
+    - implement 'preview' of command
 - Implement basic combat
 
 GOALS 2013-04-24

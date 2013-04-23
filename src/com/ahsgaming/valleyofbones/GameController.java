@@ -370,10 +370,10 @@ public class GameController {
 		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
 			Gdx.app.log(LOG, "Error: object owner does not match command owner");
 		} else {
-			if (obj instanceof Unit) {
-				((Unit)obj).doCommand(cmd, cmd.isAdd);
-			} else {
-				obj.moveTo(cmd.toLocation, cmd.isAdd);
+			// TODO implement unit command queue-ing?
+			if (isBoardPosEmpty(cmd.toLocation)) {
+				obj.setBoardPosition(cmd.toLocation);
+				obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
 			}
 		}
 	}

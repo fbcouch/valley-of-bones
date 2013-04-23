@@ -259,30 +259,17 @@ public class LevelScreen extends AbstractScreen {
 					game.sendCommand(at);
 				} else {
 					// move to this location
-					Move mv = new Move();
-					mv.owner = game.getPlayer().getPlayerId();
-					mv.turn = gController.getGameTurn();
-					mv.unit = obj.getObjId();
-					mv.toLocation = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-					mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
-					mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
-					
-					Rectangle mapRect = new Rectangle(0, 0, grpLevel.getWidth(), grpLevel.getHeight()); 
-					if (!mapRect.contains(mv.toLocation.x, mv.toLocation.y)) {
-						// the destination is outside the map
-						if ((mv.toLocation.x < 0 || mv.toLocation.x > grpLevel.getWidth())) {
-							// X is out of bounds
-							if (mv.toLocation.x < 0) mv.toLocation.set(0, mv.toLocation.y);
-							if (mv.toLocation.x > grpLevel.getWidth()) mv.toLocation.set(grpLevel.getWidth(), mv.toLocation.y);
-						} 
-						if ((mv.toLocation.y < 0 || mv.toLocation.y > grpLevel.getHeight())) {
-							// Y is out of bounds
-							if (mv.toLocation.y < 0) mv.toLocation.set(mv.toLocation.x, 0);
-							if (mv.toLocation.y > grpLevel.getHeight()) mv.toLocation.set(mv.toLocation.x, grpLevel.getHeight());
-						}
+					if (gController.isBoardPosEmpty(boardPos)) {
+						Move mv = new Move();
+						mv.owner = game.getPlayer().getPlayerId();
+						mv.turn = gController.getGameTurn();
+						mv.unit = obj.getObjId();
+						mv.toLocation = boardPos;
+						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
+						
+						game.sendCommand(mv);
 					}
-					
-					game.sendCommand(mv);
 				}
 				rightBtnDown = false;
 			}
