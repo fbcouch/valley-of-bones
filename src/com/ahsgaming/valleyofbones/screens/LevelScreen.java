@@ -32,10 +32,9 @@ import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
+import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
-import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -48,8 +47,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -81,6 +85,10 @@ public class LevelScreen extends AbstractScreen {
 	// UX stuff
 	Group grpScorePane = new Group();
 	ObjectMap<Player, Label> mapScoreLbls = new ObjectMap<Player, Label>();
+	
+	Group grpTurnPane = new Group();
+	Label lblTurnTimer;
+	Button btnTurnDone;
 
 	private boolean vKeyDown;
 	
@@ -222,7 +230,7 @@ public class LevelScreen extends AbstractScreen {
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
 			rightBtnDown = true;
 		} else {
-			if (rightBtnDown) {
+			if (rightBtnDown && gController.getSelectedObject() != null) {
 				// TODO issue context-dependent commands
 				ArrayList<GameObject> objsUnderCursor = null;
 				GameObject target = null;
@@ -364,6 +372,39 @@ public class LevelScreen extends AbstractScreen {
 		}
 		grpScorePane.setPosition(stage.getWidth() - grpScorePane.getWidth() - 10, 264);
 		stage.addActor(grpScorePane);
+		
+		// generate the turn info
+		grpTurnPane = new Group();
+		lblTurnTimer = new Label(" ", new LabelStyle(getLargeFont(), new Color(1,1,1,1)));
+		
+		btnTurnDone = new TextButton("END TURN", getSkin());
+		btnTurnDone.setSize(350, 150);
+
+		lblTurnTimer.setY(btnTurnDone.getHeight());
+		
+		grpTurnPane.addActor(btnTurnDone);
+		grpTurnPane.addActor(lblTurnTimer);
+		
+		grpTurnPane.setSize(btnTurnDone.getWidth(), lblTurnTimer.getTop());
+		
+		stage.addActor(grpTurnPane);
+		
+		
+		
+		btnTurnDone.addListener(new ClickListener() {
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				
+				EndTurn et = new EndTurn();
+				et.owner = game.getPlayer().getPlayerId();
+				et.turn = gController.getGameTurn();
+				
+				game.sendCommand(et);
+			}
+			
+		});
 	}
 	
 	public void updateScorePane() {
@@ -376,6 +417,11 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
+	}
+	
+	public void updateTurnPane() {
+		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
+		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
 	}
 	
 	@Override
@@ -403,6 +449,8 @@ public class LevelScreen extends AbstractScreen {
 		
 				
 		updateScorePane();
+		
+		updateTurnPane();
 		
 		// easy exit for debug purposes
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && VOBGame.DEBUG) {

@@ -29,6 +29,7 @@ import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
+import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Pause;
 import com.ahsgaming.valleyofbones.network.Unpause;
@@ -37,7 +38,6 @@ import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
@@ -70,6 +70,7 @@ public class GameController {
 	int gameTurn = 0;
 	float turnLength = 60;
 	float turnTimer = 0;
+	boolean nextTurn = false;
 	
 	int nextObjectId = 0;
 	
@@ -151,14 +152,18 @@ public class GameController {
 	}
 	
 	public void update(float delta) {
+		
+		doCommands(delta);
+		
 		if (state == GameStates.RUNNING) {
 			turnTimer -= delta;
-			if (turnTimer <= 0) {
+			if (turnTimer <= 0 || nextTurn) {
 				doTurn();
 				turnTimer = turnLength;
 			}
 		}
-		doCommands(delta);
+		
+		nextTurn = false;
 	}
 	
 	public void doTurn() {
@@ -279,6 +284,8 @@ public class GameController {
 			}
 			
 			return false;
+		} else if (cmd instanceof EndTurn) {
+			return true;
 		}
 		return false;
 	}
@@ -298,6 +305,8 @@ public class GameController {
 			executeUnpause((Unpause)cmd);
 		} else if (cmd instanceof Upgrade) {
 			executeUpgrade((Upgrade)cmd);
+		} else if (cmd instanceof EndTurn) {
+			nextTurn = true;
 		} else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
@@ -512,6 +521,10 @@ public class GameController {
 	
 	public int getGameTurn() {
 		return gameTurn;
+	}
+	
+	public float getTurnTimer() {
+		return turnTimer;
 	}
 	
 	public ArrayList<Command> getCommandHistory() {

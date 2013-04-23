@@ -2,7 +2,7 @@ VALLEY OF BONES
 
 GOALS 2013-04-22
 - Implement true turn system (with timer)
-    - UI button, timer
+    + UI button, timer
     - controller waits for all players to click next or timer expires
     - update player at beginning of turn
     - update units at end of turn ('simulation' time)
