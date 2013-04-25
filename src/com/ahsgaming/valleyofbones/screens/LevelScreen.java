@@ -318,6 +318,7 @@ public class LevelScreen extends AbstractScreen {
 	}
 	
 	public void showCommandPreviews() {
+		// TODO optimize this
 		grpPreviews.clear();
 		grpPreviews.remove();
 		grpLevel.addActor(grpPreviews);

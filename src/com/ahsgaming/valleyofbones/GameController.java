@@ -153,14 +153,24 @@ public class GameController {
 	
 	public void update(float delta) {
 		
-		
-		
 		if (state == GameStates.RUNNING) {
-
-			commandQueue.addAll(cmdsToAdd);
+			Array<Command> toRemove = new Array<Command>();
+			for (Command c: cmdsToAdd) {
+				if (c instanceof Move) {
+					// future moves on the same unit should override past moves
+					toRemove.clear();
+					for (Command qc: commandQueue) {
+						if (qc instanceof Move && ((Move)c).unit == ((Move)qc).unit) {
+							toRemove.add(qc);
+						}
+					}
+					commandQueue.removeAll(toRemove, true);
+				}
+				commandQueue.add(c);
+			}
 			cmdsToAdd.clear();
 			
-			Array<Command> toRemove = new Array<Command>();
+			toRemove.clear();
 			for (Command c: commandQueue) {
 				if (c instanceof EndTurn && c.turn <= getGameTurn()) {
 					toRemove.add(c);
