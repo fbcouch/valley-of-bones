@@ -6,4 +6,13 @@ public class Move extends Command {
 	public int unit;
 	public Vector2 toLocation;
 	public boolean isAttack = false;
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Move && super.equals(o)) {
+			Move m = (Move)o;
+			return m.unit == unit && m.toLocation.epsilonEquals(toLocation, 0.01f) && m.isAttack == isAttack;
+		}
+		return false;
+	}
 }

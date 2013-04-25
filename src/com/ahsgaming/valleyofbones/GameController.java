@@ -545,8 +545,10 @@ public class GameController {
 	public void queueCommand(Command cmd) {
 		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
-			cmdsToAdd.add(cmd);
-			Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
+			if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
+				cmdsToAdd.add(cmd);
+				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
+			}
 		}
 	}
 	

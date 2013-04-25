@@ -322,7 +322,7 @@ public class LevelScreen extends AbstractScreen {
 		grpPreviews.remove();
 		grpLevel.addActor(grpPreviews);
 		
-		
+		Gdx.app.log(LOG, String.format("Command queue size: %d", gController.getCommandQueue().size));
 		for (Command c: gController.getCommandQueue()) {
 			if (c.owner == game.getPlayer().getPlayerId()) {
 				
