@@ -28,15 +28,12 @@ import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
-import com.ahsgaming.valleyofbones.network.Attack;
-import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.Move;
-import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -48,7 +45,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	boolean selectable = true, targetable = true;
 	
-	int attackDamage = 0;
+	int attackDamage = 0, attackRange = 0;
 	float attackSpeed = 0;
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	int moveSpeed = 0;
@@ -89,6 +86,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		if (properties.containsKey("attackdamage"))
 			attackDamage = (int)Float.parseFloat(properties.get("attackdamage").toString());
 		
+		if (properties.containsKey("attackrange"))
+			attackRange = (int)Float.parseFloat(properties.get("attackrange").toString());
+		
 		if (properties.containsKey("attackspeed"))
 			attackSpeed = Float.parseFloat(properties.get("attackspeed").toString());
 		
@@ -117,6 +117,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	
 	public void updateProperties() { 
 		properties.put("attackdamage", attackDamage);
+		properties.put("attackrange", attackRange);
 		properties.put("attackspeed", attackSpeed);
 		properties.put("armor", armor);
 		properties.put("cost", cost);
@@ -128,13 +129,15 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	@Override
-	public void takeDamage(float amount) {
+	public float takeDamage(float amount) {
 		// TODO take into account damage type here
 		float damage = amount - getArmor();
-		if (damage > 0)
+		if (damage > 0) {
 			curHP -= damage;
+			return damage;
+		}
 		// TODO add a hit effect
-		
+		return 0;
 	}
 	
 	public int getAttackDamage() {
@@ -143,6 +146,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	public void setAttackDamage(int attackDamage) {
 		this.attackDamage = attackDamage;
+	}
+	
+	public int getAttackRange() {
+		return attackRange;
+	}
+
+	public void setAttackRange(int attackRange) {
+		this.attackRange = attackRange;
 	}
 
 	public float getAttackSpeed() {
@@ -232,30 +243,21 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 * @param controller
 	 * @return
 	 */
-	public GameObject findTarget(GameController controller) {
-		float maxRange = 0;
-		// TODO implement this
-		/*for (Weapon w: weapons) {
-			float range = w.getRange();
-			if (range > maxRange) maxRange = range;
-		}*/
+	public Unit findTarget(GameController controller) {
 		
-		float maxRangeSq = maxRange * maxRange;
-		GameObject candidate = null;
-		float candidateVal = 0;
-		
-		for (GameObject obj: controller.getGameObjects()) {
-			// TODO fix this to use some kind of threat assessment rather than just distance
-			float objVal = GameObject.getDistanceSq(this, obj);
-			if (obj instanceof Targetable && ((Targetable)obj).isTargetable()
-					&& obj.getOwner() != this.getOwner() && objVal <= maxRangeSq) {
-				if (candidate == null || objVal < candidateVal) {
-					candidate = obj;
-				}
+		Array<Unit> targets = new Array<Unit>();
+		for (GameObject go: controller.getGameObjects()) {
+			if (go instanceof Unit) {
+				Unit other = (Unit)go;
+				if (other.getOwner().getPlayerId() == getOwner().getPlayerId()) continue;
+				if (controller.getMap().getMapDist(this.getBoardPosition(), other.getBoardPosition()) <= getAttackRange())
+					targets.add(other);
 			}
 		}
 		
-		return candidate;
+		// TODO prioritize
+		
+		return (targets.size > 0 ? targets.get(0) : null);
 	}
 	
 	/* (non-Javadoc)
@@ -285,7 +287,16 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			return;
 		}
 		
-		// TODO implement this
+		Unit target = findTarget(controller);
+		
+		// TODO sort targets by priority?
+		
+		if (target != null) attack(target, controller);
+	}
+	
+	public void attack(Unit other, GameController controller) {
+		Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
+		float damage = other.takeDamage(getAttackDamage());
 	}
 	
 	public ArrayList<Command> getCommandQueue() {

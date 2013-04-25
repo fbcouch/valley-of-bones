@@ -83,7 +83,7 @@ public class GameObject extends Actor {
 	 */
 	public void update(GameController controller) {
 		// TODO implement this
-		
+		return;
 	}
 	
 	public boolean canCollide(GameObject obj) {
@@ -112,7 +112,7 @@ public class GameObject extends Actor {
 		path.add(location);
 	}
 	
-	public void takeDamage(float amount) {}
+	public float takeDamage(float amount) { return 0; }
 	
 	/**
 	 * Implemented methods

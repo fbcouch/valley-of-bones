@@ -119,6 +119,18 @@ public class GameController {
 		// TODO implement loading of maps
 		map = new HexMap(20, 10, 2, 3);
 		
+		Unit unit = new Unit(getNextObjectId(), players.get(0), (JsonProto)Prototypes.getProto("marine-base"));
+		Vector2 pos = map.boardToMapCoords(9, 0);
+		unit.setPosition(pos);
+		unit.setBoardPosition(9, 0);
+		addGameUnit(unit);
+		
+		unit = new Unit(getNextObjectId(), players.get(1), (JsonProto)Prototypes.getProto("marine-base"));
+		pos = map.boardToMapCoords(10, 0);
+		unit.setPosition(pos);
+		unit.setBoardPosition(10, 0);
+		addGameUnit(unit);
+		
 		return map;
 	}
 	
@@ -196,13 +208,13 @@ public class GameController {
 		
 		// update collection (do simulation for turn)
 		doCommands();
-		
-		for (GameObject obj : gameObjects) {
-			// TODO update object positions
+		GameObject o = null;
+		Gdx.app.log(LOG, String.format("GameObjects: %d", gameObjects.size));
+		for (int i=0;i<gameObjects.size;i++) {
+			o = gameObjects.get(i);
+			o.update(this);
 			
-			obj.update(this);
-			
-			if (obj.isRemove()) objsToRemove.add(obj);
+			if (o.isRemove()) objsToRemove.add(o);
 		}
 		
 		gameObjects.removeAll(objsToRemove, true);

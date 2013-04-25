@@ -6,11 +6,13 @@ GOALS 2013-04-22
     
 GOALS 2013-04-23
 + Implement Food, Upkeep (money)
-- Implement basic commands
++ Implement basic commands
     + Move
     + Build (marine)
-    - implement 'preview' of command
+    + implement 'preview' of command
 - Implement basic combat
+    + almost there -> just need to figure out why only one unit is attacking per turn
+    - implement HexMap#getMapDist
 
 GOALS 2013-04-24
 - Implement basic upgrades

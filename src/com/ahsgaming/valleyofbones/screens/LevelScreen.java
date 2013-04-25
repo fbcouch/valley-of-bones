@@ -48,6 +48,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -323,7 +324,7 @@ public class LevelScreen extends AbstractScreen {
 		grpPreviews.remove();
 		grpLevel.addActor(grpPreviews);
 		
-		Gdx.app.log(LOG, String.format("Command queue size: %d", gController.getCommandQueue().size));
+		
 		for (Command c: gController.getCommandQueue()) {
 			if (c.owner == game.getPlayer().getPlayerId()) {
 				
@@ -481,5 +482,12 @@ public class LevelScreen extends AbstractScreen {
 		}
 		
 	}
-
+	
+	public void addFloatingLabel(String text, float x, float y) {
+		Gdx.app.log(LOG, "Floating Label!");
+		Label lbl = new Label(text, new LabelStyle(getSmallFont(), new Color(1,1,1,1)));
+		lbl.setPosition(x, y);
+		lbl.addAction(Actions.parallel(Actions.fadeOut(1f), Actions.moveBy(0, 64f, 1f)));
+		grpLevel.addActor(lbl);
+	}
 }

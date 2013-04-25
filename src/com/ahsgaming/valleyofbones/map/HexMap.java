@@ -197,4 +197,9 @@ public class HexMap {
 		
 		return boardCoords;
 	}
+	
+	public int getMapDist(Vector2 from, Vector2 to) {
+		// TODO implement this
+		return 0;
+	}
 }
