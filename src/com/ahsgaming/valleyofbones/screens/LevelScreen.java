@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones.screens;
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
@@ -33,6 +34,7 @@ import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
+import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -88,6 +90,9 @@ public class LevelScreen extends AbstractScreen {
 	Group grpTurnPane = new Group();
 	Label lblTurnTimer;
 	Button btnTurnDone;
+	
+	Group grpPreviews = new Group();
+	Array<Command> commandsPreviewed = new Array<Command>();
 
 	private boolean vKeyDown;
 	
@@ -311,6 +316,35 @@ public class LevelScreen extends AbstractScreen {
 	public Vector2 mapToScreenCoords(float x, float y) {
 		return new Vector2(x - (posCamera.x - stage.getWidth() * 0.5f), y - (posCamera.y - stage.getHeight() * 0.5f));
 	}
+	
+	public void showCommandPreviews() {
+		grpPreviews.clear();
+		grpPreviews.remove();
+		grpLevel.addActor(grpPreviews);
+		
+		
+		for (Command c: gController.getCommandQueue()) {
+			if (c.owner == game.getPlayer().getPlayerId()) {
+				
+				if (c instanceof Build || c instanceof Move) {
+					Image img = null;
+					Vector2 pos = new Vector2();
+					if (c instanceof Build) {
+						img = new Image(TextureManager.getTexture(Prototypes.getProto(((Build)c).building).image + ".png"));
+						pos = ((Build)c).location;
+					} else if (c instanceof Move) {
+						img = new Image(gController.getObjById(((Move)c).unit).getImage());
+						pos = ((Move)c).toLocation;
+					}
+					Vector2 sPos = gController.getMap().boardToMapCoords(pos.x, pos.y);
+					//sPos = this.mapToScreenCoords(sPos.x, sPos.y);
+					img.setPosition(sPos.x, sPos.y);
+					img.setColor(1, 1, 1, 0.5f);
+					grpPreviews.addActor(img);
+				}
+			}
+		}
+	}
 
 	
 	/**
@@ -437,6 +471,8 @@ public class LevelScreen extends AbstractScreen {
 		updateScorePane();
 		
 		updateTurnPane();
+		
+		showCommandPreviews();
 		
 		// easy exit for debug purposes
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && VOBGame.DEBUG) {
