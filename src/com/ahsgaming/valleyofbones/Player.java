@@ -153,12 +153,12 @@ public class Player {
 				proto = Prototypes.getProto(((Upgrade)c).upgrade);
 			}
 			
-			if (proto.hasProperty("food")) {
+			if (proto != null && proto.hasProperty("food")) {
 				int foodToAdd = (int)Float.parseFloat(proto.getProperty("food").toString());
 				qFood += (foodToAdd > 0 ? foodToAdd: 0);	// cannot borrow against future food
 			}
 			
-			if (proto.hasProperty("cost")) {
+			if (proto != null && proto.hasProperty("cost")) {
 				int costToAdd = (int)Float.parseFloat(proto.getProperty("cost").toString());
 				qCost += (costToAdd > 0 ? costToAdd: 0);	// cannot borrow against future cost (theoretically - that shouldn't really happen)
 			}

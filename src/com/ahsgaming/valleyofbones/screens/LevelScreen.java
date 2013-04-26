@@ -228,7 +228,10 @@ public class LevelScreen extends AbstractScreen {
 				}
 			} else {						
 				gController.selectObjAtBoardPos(boardPos);
-				
+				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
+					Unit u = (Unit)gController.getSelectedObject();
+					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
+				}
 			}
 		}
 		

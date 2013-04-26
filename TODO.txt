@@ -19,7 +19,6 @@ GOALS 2013-04-24
     + "requires"
     + add upgrade protos to unit?
 - Implement victory/loss stuff
-- Implement upkeep fully
 
 GOALS 2013-04-25
 - Merge to master

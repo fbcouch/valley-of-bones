@@ -8,8 +8,8 @@ entities: [
         desc: "This is your home base.",
         properties:
         {
-            curhp: 1000,
-            maxhp: 1000,
+            curhp: 100,
+            maxhp: 100,
             armor: 0,
             food: -20,
             requires: [],
@@ -29,9 +29,9 @@ entities: [
         desc: "Basic attacking unit",
         properties:
         {
-            curhp: 100,
-            maxhp: 100,
-            armor: 1,
+            curhp: 10,
+            maxhp: 10,
+            armor: 0,
             food: 1,
             requires: [ "castle-base" ],
             attackdamage: 1,
@@ -39,7 +39,6 @@ entities: [
             attackrange: 2,
             movespeed: 1,
             cost: 10,
-            upkeep: 1,
         }
     },
     {
