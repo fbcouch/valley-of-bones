@@ -235,6 +235,10 @@ public class GameController {
 		}
 		
 		checkResult();
+		
+		if (gameResult != null) {
+			this.state = GameStates.GAMEOVER;
+		}
 	}
 	
 	public void checkResult() {

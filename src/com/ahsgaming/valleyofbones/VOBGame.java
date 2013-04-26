@@ -176,6 +176,9 @@ public class VOBGame extends Game {
 			loadGame = false;
 		}
 		
+		// TODO temporarily grab gameResult directly from the controller
+		gameResult = gController.getGameResult();
+		
 		if (gameResult != null) {
 			this.setScreen(this.getGameOverScreen(gameResult));
 			gameResult = null;
