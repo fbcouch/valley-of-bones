@@ -413,7 +413,10 @@ public class GameController {
 	}
 	
 	public void executeUpgrade(Upgrade cmd) {
-		
+		GameObject obj = getObjById(cmd.unit);
+		if (obj instanceof Unit) {
+			((Unit)obj).applyUpgrade(Prototypes.getProto(cmd.upgrade));
+		}
 	}
 	
 	/**

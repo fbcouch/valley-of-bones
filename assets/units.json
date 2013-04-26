@@ -42,5 +42,18 @@ entities: [
             upkeep: 1,
         }
     },
+    {
+        id: "attack-upgrade-1",
+        type: "upgrade",
+        image: "marine",
+        title: "Attack Upgrade 1",
+        desc: "Adds +1 attack",
+        properties:
+        {
+            requires: [ "castle-base" ],
+            applies-to: [ "space-marine" ],
+            attackdamage: 1,
+        },
+    },
 ]
 }

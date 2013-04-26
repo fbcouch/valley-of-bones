@@ -288,12 +288,12 @@ public class LevelScreen extends AbstractScreen {
 			if (obj instanceof Unit) {
 				Unit u = (Unit)obj;
 				
-				if (game.getPlayer().canUpgrade(u, "station-upgrade-lvl2", gController)) {
+				if (game.getPlayer().canUpgrade(u, "attack-upgrade-1", gController)) {
 					Upgrade upg = new Upgrade();
 					upg.turn = gController.getGameTurn();
 					upg.owner = game.getPlayer().getPlayerId();
 					upg.unit = u.getObjId();
-					upg.upgrade = "station-upgrade-lvl2";
+					upg.upgrade = "attack-upgrade-1";
 					
 					game.sendCommand(upg);
 				}

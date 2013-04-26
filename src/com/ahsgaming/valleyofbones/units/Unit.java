@@ -63,6 +63,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	
 	final JsonProto proto;
 	
+	Array<JsonProto> upgrades = new Array<JsonProto>();
+	
 	/**
 	 * Constructors
 	 */
@@ -237,6 +239,17 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	public void setProperties(ObjectMap<String, Object> properties) {
 		this.properties = properties;
+	}
+	
+	public void applyUpgrade(JsonProto upgrade) {
+		if (!hasUpgrade(upgrade.id)) upgrades.add(upgrade); 
+	}
+	
+	public boolean hasUpgrade(String upgradeId) {
+		for (JsonProto up: upgrades) {
+			if (up.id.equals(upgradeId)) return true;
+		}
+		return false;
 	}
 
 	/**

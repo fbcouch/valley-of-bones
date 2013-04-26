@@ -16,7 +16,7 @@ GOALS 2013-04-23
 
 GOALS 2013-04-24
 - Implement basic upgrades
-    - "requires"
+    + "requires"
     - add upgrade protos to unit?
 - Implement victory/loss stuff
 - Implement upkeep fully
