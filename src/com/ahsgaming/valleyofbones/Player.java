@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
+import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
@@ -97,13 +98,8 @@ public class Player {
 	
 	public boolean canBuild(String protoId, GameController controller) {
 		JsonProto proto = Prototypes.getProto(protoId);
-		// check requirements
-		if (proto.hasProperty("requires")) {
-			Array<Object> requires = (Array<Object>)proto.getProperty("requires");
-			for (Object o: requires) {
-				if (!hasAUnit(o.toString(), controller)) return false;
-			}
-		}
+		
+		if (!checkRequirements(proto, controller)) return false;
 		
 		// figure out if food/cost limitations are OK
 		int food = 0, cost = 0;
@@ -112,32 +108,24 @@ public class Player {
 		if (proto.hasProperty("cost"))
 			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
 		
-		int qFood = 0, qCost = 0;
-		Command c = null;
-		for (int i=0;i<controller.getCommandQueue().size;i++) {
-			c = controller.getCommandQueue().get(i);
-			if (c.owner != getPlayerId()) continue;
-			
-			if (c instanceof Build) {
-				proto = Prototypes.getProto(((Build)c).building);
-				if (proto.hasProperty("food")) {
-					int foodToAdd = (int)Float.parseFloat(proto.getProperty("food").toString());
-					qFood += (foodToAdd > 0 ? foodToAdd: 0);	// cannot borrow against future food
-				}
-				
-				if (proto.hasProperty("cost")) {
-					int costToAdd = (int)Float.parseFloat(proto.getProperty("cost").toString());
-					qCost += (costToAdd > 0 ? costToAdd: 0);	// cannot borrow against future cost (theoretically - that shouldn't really happen)
-				}
-			}
-		}
-		
-		return ((food <= 0 || food <= maxFood - curFood - qFood) && (cost <= 0 || bankMoney >= cost + qCost));
+		return checkFoodAndCost(food, cost, controller);
 	}
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
-		// TODO implement this
-		return false;
+		JsonProto proto = Prototypes.getProto(protoId);
+		
+		// TODO check if the upgrade can apply to this unit
+		
+		if (!checkRequirements(proto, controller)) return false;
+		
+		// figure out if food/cost limitations are OK
+		int food = 0, cost = 0;
+		if (proto.hasProperty("food"))
+			food = (int)Float.parseFloat(proto.getProperty("food").toString());
+		if (proto.hasProperty("cost"))
+			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
+		
+		return checkFoodAndCost(food, cost, controller);
 	}
 	
 	public boolean hasAUnit(String id, GameController controller) {
@@ -147,6 +135,47 @@ public class Player {
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean checkFoodAndCost(int food, int cost, GameController controller) {
+		int qFood = 0, qCost = 0;
+		Command c = null;
+		JsonProto proto = null;
+		for (int i=0;i<controller.getCommandQueue().size;i++) {
+			c = controller.getCommandQueue().get(i);
+			if (c.owner != getPlayerId()) continue;
+			
+			proto = null;
+			if (c instanceof Build) {
+				proto = Prototypes.getProto(((Build)c).building);
+				
+			} else if (c instanceof Upgrade) {
+				proto = Prototypes.getProto(((Upgrade)c).upgrade);
+			}
+			
+			if (proto.hasProperty("food")) {
+				int foodToAdd = (int)Float.parseFloat(proto.getProperty("food").toString());
+				qFood += (foodToAdd > 0 ? foodToAdd: 0);	// cannot borrow against future food
+			}
+			
+			if (proto.hasProperty("cost")) {
+				int costToAdd = (int)Float.parseFloat(proto.getProperty("cost").toString());
+				qCost += (costToAdd > 0 ? costToAdd: 0);	// cannot borrow against future cost (theoretically - that shouldn't really happen)
+			}
+		}
+		
+		return ((food <= 0 || food <= maxFood - curFood - qFood) && (cost <= 0 || bankMoney >= cost + qCost));
+	}
+	
+	public boolean checkRequirements(JsonProto proto, GameController controller) {
+		// check requirements
+		if (proto.hasProperty("requires")) {
+			Array<Object> requires = (Array<Object>)proto.getProperty("requires");
+			for (Object o: requires) {
+				if (!hasAUnit(o.toString(), controller)) return false;
+			}
+		}
+		return true;
 	}
 	
 	
