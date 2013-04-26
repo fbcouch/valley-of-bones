@@ -25,14 +25,16 @@ public class Prototypes {
 	}
 	
 	public static class JsonProto {
-		public String id = "", type = "", image = "";
-		public String title = "", desc = "";
+		public String id = "";
+		public String type = "";
+		public String image = "";
+		public String title = "";
+		public String desc = "";
 		
 		public ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
 		
 		public JsonProto() {}
 
-		
 		public JsonProto(ObjectMap<String, Object> json) {
 			
 			if (json.containsKey("id"))

@@ -10,15 +10,16 @@ GOALS 2013-04-23
     + Move
     + Build (marine)
     + implement 'preview' of command
-- Implement basic combat
++ Implement basic combat
     + almost there -> just need to figure out why only one unit is attacking per turn
-    - implement HexMap#getMapDist
+    + implement HexMap#getMapDist
 
 GOALS 2013-04-24
 - Implement basic upgrades
     - "requires"
     - add upgrade protos to unit?
 - Implement victory/loss stuff
+- Implement upkeep fully
 
 GOALS 2013-04-25
 - Merge to master

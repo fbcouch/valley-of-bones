@@ -217,7 +217,7 @@ public class HexMap {
 		if (from.y == to.y) return Math.round(Math.abs(from.x - to.x));
 		
 		
-		// otherwise, move along the smaller gradient
+		// otherwise, move along the gradient
 		from = new Vector2(from);
 		
 		float dx = to.x - from.x, dy = to.y - from.y;

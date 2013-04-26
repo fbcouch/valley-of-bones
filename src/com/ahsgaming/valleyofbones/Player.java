@@ -22,6 +22,8 @@
  */
 package com.ahsgaming.valleyofbones;
 
+import com.ahsgaming.valleyofbones.network.Build;
+import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
@@ -101,7 +103,28 @@ public class Player {
 			food = (int)Float.parseFloat(proto.getProperty("food").toString());
 		if (proto.hasProperty("cost"))
 			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
-		return ((food <= 0 || food <= maxFood - curFood) && (cost <= 0 || bankMoney >= cost));
+		
+		int qFood = 0, qCost = 0;
+		Command c = null;
+		for (int i=0;i<controller.getCommandQueue().size;i++) {
+			c = controller.getCommandQueue().get(i);
+			if (c.owner != getPlayerId()) continue;
+			
+			if (c instanceof Build) {
+				proto = Prototypes.getProto(((Build)c).building);
+				if (proto.hasProperty("food")) {
+					int foodToAdd = (int)Float.parseFloat(proto.getProperty("food").toString());
+					qFood += (foodToAdd > 0 ? foodToAdd: 0);	// cannot borrow against future food
+				}
+				
+				if (proto.hasProperty("cost")) {
+					int costToAdd = (int)Float.parseFloat(proto.getProperty("cost").toString());
+					qCost += (costToAdd > 0 ? costToAdd: 0);	// cannot borrow against future cost (theoretically - that shouldn't really happen)
+				}
+			}
+		}
+		
+		return ((food <= 0 || food <= maxFood - curFood - qFood) && (cost <= 0 || bankMoney >= cost + qCost));
 	}
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {

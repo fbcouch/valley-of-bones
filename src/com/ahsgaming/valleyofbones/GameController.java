@@ -271,12 +271,15 @@ public class GameController {
 	public void doCommands() {
 		// process commands
 			
-		Array<Command> toRemove = new Array<Command>();
-		for (Command command: commandQueue) {
+		Array<Command> toKeep = new Array<Command>();
+		commandQueue.reverse();
+		Command command = null;
+		if (commandQueue.size > 0) command = commandQueue.pop();
+		while (command != null) {
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
-				toRemove.add(command);
+				
 			} else if (command.turn == gameTurn) {
 				// execute current commands and remove
 				// TODO execute the command
@@ -284,11 +287,13 @@ public class GameController {
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
 					executeCommand(command);
 				}
-				toRemove.add(command);
 				commandHistory.add(command);
-			} // future commands are left alone
+			} else {
+				// future commands are left alone
+				toKeep.add(command);
+			}
+			if (commandQueue.size > 0) command = commandQueue.pop(); else command = null;
 		}
-		commandQueue.removeAll(toRemove, true);
 		
 		
 	}
@@ -369,18 +374,17 @@ public class GameController {
 		JsonProto junit = Prototypes.getProto(cmd.building);
 		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
 		Player owner = getPlayerById(cmd.owner);
-		if (owner.canBuild(junit.id, this) && isBoardPosEmpty(cmd.location)) {
 			
-			// TODO place builder
-			// for now, just add the unit
-			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
-			unit.setPosition(levelPos);
-			unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
-			
-			addGameUnitNow(unit);
-			owner.setBankMoney(owner.getBankMoney() - unit.getCost());
-			owner.updateFood(this);
-		}
+		// TODO place builder
+		// for now, just add the unit
+		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
+		unit.setPosition(levelPos);
+		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
+		
+		addGameUnitNow(unit);
+		owner.setBankMoney(owner.getBankMoney() - unit.getCost());
+		owner.updateFood(this);
+	
 		
 	}
 	
