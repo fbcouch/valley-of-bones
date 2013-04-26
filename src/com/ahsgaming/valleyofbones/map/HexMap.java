@@ -82,19 +82,9 @@ public class HexMap {
 		current.add(thingDist);
 		playerSpawns.add(new Vector2(current.x - 1 - (thingDist.x > 0 ? (thingDist.x / thingDist.x) : 0), current.y - (thingDist.y > 0 ? (thingDist.y / thingDist.y) : 0)));
 		
-		
-		mapGroup = new Group();
-		mapGroup.setSize(getMapWidth(), getMapHeight());
-		dirtTexture = new TextureRegion(new Texture(Gdx.files.internal("dirt-hex.png")));
-		for (int x = 0; x < bounds.x; x++) {
-			for (int y = 0; y < bounds.y; y++) {
-				Image img = new Image(dirtTexture);
-				Vector2 pos = this.boardToMapCoords(x, y);
-				img.setPosition(pos.x, pos.y);
-				mapGroup.addActor(img);
-			}
-		}
 	}
+	
+	
 	
 	public int getWidth() {
 		return (int)bounds.x;
@@ -129,6 +119,19 @@ public class HexMap {
 	}
 	
 	public Group getMapGroup() {
+		if (mapGroup == null) {
+			mapGroup = new Group();
+			mapGroup.setSize(getMapWidth(), getMapHeight());
+			dirtTexture = new TextureRegion(new Texture(Gdx.files.internal("dirt-hex.png")));
+			for (int x = 0; x < bounds.x; x++) {
+				for (int y = 0; y < bounds.y; y++) {
+					Image img = new Image(dirtTexture);
+					Vector2 pos = this.boardToMapCoords(x, y);
+					img.setPosition(pos.x, pos.y);
+					mapGroup.addActor(img);
+				}
+			}
+		}
 		return mapGroup;
 	}
 	
@@ -198,8 +201,38 @@ public class HexMap {
 		return boardCoords;
 	}
 	
+	
+	/*
+	 * 	  (x - 1!, y + 1)  (x + 1?, y + 1)
+	 * 				  \	   /
+	 * (x - 1, y) --- (x, y) --- (x + 1, y)
+	 * 				  /    \
+	 *    (x - 1!, y - 1)  (x + 1?, y - 1)
+	 * ! --> y % 2 == 0 ? -1 : 0
+	 * ? --> y % 2 == 0 ? 0 : 1
+	 */
 	public int getMapDist(Vector2 from, Vector2 to) {
-		// TODO implement this
-		return 0;
+		// completion cases:
+		if (from.x == to.x) return Math.round(Math.abs(from.y - to.y));
+		if (from.y == to.y) return Math.round(Math.abs(from.x - to.x));
+		
+		
+		// otherwise, move along the smaller gradient
+		from = new Vector2(from);
+		
+		float dx = to.x - from.x, dy = to.y - from.y;
+		if (from.y % 2 == 0 && dx < 0) {
+			from.x -= 1;
+		} else if (from.y % 2 == 1 && dx > 0) {
+			from.x += 1;
+		}
+		
+		if (dy > 0) {
+			from.y += 1;
+		} else {
+			from.y -= 1;
+		}
+		
+		return 1 + getMapDist(from, to);
 	}
 }
