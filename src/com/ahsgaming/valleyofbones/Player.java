@@ -22,13 +22,14 @@
  */
 package com.ahsgaming.valleyofbones;
 
-import java.util.ArrayList;
-
+import com.ahsgaming.valleyofbones.network.Build;
+import com.ahsgaming.valleyofbones.network.Command;
+import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Unit;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUpgrade;
+import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -46,7 +47,7 @@ public class Player {
 	Color playerColor = new Color(1, 1, 1, 1);
 	String name = "New Cadet";
 	
-	float bankMoney = 2000, rateMoney = 1;
+	float bankMoney = 0, upkeep = 0;
 	float curFood = 0, maxFood = 0;
 	
 	int teamId = 0;
@@ -71,35 +72,110 @@ public class Player {
 		this.teamId = team;
 	}
 	
-	public void update(GameController controller, float delta) {
-		bankMoney += rateMoney * delta;
-		
+	public void update(GameController controller) {
+		updateFoodAndUpkeep(controller, true);
+	}
+	
+	public void updateFood(GameController controller) {
+		updateFoodAndUpkeep(controller, false);
+	}
+	
+	public void updateFoodAndUpkeep(GameController controller, boolean updateBank) {
+		float upkeep = 0;
 		float food = 0, mFood = 0;
 		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
-			JsonProto up = Prototypes.getProto(unit.getProtoId());
-			if (up.food < 0) mFood -= up.food;
-			else food += up.food;
+			if (unit.getFood() < 0) mFood -= unit.getFood();
+			else food += unit.getFood();
+			
+			upkeep += unit.getUpkeep();
 		}
 		curFood = food;
 		maxFood = mFood;
+		this.upkeep = upkeep;
+		
+		if (updateBank) bankMoney -= upkeep;
 	}
 	
 	public boolean canBuild(String protoId, GameController controller) {
-		// TODO implement this
 		JsonProto proto = Prototypes.getProto(protoId);
-		if ((proto.food <= 0 || proto.food <= maxFood - curFood) && bankMoney >= proto.cost) {
-			return true;
+		
+		if (!checkRequirements(proto, controller)) return false;
+		
+		// figure out if food/cost limitations are OK
+		int food = 0, cost = 0;
+		if (proto.hasProperty("food"))
+			food = (int)Float.parseFloat(proto.getProperty("food").toString());
+		if (proto.hasProperty("cost"))
+			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
+		
+		return checkFoodAndCost(food, cost, controller);
+	}
+	
+	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
+		JsonProto proto = Prototypes.getProto(protoId);
+		
+		// TODO check if the upgrade can apply to this unit
+		
+		if (!checkRequirements(proto, controller)) return false;
+		
+		// figure out if food/cost limitations are OK
+		int food = 0, cost = 0;
+		if (proto.hasProperty("food"))
+			food = (int)Float.parseFloat(proto.getProperty("food").toString());
+		if (proto.hasProperty("cost"))
+			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
+		
+		return checkFoodAndCost(food, cost, controller);
+	}
+	
+	public boolean hasAUnit(String id, GameController controller) {
+		Array<Unit> units = controller.getUnitsByPlayerId(getPlayerId());
+		for (Unit u: units) {
+			if (u.getProtoId().equals(id)) 
+				return true;
 		}
 		return false;
 	}
 	
-	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
-		JsonUpgrade upgrade = (JsonUpgrade)Prototypes.getProto(protoId);
-		if (upgrade.fromId.equals(unit.getProtoId()) && bankMoney >= upgrade.cost) {
-			// TODO probably need to have some sort of dependency checking more than just that this is being applied to the correct unit etc
-			return true;
+	public boolean checkFoodAndCost(int food, int cost, GameController controller) {
+		int qFood = 0, qCost = 0;
+		Command c = null;
+		JsonProto proto = null;
+		for (int i=0;i<controller.getCommandQueue().size;i++) {
+			c = controller.getCommandQueue().get(i);
+			if (c.owner != getPlayerId()) continue;
+			
+			proto = null;
+			if (c instanceof Build) {
+				proto = Prototypes.getProto(((Build)c).building);
+				
+			} else if (c instanceof Upgrade) {
+				proto = Prototypes.getProto(((Upgrade)c).upgrade);
+			}
+			
+			if (proto != null && proto.hasProperty("food")) {
+				int foodToAdd = (int)Float.parseFloat(proto.getProperty("food").toString());
+				qFood += (foodToAdd > 0 ? foodToAdd: 0);	// cannot borrow against future food
+			}
+			
+			if (proto != null && proto.hasProperty("cost")) {
+				int costToAdd = (int)Float.parseFloat(proto.getProperty("cost").toString());
+				qCost += (costToAdd > 0 ? costToAdd: 0);	// cannot borrow against future cost (theoretically - that shouldn't really happen)
+			}
 		}
-		return false;
+		
+		return ((food <= 0 || food <= maxFood - curFood - qFood) && (cost <= 0 || bankMoney >= cost + qCost));
+	}
+	
+	public boolean checkRequirements(JsonProto proto, GameController controller) {
+		// check requirements
+		if (proto.hasProperty("requires")) {
+			Array<Object> requires = (Array<Object>)proto.getProperty("requires");
+			for (Object o: requires) {
+				if (!hasAUnit(o.toString(), controller)) return false;
+			}
+		}
+		return true;
 	}
 	
 	
@@ -151,14 +227,14 @@ public class Player {
 	 * @return the rateMoney
 	 */
 	public float getRateMoney() {
-		return rateMoney;
+		return upkeep;
 	}
 
 	/**
 	 * @param rateMoney the rateMoney to set
 	 */
 	public void setRateMoney(float rateMoney) {
-		this.rateMoney = rateMoney;
+		this.upkeep = rateMoney;
 	}
 
 	/**
@@ -197,15 +273,15 @@ public class Player {
 		this.teamId = teamId;
 	}
 	
-	public static Color getUnusedColor(ArrayList<Player> players) {
-		ArrayList<Color> usedColors = new ArrayList<Color>();
+	public static Color getUnusedColor(Array<Player> players) {
+		Array<Color> usedColors = new Array<Color>();
 		for (Player p: players) {
 			usedColors.add(p.getPlayerColor());
 		}
 		
 		Color use = Player.AUTOCOLORS[0];
 		for (Color color: Player.AUTOCOLORS) {
-			if (!usedColors.contains(color)) {
+			if (!usedColors.contains(color, true)) {
 				use = color;
 				break;
 			}

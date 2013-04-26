@@ -1,7 +1,5 @@
 package com.ahsgaming.valleyofbones;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.GameClient;
 import com.ahsgaming.valleyofbones.network.GameServer;
@@ -9,17 +7,18 @@ import com.ahsgaming.valleyofbones.screens.GameJoinScreen;
 import com.ahsgaming.valleyofbones.screens.GameLoadingScreen;
 import com.ahsgaming.valleyofbones.screens.GameOverScreen;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
+import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.screens.MainMenuScreen;
 import com.ahsgaming.valleyofbones.screens.OptionsScreen;
 import com.ahsgaming.valleyofbones.screens.ServerScreen;
 import com.ahsgaming.valleyofbones.screens.SplashScreen;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.utils.Array;
 
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
@@ -40,6 +39,7 @@ public class VOBGame extends Game {
 	
 	// CLIENT
 	GameClient localClient;
+	Player player;
 	
 	boolean started = false;
 	
@@ -89,7 +89,7 @@ public class VOBGame extends Game {
 		
 		localClient = new GameClient(this, cfg);
 		
-		//gController = new GameController("", new ArrayList<Player>());
+		//gController = new GameController("", new Array<Player>());
 		//gController.LOG = gController.LOG + "#Client";
 	}
 	
@@ -118,7 +118,8 @@ public class VOBGame extends Game {
 	}
 	
 	public void sendCommand(Command cmd) {
-		localClient.sendCommand(cmd);
+		// TODO fix this
+		gController.queueCommand(cmd);
 	}
 	
 	public void addAIPlayer(int team) {
@@ -139,7 +140,18 @@ public class VOBGame extends Game {
 		if (isServerOnly) {
 			setScreen(getServerScreen());
 		} else {
-			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+			//setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+			if (DEBUG) {
+				Array<Player> players = new Array<Player>();
+				players.add(new Player(0, "Player", Player.getUnusedColor(players)));
+				players.add(new AIPlayer(1, Player.getUnusedColor(players)));
+				player = players.get(0);
+				GameController gc = new GameController("", players);
+				this.gController = gc;
+				setScreen(new LevelScreen(this, gc));
+			} else {
+				setScreen(getSplashScreen());
+			}
 		}
 		
 	}
@@ -163,6 +175,9 @@ public class VOBGame extends Game {
 			startGame();
 			loadGame = false;
 		}
+		
+		// TODO temporarily grab gameResult directly from the controller
+		gameResult = gController.getGameResult();
 		
 		if (gameResult != null) {
 			this.setScreen(this.getGameOverScreen(gameResult));
@@ -242,17 +257,19 @@ public class VOBGame extends Game {
 	}
 	
 	public Player getPlayer() {
-		if (localClient != null) {
-			return localClient.getPlayer();
-		}
-		return null;
+		//if (localClient != null) {
+		//	return localClient.getPlayer();
+		//}
+		return player;
 	}
 	
-	public ArrayList<Player> getPlayers() {
+	public Array<Player> getPlayers() {
 		if (localClient != null) {
-			return (ArrayList<Player>) localClient.getPlayers().clone();
+			Array<Player> ret = new Array<Player>();
+			ret.addAll(localClient.getPlayers());
+			return ret;
 		}
-		return new ArrayList<Player>();
+		return new Array<Player>();
 	}
 	
 	public void setLoadGame() {
@@ -285,7 +302,7 @@ public class VOBGame extends Game {
 	public static void main(String[] args) {
 		
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Space Tactics";
+		cfg.title = "Valley of Bones";
 		cfg.useGL20 = true;
 		cfg.width = 1440;
 		cfg.height = 900;

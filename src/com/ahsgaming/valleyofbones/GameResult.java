@@ -29,29 +29,25 @@ package com.ahsgaming.valleyofbones;
 public class GameResult {
 	public String LOG = "GameResult";
 	
-	public int[] winners;
+	public int winner;
 	public int[] losers;
-	public int winningTeam;
 	
 	/**
 	 * creates an empty GameResult
 	 */
 	public GameResult() {
-		winners = new int[0];
+		winner = -1;
 		losers = new int[0];
-		winningTeam = -1;
 	}
 	
 	/**
 	 * creates a new GameResult with the given parameters
 	 * @param winners
 	 * @param losers
-	 * @param winningTeam
 	 */
-	public GameResult(int[] winners, int[] losers, int winningTeam) {
-		this.winners = winners;
+	public GameResult(int winner, int[] losers) {
+		this.winner = winner;
 		this.losers = losers;
-		this.winningTeam = winningTeam;
 	}
 
 }

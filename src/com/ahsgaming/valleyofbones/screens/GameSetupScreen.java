@@ -22,11 +22,8 @@
  */
 package com.ahsgaming.valleyofbones.screens;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
-import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -41,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -50,7 +48,7 @@ public class GameSetupScreen extends AbstractScreen {
 	public String LOG = "GameSetupScreen";
 	GameSetupConfig config;
 	
-	ArrayList<Player> pList;
+	Array<Player> pList;
 	
 	/**
 	 * @param game
@@ -121,10 +119,10 @@ public class GameSetupScreen extends AbstractScreen {
 		table.row();
 		
 		
-		ArrayList<Player> team1 = new ArrayList<Player>();
-		ArrayList<Player> team2 = new ArrayList<Player>();
+		Array<Player> team1 = new Array<Player>();
+		Array<Player> team2 = new Array<Player>();
 		
-		pList = new ArrayList<Player>();
+		pList = new Array<Player>();
 		pList.addAll(game.getPlayers());
 		
 		for (Player p: pList) {
@@ -132,8 +130,8 @@ public class GameSetupScreen extends AbstractScreen {
 			if (p.getTeam() == 1) team2.add(p);//team2.add(String.format("%s (%d)", p.getPlayerName(), p.getTeam()));
 		}
 		
-		for (int i=0; i < team1.size() || i < team2.size(); i++) {
-			if (i < team1.size()) {
+		for (int i=0; i < team1.size || i < team2.size; i++) {
+			if (i < team1.size) {
 				table.add(new Label(String.format("%s (%d)", team1.get(i).getPlayerName(), team1.get(i).getPlayerId()), getSkin())).left().colspan(2);
 				
 				if (config.isHost && team1.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
@@ -149,7 +147,7 @@ public class GameSetupScreen extends AbstractScreen {
 			
 			table.add();
 			
-			if (i < team2.size()) {
+			if (i < team2.size) {
 				table.add(new Label(String.format("%s (%d)", team2.get(i).getPlayerName(), team2.get(i).getPlayerId()), getSkin())).left().colspan(2);
 				
 				if (config.isHost && team2.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
@@ -274,7 +272,7 @@ public class GameSetupScreen extends AbstractScreen {
 		super.render(delta);
 		
 		//Gdx.app.log(LOG, Integer.toString(game.getPlayers().size()));
-		ArrayList<Player> players = game.getPlayers();
+		Array<Player> players = game.getPlayers();
 		
 		synchronized (players) {
 			if (!pList.equals(players)) {

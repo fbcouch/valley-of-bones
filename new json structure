@@ -1,3 +1,4 @@
+UNITS JSON STRUCTURE
 {
 entities: [
     {
@@ -8,14 +9,13 @@ entities: [
         desc: "This is your home base.",
         properties:
         {
-            curhp: 100,
-            maxhp: 100,
+            curhp: 1000,
+            maxhp: 1000,
             armor: 0,
             food: -20,
             requires: [],
             attackdamage: 5,
             attackspeed: 1,
-            attackrange: 3,
             movespeed: 0,
             cost: 1000,
             upkeep: -20,
@@ -29,30 +29,16 @@ entities: [
         desc: "Basic attacking unit",
         properties:
         {
-            curhp: 10,
-            maxhp: 10,
-            armor: 0,
+            health: 100,
+            armor: 1,
             food: 1,
             requires: [ "castle-base" ],
             attackdamage: 1,
             attackspeed: 1,
-            attackrange: 2,
             movespeed: 1,
             cost: 10,
+            upkeep: 1,
         }
-    },
-    {
-        id: "attack-upgrade-1",
-        type: "upgrade",
-        image: "marine",
-        title: "Attack Upgrade 1",
-        desc: "Adds +1 attack",
-        properties:
-        {
-            requires: [ "castle-base" ],
-            applies-to: [ "space-marine" ],
-            attackdamage: 1,
-        },
     },
 ]
 }

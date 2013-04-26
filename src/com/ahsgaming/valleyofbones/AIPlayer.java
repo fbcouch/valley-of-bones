@@ -55,8 +55,8 @@ public class AIPlayer extends Player {
 	}
 	
 	@Override
-	public void update(GameController controller, float delta) {
-		super.update(controller, delta);
+	public void update(GameController controller) {
+		super.update(controller);
 		//Gdx.app.log(LOG, "Update");
 	}
 }

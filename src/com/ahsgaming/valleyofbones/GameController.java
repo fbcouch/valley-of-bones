@@ -22,26 +22,21 @@
  */
 package com.ahsgaming.valleyofbones;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
+import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Pause;
 import com.ahsgaming.valleyofbones.network.Unpause;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
-import com.ahsgaming.valleyofbones.units.Selectable;
+import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
@@ -56,11 +51,11 @@ public class GameController {
 	
 	public String LOG = "GameController";
 	
-	ArrayList<GameObject> gameObjects, selectedObjects, objsToAdd, objsToRemove;
-	Group grpRoot, grpMap, grpUnits;
+	Array<GameObject> gameObjects, objsToAdd, objsToRemove;
+	GameObject selectedObject;
+	Group grpRoot, grpUnits;
 	
-	ArrayList<Player> players;
-	ArrayList<Team> teams;
+	Array<Player> players;
 	
 	String mapName;
 	HexMap map;
@@ -68,127 +63,50 @@ public class GameController {
 	
 	GameStates state;
 	
-	ArrayList<Command> commandHistory;
-	ArrayList<Command> commandQueue;
-	ArrayList<Command> cmdsToAdd;
-	int gameTick = 0;
-	int netTick = 0;
+	Array<Command> commandHistory;
+	Array<Command> commandQueue;
+	Array<Command> cmdsToAdd;
 	
 	int gameTurn = 0;
-	
+	float turnLength = 60;
+	float turnTimer = 0;
+	boolean nextTurn = false;
 	
 	int nextObjectId = 0;
 	
 	GameResult gameResult = null;
 	
-	public static class Team {
-		int id;
-		List<Player> players;
-		
-		public Team(int id) {
-			this.id = id;
-			players = new ArrayList<Player>();
-		}
-		
-		public Team addPlayer(Player player) {
-			players.add(player);
-			return this;
-		}
-		
-		public Team removePlayer(Player player) {
-			
-			if (players.contains(player)) {
-				players.remove(player);
-				}
-			
-			return this;
-		}
-		
-		public Player[] getPlayers() {
-			Player[] playerArray = new Player[players.size()];
-			for (int p=0; p<players.size(); p++) {
-				playerArray[p] = players.get(p);
-			}
-			return playerArray;
-			
-		}
-		
-		public int[] getPlayerIds() {
-		
-			int[] idArray = new int[players.size()];
-			for (int p=0; p<players.size(); p++) {
-				idArray[p] = players.get(p).getPlayerId();
-			}
-			return idArray;
-		
-		}
-		
-		public boolean hasPlayerAlive() {
-		
-			for (Player p: players) {
-				if (p.isAlive()) {
-					return true;
-				}
-			}
-		
-			return false;
-		}
-
-		public int getId() {
-			return this.id;
-		}
-		
-		public static int[] getPlayerIds(ArrayList<Team> teams) {
-			int total = 0;
-			for (Team t: teams) {
-				total += t.getPlayers().length;
-			}
-			int[] players = new int[total];
-			total = 0;
-			for (Team t: teams) {
-				int[] teamPlayers = t.getPlayerIds();
-				for (int p=0;p<teamPlayers.length; p++) {
-					players[p + total] = teamPlayers[p];
-				}
-				total += teamPlayers.length;
-			}
-			return players;
-		}
-	}
-	
 	/**
 	 * Constructors
 	 */
 	
-	public GameController(String mapName, ArrayList<Player> players) {
+	public GameController(String mapName, Array<Player> players) {
 		// TODO load map
 		this.mapName = mapName;
 		grpRoot = new Group();
-		grpMap = new Group();
 		grpUnits = new Group();
-		grpRoot.addActor(grpMap);
-		grpRoot.addActor(grpUnits);
 		
-		gameObjects = new ArrayList<GameObject>();
-		selectedObjects = new ArrayList<GameObject>();
-		objsToAdd = new ArrayList<GameObject>();
-		objsToRemove = new ArrayList<GameObject>();
 		
-		commandHistory = new ArrayList<Command>();
-		commandQueue = new ArrayList<Command>();
-		cmdsToAdd = new ArrayList<Command>();
+		gameObjects = new Array<GameObject>();
+		selectedObject = null;
+		objsToAdd = new Array<GameObject>();
+		objsToRemove = new Array<GameObject>();
+		
+		commandHistory = new Array<Command>();
+		commandQueue = new Array<Command>();
+		cmdsToAdd = new Array<Command>();
 		
 		this.players = players;
-		
-		this.createTeams();
 		
 		this.loadMap();
 		this.loadMapObjects();
 		
-		grpRoot.setSize(map.getWidth() * map.getTileWidth(), (int) (map.getHeight() * map.getTileHeight() * 0.75f));
+		grpRoot.addActor(map.getMapGroup());
+		grpRoot.addActor(grpUnits);
+		grpRoot.setSize(map.getMapWidth(), map.getMapHeight());
 		
 		// TODO start paused
-		state = GameStates.PAUSED;
+		state = GameStates.RUNNING;
 	}
 	
 	/**
@@ -201,28 +119,43 @@ public class GameController {
 		// TODO implement loading of maps
 		map = new HexMap(20, 10, 2, 3);
 		
+		Unit unit = new Unit(getNextObjectId(), players.get(0), (JsonProto)Prototypes.getProto("marine-base"));
+		Vector2 pos = map.boardToMapCoords(9, 0);
+		unit.setPosition(pos);
+		unit.setBoardPosition(9, 0);
+		addGameUnit(unit);
+		
+		unit = new Unit(getNextObjectId(), players.get(1), (JsonProto)Prototypes.getProto("marine-base"));
+		pos = map.boardToMapCoords(10, 0);
+		unit.setPosition(pos);
+		unit.setBoardPosition(10, 0);
+		addGameUnit(unit);
+		
 		return map;
 	}
 	
 	private Group loadMapObjects() {
 		int player = 0;
-		for (Vector2 spawn : map.getControlPoints()) {
-			Vector2 objPos = mapToLevelCoords(spawn);
+		for (Vector2 spawn : map.getPlayerSpawns()) {
+			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;
-			if (player >= 0 && player < players.size()) {
-				unit = new Unit(getNextObjectId(), players.get(player), (JsonUnit)Prototypes.getProto("space-station-base"));
+			if (player >= 0 && player < players.size) {
+				unit = new Unit(getNextObjectId(), players.get(player), (JsonProto)Prototypes.getProto("castle-base"));
 				players.get(player).setBaseUnit(unit);
 			} else {
-				unit = new Unit(getNextObjectId(), null, (JsonUnit)Prototypes.getProto("space-station-base"));
+				unit = new Unit(getNextObjectId(), null, (JsonProto)Prototypes.getProto("castle-base"));
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
-			
-			unit.setPosition(objPos.x, objPos.y);
+			Gdx.app.log(LOG, spawn.toString());
+			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
+			unit.setPosition(pos.x, pos.y);
+			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
 			addGameUnit(unit);
 			
-			if (player >= 0 && player < players.size()) {
+			if (player >= 0 && player < players.size) {
 				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
 			}
+			player ++;
 		}
 		
 		// TODO load capture points
@@ -230,79 +163,61 @@ public class GameController {
 		return grpUnits;
 	}
 	
-	public void createTeams() {
-		teams = new ArrayList<Team>();
+	public void update(float delta) {
 		
-		for (Player p: players) {
-			if (teams.size() == 0) {
-				// create a new team and add this player
-				Team t = new Team(p.getTeam());
-				t.addPlayer(p);
-				teams.add(t);
-			} else {
-				// search the list of teams for a match
-				
-				boolean foundTeam = false;
-				for (Team t: teams) {
-					if (t.getId() == p.getTeam()) {
-						t.addPlayer(p);
-						foundTeam = true;
-						break;
+		if (state == GameStates.RUNNING) {
+			Array<Command> toRemove = new Array<Command>();
+			for (Command c: cmdsToAdd) {
+				if (c instanceof Move) {
+					// future moves on the same unit should override past moves
+					toRemove.clear();
+					for (Command qc: commandQueue) {
+						if (qc instanceof Move && ((Move)c).unit == ((Move)qc).unit) {
+							toRemove.add(qc);
+						}
 					}
+					commandQueue.removeAll(toRemove, true);
 				}
-				
-				// no match? create a new team
-				if (!foundTeam) {
-					Team t = new Team(p.getTeam());
-					t.addPlayer(p);
-					teams.add(t);
+				commandQueue.add(c);
+			}
+			cmdsToAdd.clear();
+			
+			toRemove.clear();
+			for (Command c: commandQueue) {
+				if (c instanceof EndTurn && c.turn <= getGameTurn()) {
+					toRemove.add(c);
+					
+					if (c.turn == getGameTurn())
+						nextTurn = true;
 				}
-				
+			}
+			commandQueue.removeAll(toRemove, true);
+			
+			turnTimer -= delta;
+			if (turnTimer <= 0 || nextTurn) {
+				doTurn();
+				turnTimer = turnLength;
 			}
 		}
 		
-	}
-	
-	public void netUpdate(float delta) {
-		// process commands
-		
-		if (state == GameStates.RUNNING) netTick += 1; 
-	
-	
-		List<Command> toAdd = cmdsToAdd;
-		cmdsToAdd = new ArrayList<Command>();
-	
-		commandQueue.addAll(toAdd);
-	
-	
-		List<Command> toRemove = new ArrayList<Command>();
-		for (Command command: commandQueue) {
-			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
-			if (command.turn < gameTurn) {
-				// remove commands in the past without executing
-				toRemove.add(command);
-			} else if (command.turn == gameTurn) {
-				// execute current commands and remove
-				// TODO execute the command
-				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
-				if (state == GameStates.RUNNING || command instanceof Unpause) { 
-					executeCommand(command);
-				}
-				toRemove.add(command);
-				commandHistory.add(command);
-			} // future commands are left alone
-		}
-		commandQueue.removeAll(toRemove);
-		
-		
+		nextTurn = false;
 	}
 	
 	public void doTurn() {
-		gameTurn += 1;
-		float delta = 1;
+		Gdx.app.log(LOG, "doTurn");
 		
 		// update collection (do simulation for turn)
-		gameObjects.removeAll(objsToRemove);
+		doCommands();
+		GameObject o = null;
+		Gdx.app.log(LOG, String.format("GameObjects: %d", gameObjects.size));
+		for (int i=0;i<gameObjects.size;i++) {
+			o = gameObjects.get(i);
+			o.update(this);
+			
+			if (o.isRemove()) objsToRemove.add(o);
+		}
+		
+		gameObjects.removeAll(objsToRemove, true);
 		for (GameObject obj: objsToRemove) {
 			grpUnits.removeActor(obj);
 		}
@@ -313,64 +228,79 @@ public class GameController {
 		}
 		objsToAdd.clear();
 		
-		for (GameObject obj : gameObjects) {
-			// update physics
-			
-			if (obj.getAccel().len() > obj.getMaxAccel()) {
-				// clamp acceleration to max
-				float angle = obj.getAccel().angle();
-				obj.getAccel().set(obj.getMaxAccel(), 0);
-				obj.getAccel().rotate(angle);
-			}
-			
-			obj.getVelocity().add(obj.getAccel().mul(delta));
-			if (obj.getVelocity().len() > obj.getMaxSpeed()) {
-				// clamp velocity to max
-				float angle = obj.getVelocity().angle();
-				obj.getVelocity().set(obj.getMaxSpeed(), 0);
-				obj.getVelocity().rotate(angle);
-			}
-			
-			obj.setPosition(obj.getX() + obj.getVelocity().x * delta, obj.getY() + obj.getVelocity().y * delta);
-			
-			obj.update(this, delta);
-			
-			if (obj.isRemove()) objsToRemove.add(obj);
+		gameTurn += 1;
+		
+		for (Player p: players) {
+			p.update(this);
 		}
 		
-		
 		checkResult();
+		
+		if (gameResult != null) {
+			this.state = GameStates.GAMEOVER;
+		}
 	}
 	
 	public void checkResult() {
 		int alive = 0;
-		Team teamAlive = null;
-		for (Team t: teams) {
-			if (t.hasPlayerAlive()) {
+		Player playerAlive = null;
+		for (Player p: players) {
+			if (p.isAlive()) {
 				alive += 1;
-				teamAlive = t;
+				playerAlive = p;
 			}
 		}
 		
 		if (alive <= 1) {
 			GameResult result = new GameResult();
-			if (teamAlive != null) {
-				result.winners = teamAlive.getPlayerIds();
-				result.winningTeam = teamAlive.getId();
+			if (playerAlive != null) {
+				result.winner = playerAlive.getPlayerId();
 			}
-			ArrayList<Team> losingTeams = new ArrayList<Team>();
-			for (Team t: teams) {
-				if (!t.hasPlayerAlive()) {
-					losingTeams.add(t);
+			Array<Integer> losingPlayers = new Array<Integer>();
+			for (Player p : players) {
+				if (!p.isAlive()) {
+					losingPlayers.add(p.getPlayerId());
 				}
 			}
-			result.losers = Team.getPlayerIds(losingTeams);
+			result.losers = new int[losingPlayers.size];
+			for (int i = 0; i < losingPlayers.size; i++) {
+				result.losers[i] = losingPlayers.get(i);
+			}
 			
 			//Gdx.app.log(LOG, String.format("Game Over // Winner: %d (%d); Losers: (%d)", result.winningTeam, result.winners.length, result.losers.length));
 			this.gameResult = result;
 		}
 	}
 
+	public void doCommands() {
+		// process commands
+			
+		Array<Command> toKeep = new Array<Command>();
+		commandQueue.reverse();
+		Command command = null;
+		if (commandQueue.size > 0) command = commandQueue.pop();
+		while (command != null) {
+			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
+			if (command.turn < gameTurn) {
+				// remove commands in the past without executing
+				
+			} else if (command.turn == gameTurn) {
+				// execute current commands and remove
+				// TODO execute the command
+				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
+				if (state == GameStates.RUNNING || command instanceof Unpause) { 
+					executeCommand(command);
+				}
+				commandHistory.add(command);
+			} else {
+				// future commands are left alone
+				toKeep.add(command);
+			}
+			if (commandQueue.size > 0) command = commandQueue.pop(); else command = null;
+		}
+		
+		
+	}
 	
 	public boolean validate(Command cmd) {
 		
@@ -378,10 +308,7 @@ public class GameController {
 			return true;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
-			Rectangle bounds = new Rectangle(((JsonUnit)Prototypes.getProto(b.building)).bounds);
-			bounds.set(bounds.x + b.location.x - bounds.width * 0.5f, bounds.y + b.location.y - bounds.height * 0.5f, bounds.width, bounds.height);
-			Gdx.app.log(LOG, Integer.toString(b.turn) + ": " + Boolean.toString(getObjsInArea(bounds).size == 0));
-			return (getPlayerById(b.owner).canBuild(b.building, this) && getObjsInArea(bounds).size == 0);
+			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
 		} else if (cmd instanceof Move) {
 			return true;
 		} else if (cmd instanceof Pause) {
@@ -391,8 +318,10 @@ public class GameController {
 		} else if (cmd instanceof Upgrade) {
 			Upgrade u = (Upgrade)cmd;
 			// TODO check dependencies here
+			
 			Player player = this.getPlayerById(u.owner);
 			GameObject obj = this.getObjById(u.unit);
+			if (obj.getOwner() != player) return false;
 			if (obj instanceof Unit) {
 				return player.canUpgrade((Unit)obj, u.upgrade, this);
 			}
@@ -448,20 +377,20 @@ public class GameController {
 	
 	public void executeBuild(Build cmd) {
 		// check that this can be built
-		JsonUnit junit = (JsonUnit) Prototypes.getProto("fighters-base");
-		Rectangle bounds = new Rectangle(junit.bounds);
-		bounds.set(cmd.location.x + bounds.x - bounds.width * 0.5f, cmd.location.y + bounds.y - bounds.height * 0.5f, bounds.width, bounds.height);
+		JsonProto junit = Prototypes.getProto(cmd.building);
+		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
 		Player owner = getPlayerById(cmd.owner);
-		if (owner.canBuild(junit.id, this) && getObjsInArea(bounds).size == 0) {
 			
-			// TODO place builder
-			// for now, just add the unit
-			Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonUnit)Prototypes.getProto(cmd.building));
-			unit.setPosition(cmd.location, "center");
-			
-			addGameUnitNow(unit);
-			owner.setBankMoney(owner.getBankMoney() - junit.cost);
-		}
+		// TODO place builder
+		// for now, just add the unit
+		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
+		unit.setPosition(levelPos);
+		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
+		
+		addGameUnitNow(unit);
+		owner.setBankMoney(owner.getBankMoney() - unit.getCost());
+		owner.updateFood(this);
+	
 		
 	}
 	
@@ -473,10 +402,10 @@ public class GameController {
 		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
 			Gdx.app.log(LOG, "Error: object owner does not match command owner");
 		} else {
-			if (obj instanceof Unit) {
-				((Unit)obj).doCommand(cmd, cmd.isAdd);
-			} else {
-				obj.moveTo(cmd.toLocation, cmd.isAdd);
+			// TODO implement unit command queue-ing?
+			if (isBoardPosEmpty(cmd.toLocation)) {
+				obj.setBoardPosition(cmd.toLocation);
+				obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
 			}
 		}
 	}
@@ -490,7 +419,10 @@ public class GameController {
 	}
 	
 	public void executeUpgrade(Upgrade cmd) {
-		
+		GameObject obj = getObjById(cmd.unit);
+		if (obj instanceof Unit) {
+			((Unit)obj).applyUpgrade(Prototypes.getProto(cmd.upgrade));
+		}
 	}
 	
 	/**
@@ -501,7 +433,7 @@ public class GameController {
 		return grpRoot;
 	}
 	
-	public List<Player> getPlayers() {
+	public Array<Player> getPlayers() {
 		return players;
 	}
 	
@@ -514,18 +446,19 @@ public class GameController {
 	
 	private void addGameUnitNow(GameObject obj) {
 		
-		if (!gameObjects.contains(obj)) gameObjects.add(obj);
+		if (!gameObjects.contains(obj, true)) gameObjects.add(obj);
 		
 		
 		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
 	}
 	
 	public void addGameUnit(GameObject obj) {
-		if (!objsToAdd.contains(obj)) objsToAdd.add(obj);
+		if (!objsToAdd.contains(obj, true)) objsToAdd.add(obj);
 	}
 	
 	public void removeGameUnit(GameObject obj) {
-		gameObjects.remove(obj);
+		gameObjects.removeValue(obj, true);
+		
 		grpUnits.removeActor(obj);
 	}
 	
@@ -562,52 +495,20 @@ public class GameController {
 		return ret;
 	}
 	
-	public List<GameObject> getSelectedObjects() {
-		return selectedObjects;
+	public GameObject getSelectedObject() {
+		return selectedObject;
 	}
 	
-	public void selectObjectsInArea(Rectangle box, Player owner, boolean addToSelection) {
-		if (!addToSelection) {
-			selectedObjects.clear();
-		}
-		// TODO check owner
-		boolean hasOwnerObjs = false;
-		for (GameObject obj: selectedObjects) {
-			if (obj.getOwner() == owner && obj instanceof Selectable 
-					&& ((Selectable)obj).isSelectable()) hasOwnerObjs = true;
-		}
-		
-		GameObject firstNewObj = null;
-		
-		for (GameObject obj: gameObjects) {
-			if (obj instanceof Selectable && ((Selectable)obj).isSelectable() 
-					&& obj.isColliding(box) && !selectedObjects.contains(obj)) {
-				if (obj.getOwner() == owner) hasOwnerObjs = true;
-				
-				if (obj.getOwner() == owner || !hasOwnerObjs) {
-					selectedObjects.add(obj);
-				}
-				
-				if (firstNewObj == null) firstNewObj = obj;
-			}
-		}
-		
-		
-		
-		if (hasOwnerObjs) {
-			// only select owner objs
-			ArrayList<GameObject> toRemove = new ArrayList<GameObject>();
-			
-			for (GameObject obj: selectedObjects) {
-				if (obj.getOwner() != owner) toRemove.add(obj);
-			}
-			selectedObjects.removeAll(toRemove);
-			
-		} else if (firstNewObj != null){
-			// only select one
-			selectedObjects.clear();
-			selectedObjects.add(firstNewObj);
-		}
+	public void selectObjAtBoardPos(int x, int y) {
+		selectedObject = getObjAtBoardPos(x, y);
+	}
+	
+	public void selectObjAtBoardPos(float x, float y) {
+		selectObjAtBoardPos((int)x, (int)y);
+	}
+	
+	public void selectObjAtBoardPos(Vector2 boardPos) {
+		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
 	}
 	
 	public Array<GameObject> getObjsAtPosition(Vector2 mapCoords) {
@@ -624,58 +525,65 @@ public class GameController {
 		return returnVal;
 	}
 	
-	public Array<GameObject> getObjsInArea(Rectangle bounds) {
-		Array<GameObject> ret = new Array<GameObject>();
-		
-		
+	public GameObject getObjAtBoardPos(int x, int y) {
 		for (GameObject obj: gameObjects) {
-			if (obj.isColliding(bounds)) {
-				ret.add(obj);
+			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) return obj; 
+		}
+		return null;
+	}
+	
+	public GameObject getObjAtBoardPos(float x, float y) {
+		return getObjAtBoardPos((int)x, (int)y);
+	}
+	
+	public GameObject getObjAtBoardPos(Vector2 boardPos) {
+		return getObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
+	}
+	
+	public boolean isBoardPosEmpty(int x, int y) {
+		for (GameObject obj: this.gameObjects) {
+			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) {
+				return false;
 			}
 		}
-		
-		return ret;
+		return true;
+	}
+	
+	public boolean isBoardPosEmpty(float x, float y) {
+		return isBoardPosEmpty((int)x, (int)y);
+	}
+	
+	public boolean isBoardPosEmpty(Vector2 boardPos) {
+		return isBoardPosEmpty((int)boardPos.x, (int)boardPos.y);
 	}
 	
 	public HexMap getMap() {
 		return map;
 	}
 	
-	/**
-	 * @return the gameTick
-	 */
-	public int getGameTick() {
-		return gameTick;
-	}
-
-	/**
-	 * @param gameTick the gameTick to set
-	 */
-	public void setGameTick(int gameTick) {
-		this.gameTick = gameTick;
-	}
-	
-	public int getNetTick() {
-		return netTick;
-	}
-	
 	public int getGameTurn() {
 		return gameTurn;
 	}
 	
-	public List<Command> getCommandHistory() {
+	public float getTurnTimer() {
+		return turnTimer;
+	}
+	
+	public Array<Command> getCommandHistory() {
 		return this.commandHistory;
 	}
 	
-	public List<Command> getCommandQueue() {
+	public Array<Command> getCommandQueue() {
 		return this.commandQueue;
 	}
 	
 	public void queueCommand(Command cmd) {
 		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
-			cmdsToAdd.add(cmd);
-			Gdx.app.log(LOG, "queued command");
+			if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
+				cmdsToAdd.add(cmd);
+				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
+			}
 		}
 	}
 	
@@ -721,14 +629,4 @@ public class GameController {
 	 * static methods
 	 */
 
-	/**
-	 * converts TiledMap coordinates to LibGDX coordinates
-	 * @param mapCoords - Vector2 coordinates in a TiledMap reference frame (0,0 is top-left)
-	 * @return Vector2 coordinates in Level/GDX reference frame (0,0 is bottom-left)
-	 */
-	public Vector2 mapToLevelCoords(Vector2 mapCoords) {
-		return new Vector2(mapCoords.x, (map.getHeight() * map.getTileHeight()) - mapCoords.y);
-	}
-
-	
 }

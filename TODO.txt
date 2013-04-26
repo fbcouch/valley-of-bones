@@ -1,67 +1,32 @@
-SPACE TACTICS
+VALLEY OF BONES
 
-TASKS
-- allow camera movement with 3rd mouse button down
+GOALS 2013-04-22
++ Implement true turn system (with timer)
+    + UI button, timer
+    
+GOALS 2013-04-23
++ Implement Food, Upkeep (money)
++ Implement basic commands
+    + Move
+    + Build (marine)
+    + implement 'preview' of command
++ Implement basic combat
+    + almost there -> just need to figure out why only one unit is attacking per turn
+    + implement HexMap#getMapDist
 
-MILESTONE 3: All basic gameplay systems in place (start adding units!)
+GOALS 2013-04-24
++ Implement basic upgrades
+    + "requires"
+    + add upgrade protos to unit?
++ Implement victory/loss checking
 
-MILESTONE 2: Basic player/owner, resources, and build units in place
+GOALS 2013-04-25
+- Merge to master
+- Implement networking stuff
 
-GOALS (future)
-- Upgrade units
-- Build stations
-- UX stuff
-- Interfaces (Damageable?)
-- Unit subclasses (Squadron, Ship, Station)
-- Victory/Defeat conditions
-- End game
+GOALS 2013-04-26
+- Start adding content!
+- Bug fixes
 
-GOALS 1.25.13
-+ UI/UX
-  + MP setup (part 1 - laying the groundwork)
-  + MP setup (part 2 - the UX for entering an IP)
-- Upgrade units
-  + send/receive upgrade commands
-  + validation
-  - apply on-unit upgrades (ie: +3 armor)
-  - apply change-unit upgrades (ie: space-station-base --> space-station-two)
-
-GOALS 1.5.13
-+ Implement net-tick
-+ Interfaces
-  + selectable
-  + targetable
-+ UI/UX
-  + SP setup
-
-GOALS 1.4.13
-+ Basic weapons
-+ Attack unit
-+ Destroy unit
-+ Command queue
-+ Attack move
-+ Build units
-  + basic command in place
-  + actually check that resources, etc are there...
-
-
-GOALS 12.30.12
-+ Implement Player system (with color-coded boxes)
-+ Server side: assign player id's to connections and ensure that connection is the 'owner' of any commands it sends
-+ Smart-selection
-+ Add AI player(s)
-+ Resources: implement 'money' and 'food' resources for Player
-+ UX: (debug) display player name, ID, and resources
-
-GOALS 12.29.12
-+ Work out client/server lockstep model
-+ Work out command model
-+ Implement basic client/server connection
-+ Implement ux to allow map movement
-+ MILESTONE 1: Move a unit around the map using the client-server lockstep setup
-
-GOALS 12.21.12
-+ load a blank/test map
-+ spawn space-station for both 'teams'
-+ allow camera movement with mouse at border or arrow keys
-
+GOALS 2013-04-27
+- Release (#ScreenshotSaturday)

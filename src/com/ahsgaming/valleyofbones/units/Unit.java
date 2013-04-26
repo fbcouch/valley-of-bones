@@ -28,18 +28,13 @@ import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
-import com.ahsgaming.valleyofbones.network.Attack;
-import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.Move;
-import com.ahsgaming.valleyofbones.network.Upgrade;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonUnit;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonWeapon;
+import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * @author jami
@@ -47,102 +42,266 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Unit extends GameObject implements Selectable, Targetable {
 	public String LOG = "Unit";
-	
+
 	boolean selectable = true, targetable = true;
 	
-	float curHealth, maxHealth;
-	float curShield, maxShield;
-	float curArmor, maxArmor;
+	int attackDamage = 0, attackRange = 0;
+	float attackSpeed = 0;
+	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
+	int moveSpeed = 0;
+	int upkeep = 0;
+	
+	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
+	float upgradeAttackSpeed = 0;
+	int upgradeArmor = 0, upgradeMaxHP = 0, upgradeMoveSpeed = 0;
+	
+	Array<String> requires = new Array<String>();
 	
 	String protoId = "";
-
-	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+	String type = "";
+	String sImage = "";
+	ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
 	
 	ArrayList<Command> commandQueue = new ArrayList<Command>();
 	GameObject commandTarget;
+	
+	final JsonProto proto;
+	
+	Array<JsonProto> upgrades = new Array<JsonProto>();
 	
 	/**
 	 * Constructors
 	 */
 	
-	public Unit(int id, TextureRegion region) {
-		this(id, null, region, 10, 0, 0);
+	public Unit(int id, JsonProto proto) {
+		this(id, null, proto);
 	}
 	
-	public Unit(int id, Player owner, TextureRegion region) {
-		this(id, owner, region, 10, 0, 0);
+	public Unit(int id, Player owner, JsonProto proto) {
+		// TODO load from atlas
+		super(id, owner, TextureManager.getTexture(proto.image + ".png"));
+		
+		this.proto = proto;
+		this.protoId = proto.id;
+		type = proto.type;
+		sImage = proto.image;
+		properties.putAll(proto.properties);
+		parseProperties();
 	}
 	
-	public Unit(int id, Player owner, TextureRegion region, float health, float shield, float armor) {
-		super(id, owner, region);
+	public void parseProperties() {
 		
-		curHealth = health;
-		maxHealth = health;
-		curShield = shield;
-		maxShield = shield;
-		curArmor = armor;
-		maxArmor = armor;
-	}
-	
-	public Unit(int id, Player owner, JsonUnit proto) {
-		super(id, owner, TextureManager.getTexture(proto.image));
+		if (properties.containsKey("attackdamage"))
+			attackDamage = (int)Float.parseFloat(properties.get("attackdamage").toString());
 		
-		curHealth = proto.health;
-		maxHealth = proto.health;
-		curShield = proto.shield;
-		maxShield = proto.shield;
-		curArmor = proto.armor;
-		maxArmor = proto.armor;
-		maxSpeed = proto.speed;
-		maxAccel = proto.accel;
-		turnSpeed = proto.turn;
+		if (properties.containsKey("attackrange"))
+			attackRange = (int)Float.parseFloat(properties.get("attackrange").toString());
 		
-		protoId = proto.id;
+		if (properties.containsKey("attackspeed"))
+			attackSpeed = Float.parseFloat(properties.get("attackspeed").toString());
 		
-		if (proto.weapons != null) {
-			for (String w: proto.weapons) {
-				JsonWeapon jw = (JsonWeapon)Prototypes.getProto(w);
-				if (jw == null) {
-					Gdx.app.log(LOG, "Could not find weapon " + w);
-				} else {
-					weapons.add(new Weapon(this, jw));
-				}
+		if (properties.containsKey("armor"))
+			armor = (int)Float.parseFloat(properties.get("armor").toString());
+		
+		if (properties.containsKey("cost"))
+			cost = (int)Float.parseFloat(properties.get("cost").toString());
+		
+		if (properties.containsKey("curhp"))
+			curHP = (int)Float.parseFloat(properties.get("curhp").toString());
+		
+		if (properties.containsKey("food"))
+			food = (int)Float.parseFloat(properties.get("food").toString());
+		
+		if (properties.containsKey("maxhp"))
+			maxHP = (int)Float.parseFloat(properties.get("maxhp").toString());
+		
+		if (properties.containsKey("movespeed"))
+			moveSpeed = (int)Float.parseFloat(properties.get("movespeed").toString());
+		
+		if (properties.containsKey("requires")) {
+			Array<Object> req = (Array<Object>)properties.get("requires");
+			requires.clear();
+			for (Object o: req) {
+				requires.add(o.toString());
 			}
 		}
 		
-		if (proto.bounds != null) {
-			collideBox.set(proto.bounds);
+		if (properties.containsKey("upkeep"))
+			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
+	}
+	
+	public void updateProperties() { 
+		properties.put("attackdamage", attackDamage);
+		properties.put("attackrange", attackRange);
+		properties.put("attackspeed", attackSpeed);
+		properties.put("armor", armor);
+		properties.put("cost", cost);
+		properties.put("curhp", curHP);
+		properties.put("food", food);
+		properties.put("maxhp", maxHP);
+		properties.put("movespeed", moveSpeed);
+		properties.put("requires", requires);
+		properties.put("upkeep", upkeep);
+	}
+	
+	public void parseUpgrades() {
+		upgradeAttackDamage = 0;
+		upgradeAttackRange = 0;
+		upgradeAttackSpeed = 0;
+		upgradeArmor = 0;
+		upgradeMaxHP = 0;
+		upgradeMoveSpeed = 0;
+		
+		for (JsonProto up: upgrades) {
+			if (up.hasProperty("attackdamage"))
+				upgradeAttackDamage += (int)Float.parseFloat(up.getProperty("attackdamage").toString());
+			
+			if (up.hasProperty("attackrange"))
+				upgradeAttackRange += (int)Float.parseFloat(up.getProperty("attackrange").toString());
+			
+			if (up.hasProperty("attackspeed"))
+				upgradeAttackSpeed += Float.parseFloat(up.getProperty("attackspeed").toString());
+			
+			if (up.hasProperty("armor"))
+				upgradeArmor += (int)Float.parseFloat(up.getProperty("armor").toString());
+			
+			if (up.hasProperty("maxhp"))
+				upgradeMaxHP += (int)Float.parseFloat(up.getProperty("maxhp").toString());
+			
+			if (up.hasProperty("movespeed"))
+				upgradeMoveSpeed += (int)Float.parseFloat(up.getProperty("movespeed").toString());
 		}
 	}
 	
-	public void takeDamage(Bullet b) {
+	@Override
+	public float takeDamage(float amount) {
 		// TODO take into account damage type here
-		if (this.curShield > 0) {
-			curShield -= b.getDamage() - curArmor;
-			if (curShield < 0) {
-				curHealth += curShield;
-				curShield = 0;
-				// TODO add a hit effect
-			} else {
-				// TODO add a hit effect
-			}
-		} else {
-			curHealth -= b.getDamage() - curArmor;
-			// TODO add a hit effect
+		float damage = amount - getArmor();
+		if (damage > 0) {
+			curHP -= damage;
+			return damage;
+		}
+		// TODO add a hit effect
+		return 0;
+	}
+	
+	public int getAttackDamage() {
+		return attackDamage + upgradeAttackDamage;
+	}
+
+	public void setAttackDamage(int attackDamage) {
+		this.attackDamage = attackDamage;
+	}
+	
+	public int getAttackRange() {
+		return attackRange + upgradeAttackRange;
+	}
+
+	public void setAttackRange(int attackRange) {
+		this.attackRange = attackRange;
+	}
+
+	public float getAttackSpeed() {
+		return attackSpeed + upgradeAttackSpeed;
+	}
+
+	public void setAttackSpeed(float attackSpeed) {
+		this.attackSpeed = attackSpeed;
+	}
+
+	public int getArmor() {
+		return armor + upgradeArmor;
+	}
+
+	public void setArmor(int armor) {
+		this.armor = armor;
+	}
+	
+	public int getCost() {
+		return cost;
+	}
+	
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+	
+	public int getCurHP() {
+		return curHP;
+	}
+
+	public void setCurHP(int curHP) {
+		this.curHP = curHP;
+	}
+	
+	public int getFood() {
+		return food;
+	}
+	
+	public void setFood(int food) {
+		this.food = food;
+	}
+
+	public int getMaxHP() {
+		return maxHP + upgradeMaxHP;
+	}
+
+	public void setMaxHP(int maxHP) {
+		this.maxHP = maxHP;
+	}
+
+	public int getMoveSpeed() {
+		return moveSpeed + upgradeMoveSpeed;
+	}
+
+	public void setMoveSpeed(int moveSpeed) {
+		this.moveSpeed = moveSpeed;
+	}
+
+	public int getUpkeep() {
+		return upkeep;
+	}
+
+	public void setUpkeep(int upkeep) {
+		this.upkeep = upkeep;
+	}
+
+	public Array<String> getRequires() {
+		return requires;
+	}
+
+	public void setRequires(Array<String> requires) {
+		this.requires = requires;
+	}
+
+	public ObjectMap<String, Object> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(ObjectMap<String, Object> properties) {
+		this.properties = properties;
+	}
+	
+	public void applyUpgrade(JsonProto upgrade) {
+		if (!hasUpgrade(upgrade.id)) {
+			upgrades.add(upgrade);
+			parseUpgrades();
 		}
 	}
 	
+	public boolean hasUpgrade(String upgradeId) {
+		for (JsonProto up: upgrades) {
+			if (up.id.equals(upgradeId)) return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Determines if the target is in range of any weapons
 	 * @param target
 	 * @return
 	 */
 	public boolean isInRange(GameObject target) {
-		for (Weapon w: weapons) {
-			if (GameObject.getDistanceSq(this, target) <= Math.pow(w.getRange(), 2)) {
-				return true;
-			}
-		}
+		// TODO implement this
 		return false;
 	}
 	
@@ -151,29 +310,21 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 * @param controller
 	 * @return
 	 */
-	public GameObject findTarget(GameController controller) {
-		float maxRange = 0;
-		for (Weapon w: weapons) {
-			float range = w.getRange();
-			if (range > maxRange) maxRange = range;
-		}
+	public Unit findTarget(GameController controller) {
 		
-		float maxRangeSq = maxRange * maxRange;
-		GameObject candidate = null;
-		float candidateVal = 0;
-		
-		for (GameObject obj: controller.getGameObjects()) {
-			// TODO fix this to use some kind of threat assessment rather than just distance
-			float objVal = GameObject.getDistanceSq(this, obj);
-			if (obj instanceof Targetable && ((Targetable)obj).isTargetable()
-					&& obj.getOwner() != this.getOwner() && objVal <= maxRangeSq) {
-				if (candidate == null || objVal < candidateVal) {
-					candidate = obj;
-				}
+		Array<Unit> targets = new Array<Unit>();
+		for (GameObject go: controller.getGameObjects()) {
+			if (go instanceof Unit) {
+				Unit other = (Unit)go;
+				if (other.getOwner().getPlayerId() == getOwner().getPlayerId()) continue;
+				if (controller.getMap().getMapDist(this.getBoardPosition(), other.getBoardPosition()) <= getAttackRange())
+					targets.add(other);
 			}
 		}
 		
-		return candidate;
+		// TODO prioritize
+		
+		return (targets.size > 0 ? targets.get(0) : null);
 	}
 	
 	/* (non-Javadoc)
@@ -194,80 +345,25 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 * @see com.ahsgaming.spacetactics.GameObject#update(com.ahsgaming.spacetactics.GameController, float)
 	 */
 	@Override
-	public void update(GameController controller, float delta) {
+	public void update(GameController controller) {
 		
-		if (curHealth <= 0) {
+		if (getCurHP() <= 0) {
 			// remove self
 			remove = true;
 			// TODO add explosion anim or something
 			return;
 		}
 		
-		if (commandQueue.size() > 0) {
-			Command cur = commandQueue.get(0);
-			
-			if (cur instanceof Attack) {
-				// check for completion conditions
-				if (commandTarget == null) {
-					commandTarget = (Unit)controller.getObjById(((Attack)cur).target);
-				} else if (commandTarget.isRemove()) {
-					commandTarget = null;
-				}
-				
-				if (commandTarget == null) {
-					commandQueue.remove(cur);
-				} else {
-					accelToward(commandTarget.getPosition("center"), delta);
-					
-					for (Weapon w: weapons) {
-						if (getDistanceSq(this, commandTarget) < Math.pow(w.getRange(), 2) && w.canFire()) {
-							w.fire(controller);
-						}
-					}
-				}
-				
-			} else if (cur instanceof Build) {
-				
-			} else if (cur instanceof Move) {
-				Move mv = (Move)cur;
-				if (mv.isAttack) {
-					if (commandTarget != null && !commandTarget.isRemove() 
-							&& isInRange(commandTarget)) {
-						// attack this target
-						Attack at = new Attack();
-						at.unit = getObjId();
-						at.target = commandTarget.getObjId();
-						commandQueue.add(0, at);
-					} else {
-						commandTarget = findTarget(controller);
-						
-						if (commandTarget == null) {
-							if (getRectangle().contains(mv.toLocation.x, mv.toLocation.y)) {
-								commandQueue.remove(cur);
-							} else {
-								accelToward(mv.toLocation, delta);
-							}
-						}
-					}
-				} else {
-					// not attack move, just move there
-					if (getRectangle().contains(mv.toLocation.x, mv.toLocation.y)) {
-						commandQueue.remove(cur);
-					} else {
-						accelToward(mv.toLocation, delta);
-					}
-				}
-			} else if (cur instanceof Upgrade) {
-				
-			}
-		} else {
-			
-			// Don't have anything to do - stop moving
-			if (velocity.len2() > 0) {
-				accel.set(-1 * maxAccel, 0);
-				accel.rotate(velocity.angle());
-			}
-		}
+		Unit target = findTarget(controller);
+		
+		// TODO sort targets by priority?
+		
+		if (target != null) attack(target, controller);
+	}
+	
+	public void attack(Unit other, GameController controller) {
+		Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
+		float damage = other.takeDamage(getAttackDamage());
 	}
 	
 	public ArrayList<Command> getCommandQueue() {
@@ -291,8 +387,12 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public boolean isAlive() {
-		return (!this.isRemove() && this.curHealth > 0);
+		return (!this.isRemove() && this.curHP > 0);
 	}
+	
+	//-------------------------------------------------------------------------
+	// Implemented methods
+	//-------------------------------------------------------------------------
 
 	@Override
 	public boolean isTargetable() {
