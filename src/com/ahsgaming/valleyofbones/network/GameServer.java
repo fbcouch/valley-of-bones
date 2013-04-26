@@ -76,7 +76,7 @@ public class GameServer implements NetController {
 	/**
 	 * 
 	 */
-	public GameServer(GameSetupConfig cfg) {
+	public GameServer(VOBGame game, GameSetupConfig cfg) {
 		
 		gameConfig = cfg;
 		// setup the KryoNet server

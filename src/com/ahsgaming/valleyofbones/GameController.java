@@ -119,18 +119,6 @@ public class GameController {
 		// TODO implement loading of maps
 		map = new HexMap(20, 10, 2, 3);
 		
-		Unit unit = new Unit(getNextObjectId(), players.get(0), (JsonProto)Prototypes.getProto("marine-base"));
-		Vector2 pos = map.boardToMapCoords(9, 0);
-		unit.setPosition(pos);
-		unit.setBoardPosition(9, 0);
-		addGameUnit(unit);
-		
-		unit = new Unit(getNextObjectId(), players.get(1), (JsonProto)Prototypes.getProto("marine-base"));
-		pos = map.boardToMapCoords(10, 0);
-		unit.setPosition(pos);
-		unit.setBoardPosition(10, 0);
-		addGameUnit(unit);
-		
 		return map;
 	}
 	

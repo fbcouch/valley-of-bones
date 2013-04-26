@@ -110,7 +110,7 @@ public class GameClient implements NetController {
 				if (obj instanceof RegisteredPlayer) {
 					RegisteredPlayer reg = (RegisteredPlayer)obj;
 					playerId = reg.id;
-					Gdx.app.log(LOG, "RegisteredPlayer rec'd");
+					Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
 				}
 				
 				if (obj instanceof RegisteredPlayer[]) {
@@ -188,9 +188,6 @@ public class GameClient implements NetController {
 	public void sendStartGame() {
 		// report that we're ready
 		client.sendTCP(new StartGame());
-		
-		// TODO remove this
-		controller.queueCommand(new Unpause());
 	}
 	
 	public void endGame() {

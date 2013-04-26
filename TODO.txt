@@ -23,6 +23,7 @@ GOALS 2013-04-24
 GOALS 2013-04-25
 - Merge to master
 - Implement networking stuff
+- Implement UI
 
 GOALS 2013-04-26
 - Start adding content!
