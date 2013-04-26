@@ -51,6 +51,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	int moveSpeed = 0;
 	int upkeep = 0;
 	
+	Array<String> requires = new Array<String>();
+	
 	String protoId = "";
 	String type = "";
 	String sImage = "";
@@ -110,6 +112,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		if (properties.containsKey("movespeed"))
 			moveSpeed = (int)Float.parseFloat(properties.get("movespeed").toString());
 		
+		if (properties.containsKey("requires")) {
+			Array<Object> req = (Array<Object>)properties.get("requires");
+			requires.clear();
+			for (Object o: req) {
+				requires.add(o.toString());
+			}
+		}
+		
 		if (properties.containsKey("upkeep"))
 			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
 		
@@ -125,6 +135,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("food", food);
 		properties.put("maxhp", maxHP);
 		properties.put("movespeed", moveSpeed);
+		properties.put("requires", requires);
 		properties.put("upkeep", upkeep);
 	}
 	

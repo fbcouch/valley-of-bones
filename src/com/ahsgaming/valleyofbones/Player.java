@@ -96,8 +96,16 @@ public class Player {
 	}
 	
 	public boolean canBuild(String protoId, GameController controller) {
-		// TODO implement this
 		JsonProto proto = Prototypes.getProto(protoId);
+		// check requirements
+		if (proto.hasProperty("requires")) {
+			Array<Object> requires = (Array<Object>)proto.getProperty("requires");
+			for (Object o: requires) {
+				if (!hasAUnit(o.toString(), controller)) return false;
+			}
+		}
+		
+		// figure out if food/cost limitations are OK
 		int food = 0, cost = 0;
 		if (proto.hasProperty("food"))
 			food = (int)Float.parseFloat(proto.getProperty("food").toString());
@@ -129,6 +137,15 @@ public class Player {
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
 		// TODO implement this
+		return false;
+	}
+	
+	public boolean hasAUnit(String id, GameController controller) {
+		Array<Unit> units = controller.getUnitsByPlayerId(getPlayerId());
+		for (Unit u: units) {
+			if (u.getProtoId().equals(id)) 
+				return true;
+		}
 		return false;
 	}
 	
