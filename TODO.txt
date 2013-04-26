@@ -15,9 +15,9 @@ GOALS 2013-04-23
     + implement HexMap#getMapDist
 
 GOALS 2013-04-24
-- Implement basic upgrades
++ Implement basic upgrades
     + "requires"
-    - add upgrade protos to unit?
+    + add upgrade protos to unit?
 - Implement victory/loss stuff
 - Implement upkeep fully
 

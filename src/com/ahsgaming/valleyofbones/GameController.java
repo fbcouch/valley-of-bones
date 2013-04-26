@@ -314,8 +314,10 @@ public class GameController {
 		} else if (cmd instanceof Upgrade) {
 			Upgrade u = (Upgrade)cmd;
 			// TODO check dependencies here
+			
 			Player player = this.getPlayerById(u.owner);
 			GameObject obj = this.getObjById(u.unit);
+			if (obj.getOwner() != player) return false;
 			if (obj instanceof Unit) {
 				return player.canUpgrade((Unit)obj, u.upgrade, this);
 			}

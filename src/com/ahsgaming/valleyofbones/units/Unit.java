@@ -51,6 +51,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	int moveSpeed = 0;
 	int upkeep = 0;
 	
+	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
+	float upgradeAttackSpeed = 0;
+	int upgradeArmor = 0, upgradeMaxHP = 0, upgradeMoveSpeed = 0;
+	
 	Array<String> requires = new Array<String>();
 	
 	String protoId = "";
@@ -124,7 +128,6 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		
 		if (properties.containsKey("upkeep"))
 			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
-		
 	}
 	
 	public void updateProperties() { 
@@ -141,6 +144,35 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("upkeep", upkeep);
 	}
 	
+	public void parseUpgrades() {
+		upgradeAttackDamage = 0;
+		upgradeAttackRange = 0;
+		upgradeAttackSpeed = 0;
+		upgradeArmor = 0;
+		upgradeMaxHP = 0;
+		upgradeMoveSpeed = 0;
+		
+		for (JsonProto up: upgrades) {
+			if (up.hasProperty("attackdamage"))
+				upgradeAttackDamage += (int)Float.parseFloat(up.getProperty("attackdamage").toString());
+			
+			if (up.hasProperty("attackrange"))
+				upgradeAttackRange += (int)Float.parseFloat(up.getProperty("attackrange").toString());
+			
+			if (up.hasProperty("attackspeed"))
+				upgradeAttackSpeed += Float.parseFloat(up.getProperty("attackspeed").toString());
+			
+			if (up.hasProperty("armor"))
+				upgradeArmor += (int)Float.parseFloat(up.getProperty("armor").toString());
+			
+			if (up.hasProperty("maxhp"))
+				upgradeMaxHP += (int)Float.parseFloat(up.getProperty("maxhp").toString());
+			
+			if (up.hasProperty("movespeed"))
+				upgradeMoveSpeed += (int)Float.parseFloat(up.getProperty("movespeed").toString());
+		}
+	}
+	
 	@Override
 	public float takeDamage(float amount) {
 		// TODO take into account damage type here
@@ -154,7 +186,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public int getAttackDamage() {
-		return attackDamage;
+		return attackDamage + upgradeAttackDamage;
 	}
 
 	public void setAttackDamage(int attackDamage) {
@@ -162,7 +194,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public int getAttackRange() {
-		return attackRange;
+		return attackRange + upgradeAttackRange;
 	}
 
 	public void setAttackRange(int attackRange) {
@@ -170,7 +202,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
 	public float getAttackSpeed() {
-		return attackSpeed;
+		return attackSpeed + upgradeAttackSpeed;
 	}
 
 	public void setAttackSpeed(float attackSpeed) {
@@ -178,7 +210,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
 	public int getArmor() {
-		return armor;
+		return armor + upgradeArmor;
 	}
 
 	public void setArmor(int armor) {
@@ -210,7 +242,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
 	public int getMaxHP() {
-		return maxHP;
+		return maxHP + upgradeMaxHP;
 	}
 
 	public void setMaxHP(int maxHP) {
@@ -218,19 +250,27 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
 	public int getMoveSpeed() {
-		return moveSpeed;
+		return moveSpeed + upgradeMoveSpeed;
 	}
 
 	public void setMoveSpeed(int moveSpeed) {
 		this.moveSpeed = moveSpeed;
 	}
-	
+
 	public int getUpkeep() {
 		return upkeep;
 	}
 
 	public void setUpkeep(int upkeep) {
 		this.upkeep = upkeep;
+	}
+
+	public Array<String> getRequires() {
+		return requires;
+	}
+
+	public void setRequires(Array<String> requires) {
+		this.requires = requires;
 	}
 
 	public ObjectMap<String, Object> getProperties() {
@@ -242,7 +282,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public void applyUpgrade(JsonProto upgrade) {
-		if (!hasUpgrade(upgrade.id)) upgrades.add(upgrade); 
+		if (!hasUpgrade(upgrade.id)) {
+			upgrades.add(upgrade);
+			parseUpgrades();
+		}
 	}
 	
 	public boolean hasUpgrade(String upgradeId) {
