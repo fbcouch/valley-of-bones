@@ -72,34 +72,34 @@ public class GameJoinScreen extends AbstractScreen {
 		stage.addActor(table);
 		
 		lblNickname = new Label("Nickname:", getSkin());
-		table.add(lblNickname);
+		table.add(lblNickname).pad(4).left();
 		
 		txtNickname = new TextField("Newb", getSkin());
-		table.add(txtNickname);
+		table.add(txtNickname).pad(4).left();
 		
 		table.row();
 		
 		table.row();
 		
 		lblJoinHostname = new Label("Join Server:", getSkin());
-		table.add(lblJoinHostname);
+		table.add(lblJoinHostname).pad(4).left();
 		
 		txtJoinHostname = new TextField("", getSkin());
-		table.add(txtJoinHostname);
+		table.add(txtJoinHostname).pad(4).left();
 		
 		table.row();
 		
 		btnCancel = new TextButton("Cancel", getSkin());
-		table.add(btnCancel);
+		table.add(btnCancel).size(150, 50).pad(4);
 		
 		btnConnect = new TextButton("Connect", getSkin());
-		table.add(btnConnect);
+		table.add(btnConnect).size(150, 50).pad(4);
 		
 		table.row();
 		
 		
 		lblStatus = new Label("", getSkin());
-		table.add(lblStatus).colspan(2);
+		table.add(lblStatus).colspan(2).pad(4);
 		
 		
 		btnCancel.addListener(new ClickListener() {
