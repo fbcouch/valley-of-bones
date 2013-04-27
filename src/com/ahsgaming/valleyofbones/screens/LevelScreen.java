@@ -342,7 +342,6 @@ public class LevelScreen extends AbstractScreen {
 						pos = ((Move)c).toLocation;
 					}
 					Vector2 sPos = gController.getMap().boardToMapCoords(pos.x, pos.y);
-					//sPos = this.mapToScreenCoords(sPos.x, sPos.y);
 					img.setPosition(sPos.x, sPos.y);
 					img.setColor(1, 1, 1, 0.5f);
 					grpPreviews.addActor(img);
@@ -362,8 +361,7 @@ public class LevelScreen extends AbstractScreen {
 		Gdx.app.log(VOBGame.LOG, "LevelScreen#show");
 		
 		grpLevel = gController.getGroup();
-		
-		// TODO set the initial camera position based on the player spawn point
+
 		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
 	}
 	

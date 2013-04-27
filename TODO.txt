@@ -21,9 +21,10 @@ GOALS 2013-04-24
 + Implement victory/loss checking
 
 GOALS 2013-04-25
-- Merge to master
-- Implement networking stuff
++ Merge to master
++ Implement networking stuff
 - Implement UI
+
 
 GOALS 2013-04-26
 - Start adding content!

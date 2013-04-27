@@ -70,6 +70,7 @@ public class GameClient implements NetController {
 	GameResult gameResult = null;
 
     boolean sentEndTurn = false;
+    boolean recdEndTurn = false;
 	
 	/**
 	 * 
@@ -143,8 +144,11 @@ public class GameClient implements NetController {
 				if (obj instanceof EndTurn) {
 					Gdx.app.log(LOG, "EndTurn");
 					if (controller != null) {
-                        controller.doTurn();
+                        controller.setCommandQueue(((EndTurn)obj).commands);
+                        Gdx.app.log(LOG, String.format("EndTurn.commands.length = %d", ((EndTurn)obj).commands.length));
+
                         sentEndTurn = false;
+                        recdEndTurn = true;
                     }
 				}
 			}
@@ -207,9 +211,13 @@ public class GameClient implements NetController {
 		}
 
 		if (controller == null) return true;
-		
-		Gdx.app.log(LOG, controller.getState().toString());
+
         controller.update(delta);
+
+        if (recdEndTurn) {
+            controller.doTurn();
+            recdEndTurn = false;
+        }
 
         if (controller.isNextTurn() || controller.getTurnTimer() <= 0) {
             sendEndTurn();

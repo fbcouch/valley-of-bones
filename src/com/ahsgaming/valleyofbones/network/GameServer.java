@@ -174,17 +174,14 @@ public class GameServer implements NetController {
 					// the player represented by this connection is ready
 					if (obj instanceof StartGame) {
 						connMap.get(c).setReady(true);
-					}
-
-                    if (obj instanceof EndTurn) {
+					} else if (obj instanceof EndTurn) {
                         endTurnRecd[players.indexOf(connMap.get(c), true)] = true;
-                    }
-					
-					if (obj instanceof Command) {
+                    } else if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
-						cmd.turn = controller.getGameTurn();
-						if (controller.validate(cmd)) {
+
+                        // discard past, future, or invalid commands
+						if (cmd.turn == controller.getGameTurn() && controller.validate(cmd)) {
 							controller.queueCommand(cmd);
 							server.sendToAllTCP(cmd);
 						}
@@ -290,9 +287,8 @@ public class GameServer implements NetController {
 			controller.update(delta);
 
             if (isEndTurn()) {
+                server.sendToAllTCP(new EndTurn(controller.getCommandQueue()));
                 controller.doTurn();
-
-                server.sendToAllTCP(new EndTurn());
             }
 		}
 		

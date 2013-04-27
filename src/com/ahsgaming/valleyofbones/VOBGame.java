@@ -107,8 +107,7 @@ public class VOBGame extends Game {
 	}
 	
 	public void sendCommand(Command cmd) {
-		// TODO fix this
-		gController.queueCommand(cmd);
+		if (localClient != null) localClient.sendCommand(cmd);
 	}
 	
 	public void addAIPlayer(int team) {

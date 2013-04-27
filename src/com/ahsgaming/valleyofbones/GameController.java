@@ -562,6 +562,11 @@ public class GameController {
 	public Array<Command> getCommandQueue() {
 		return this.commandQueue;
 	}
+
+    public void setCommandQueue(Command[] commands) {
+        this.commandQueue.clear();
+        commandQueue.addAll(commands);
+    }
 	
 	public void queueCommand(Command cmd) {
 		Gdx.app.log(LOG, state.toString());
