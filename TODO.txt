@@ -23,7 +23,13 @@ GOALS 2013-04-24
 GOALS 2013-04-25
 + Merge to master
 + Implement networking stuff
-- Implement UI
+- Implement & Improve UI
+    + Main menu
+    - SP setup
+    - MP setup
+    - Game Over
+    - Splash
+    - HUD
 
 
 GOALS 2013-04-26

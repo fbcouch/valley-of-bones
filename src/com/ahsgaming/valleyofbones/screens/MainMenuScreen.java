@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -52,7 +53,7 @@ public class MainMenuScreen extends AbstractScreen {
 		
 		Skin skin = getSkin();
 		
-		TextButton btnNewGame = new TextButton("New Game", skin);
+		TextButton btnNewGame = new TextButton("Single Player", skin);
 		btnNewGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		btnNewGame.addListener(new ClickListener() {
 			@Override
@@ -62,17 +63,7 @@ public class MainMenuScreen extends AbstractScreen {
 			}
 		});
 		
-		TextButton btnHostMPGame = new TextButton("Host", skin);
-		btnHostMPGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		btnHostMPGame.addListener(new ClickListener() {
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				Gdx.app.log(VOBGame.LOG, "btnHostMPGame touched");
-				game.setScreen(game.getGameSetupScreenMP(true)); // TODO implement a multiplayer version of this
-			}
-		});
-		
-		TextButton btnJoinMPGame = new TextButton("Join", skin);
+		TextButton btnJoinMPGame = new TextButton("Multiplayer", skin);
 		btnJoinMPGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		btnJoinMPGame.addListener(new ClickListener() {
 			@Override
@@ -106,11 +97,7 @@ public class MainMenuScreen extends AbstractScreen {
 		Table table = new Table(skin);
 		table.setFillParent(true);
 		stage.addActor(table);
-		table.add("Welcome to Space Tactics").spaceBottom(50f).colspan(2);
-		
-		table.row();
-		
-		table.add(new Label("Single Player", getSkin())).colspan(2);
+		table.add("Welcome to Space Tactics", "medium-font", new Color(1, 1, 1, 1)).spaceBottom(50f).colspan(2);
 		
 		table.row();
 		
@@ -118,17 +105,11 @@ public class MainMenuScreen extends AbstractScreen {
 		
 		table.row();
 		
-		table.add(new Label("Multiplayer", getSkin())).colspan(2);
+		table.add(btnJoinMPGame).size(BUTTON_WIDTH, BUTTON_HEIGHT).uniform().fill().spaceBottom(BUTTON_SPACING).colspan(2);
 		
 		table.row();
 		
-		table.add(btnHostMPGame).uniform().fill().spaceBottom(BUTTON_SPACING);
-		
-		table.add(btnJoinMPGame).uniform().fill().spaceBottom(BUTTON_SPACING);
-		
-		table.row();
-		
-		table.add(btnOptions).uniform().fill().spaceBottom(BUTTON_SPACING).colspan(2);
+		table.add(btnOptions).size(BUTTON_WIDTH, BUTTON_HEIGHT).uniform().fill().spaceBottom(BUTTON_SPACING).colspan(2);
 		
 		table.row();
 		

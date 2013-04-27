@@ -126,28 +126,28 @@ public class AbstractScreen implements Screen {
 	
 	public BitmapFont getSmallFont() {
 		if (fontSmall == null) {
-			fontSmall = new BitmapFont(Gdx.files.internal("fonts/kenpixel-16.fnt"), Gdx.files.internal("fonts/kenpixel-16.png"), false);
+            fontSmall = getSkin().getFont("small-font");
 		}
 		return fontSmall;
 	}
 	
 	public BitmapFont getMedFont() {
 		if (fontMed == null) {
-			fontMed = new BitmapFont(Gdx.files.internal("fonts/kenpixel-24.fnt"), Gdx.files.internal("fonts/kenpixel-24.png"), false);
+			fontMed = getSkin().getFont("medium-font");
 		}
 		return fontMed;
 	}
 	
 	public BitmapFont getLargeFont() {
 		if (fontLarge == null) {
-			fontLarge = new BitmapFont(Gdx.files.internal("fonts/kenpixel-32.fnt"), Gdx.files.internal("fonts/kenpixel-32.png"), false);
+			fontLarge = getSkin().getFont("large-font");
 		}
 		return fontLarge;
 	}
 	
 	public Skin getSkin() {
 		if (skin == null) {
-			skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+			skin = new Skin(Gdx.files.internal("newui/uiskin.json"));
 		}
 		return skin;
 	}
@@ -155,4 +155,6 @@ public class AbstractScreen implements Screen {
 	public Group getGroup() {
 		return gameGroup;
 	}
+
+
 }
