@@ -30,6 +30,7 @@ import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.Move;
+import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -179,6 +180,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		float damage = amount - getArmor();
 		if (damage > 0) {
 			curHP -= damage;
+
+            if (LevelScreen.getInstance() != null)
+                LevelScreen.getInstance().addFloatingLabel(String.format("-%d", (int)damage), getX(), getY());
+
 			return damage;
 		}
 		// TODO add a hit effect

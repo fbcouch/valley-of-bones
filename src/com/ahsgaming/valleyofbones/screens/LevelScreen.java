@@ -64,7 +64,9 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class LevelScreen extends AbstractScreen {
 	public String LOG = "LevelScreen";
-	
+
+    protected static LevelScreen instance;
+
 	private Group grpLevel;
 	
 	private GameController gController = null;
@@ -78,11 +80,6 @@ public class LevelScreen extends AbstractScreen {
 	
 	// camera 'center' position - this will always remain within the bounds of the map
 	private Vector2 posCamera = new Vector2();
-	
-	
-	// game stuff
-	int sinceLastGameTick = 0;
-	int sinceLastNetTick = 0;
 	
 	// UX stuff
 	Group grpScorePane = new Group();
@@ -104,6 +101,7 @@ public class LevelScreen extends AbstractScreen {
 		super(game);
 		this.gController = gController;
 		shapeRenderer = new ShapeRenderer();
+        instance = this;
 	}
 	
 	/**
@@ -400,7 +398,7 @@ public class LevelScreen extends AbstractScreen {
 		grpTurnPane = new Group();
 		lblTurnTimer = new Label(" ", new LabelStyle(getLargeFont(), new Color(1,1,1,1)));
 		
-		btnTurnDone = new TextButton("END TURN", getSkin());
+		btnTurnDone = new TextButton("END TURN", getSkin(), "large");
 		btnTurnDone.setSize(350, 150);
 
 		lblTurnTimer.setY(btnTurnDone.getHeight());
@@ -440,11 +438,13 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
+        grpScorePane.setY(grpTurnPane.getTop() + 10);
 	}
 	
 	public void updateTurnPane() {
 		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
 		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
+        grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getTop());
 	}
 	
 	@Override
@@ -457,9 +457,7 @@ public class LevelScreen extends AbstractScreen {
 		// DRAW BOXES
 		drawSelectionBox();
 		drawUnitBoxes();
-		
-		//gController.update(delta);
-		
+
 		// move the camera around
 		doCameraMovement(delta);
 		
@@ -489,4 +487,12 @@ public class LevelScreen extends AbstractScreen {
 		lbl.addAction(Actions.parallel(Actions.fadeOut(1f), Actions.moveBy(0, 64f, 1f)));
 		grpLevel.addActor(lbl);
 	}
+
+    /*
+     * Static methods
+     */
+
+    public static LevelScreen getInstance() {
+        return instance;
+    }
 }

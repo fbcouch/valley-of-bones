@@ -27,7 +27,7 @@ GOALS 2013-04-25
     + Main menu
     + SP setup
     + MP setup
-    - Game Over
+    ~ Game Over
     - Splash
     - HUD
 

@@ -185,7 +185,7 @@ public class Player {
 	
 	@Override
 	public String toString() {
-		return String.format("(%d)%s $%05d // Food: %03d/%03d", playerId, name, (int)bankMoney, (int)curFood, (int)maxFood);
+		return String.format("(%d)%s $%04d // Food: %02d/%02d", playerId, name, (int)bankMoney, curFood, maxFood);
 	}
 	
 	

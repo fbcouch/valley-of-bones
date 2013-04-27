@@ -89,7 +89,7 @@ public class GameJoinScreen extends AbstractScreen {
 		
 		table.row();
 		
-		btnCancel = new TextButton("Cancel", getSkin());
+		btnCancel = new TextButton("Cancel", getSkin(), "cancel");
 		table.add(btnCancel).size(150, 50).pad(4);
 		
 		btnConnect = new TextButton("Connect", getSkin());

@@ -190,7 +190,7 @@ public class GameSetupScreen extends AbstractScreen {
 		table.add().colspan(5);
 
 		
-		TextButton cancel = new TextButton("Cancel", getSkin());
+		TextButton cancel = new TextButton("Cancel", getSkin(), "cancel");
 		cancel.addListener(new ClickListener() {
 
 			/* (non-Javadoc)
