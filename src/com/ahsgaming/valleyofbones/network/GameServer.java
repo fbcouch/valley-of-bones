@@ -388,6 +388,11 @@ public class GameServer implements NetController {
 		return this.players;
 	}
 
+    @Override
+    public Player getPlayer() {
+        return null;
+    }
+
 	@Override
 	public void sendCommand(Command cmd) {
 		server.sendToAllTCP(cmd);

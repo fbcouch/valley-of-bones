@@ -38,13 +38,14 @@ import com.badlogic.gdx.utils.Array;
 public class GameOverScreen extends AbstractScreen {
 
     GameResult result;
-
+    Array<Player> players = new Array<Player>();
 	/**
 	 * @param game
 	 */
-	public GameOverScreen(VOBGame game, GameResult result) {
+	public GameOverScreen(VOBGame game, GameResult result, Array<Player> players) {
 		super(game);
 		this.result = result;
+        this.players = players;
 	}
 
     public void updateLayout() {
@@ -75,10 +76,10 @@ public class GameOverScreen extends AbstractScreen {
 
         table.row().pad(4);
 
-        addPlayerRow(table, game.getPlayers(), result.winner, "*");
+        addPlayerRow(table, players, result.winner, "*");
 
         for (int l=0; l < result.losers.length; l++) {
-            addPlayerRow(table, game.getPlayers(), result.losers[l], "");
+            addPlayerRow(table, players, result.losers[l], "");
         }
 
         TextButton btnMainMenu = new TextButton("Back to Main Menu", getSkin());
