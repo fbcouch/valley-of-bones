@@ -75,7 +75,7 @@ public class GameServer implements NetController {
 	/**
 	 * 
 	 */
-	public GameServer(VOBGame game, GameSetupConfig cfg) {
+	public GameServer(final VOBGame game, GameSetupConfig cfg) {
 		
 		gameConfig = cfg;
 		// setup the KryoNet server
@@ -189,7 +189,11 @@ public class GameServer implements NetController {
 							server.sendToAllTCP(cmd);
 						}
 					}
-				}
+				} else {
+                    if (obj instanceof StartGame) {
+                        if (c == host) game.setLoadGame();
+                    }
+                }
 			}
 			
 			public void connected (Connection c) {

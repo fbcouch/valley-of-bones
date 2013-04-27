@@ -82,16 +82,24 @@ public class VOBGame extends Game {
 	}
 	
 	public void startGame() {
-		if (localClient != null) {
-			localClient.startGame();
-			gController = localClient.getController();
-		}
+		if (!isServer) {
+            if (localClient != null) {
+                localClient.startGame();
+                gController = localClient.getGameController();
+            }
+            setScreen(getLevelScreen());
+        } else {
+            if (localServer != null) {
+                localServer.startGame();
+                gController = localServer.getGameController();
+            }
+        }
 		
-		setScreen(getLevelScreen());
+
 	}
 	
 	public void sendStartGame() {
-		if (localServer != null) localServer.startGame();
+		if (localClient != null) localClient.sendStartGame();
 	}
 
 	public void quitGame() {
@@ -150,7 +158,7 @@ public class VOBGame extends Game {
 		}
 		
 		if (!isServer) {
-			if (DEBUG && localClient != null && localClient.isConnected() && loadGame && !started) {
+			if (localClient != null && localClient.isConnected() && loadGame && !started) {
 				started = true;
 				startGame();
 			}
@@ -161,7 +169,12 @@ public class VOBGame extends Game {
 					gameResult = null;
 				}
 			}
-		}
+		} else {
+            if (localServer != null && loadGame && !started) {
+                started = true;
+                startGame();
+            }
+        }
 	}
 
 	@Override
@@ -228,7 +241,7 @@ public class VOBGame extends Game {
 	}
 	
 	public LevelScreen getLevelScreen() {
-		return new LevelScreen(this, localClient.getController());
+		return new LevelScreen(this, localClient.getGameController());
 	}
 	
 	public GameOverScreen getGameOverScreen(GameResult result) {

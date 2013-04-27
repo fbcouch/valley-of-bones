@@ -271,10 +271,6 @@ public class GameClient implements NetController {
 		client.sendTCP(cmd);
 	}
 	
-	public GameController getController() {
-		return controller;
-	}
-	
 	public Array<Player> getPlayers() {
 		return players;
 	}
