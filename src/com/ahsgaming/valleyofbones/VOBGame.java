@@ -3,6 +3,7 @@ package com.ahsgaming.valleyofbones;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.GameClient;
 import com.ahsgaming.valleyofbones.network.GameServer;
+import com.ahsgaming.valleyofbones.network.NetController;
 import com.ahsgaming.valleyofbones.screens.GameJoinScreen;
 import com.ahsgaming.valleyofbones.screens.GameLoadingScreen;
 import com.ahsgaming.valleyofbones.screens.GameOverScreen;
@@ -20,6 +21,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.utils.Array;
 
+import java.net.NetworkInterface;
+
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
 
@@ -33,11 +36,8 @@ public class VOBGame extends Game {
 	private float mouseScrollSpeed = 500;
 	private float mouseScrollSize = 15;
 	
-	// SERVER
-	GameServer localServer;
-	
-	// CLIENT
-	GameClient localClient;
+
+	NetController netController;
 	Player player;
 	
 	boolean started = false;
@@ -62,45 +62,34 @@ public class VOBGame extends Game {
 	
 	public void createGame(GameSetupConfig cfg) {
 		if (isServer) {
-			localServer = new GameServer(this, cfg);
+			netController = new GameServer(this, cfg);
 		} else {
 			if (cfg.isMulti) { 
-				localClient = new GameClient(this, cfg);
+				netController = new GameClient(this, cfg);
 			} else {
 				// TODO implement local SP
-                localClient = new GameClient(this, cfg);
+                netController = new GameClient(this, cfg);
 			}
 		}
 	}
 	
 	public void closeGame() {
-		if (localServer != null) {
-			localServer.stop();
-		}
-		if (localClient != null) {
-			localClient.stop();
-		}
+        if (netController != null)
+            netController.stop();
 	}
 	
 	public void startGame() {
-		if (!isServer) {
-            if (localClient != null) {
-                localClient.startGame();
-                gController = localClient.getGameController();
-            }
-            setScreen(getLevelScreen());
-        } else {
-            if (localServer != null) {
-                localServer.startGame();
-                gController = localServer.getGameController();
-            }
+        started = true;
+		if (netController != null) {
+            netController.startGame();
+            gController = netController.getGameController();
+            if (!isServer)
+                setScreen(getLevelScreen());
         }
-		
-
 	}
 	
 	public void sendStartGame() {
-		if (localClient != null) localClient.sendStartGame();
+		if (netController != null) netController.sendStartGame();
 	}
 
 	public void quitGame() {
@@ -108,15 +97,15 @@ public class VOBGame extends Game {
 	}
 	
 	public void sendCommand(Command cmd) {
-		if (localClient != null) localClient.sendCommand(cmd);
+		if (netController != null) netController.sendCommand(cmd);
 	}
 	
 	public void addAIPlayer(int team) {
-		localClient.addAIPlayer(team);
+		netController.addAIPlayer(team);
 	}
 	
 	public void removePlayer(int playerId) {
-		localClient.removePlayer(playerId);
+		netController.removePlayer(playerId);
 	}
 	
 	/**
@@ -156,31 +145,23 @@ public class VOBGame extends Game {
 			loadGame = false;
 		}
 		
-		if (!isServer) {
-			if (localClient != null) {
-                if (localClient.isConnected() && loadGame && !started) {
-                    started = true;
+		if (netController != null) {
+            if (isServer) {
+                if (loadGame && !started)
                     startGame();
-                }
-                localClient.update(Gdx.graphics.getDeltaTime());
-			}
 
-			if (gController != null) {
-				if (gameResult != null) {
-					this.setScreen(this.getGameOverScreen(gameResult));
-					gameResult = null;
-				}
-			}
-		} else {
-            if (localServer != null) {
-                if (loadGame && !started) {
-                    started = true;
+            } else {
+                if (netController.isConnected() && loadGame && !started)
                     startGame();
+
+
+                if (gameResult != null) {
+                    this.setScreen(this.getGameOverScreen(gameResult));
+                    gameResult = null;
                 }
-                localServer.update(Gdx.graphics.getDeltaTime());
             }
 
-
+            netController.update(Gdx.graphics.getDeltaTime());
         }
 	}
 
@@ -248,7 +229,7 @@ public class VOBGame extends Game {
 	}
 	
 	public LevelScreen getLevelScreen() {
-		return new LevelScreen(this, localClient.getGameController());
+		return new LevelScreen(this, netController.getGameController());
 	}
 	
 	public GameOverScreen getGameOverScreen(GameResult result) {
@@ -256,16 +237,16 @@ public class VOBGame extends Game {
 	}
 	
 	public Player getPlayer() {
-		if (localClient != null) {
-			player = localClient.getPlayer();
+		if (netController != null) {
+			player = netController.getPlayer();
 		}
 		return player;
 	}
 	
 	public Array<Player> getPlayers() {
-		if (localClient != null) {
+		if (netController != null) {
 			Array<Player> ret = new Array<Player>();
-			ret.addAll(localClient.getPlayers());
+			ret.addAll(netController.getPlayers());
 			return ret;
 		}
 		return new Array<Player>();
@@ -277,19 +258,19 @@ public class VOBGame extends Game {
 	}
 	
 	public boolean isConnected() {
-		if (localClient == null) return false;
+		if (netController == null) return false;
 		
-		return localClient.isConnected();
+		return netController.isConnected();
 	}
 	
 	public boolean isConnecting() {
-		if (localClient == null) return false;
+		if (netController == null) return false;
 		
-		return localClient.isConnecting();
+		return netController.isConnecting();
 	}
 	
-	public GameClient getClient() {
-		return localClient;
+	public NetController getNetController() {
+		return netController;
 	}
 	
 	
