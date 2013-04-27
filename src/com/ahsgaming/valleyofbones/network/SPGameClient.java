@@ -48,6 +48,7 @@ public class SPGameClient implements NetController {
 	GameSetupConfig gameConfig;
 
 	Array<Player> players = new Array<Player>();
+    int nextPlayerId = 0;
 
 	VOBGame game;
 
@@ -61,6 +62,9 @@ public class SPGameClient implements NetController {
 	public SPGameClient(VOBGame g, final GameSetupConfig cfg) {
 		this.game = g;
 		gameConfig = cfg;
+
+        player = new Player(getNextPlayerId(), cfg.playerName, Player.getUnusedColor(players), 0);
+        players.add(player);
 	}
 	
 	public void startGame() {
@@ -100,12 +104,24 @@ public class SPGameClient implements NetController {
 	}
 	
 	public void addAIPlayer(int team) {
-		// TODO
+		if (players.size < 4)
+            players.add(new AIPlayer(getNextPlayerId(), "AI Player", Player.getUnusedColor(players), team));
 	}
 	
 	public void removePlayer(int playerId) {
-		// TODO
+		Array<Player> remove = new Array<Player>();
+        for (Player p: players) {
+            if (p.getPlayerId() == playerId)
+                remove.add(p);
+        }
+        players.removeAll(remove, true);
 	}
+
+    protected int getNextPlayerId() {
+        int id = nextPlayerId;
+        nextPlayerId += 1;
+        return id;
+    }
 	
 	public void sendCommand(Command cmd) {
 		controller.queueCommand(cmd);

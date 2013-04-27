@@ -62,7 +62,7 @@ public class VOBGame extends Game {
 			if (cfg.isMulti) { 
 				netController = new MPGameClient(this, cfg);
 			} else {
-				// TODO implement local SP
+				// TODO load settings from somewhere?
                 netController = new SPGameClient(this, cfg);
 			}
 		}
