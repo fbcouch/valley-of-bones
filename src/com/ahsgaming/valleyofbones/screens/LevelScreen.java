@@ -460,7 +460,7 @@ public class LevelScreen extends AbstractScreen {
 		drawSelectionBox();
 		drawUnitBoxes();
 		
-		gController.update(delta);
+		//gController.update(delta);
 		
 		// move the camera around
 		doCameraMovement(delta);
@@ -470,9 +470,7 @@ public class LevelScreen extends AbstractScreen {
 		
 		// update level position
 		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
-		
-		
-				
+
 		updateScorePane();
 		
 		updateTurnPane();

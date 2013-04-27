@@ -158,11 +158,14 @@ public class VOBGame extends Game {
 		}
 		
 		if (!isServer) {
-			if (localClient != null && localClient.isConnected() && loadGame && !started) {
-				started = true;
-				startGame();
+			if (localClient != null) {
+                if (localClient.isConnected() && loadGame && !started) {
+                    started = true;
+                    startGame();
+                }
+                localClient.update(Gdx.graphics.getDeltaTime());
 			}
-			
+
 			if (gController != null) {
 				if (gameResult != null) {
 					this.setScreen(this.getGameOverScreen(gameResult));
@@ -170,10 +173,15 @@ public class VOBGame extends Game {
 				}
 			}
 		} else {
-            if (localServer != null && loadGame && !started) {
-                started = true;
-                startGame();
+            if (localServer != null) {
+                if (loadGame && !started) {
+                    started = true;
+                    startGame();
+                }
+                localServer.update(Gdx.graphics.getDeltaTime());
             }
+
+
         }
 	}
 

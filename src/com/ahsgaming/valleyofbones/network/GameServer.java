@@ -54,12 +54,6 @@ public class GameServer implements NetController {
 	
 	Server server, broadcastServer;
 	GameController controller;
-	int sinceLastNetTick = 0;
-	int sinceLastGameTick = 0;
-	long lastTimeMillis = 0;
-	
-	float turnTimer = 0;
-	float turnLength = 5;
 	
 	GameSetupConfig gameConfig;
 	
@@ -71,6 +65,8 @@ public class GameServer implements NetController {
 	boolean stopServer = false;
 	
 	boolean gameStarted = false;
+
+    boolean[] endTurnRecd;
 	
 	/**
 	 * 
@@ -179,6 +175,10 @@ public class GameServer implements NetController {
 					if (obj instanceof StartGame) {
 						connMap.get(c).setReady(true);
 					}
+
+                    if (obj instanceof EndTurn) {
+                        endTurnRecd[players.indexOf(connMap.get(c), true)] = true;
+                    }
 					
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
@@ -235,8 +235,6 @@ public class GameServer implements NetController {
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Server";
 		
-		lastTimeMillis = System.currentTimeMillis();
-		
 		// don't need to broadcast on UDP anymore - thats just confusing
 		broadcastServer.close();
 		
@@ -258,7 +256,7 @@ public class GameServer implements NetController {
 		stopServer = true;
 	}
 
-	public boolean update() {
+	public boolean update(float delta) {
 		if (stopServer) {
 			server.stop();
 			return false;
@@ -284,71 +282,26 @@ public class GameServer implements NetController {
 				server.sendToAllTCP(up);
 				controller.queueCommand(up);
 				gameStarted = true;
+                endTurnRecd = new boolean[players.size];
 			}
 		}
-		
-		long time = System.currentTimeMillis();
-		int delta = (int)(time - lastTimeMillis);
-		lastTimeMillis = time;
-		
-		//Gdx.app.log("Server#Update", String.format("time: %d, lastTime: %d, delta: %d, sinceLastGameTick: %d", time, lastTimeMillis, delta, sinceLastGameTick));
-		if (delta < 0) return true;
+
 		if (gameStarted) {
-			if (this.turnTimer > 0) {
-				this.turnTimer -= delta * 0.001f;
-			} else {
-				
-				this.turnTimer = this.turnLength;
-				EndTurn et = new EndTurn();
-				et.turn = controller.getGameTurn();
-				server.sendToAllTCP(et);
-				
-				controller.doTurn();
-				
-				StartTurn st = new StartTurn();
-				st.turn = controller.getGameTurn();
-				server.sendToAllTCP(st);
-			}
+			controller.update(delta);
+
+            if (isEndTurn()) {
+                controller.doTurn();
+
+                server.sendToAllTCP(new EndTurn());
+            }
 		}
 		
-		sinceLastNetTick += delta;
-		sinceLastGameTick += delta;
-		
-		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
-			// TODO net tick
-			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
-			//Gdx.app.log("Server", "NET TICK");
-			for (Player p: players) {
-				//if (p instanceof AIPlayer) {
-				//	((AIPlayer)p).update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
-				//}
-				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
-			}
-			
-			controller.doCommands();
-		}
-		
-		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
-			// TODO game tick
-			
-			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
-			//Gdx.app.log("Server", "GAME TICK");
-			
-			if (controller.getGameResult() != null) {
-				endGame();
-				return false;
-			}
-		}
-		
-		long sleepTime = KryoCommon.GAME_TICK_LENGTH - (System.currentTimeMillis() - lastTimeMillis) - sinceLastGameTick;
-		
-		try {
-			if (sleepTime > 0) Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+        if (controller.getGameResult() != null) {
+            endGame();
+            return false;
+        }
+
 		return true;
 	}
 	
@@ -378,6 +331,21 @@ public class GameServer implements NetController {
 		nextPlayerId += 1;
 		return id;
 	}
+
+    public boolean isEndTurn() {
+        if (controller != null) {
+            if (controller.getTurnTimer() <= 0) return true;
+        }
+
+        for (int i=0; i<endTurnRecd.length; i++) {
+            if (!endTurnRecd[i]) return false;
+        }
+
+        for (int i=0; i<endTurnRecd.length; i++) {
+            endTurnRecd[i] = false;
+        }
+        return true;
+    }
 
 	@Override
 	public void setGameController(GameController controller) {

@@ -182,18 +182,14 @@ public class GameController {
 			commandQueue.removeAll(toRemove, true);
 			
 			turnTimer -= delta;
-			if (turnTimer <= 0 || nextTurn) {
-				doTurn();
-				turnTimer = turnLength;
-			}
+
 		}
-		
-		nextTurn = false;
+
 	}
 	
 	public void doTurn() {
 		Gdx.app.log(LOG, "doTurn");
-		
+
 		// update collection (do simulation for turn)
 		doCommands();
 		GameObject o = null;
@@ -217,8 +213,10 @@ public class GameController {
 		objsToAdd.clear();
 		
 		gameTurn += 1;
-		
-		for (Player p: players) {
+        turnTimer = turnLength;
+        nextTurn = false;
+
+        for (Player p: players) {
 			p.update(this);
 		}
 		
@@ -612,8 +610,16 @@ public class GameController {
 	public GameResult getGameResult() {
 		return gameResult;
 	}
-	
-	/**
+
+    public boolean isNextTurn() {
+        return nextTurn;
+    }
+
+    public void setNextTurn(boolean nextTurn) {
+        this.nextTurn = nextTurn;
+    }
+
+    /**
 	 * static methods
 	 */
 

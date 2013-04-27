@@ -56,12 +56,6 @@ public class GameClient implements NetController {
 	Player player = null;
 	
 	GameController controller;
-	int sinceLastNetTick = 0;
-	int sinceLastGameTick = 0;
-	long lastTimeMillis = 0;
-	
-	float turnTimer = 0;
-	float turnLength = 5;
 	
 	GameSetupConfig gameConfig;
 	
@@ -74,6 +68,8 @@ public class GameClient implements NetController {
 	boolean isConnecting = false;
 	
 	GameResult gameResult = null;
+
+    boolean sentEndTurn = false;
 	
 	/**
 	 * 
@@ -142,13 +138,14 @@ public class GameClient implements NetController {
 				
 				if (obj instanceof StartTurn) {
 					Gdx.app.log(LOG, "StartTurn");
-					turnTimer = turnLength;
 				}
 				
 				if (obj instanceof EndTurn) {
 					Gdx.app.log(LOG, "EndTurn");
-					turnTimer = 0;
-					if (controller != null) controller.doTurn();
+					if (controller != null) {
+                        controller.doTurn();
+                        sentEndTurn = false;
+                    }
 				}
 			}
 			
@@ -180,8 +177,6 @@ public class GameClient implements NetController {
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Client";
 		
-		lastTimeMillis = System.currentTimeMillis();
-		
 		sendStartGame();
 	}
 	
@@ -195,12 +190,17 @@ public class GameClient implements NetController {
 		controller.setState(GameStates.GAMEOVER);
 		game.setGameResult(gameResult);
 	}
+
+    public void sendEndTurn() {
+        sentEndTurn = true;
+        client.sendTCP(new EndTurn());
+    }
 	
 	public void stop() {
 		stopClient = true;
 	}
 	
-	public boolean update() {
+	public boolean update(float delta) {
 		if (stopClient) {
 			client.stop();
 			return false;
@@ -209,49 +209,17 @@ public class GameClient implements NetController {
 		if (controller == null) return true;
 		
 		Gdx.app.log(LOG, controller.getState().toString());
-		
-		long time = System.currentTimeMillis();
-		int delta = (int)(time - lastTimeMillis);
-		lastTimeMillis = time;
-		
-		//Gdx.app.log("Client#Update", String.format("time: %d, lastTime: %d, delta: %d, sinceLastGameTick: %d", time, lastTimeMillis, delta, sinceLastGameTick));
-		if (delta < 0) return true;
-		
-		sinceLastNetTick += delta;
-		sinceLastGameTick += delta;
-		
-		if (this.turnTimer > 0) {
-			this.turnTimer -= delta * 0.001f;
-		}
-		
-		
-		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
-			// TODO net tick
-			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
-			for (Player p: players) {
-				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
-			}
-			controller.doCommands();
-		}
-		
-		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
-			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
-			
-			if (gameResult != null) {
-				endGame();
-				return false;
-			}
-		}
-		
-		long sleepTime = KryoCommon.GAME_TICK_LENGTH - (System.currentTimeMillis() - lastTimeMillis) - sinceLastGameTick;
-		
-		try {
-			if (sleepTime > 0) Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+        controller.update(delta);
+
+        if (controller.isNextTurn() || controller.getTurnTimer() <= 0) {
+            sendEndTurn();
+        }
+
+        if (gameResult != null) {
+            endGame();
+            return false;
+        }
+
 		return true;
 	}
 	
