@@ -68,6 +68,7 @@ public class VOBGame extends Game {
 				localClient = new GameClient(this, cfg);
 			} else {
 				// TODO implement local SP
+                localClient = new GameClient(this, cfg);
 			}
 		}
 	}
@@ -134,7 +135,6 @@ public class VOBGame extends Game {
 			
 		} else {
 			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
-			
 		}
 		
 	}

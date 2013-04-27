@@ -105,14 +105,14 @@ public class GameSetupScreen extends AbstractScreen {
 		
 		table.add(new Label("Team One", getSkin())).colspan(2);
 		if (!config.isMulti || config.isHost) {
-			table.add(addTeam1AI).right();
+			table.add(addTeam1AI).right().pad(4);
 		} else {
 			table.add();
 		}
 		table.add();
 		table.add(new Label("Team Two", getSkin())).colspan(2);
 		if (!config.isMulti || config.isHost) {
-			table.add(addTeam2AI).right();
+			table.add(addTeam2AI).right().pad(4);
 		} else {
 			table.add();
 		}
@@ -161,22 +161,9 @@ public class GameSetupScreen extends AbstractScreen {
 			table.row();
 		}
 		
-		if (config.isMulti) {
-			table.add(new Label("Spectators", getSkin())).left().colspan(2).colspan(7);
-		
-			table.row();
-			
-			//table.add(new List(new String[]{"Unmei: hello world!", "Unmei: line two..."}, getSkin())).fill();
-			
-			VerticalGroup vg = new VerticalGroup();
-			vg.setAlignment(Align.left);
-			vg.addActor(new Label("Unmei: hello world!", getSkin()));
-			vg.addActor(new Label("Unmei: line two...", getSkin()));
-			
-			table.add(new ScrollPane(vg)).fillX().colspan(6);
-		} else {
-			table.add().colspan(6);
-		}
+
+		table.add().colspan(5);
+
 		
 		if (!config.isMulti || config.isHost) {
 		TextButton start = new TextButton("Start Game",getSkin());
@@ -194,19 +181,16 @@ public class GameSetupScreen extends AbstractScreen {
 				}
 				
 			});
-			
-		table.add(start).right().bottom();
+		table.add(start).size(150, 50).pad(4).right().bottom().colspan(2);
 		
 		}
 		table.row();
 		
-		if (config.isMulti) { 
-			table.add(new TextField("", getSkin())).fill().colspan(6);
-		} else {
-			table.add().colspan(6);
-		}
+
+		table.add().colspan(5);
+
 		
-		TextButton cancel = new TextButton("Cancel", getSkin());
+		TextButton cancel = new TextButton("Cancel", getSkin(), "cancel");
 		cancel.addListener(new ClickListener() {
 
 			/* (non-Javadoc)
@@ -224,7 +208,7 @@ public class GameSetupScreen extends AbstractScreen {
 			
 		});
 		
-		table.add(cancel).right();
+		table.add(cancel).size(150, 50).pad(4).right().bottom().colspan(2);
 		
 		table.row();
 	}

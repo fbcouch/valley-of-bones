@@ -23,7 +23,13 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.GameResult;
+import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -31,12 +37,115 @@ import com.ahsgaming.valleyofbones.VOBGame;
  */
 public class GameOverScreen extends AbstractScreen {
 
+    GameResult result;
+
 	/**
 	 * @param game
 	 */
 	public GameOverScreen(VOBGame game, GameResult result) {
 		super(game);
-		// TODO Auto-generated constructor stub
+		this.result = result;
 	}
-	
+
+    public void updateLayout() {
+
+
+
+
+        Table table = new Table(getSkin());
+        stage.addActor(table);
+
+        if (result.winner == game.getPlayer().getPlayerId()) {
+            table.add("VICTORY", "large-font", "white").pad(4).colspan(4).center();
+        } else {
+            table.add("DEFEAT", "large-font", "white").pad(4).colspan(4).center();
+        }
+
+        table.row();
+
+        table.row();
+
+        table.add().pad(4);
+
+        table.add("Name", "small-font", "white").pad(4).minWidth(250);
+
+        table.add("Food", "small-font", "white").pad(4);
+
+        table.add("Money", "small-font", "white").pad(4);
+
+        table.row().pad(4);
+
+        addPlayerRow(table, game.getPlayers(), result.winner, "*");
+
+        for (int l=0; l < result.losers.length; l++) {
+            addPlayerRow(table, game.getPlayers(), result.losers[l], "");
+        }
+
+        TextButton btnMainMenu = new TextButton("Back to Main Menu", getSkin());
+        table.add(btnMainMenu).left().minSize(150, 50).pad(4).colspan(4);
+
+        table.row();
+
+        btnMainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+        table.setPosition((stage.getWidth() - table.getWidth()) * 0.5f, stage.getHeight() * 0.75f - table.getHeight());
+    }
+
+    public void addPlayerRow(Table table, Array<Player> players, int playerId, String pre) {
+        Player p = null;
+        for (Player pl: players) {
+            if (pl.getPlayerId() == playerId) {
+                p = pl;
+                break;
+            }
+        }
+
+        if (p != null) {
+            table.add(pre, "small-font", p.getPlayerColor()).pad(4);
+
+            table.add(p.getPlayerName(), "small-font", p.getPlayerColor()).pad(4).left();
+
+            table.add(String.format("%02d/%02d", p.getCurFood(), p.getMaxFood()), "small-font", p.getPlayerColor()).pad(4);
+
+            table.add(String.format("$%04d", (int)p.getBankMoney()), "small-font", p.getPlayerColor()).pad(4);
+
+            table.row().pad(4);
+        }
+    }
+
+    @Override
+    public void show() {
+        super.show();
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        updateLayout();
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+    }
+
+    /*
+     * Getters/setters
+     */
+
+    public GameResult getResult() {
+        return result;
+    }
+
+    public void setResult(GameResult result) {
+        this.result = result;
+    }
 }

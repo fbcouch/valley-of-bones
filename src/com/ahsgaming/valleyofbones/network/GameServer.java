@@ -334,7 +334,7 @@ public class GameServer implements NetController {
         }
 
         for (int i=0; i<endTurnRecd.length; i++) {
-            if (!endTurnRecd[i]) return false;
+            if (!(endTurnRecd[i] || (players.size > i && players.get(i) instanceof AIPlayer))) return false;
         }
 
         for (int i=0; i<endTurnRecd.length; i++) {
