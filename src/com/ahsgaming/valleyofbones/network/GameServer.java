@@ -35,7 +35,6 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
-import com.ahsgaming.valleyofbones.network.KryoCommon.SetupInfo;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
@@ -55,12 +54,6 @@ public class GameServer implements NetController {
 	
 	Server server, broadcastServer;
 	GameController controller;
-	int sinceLastNetTick = 0;
-	int sinceLastGameTick = 0;
-	long lastTimeMillis = 0;
-	
-	float turnTimer = 0;
-	float turnLength = 5;
 	
 	GameSetupConfig gameConfig;
 	
@@ -72,11 +65,13 @@ public class GameServer implements NetController {
 	boolean stopServer = false;
 	
 	boolean gameStarted = false;
+
+    boolean[] endTurnRecd;
 	
 	/**
 	 * 
 	 */
-	public GameServer(GameSetupConfig cfg) {
+	public GameServer(final VOBGame game, GameSetupConfig cfg) {
 		
 		gameConfig = cfg;
 		// setup the KryoNet server
@@ -129,7 +124,7 @@ public class GameServer implements NetController {
 							team = 0;
 						}
 					}
-					
+
 					NetPlayer p = new NetPlayer(id, rp.name, use, team);
 					
 					players.add(p);
@@ -140,6 +135,7 @@ public class GameServer implements NetController {
 					reg.name = p.getPlayerName();
 					reg.color = p.getPlayerColor();
 					reg.team = p.getTeam();
+                    reg.host = (c == host);
 					server.sendToTCP(c.getID(), reg);
 					sendPlayerList();
 					sendSetupInfo();
@@ -164,11 +160,11 @@ public class GameServer implements NetController {
 					sendPlayerList();
 				}
 				
-				if (obj instanceof SetupInfo) {
+				if (obj instanceof KryoCommon.GameDetails) {
 					if (c != host) return;
 					
 					if (controller == null) {
-						gameConfig.mapName = ((SetupInfo)obj).mapName;
+						gameConfig.mapName = ((KryoCommon.GameDetails)obj).mapName;
 						sendSetupInfo();
 					}
 				}
@@ -178,18 +174,23 @@ public class GameServer implements NetController {
 					// the player represented by this connection is ready
 					if (obj instanceof StartGame) {
 						connMap.get(c).setReady(true);
-					}
-					
-					if (obj instanceof Command) {
+					} else if (obj instanceof EndTurn) {
+                        endTurnRecd[players.indexOf(connMap.get(c), true)] = true;
+                    } else if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
-						cmd.turn = controller.getGameTurn();
-						if (controller.validate(cmd)) {
+
+                        // discard past, future, or invalid commands
+						if (cmd.turn == controller.getGameTurn() && controller.validate(cmd)) {
 							controller.queueCommand(cmd);
 							server.sendToAllTCP(cmd);
 						}
 					}
-				}
+				} else {
+                    if (obj instanceof StartGame) {
+                        if (c == host) game.setLoadGame();
+                    }
+                }
 			}
 			
 			public void connected (Connection c) {
@@ -200,12 +201,27 @@ public class GameServer implements NetController {
 			
 			public void disconnected (Connection c) {
 				Player p = connMap.get(c);
-				if (players.contains(p, true)) players.removeValue(p, true);
-				sendPlayerList();
-				
-				if (host == c) {
-					stopServer = true;
+				if (players.contains(p, true)) {
+                    players.removeValue(p, true);
+                    connMap.remove(c);
+                }
+
+				if (host == c && !gameStarted) {
+				    // find a new host
+                    if (players.size > 0) {
+                        p = players.get(0);
+                        host = connMap.findKey(p, true);
+                        RegisteredPlayer reg = new RegisteredPlayer();
+                        reg.id = p.getPlayerId();
+                        reg.name = p.getPlayerName();
+                        reg.color = p.getPlayerColor();
+                        reg.team = p.getTeam();
+                        reg.host = true;
+                        server.sendToTCP(c.getID(), reg);
+                    }
 				}
+
+                sendPlayerList();
 			}
 		});
 		
@@ -215,8 +231,6 @@ public class GameServer implements NetController {
 		// the host clicked startGame --> send out the StartGame message so that the clients load and report
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Server";
-		
-		lastTimeMillis = System.currentTimeMillis();
 		
 		// don't need to broadcast on UDP anymore - thats just confusing
 		broadcastServer.close();
@@ -239,7 +253,7 @@ public class GameServer implements NetController {
 		stopServer = true;
 	}
 
-	public boolean update() {
+	public boolean update(float delta) {
 		if (stopServer) {
 			server.stop();
 			return false;
@@ -265,71 +279,25 @@ public class GameServer implements NetController {
 				server.sendToAllTCP(up);
 				controller.queueCommand(up);
 				gameStarted = true;
+                endTurnRecd = new boolean[players.size];
 			}
 		}
-		
-		long time = System.currentTimeMillis();
-		int delta = (int)(time - lastTimeMillis);
-		lastTimeMillis = time;
-		
-		//Gdx.app.log("Server#Update", String.format("time: %d, lastTime: %d, delta: %d, sinceLastGameTick: %d", time, lastTimeMillis, delta, sinceLastGameTick));
-		if (delta < 0) return true;
+
 		if (gameStarted) {
-			if (this.turnTimer > 0) {
-				this.turnTimer -= delta * 0.001f;
-			} else {
-				
-				this.turnTimer = this.turnLength;
-				EndTurn et = new EndTurn();
-				et.turn = controller.getGameTurn();
-				server.sendToAllTCP(et);
-				
-				controller.doTurn();
-				
-				StartTurn st = new StartTurn();
-				st.turn = controller.getGameTurn();
-				server.sendToAllTCP(st);
-			}
+			controller.update(delta);
+
+            if (isEndTurn()) {
+                server.sendToAllTCP(new EndTurn(controller.getCommandQueue()));
+                controller.doTurn();
+            }
 		}
 		
-		sinceLastNetTick += delta;
-		sinceLastGameTick += delta;
-		
-		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
-			// TODO net tick
-			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
-			//Gdx.app.log("Server", "NET TICK");
-			for (Player p: players) {
-				//if (p instanceof AIPlayer) {
-				//	((AIPlayer)p).update(controller, KryoCommon.NET_TICK_LENGTH * 0.001f);
-				//}
-				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
-			}
-			
-			controller.doCommands();
-		}
-		
-		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
-			// TODO game tick
-			
-			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
-			//Gdx.app.log("Server", "GAME TICK");
-			
-			if (controller.getGameResult() != null) {
-				endGame();
-				return false;
-			}
-		}
-		
-		long sleepTime = KryoCommon.GAME_TICK_LENGTH - (System.currentTimeMillis() - lastTimeMillis) - sinceLastGameTick;
-		
-		try {
-			if (sleepTime > 0) Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+        if (controller.getGameResult() != null) {
+            endGame();
+            return false;
+        }
+
 		return true;
 	}
 	
@@ -349,7 +317,7 @@ public class GameServer implements NetController {
 	}
 	
 	public void sendSetupInfo() {
-		SetupInfo si = new SetupInfo();
+		KryoCommon.GameDetails si = new KryoCommon.GameDetails();
 		si.mapName = gameConfig.mapName;
 		server.sendToAllTCP(si);
 	}
@@ -359,6 +327,21 @@ public class GameServer implements NetController {
 		nextPlayerId += 1;
 		return id;
 	}
+
+    public boolean isEndTurn() {
+        if (controller != null) {
+            if (controller.getTurnTimer() <= 0) return true;
+        }
+
+        for (int i=0; i<endTurnRecd.length; i++) {
+            if (!endTurnRecd[i]) return false;
+        }
+
+        for (int i=0; i<endTurnRecd.length; i++) {
+            endTurnRecd[i] = false;
+        }
+        return true;
+    }
 
 	@Override
 	public void setGameController(GameController controller) {

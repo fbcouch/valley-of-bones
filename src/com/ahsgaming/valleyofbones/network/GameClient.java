@@ -33,7 +33,6 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
-import com.ahsgaming.valleyofbones.network.KryoCommon.SetupInfo;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
@@ -57,12 +56,6 @@ public class GameClient implements NetController {
 	Player player = null;
 	
 	GameController controller;
-	int sinceLastNetTick = 0;
-	int sinceLastGameTick = 0;
-	long lastTimeMillis = 0;
-	
-	float turnTimer = 0;
-	float turnLength = 5;
 	
 	GameSetupConfig gameConfig;
 	
@@ -75,6 +68,9 @@ public class GameClient implements NetController {
 	boolean isConnecting = false;
 	
 	GameResult gameResult = null;
+
+    boolean sentEndTurn = false;
+    boolean recdEndTurn = false;
 	
 	/**
 	 * 
@@ -97,7 +93,36 @@ public class GameClient implements NetController {
 			}
 			
 			public void received (Connection c, Object obj) {
-				if (controller != null) {
+                if (obj instanceof RegisteredPlayer) {
+                    RegisteredPlayer reg = (RegisteredPlayer)obj;
+                    playerId = reg.id;
+                    gameConfig.isHost = reg.host;
+                    Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
+                }
+
+                if (obj instanceof RegisteredPlayer[]) {
+                    Gdx.app.log(LOG, "Playerlist rec'd");
+                    RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
+                    players.clear();
+                    for (int p=0;p<plist.length;p++) {
+                        Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
+                        players.add(pl);
+                        if (pl.getPlayerId() == playerId) player = pl;
+                    }
+                }
+
+                if (obj instanceof KryoCommon.GameDetails) {
+
+                    gameConfig.mapName = ((KryoCommon.GameDetails) obj).mapName;
+
+                }
+
+                if (obj instanceof StartGame) {
+                    // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
+                    game.setLoadGame();
+                }
+
+                if (controller != null) {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
@@ -106,35 +131,7 @@ public class GameClient implements NetController {
 						}
 					}
 				}
-				
-				if (obj instanceof RegisteredPlayer) {
-					RegisteredPlayer reg = (RegisteredPlayer)obj;
-					playerId = reg.id;
-					Gdx.app.log(LOG, "RegisteredPlayer rec'd");
-				}
-				
-				if (obj instanceof RegisteredPlayer[]) {
-					Gdx.app.log(LOG, "Playerlist rec'd");
-					RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
-					players.clear();
-					for (int p=0;p<plist.length;p++) {
-						Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
-						players.add(pl);
-						if (pl.getPlayerId() == playerId) player = pl;
-					}
-				}
-				
-				if (obj instanceof StartGame) {
-					// we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
-					game.setLoadGame();
-				}
-				
-				if (obj instanceof SetupInfo) {
-					 
-					gameConfig.mapName = ((SetupInfo) obj).mapName;
-					
-				}
-				
+
 				if (obj instanceof GameResult) {
 					Gdx.app.log(LOG, "GameResult rec'd");
 					gameResult = (GameResult)obj;
@@ -142,13 +139,17 @@ public class GameClient implements NetController {
 				
 				if (obj instanceof StartTurn) {
 					Gdx.app.log(LOG, "StartTurn");
-					turnTimer = turnLength;
 				}
 				
 				if (obj instanceof EndTurn) {
 					Gdx.app.log(LOG, "EndTurn");
-					turnTimer = 0;
-					if (controller != null) controller.doTurn();
+					if (controller != null) {
+                        controller.setCommandQueue(((EndTurn)obj).commands);
+                        Gdx.app.log(LOG, String.format("EndTurn.commands.length = %d", ((EndTurn)obj).commands.length));
+
+                        sentEndTurn = false;
+                        recdEndTurn = true;
+                    }
 				}
 			}
 			
@@ -177,10 +178,8 @@ public class GameClient implements NetController {
 	
 	public void startGame() {
 		// OK, this should be called within an opengl context, so we can create everything
-		controller = new GameController("", players);
+		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Client";
-		
-		lastTimeMillis = System.currentTimeMillis();
 		
 		sendStartGame();
 	}
@@ -188,9 +187,6 @@ public class GameClient implements NetController {
 	public void sendStartGame() {
 		// report that we're ready
 		client.sendTCP(new StartGame());
-		
-		// TODO remove this
-		controller.queueCommand(new Unpause());
 	}
 	
 	public void endGame() {
@@ -198,63 +194,40 @@ public class GameClient implements NetController {
 		controller.setState(GameStates.GAMEOVER);
 		game.setGameResult(gameResult);
 	}
+
+    public void sendEndTurn() {
+        sentEndTurn = true;
+        client.sendTCP(new EndTurn());
+    }
 	
 	public void stop() {
 		stopClient = true;
 	}
 	
-	public boolean update() {
+	public boolean update(float delta) {
 		if (stopClient) {
 			client.stop();
 			return false;
 		}
-		
+
 		if (controller == null) return true;
-		
-		Gdx.app.log(LOG, controller.getState().toString());
-		
-		long time = System.currentTimeMillis();
-		int delta = (int)(time - lastTimeMillis);
-		lastTimeMillis = time;
-		
-		//Gdx.app.log("Client#Update", String.format("time: %d, lastTime: %d, delta: %d, sinceLastGameTick: %d", time, lastTimeMillis, delta, sinceLastGameTick));
-		if (delta < 0) return true;
-		
-		sinceLastNetTick += delta;
-		sinceLastGameTick += delta;
-		
-		if (this.turnTimer > 0) {
-			this.turnTimer -= delta * 0.001f;
-		}
-		
-		
-		while (sinceLastNetTick >= KryoCommon.NET_TICK_LENGTH) {
-			// TODO net tick
-			sinceLastNetTick -= KryoCommon.NET_TICK_LENGTH;
-			for (Player p: players) {
-				p.update(controller/*, KryoCommon.NET_TICK_LENGTH * 0.001f*/);
-			}
-			controller.doCommands();
-		}
-		
-		while (sinceLastGameTick >= KryoCommon.GAME_TICK_LENGTH) {
-			sinceLastGameTick -= KryoCommon.GAME_TICK_LENGTH;
-			
-			if (gameResult != null) {
-				endGame();
-				return false;
-			}
-		}
-		
-		long sleepTime = KryoCommon.GAME_TICK_LENGTH - (System.currentTimeMillis() - lastTimeMillis) - sinceLastGameTick;
-		
-		try {
-			if (sleepTime > 0) Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+        controller.update(delta);
+
+        if (recdEndTurn) {
+            controller.doTurn();
+            recdEndTurn = false;
+        }
+
+        if (controller.isNextTurn() || controller.getTurnTimer() <= 0) {
+            sendEndTurn();
+        }
+
+        if (gameResult != null) {
+            endGame();
+            return false;
+        }
+
 		return true;
 	}
 	
@@ -272,10 +245,6 @@ public class GameClient implements NetController {
 	
 	public void sendCommand(Command cmd) {
 		client.sendTCP(cmd);
-	}
-	
-	public GameController getController() {
-		return controller;
 	}
 	
 	public Array<Player> getPlayers() {

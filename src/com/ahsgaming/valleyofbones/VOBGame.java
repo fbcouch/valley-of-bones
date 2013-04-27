@@ -35,7 +35,6 @@ public class VOBGame extends Game {
 	
 	// SERVER
 	GameServer localServer;
-	Thread serverThread;
 	
 	// CLIENT
 	GameClient localClient;
@@ -43,7 +42,7 @@ public class VOBGame extends Game {
 	
 	boolean started = false;
 	
-	boolean isServerOnly = false;
+	boolean isServer = false;
 
 	boolean loadGame = false;
 	
@@ -54,7 +53,7 @@ public class VOBGame extends Game {
 	 */
 	
 	public VOBGame(boolean isServer) {
-		isServerOnly = isServer;
+		this.isServer = isServer;
 	}
 	
 	/*
@@ -62,35 +61,15 @@ public class VOBGame extends Game {
 	 */
 	
 	public void createGame(GameSetupConfig cfg) {
-		//TODO this should accept input and then pass it to the GameController
-		
-		// TODO for now, assuming single player, so we need to start and manage the server
-		
-		if (!cfg.isMulti || cfg.isHost) { 
-			localServer = new GameServer(cfg);
-			serverThread = new Thread() {
-				public void run() {
-					boolean cont = true;
-					while(cont) {
-						cont = localServer.update();
-						try {
-							Thread.sleep(0);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					localServer = null;
-				}
-			};
-			// TODO for now, we're going to run everything locally
-			//serverThread.start();
+		if (isServer) {
+			localServer = new GameServer(this, cfg);
+		} else {
+			if (cfg.isMulti) { 
+				localClient = new GameClient(this, cfg);
+			} else {
+				// TODO implement local SP
+			}
 		}
-		
-		localClient = new GameClient(this, cfg);
-		
-		//gController = new GameController("", new Array<Player>());
-		//gController.LOG = gController.LOG + "#Client";
 	}
 	
 	public void closeGame() {
@@ -103,14 +82,24 @@ public class VOBGame extends Game {
 	}
 	
 	public void startGame() {
-		//if (localServer != null) localServer.startGame();
-		if (localClient != null) localClient.startGame();
+		if (!isServer) {
+            if (localClient != null) {
+                localClient.startGame();
+                gController = localClient.getGameController();
+            }
+            setScreen(getLevelScreen());
+        } else {
+            if (localServer != null) {
+                localServer.startGame();
+                gController = localServer.getGameController();
+            }
+        }
 		
-		setScreen(getLevelScreen());
+
 	}
 	
 	public void sendStartGame() {
-		if (localServer != null) localServer.startGame();
+		if (localClient != null) localClient.sendStartGame();
 	}
 
 	public void quitGame() {
@@ -118,8 +107,7 @@ public class VOBGame extends Game {
 	}
 	
 	public void sendCommand(Command cmd) {
-		// TODO fix this
-		gController.queueCommand(cmd);
+		if (localClient != null) localClient.sendCommand(cmd);
 	}
 	
 	public void addAIPlayer(int team) {
@@ -137,21 +125,16 @@ public class VOBGame extends Game {
 	@Override
 	public void create() {		
 		
-		if (isServerOnly) {
+		if (isServer) {
 			setScreen(getServerScreen());
+			
+			GameSetupConfig cfg = new GameSetupConfig();
+			cfg.isMulti = true;
+			createGame(cfg);
+			
 		} else {
-			//setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
-			if (DEBUG) {
-				Array<Player> players = new Array<Player>();
-				players.add(new Player(0, "Player", Player.getUnusedColor(players)));
-				players.add(new AIPlayer(1, Player.getUnusedColor(players)));
-				player = players.get(0);
-				GameController gc = new GameController("", players);
-				this.gController = gc;
-				setScreen(new LevelScreen(this, gc));
-			} else {
-				setScreen(getSplashScreen());
-			}
+			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+			
 		}
 		
 	}
@@ -159,30 +142,46 @@ public class VOBGame extends Game {
 	@Override
 	public void dispose() {
 		super.dispose();
+		
+		closeGame();
 	}
 
 	@Override
 	public void render() {	
 		super.render();
-		if (DEBUG) fpsLogger.log();
-		
-		/*if (localClient != null && localClient.getPlayers().size() > 0 && !started) {
-			started = true;
-			startGame();
-		}*/
-		
+		if (DEBUG && !isServer) fpsLogger.log();
+
 		if (loadGame) {
 			startGame();
 			loadGame = false;
 		}
 		
-		// TODO temporarily grab gameResult directly from the controller
-		gameResult = gController.getGameResult();
-		
-		if (gameResult != null) {
-			this.setScreen(this.getGameOverScreen(gameResult));
-			gameResult = null;
-		}
+		if (!isServer) {
+			if (localClient != null) {
+                if (localClient.isConnected() && loadGame && !started) {
+                    started = true;
+                    startGame();
+                }
+                localClient.update(Gdx.graphics.getDeltaTime());
+			}
+
+			if (gController != null) {
+				if (gameResult != null) {
+					this.setScreen(this.getGameOverScreen(gameResult));
+					gameResult = null;
+				}
+			}
+		} else {
+            if (localServer != null) {
+                if (loadGame && !started) {
+                    started = true;
+                    startGame();
+                }
+                localServer.update(Gdx.graphics.getDeltaTime());
+            }
+
+
+        }
 	}
 
 	@Override
@@ -249,7 +248,7 @@ public class VOBGame extends Game {
 	}
 	
 	public LevelScreen getLevelScreen() {
-		return new LevelScreen(this, localClient.getController());
+		return new LevelScreen(this, localClient.getGameController());
 	}
 	
 	public GameOverScreen getGameOverScreen(GameResult result) {
@@ -257,9 +256,9 @@ public class VOBGame extends Game {
 	}
 	
 	public Player getPlayer() {
-		//if (localClient != null) {
-		//	return localClient.getPlayer();
-		//}
+		if (localClient != null) {
+			player = localClient.getPlayer();
+		}
 		return player;
 	}
 	
@@ -274,7 +273,7 @@ public class VOBGame extends Game {
 	
 	public void setLoadGame() {
 		// TODO Auto-generated method stub
-		loadGame  = true;
+		loadGame = true;
 	}
 	
 	public boolean isConnected() {
