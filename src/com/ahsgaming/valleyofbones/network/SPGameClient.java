@@ -1,0 +1,139 @@
+/**
+ * Copyright 2012 Jami Couch
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * This project uses:
+ * 
+ * LibGDX
+ * Copyright 2011 see LibGDX AUTHORS file
+ * Licensed under Apache License, Version 2.0 (see above).
+ * 
+ */
+package com.ahsgaming.valleyofbones.network;
+
+import com.ahsgaming.valleyofbones.*;
+import com.ahsgaming.valleyofbones.network.KryoCommon.*;
+import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
+import java.io.IOException;
+
+/**
+ * @author jami
+ *
+ */
+public class SPGameClient implements NetController {
+	public String LOG = "SPGameClient";
+
+	int playerId = -1;
+	Player player = null;
+
+	GameController controller;
+
+	GameSetupConfig gameConfig;
+
+	Array<Player> players = new Array<Player>();
+
+	VOBGame game;
+
+	boolean stopClient = false;
+
+	GameResult gameResult = null;
+
+	/**
+	 *
+	 */
+	public SPGameClient(VOBGame g, final GameSetupConfig cfg) {
+		this.game = g;
+		gameConfig = cfg;
+	}
+	
+	public void startGame() {
+		// OK, this should be called within an opengl context, so we can create everything
+		controller = new GameController(gameConfig.mapName, players);
+		controller.LOG = controller.LOG + "#SPClient";
+	}
+	
+	public void sendStartGame() {
+		game.setLoadGame();
+	}
+	
+	public void endGame() {
+		controller.setState(GameStates.GAMEOVER);
+		game.setGameResult(gameResult);
+	}
+	
+	public void stop() {
+		stopClient = true;
+	}
+	
+	public boolean update(float delta) {
+
+		if (controller == null) return true;
+
+        controller.update(delta);
+
+        if (controller.isNextTurn() || controller.getTurnTimer() <= 0)
+            controller.doTurn();
+
+        if (gameResult != null) {
+            endGame();
+            return false;
+        }
+
+		return true;
+	}
+	
+	public void addAIPlayer(int team) {
+		// TODO
+	}
+	
+	public void removePlayer(int playerId) {
+		// TODO
+	}
+	
+	public void sendCommand(Command cmd) {
+		controller.queueCommand(cmd);
+	}
+	
+	public Array<Player> getPlayers() {
+		return players;
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public boolean isConnected() {
+		return true;
+	}
+	
+	public boolean isConnecting() {
+		return false;
+	}
+
+	@Override
+	public void setGameController(GameController controller) {
+		this.controller = controller;
+	}
+
+	@Override
+	public GameController getGameController() {
+		return controller;
+	}
+}

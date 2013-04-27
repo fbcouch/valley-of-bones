@@ -1,9 +1,6 @@
 package com.ahsgaming.valleyofbones;
 
-import com.ahsgaming.valleyofbones.network.Command;
-import com.ahsgaming.valleyofbones.network.GameClient;
-import com.ahsgaming.valleyofbones.network.GameServer;
-import com.ahsgaming.valleyofbones.network.NetController;
+import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.GameJoinScreen;
 import com.ahsgaming.valleyofbones.screens.GameLoadingScreen;
 import com.ahsgaming.valleyofbones.screens.GameOverScreen;
@@ -20,8 +17,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.utils.Array;
-
-import java.net.NetworkInterface;
 
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
@@ -65,10 +60,10 @@ public class VOBGame extends Game {
 			netController = new GameServer(this, cfg);
 		} else {
 			if (cfg.isMulti) { 
-				netController = new GameClient(this, cfg);
+				netController = new MPGameClient(this, cfg);
 			} else {
 				// TODO implement local SP
-                netController = new GameClient(this, cfg);
+                netController = new SPGameClient(this, cfg);
 			}
 		}
 	}

@@ -45,8 +45,8 @@ import com.esotericsoftware.kryonet.Listener;
  * @author jami
  *
  */
-public class GameClient implements NetController {
-	public String LOG = "GameClient";
+public class MPGameClient implements NetController {
+	public String LOG = "MPGameClient";
 	
 	Client client;
 	String host;
@@ -75,7 +75,7 @@ public class GameClient implements NetController {
 	/**
 	 * 
 	 */
-	public GameClient(VOBGame g, final GameSetupConfig cfg) {
+	public MPGameClient(VOBGame g, final GameSetupConfig cfg) {
 		this.game = g;
 		gameConfig = cfg;
 		
@@ -179,7 +179,7 @@ public class GameClient implements NetController {
 	public void startGame() {
 		// OK, this should be called within an opengl context, so we can create everything
 		controller = new GameController(gameConfig.mapName, players);
-		controller.LOG = controller.LOG + "#Client";
+		controller.LOG = controller.LOG + "#MPClient";
 		
 		sendStartGame();
 	}
