@@ -4,7 +4,6 @@
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/newui/uiskin.png" afterPath="$PROJECT_DIR$/assets/newui/uiskin.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameJoinScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameJoinScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameSetupScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameSetupScreen.java" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -99,7 +98,7 @@
       <file leaf-file-name="GameJoinScreen.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameJoinScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="101" column="47" selection-start="2843" selection-end="2882" vertical-scroll-proportion="0.4722222">
+            <state line="98" column="8" selection-start="2795" selection-end="2795" vertical-scroll-proportion="0.38368055">
               <folding />
             </state>
           </provider>
@@ -689,7 +688,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameJoinScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="47" selection-start="2843" selection-end="2882" vertical-scroll-proportion="0.4722222">
+        <state line="98" column="8" selection-start="2795" selection-end="2795" vertical-scroll-proportion="0.38368055">
           <folding />
         </state>
       </provider>

@@ -96,11 +96,10 @@ public class GameJoinScreen extends AbstractScreen {
 		table.add(btnConnect).size(150, 50).pad(4);
 		
 		table.row();
-		
-		
+
 		lblStatus = new Label("", getSkin());
 		table.add(lblStatus).colspan(2).pad(4);
-		
+
 		
 		btnCancel.addListener(new ClickListener() {
 
