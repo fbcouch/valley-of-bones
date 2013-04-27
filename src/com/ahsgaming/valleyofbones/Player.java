@@ -48,7 +48,7 @@ public class Player {
 	String name = "New Cadet";
 	
 	float bankMoney = 0, upkeep = 0;
-	float curFood = 0, maxFood = 0;
+	int curFood = 0, maxFood = 0;
 	
 	int teamId = 0;
 	
@@ -82,7 +82,7 @@ public class Player {
 	
 	public void updateFoodAndUpkeep(GameController controller, boolean updateBank) {
 		float upkeep = 0;
-		float food = 0, mFood = 0;
+		int food = 0, mFood = 0;
 		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
 			if (unit.getFood() < 0) mFood -= unit.getFood();
 			else food += unit.getFood();
@@ -240,28 +240,28 @@ public class Player {
 	/**
 	 * @return the curFood
 	 */
-	public float getCurFood() {
+	public int getCurFood() {
 		return curFood;
 	}
 
 	/**
 	 * @param curFood the curFood to set
 	 */
-	public void setCurFood(float curFood) {
+	public void setCurFood(int curFood) {
 		this.curFood = curFood;
 	}
 
 	/**
 	 * @return the maxFood
 	 */
-	public float getMaxFood() {
+	public int getMaxFood() {
 		return maxFood;
 	}
 
 	/**
 	 * @param maxFood the maxFood to set
 	 */
-	public void setMaxFood(float maxFood) {
+	public void setMaxFood(int maxFood) {
 		this.maxFood = maxFood;
 	}
 	

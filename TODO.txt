@@ -25,8 +25,8 @@ GOALS 2013-04-25
 + Implement networking stuff
 - Implement & Improve UI
     + Main menu
-    - SP setup
-    - MP setup
+    + SP setup
+    + MP setup
     - Game Over
     - Splash
     - HUD

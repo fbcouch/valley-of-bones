@@ -161,22 +161,9 @@ public class GameSetupScreen extends AbstractScreen {
 			table.row();
 		}
 		
-		if (config.isMulti) {
-			table.add(new Label("Spectators", getSkin())).left().colspan(2).colspan(7);
-		
-			table.row();
-			
-			//table.add(new List(new String[]{"Unmei: hello world!", "Unmei: line two..."}, getSkin())).fill();
-			
-			VerticalGroup vg = new VerticalGroup();
-			vg.setAlignment(Align.left);
-			vg.addActor(new Label("Unmei: hello world!", getSkin()));
-			vg.addActor(new Label("Unmei: line two...", getSkin()));
-			
-			table.add(new ScrollPane(vg)).fillX().colspan(5);
-		} else {
-			table.add().colspan(5);
-		}
+
+		table.add().colspan(5);
+
 		
 		if (!config.isMulti || config.isHost) {
 		TextButton start = new TextButton("Start Game",getSkin());
@@ -199,11 +186,9 @@ public class GameSetupScreen extends AbstractScreen {
 		}
 		table.row();
 		
-		if (config.isMulti) { 
-			table.add(new TextField("", getSkin())).fill().colspan(5);
-		} else {
-			table.add().colspan(5);
-		}
+
+		table.add().colspan(5);
+
 		
 		TextButton cancel = new TextButton("Cancel", getSkin());
 		cancel.addListener(new ClickListener() {
