@@ -22,9 +22,7 @@
  */
 package com.ahsgaming.valleyofbones.network;
 
-import com.ahsgaming.valleyofbones.AIPlayer;
 import com.ahsgaming.valleyofbones.GameResult;
-import com.ahsgaming.valleyofbones.Player;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
@@ -60,7 +58,7 @@ public class KryoCommon {
 		kryo.register(AddAIPlayer.class);
 		kryo.register(RemovePlayer.class);
 		kryo.register(StartGame.class);
-		kryo.register(SetupInfo.class);
+		kryo.register(GameDetails.class);
 		kryo.register(int[].class);
 		kryo.register(GameResult.class);
 	}
@@ -74,6 +72,7 @@ public class KryoCommon {
 		public String name;
 		public Color color;
 		public int team;
+        public boolean host;
 	}
 	
 	public static class AddAIPlayer {
@@ -86,7 +85,7 @@ public class KryoCommon {
 	
 	public static class StartGame { }
 	
-	public static class SetupInfo {
+	public static class GameDetails {
 		public String mapName = "blank.tmx";
 	}
 }

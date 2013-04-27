@@ -33,7 +33,6 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
-import com.ahsgaming.valleyofbones.network.KryoCommon.SetupInfo;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
@@ -97,7 +96,36 @@ public class GameClient implements NetController {
 			}
 			
 			public void received (Connection c, Object obj) {
-				if (controller != null) {
+                if (obj instanceof RegisteredPlayer) {
+                    RegisteredPlayer reg = (RegisteredPlayer)obj;
+                    playerId = reg.id;
+                    gameConfig.isHost = reg.host;
+                    Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
+                }
+
+                if (obj instanceof RegisteredPlayer[]) {
+                    Gdx.app.log(LOG, "Playerlist rec'd");
+                    RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
+                    players.clear();
+                    for (int p=0;p<plist.length;p++) {
+                        Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
+                        players.add(pl);
+                        if (pl.getPlayerId() == playerId) player = pl;
+                    }
+                }
+
+                if (obj instanceof KryoCommon.GameDetails) {
+
+                    gameConfig.mapName = ((KryoCommon.GameDetails) obj).mapName;
+
+                }
+
+                if (obj instanceof StartGame) {
+                    // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
+                    game.setLoadGame();
+                }
+
+                if (controller != null) {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
@@ -106,35 +134,7 @@ public class GameClient implements NetController {
 						}
 					}
 				}
-				
-				if (obj instanceof RegisteredPlayer) {
-					RegisteredPlayer reg = (RegisteredPlayer)obj;
-					playerId = reg.id;
-					Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
-				}
-				
-				if (obj instanceof RegisteredPlayer[]) {
-					Gdx.app.log(LOG, "Playerlist rec'd");
-					RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
-					players.clear();
-					for (int p=0;p<plist.length;p++) {
-						Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
-						players.add(pl);
-						if (pl.getPlayerId() == playerId) player = pl;
-					}
-				}
-				
-				if (obj instanceof StartGame) {
-					// we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
-					game.setLoadGame();
-				}
-				
-				if (obj instanceof SetupInfo) {
-					 
-					gameConfig.mapName = ((SetupInfo) obj).mapName;
-					
-				}
-				
+
 				if (obj instanceof GameResult) {
 					Gdx.app.log(LOG, "GameResult rec'd");
 					gameResult = (GameResult)obj;
@@ -177,7 +177,7 @@ public class GameClient implements NetController {
 	
 	public void startGame() {
 		// OK, this should be called within an opengl context, so we can create everything
-		controller = new GameController("", players);
+		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Client";
 		
 		lastTimeMillis = System.currentTimeMillis();
@@ -205,7 +205,7 @@ public class GameClient implements NetController {
 			client.stop();
 			return false;
 		}
-		
+
 		if (controller == null) return true;
 		
 		Gdx.app.log(LOG, controller.getState().toString());

@@ -35,7 +35,6 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
-import com.ahsgaming.valleyofbones.network.KryoCommon.SetupInfo;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
@@ -129,7 +128,7 @@ public class GameServer implements NetController {
 							team = 0;
 						}
 					}
-					
+
 					NetPlayer p = new NetPlayer(id, rp.name, use, team);
 					
 					players.add(p);
@@ -140,6 +139,7 @@ public class GameServer implements NetController {
 					reg.name = p.getPlayerName();
 					reg.color = p.getPlayerColor();
 					reg.team = p.getTeam();
+                    reg.host = (c == host);
 					server.sendToTCP(c.getID(), reg);
 					sendPlayerList();
 					sendSetupInfo();
@@ -164,11 +164,11 @@ public class GameServer implements NetController {
 					sendPlayerList();
 				}
 				
-				if (obj instanceof SetupInfo) {
+				if (obj instanceof KryoCommon.GameDetails) {
 					if (c != host) return;
 					
 					if (controller == null) {
-						gameConfig.mapName = ((SetupInfo)obj).mapName;
+						gameConfig.mapName = ((KryoCommon.GameDetails)obj).mapName;
 						sendSetupInfo();
 					}
 				}
@@ -200,12 +200,27 @@ public class GameServer implements NetController {
 			
 			public void disconnected (Connection c) {
 				Player p = connMap.get(c);
-				if (players.contains(p, true)) players.removeValue(p, true);
-				sendPlayerList();
-				
-				if (host == c) {
-					stopServer = true;
+				if (players.contains(p, true)) {
+                    players.removeValue(p, true);
+                    connMap.remove(c);
+                }
+
+				if (host == c && !gameStarted) {
+				    // find a new host
+                    if (players.size > 0) {
+                        p = players.get(0);
+                        host = connMap.findKey(p, true);
+                        RegisteredPlayer reg = new RegisteredPlayer();
+                        reg.id = p.getPlayerId();
+                        reg.name = p.getPlayerName();
+                        reg.color = p.getPlayerColor();
+                        reg.team = p.getTeam();
+                        reg.host = true;
+                        server.sendToTCP(c.getID(), reg);
+                    }
 				}
+
+                sendPlayerList();
 			}
 		});
 		
@@ -349,7 +364,7 @@ public class GameServer implements NetController {
 	}
 	
 	public void sendSetupInfo() {
-		SetupInfo si = new SetupInfo();
+		KryoCommon.GameDetails si = new KryoCommon.GameDetails();
 		si.mapName = gameConfig.mapName;
 		server.sendToAllTCP(si);
 	}

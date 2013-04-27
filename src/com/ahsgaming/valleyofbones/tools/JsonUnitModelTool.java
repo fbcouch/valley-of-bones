@@ -48,8 +48,8 @@ public class JsonUnitModelTool {
 		
 		boolean inPrototypes = false;
 		
-		try (BufferedReader reader = Files.newBufferedReader(Paths.get(file), Charset.forName("US-ASCII"))) {
-			
+		try  {
+            BufferedReader reader = Files.newBufferedReader(Paths.get(file), Charset.forName("US-ASCII"));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (!inPrototypes) { // read until we enter the 'prototypes class'
