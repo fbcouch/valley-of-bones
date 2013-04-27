@@ -151,12 +151,15 @@ public class VOBGame extends Game {
 
 
                 if (gameResult != null) {
+
                     this.setScreen(this.getGameOverScreen(gameResult));
                     gameResult = null;
+                    netController = null;
+                    gController = null;
                 }
             }
 
-            netController.update(Gdx.graphics.getDeltaTime());
+            if (netController != null) netController.update(Gdx.graphics.getDeltaTime());
         }
 	}
 
@@ -228,7 +231,7 @@ public class VOBGame extends Game {
 	}
 	
 	public GameOverScreen getGameOverScreen(GameResult result) {
-		return new GameOverScreen(this, result);
+		return new GameOverScreen(this, result, getPlayers());
 	}
 	
 	public Player getPlayer() {

@@ -54,8 +54,6 @@ public class SPGameClient implements NetController {
 
 	boolean stopClient = false;
 
-	GameResult gameResult = null;
-
 	/**
 	 *
 	 */
@@ -79,7 +77,7 @@ public class SPGameClient implements NetController {
 	
 	public void endGame() {
 		controller.setState(GameStates.GAMEOVER);
-		game.setGameResult(gameResult);
+		game.setGameResult(controller.getGameResult());
 	}
 	
 	public void stop() {
@@ -95,7 +93,7 @@ public class SPGameClient implements NetController {
         if (controller.isNextTurn() || controller.getTurnTimer() <= 0)
             controller.doTurn();
 
-        if (gameResult != null) {
+        if (controller.getGameResult() != null) {
             endGame();
             return false;
         }
