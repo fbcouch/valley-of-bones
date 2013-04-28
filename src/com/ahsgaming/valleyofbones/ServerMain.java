@@ -14,10 +14,10 @@ public class ServerMain {
 	 */
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Space Tactics";
+		cfg.title = "Valley of Bones SERVER";
 		cfg.useGL20 = true;
-		cfg.width = 1440;
-		cfg.height = 900;
+		cfg.width = 400;
+		cfg.height = 300;
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 		
