@@ -219,7 +219,7 @@ public class GameController {
         for (Player p: players) {
 			p.update(this);
 		}
-		
+
 		checkResult();
 		
 		if (gameResult != null) {

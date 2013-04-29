@@ -395,13 +395,6 @@ public class LevelScreen extends AbstractScreen {
 		
 		stage.addActor(grpLevel);
 		
-		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
-		pix.setColor(1, 1, 1, 1);
-		pix.drawRectangle(0, 0, pix.getWidth(), pix.getHeight());
-		Image test = new Image(new Texture(pix));
-		grpLevel.addActor(test);
-		
-		
 		// generate the score panel
 		grpScorePane = new Group();
 		mapScoreLbls = new ObjectMap<Player, Label>();
@@ -484,7 +477,8 @@ public class LevelScreen extends AbstractScreen {
 		
 		// draw a debug map
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
-		
+		gController.getMap().update(game.getPlayer(), gController);
+
 		// DRAW BOXES
 		drawSelectionBox();
 		drawUnitBoxes();
