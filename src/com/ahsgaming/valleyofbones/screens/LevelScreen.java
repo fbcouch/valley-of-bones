@@ -34,6 +34,8 @@ import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
+import com.ahsgaming.valleyofbones.screens.panels.BuildPanel;
+import com.ahsgaming.valleyofbones.screens.panels.Panel;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -92,7 +94,14 @@ public class LevelScreen extends AbstractScreen {
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
 
+    Panel buildPanel;
+    Panel upgradePanel;
+
 	private boolean vKeyDown;
+
+    boolean buildMode = false;
+    Prototypes.JsonProto buildProto = null;
+    Image buildImage = null;
 	
 	/**
 	 * @param game
@@ -309,6 +318,24 @@ public class LevelScreen extends AbstractScreen {
 			vKeyDown = false;
 		}
 	}
+
+    public void setBuildMode(Prototypes.JsonProto proto) {
+        if (game.getPlayer().canBuild(proto.id, gController)) {
+            buildMode = true;
+            buildProto = proto;
+            buildImage = new Image(TextureManager.getTexture(proto.image + ".png"));
+            buildImage.setColor(1, 1, 1, 0.5f);
+        }
+    }
+
+    public void unsetBuildMode() {
+        buildMode = false;
+        buildProto = null;
+        if (buildImage != null) {
+            buildImage.remove();
+            buildImage = null;
+        }
+    }
 	
 	
 	public Vector2 screenToMapCoords(float x, float y) {
@@ -361,6 +388,9 @@ public class LevelScreen extends AbstractScreen {
 		grpLevel = gController.getGroup();
 
 		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
+
+        buildPanel = new BuildPanel(game, this, "gear-hammer");
+        upgradePanel = new Panel(game, this, "tinker");
 	}
 	
 	@Override
@@ -410,7 +440,12 @@ public class LevelScreen extends AbstractScreen {
 		
 		stage.addActor(grpTurnPane);
 		
-		
+		// panels
+        stage.addActor(buildPanel);
+        buildPanel.setPosition(0, 0);
+
+        stage.addActor(upgradePanel);
+        upgradePanel.setPosition(0, 64);
 		
 		btnTurnDone.addListener(new ClickListener() {
 
@@ -470,8 +505,22 @@ public class LevelScreen extends AbstractScreen {
 		updateScorePane();
 		
 		updateTurnPane();
+
+        buildPanel.update(delta);
+        upgradePanel.update(delta);
 		
 		showCommandPreviews();
+
+        if (buildImage != null) buildImage.remove();
+        if (buildMode) {
+            grpLevel.addActor(buildImage);
+
+            Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+            loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
+            loc = gController.getMap().boardToMapCoords(loc.x, loc.y);
+
+            buildImage.setPosition(loc.x, loc.y);
+        }
 		
 		// easy exit for debug purposes
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && VOBGame.DEBUG) {
