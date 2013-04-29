@@ -28,18 +28,24 @@ public class BuildPanel extends Panel {
     @Override
     public void update(float delta) {
         super.update(delta);
+
+        // need to get all the buildings this guy can build
+        Array<Prototypes.JsonProto> items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
+        if (!items.equals(this.items)) {
+            this.items = items;
+            dirty = true;
+        }
+
     }
 
     @Override
     public void rebuild() {
         super.rebuild();
 
-        // need to get all the buildings this guy can build
-        Array<Prototypes.JsonProto> protos = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
 
         int x = 0, i = 0;
         int spacing = 4;
-        for (Prototypes.JsonProto jp: protos) {
+        for (Prototypes.JsonProto jp: items) {
             final Image btn;
             btn = new Image(TextureManager.getTexture(jp.image + ".png"));
             this.addActor(btn);
@@ -62,9 +68,12 @@ public class BuildPanel extends Panel {
     }
 
     @Override
-    public void buttonClicked(Image button) {
+    public boolean buttonClicked(Image button) {
+        if (super.buttonClicked(button)) return true;
+
         Prototypes.JsonProto jp = buttonMap.get(button);
 
         levelScreen.setBuildMode(jp);
+        return true;
     }
 }

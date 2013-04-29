@@ -5,8 +5,11 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -25,19 +28,26 @@ public class Panel extends Group {
     Image icon;
     boolean horizontal = true;
 
+    boolean expanded = true;
+    boolean built = false;
+    boolean dirty = false;
+
     ObjectMap<Image, Prototypes.JsonProto> buttonMap;
+    Array<Prototypes.JsonProto> items;
 
     public Panel(VOBGame game, LevelScreen levelScreen, String icon) {
         this.game = game;
         this.icon = new Image(TextureManager.getTexture(icon + ".png"));
         this.levelScreen = levelScreen;
         this.buttonMap = new ObjectMap<Image, Prototypes.JsonProto>();
+        this.items = new Array<Prototypes.JsonProto>();
+
     }
 
     public void update(float delta) {
         // TODO optimize this
 
-        rebuild();
+        if (!built || dirty) rebuild();
     }
 
     public void rebuild() {
@@ -45,9 +55,43 @@ public class Panel extends Group {
 
         this.addActor(icon);
         icon.setPosition(0, 0);
+        icon.getListeners().clear();
+        this.icon.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                buttonClicked(icon);
+            }
+        });
+        built = true;
+        dirty = false;
     }
 
-    public void buttonClicked(Image button) {
+    public boolean buttonClicked(Image button) {
+        if (button == icon) {
+            toggle();
+            return true;
+        }
+        return false;
+    }
 
+    public void expand() {
+        if (expanded) return;
+
+        expanded = true;
+        this.clearActions();
+        this.addAction(Actions.moveTo(0, getY(), 0.5f));
+    }
+
+    public void contract() {
+        if (!expanded) return;
+
+        expanded = false;
+        this.clearActions();
+        this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
+    }
+
+    public void toggle() {
+        if (expanded) contract(); else expand();
     }
 }

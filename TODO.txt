@@ -29,8 +29,20 @@ GOALS 2013-04-25
     + MP setup
     ~ Game Over
     - Splash
-    - HUD
-
+- HUD
+    - Panel
+        - tracks elements & passes input to levelscreen as needed
+        - auto-sizes
+        + slides in & out from side
+        - horizontal vs vertical
+    - BuildPanel
+        - currently available buildings, accessible with b key or click
+        - display food/money cost
+    - UpgradePanel
+        - currently available upgrades, accessible with v key or click
+        - display cost
+    - InfoPanel
+        - displays current selected unit information (health, stats) 
 
 GOALS 2013-04-26
 - Start adding content!
