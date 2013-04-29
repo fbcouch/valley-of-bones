@@ -238,7 +238,10 @@ public class LevelScreen extends AbstractScreen {
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
 			rightBtnDown = true;
 		} else {
-			if (rightBtnDown && gController.getSelectedObject() != null) {
+
+            if (rightBtnDown && buildMode) {
+                unsetBuildMode();
+            } else if (rightBtnDown && gController.getSelectedObject() != null) {
 				// TODO issue context-dependent commands
 				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
