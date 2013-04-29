@@ -1,6 +1,9 @@
-SPACE TACTICS
-An AHS Gaming Production
-(c) 2012 Jami Couch
+# VALLEY OF BONES #
+
+__An AHS Gaming Production__
+
+(c) 2013 Jami Couch
+
 fbcouch 'at' gmail 'dot' com
 
 Full source code available from:
@@ -39,7 +42,7 @@ This game was built with Java 7, so you may need to update your Java installatio
 Otherwise, it should just run when you double-click the icon.
 Alternatively, you may use the following command in a CLI:
 
-	java -jar SpaceTactics.jar
+	java -jar ValleyOfBones.jar
 
 
 
