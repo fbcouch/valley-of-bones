@@ -2,9 +2,7 @@ package com.ahsgaming.valleyofbones.units;
 
 import java.util.ArrayList;
 
-import com.ahsgaming.valleyofbones.Utils;
-import com.ahsgaming.valleyofbones.VOBGame;
-import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -23,6 +21,14 @@ public class Prototypes {
 		
 		return protos.get(id);
 	}
+
+    public static Array<JsonProto> getPlayerCanBuild(Player p, GameController gc) {
+        Array<JsonProto> returnVal = new Array<JsonProto>();
+        for (JsonProto jp: protos.values()) {
+            if ((jp.type.equals("building") || jp.type.equals("unit")) && p.canBuild(jp.id, gc)) returnVal.add(jp);
+        }
+        return returnVal;
+    }
 	
 	public static class JsonProto {
 		public String id = "";

@@ -34,6 +34,8 @@ import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
+import com.ahsgaming.valleyofbones.screens.panels.BuildPanel;
+import com.ahsgaming.valleyofbones.screens.panels.Panel;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -92,7 +94,14 @@ public class LevelScreen extends AbstractScreen {
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
 
-	private boolean vKeyDown;
+    Panel buildPanel;
+    Panel upgradePanel;
+
+	private boolean vKeyDown = false, bKeyDown = false;
+
+    boolean buildMode = false;
+    Prototypes.JsonProto buildProto = null;
+    Image buildImage = null;
 	
 	/**
 	 * @param game
@@ -204,26 +213,19 @@ public class LevelScreen extends AbstractScreen {
 		Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
 		
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			// TODO fix this - should be able to press (not hold) a key to build
-			
-			
-			if (Gdx.input.isKeyPressed(Keys.B)){
-				// TODO more buttons for more things
-				
-				Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-				
-				loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
-				
-				// TODO should get whether the square is open or not
-				
-				if (game.getPlayer().canBuild("marine-base", gController) && gController.isBoardPosEmpty(loc)) {
+
+			if (buildMode){
+
+				if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos)) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.turn = gController.getGameTurn();
-					bld.building = "marine-base";
-					bld.location = loc;
+					bld.building = buildProto.id;
+					bld.location = boardPos;
 					game.sendCommand(bld);
+                    if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
 				}
+
 			} else {						
 				gController.selectObjAtBoardPos(boardPos);
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
@@ -236,7 +238,10 @@ public class LevelScreen extends AbstractScreen {
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
 			rightBtnDown = true;
 		} else {
-			if (rightBtnDown && gController.getSelectedObject() != null) {
+
+            if (rightBtnDown && buildMode) {
+                unsetBuildMode();
+            } else if (rightBtnDown && gController.getSelectedObject() != null) {
 				// TODO issue context-dependent commands
 				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
@@ -282,23 +287,23 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 		
-		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
-			vKeyDown = true;
-		
-			GameObject obj = gController.getSelectedObject();
-			if (obj instanceof Unit) {
-				Unit u = (Unit)obj;
-				
-				if (game.getPlayer().canUpgrade(u, "attack-upgrade-1", gController)) {
-					Upgrade upg = new Upgrade();
-					upg.turn = gController.getGameTurn();
-					upg.owner = game.getPlayer().getPlayerId();
-					upg.unit = u.getObjId();
-					upg.upgrade = "attack-upgrade-1";
-					
-					game.sendCommand(upg);
-				}
-			}
+		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
+
+            if (Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
+                vKeyDown = true;
+
+                upgradePanel.toggle();
+			} else {
+                vKeyDown = false;
+            }
+
+            if (Gdx.input.isKeyPressed(Keys.B) && !bKeyDown) {
+                bKeyDown = true;
+
+                buildPanel.toggle();
+            } else {
+                bKeyDown = false;
+            }
 			
 		}
 		
@@ -309,6 +314,24 @@ public class LevelScreen extends AbstractScreen {
 			vKeyDown = false;
 		}
 	}
+
+    public void setBuildMode(Prototypes.JsonProto proto) {
+        if (game.getPlayer().canBuild(proto.id, gController)) {
+            buildMode = true;
+            buildProto = proto;
+            buildImage = new Image(TextureManager.getTexture(proto.image + ".png"));
+            buildImage.setColor(1, 1, 1, 0.5f);
+        }
+    }
+
+    public void unsetBuildMode() {
+        buildMode = false;
+        buildProto = null;
+        if (buildImage != null) {
+            buildImage.remove();
+            buildImage = null;
+        }
+    }
 	
 	
 	public Vector2 screenToMapCoords(float x, float y) {
@@ -361,6 +384,9 @@ public class LevelScreen extends AbstractScreen {
 		grpLevel = gController.getGroup();
 
 		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
+
+        buildPanel = new BuildPanel(game, this, "gear-hammer");
+        upgradePanel = new Panel(game, this, "tinker");
 	}
 	
 	@Override
@@ -410,7 +436,12 @@ public class LevelScreen extends AbstractScreen {
 		
 		stage.addActor(grpTurnPane);
 		
-		
+		// panels
+        stage.addActor(buildPanel);
+        buildPanel.setPosition(0, 0);
+
+        stage.addActor(upgradePanel);
+        upgradePanel.setPosition(0, 64);
 		
 		btnTurnDone.addListener(new ClickListener() {
 
@@ -470,8 +501,22 @@ public class LevelScreen extends AbstractScreen {
 		updateScorePane();
 		
 		updateTurnPane();
+
+        buildPanel.update(delta);
+        upgradePanel.update(delta);
 		
 		showCommandPreviews();
+
+        if (buildImage != null) buildImage.remove();
+        if (buildMode) {
+            grpLevel.addActor(buildImage);
+
+            Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+            loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
+            loc = gController.getMap().boardToMapCoords(loc.x, loc.y);
+
+            buildImage.setPosition(loc.x, loc.y);
+        }
 		
 		// easy exit for debug purposes
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && VOBGame.DEBUG) {
