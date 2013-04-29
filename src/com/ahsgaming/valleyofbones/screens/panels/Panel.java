@@ -28,7 +28,7 @@ public class Panel extends Group {
     Image icon;
     boolean horizontal = true;
 
-    boolean expanded = true;
+    boolean expanded = false;
     boolean built = false;
     boolean dirty = false;
 
@@ -48,6 +48,8 @@ public class Panel extends Group {
         // TODO optimize this
 
         if (!built || dirty) rebuild();
+
+
     }
 
     public void rebuild() {
@@ -65,6 +67,7 @@ public class Panel extends Group {
         });
         built = true;
         dirty = false;
+
     }
 
     public boolean buttonClicked(Image button) {

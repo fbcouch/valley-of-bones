@@ -65,6 +65,8 @@ public class BuildPanel extends Panel {
 
         icon.setPosition(x, 0);
         this.setWidth(x + icon.getWidth());
+
+        if (expanded) setPosition(0, getY()); else setPosition(-1 * icon.getX(), getY());
     }
 
     @Override
