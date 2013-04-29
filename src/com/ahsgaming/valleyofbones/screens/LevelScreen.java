@@ -97,7 +97,7 @@ public class LevelScreen extends AbstractScreen {
     Panel buildPanel;
     Panel upgradePanel;
 
-	private boolean vKeyDown;
+	private boolean vKeyDown = false, bKeyDown = false;
 
     boolean buildMode = false;
     Prototypes.JsonProto buildProto = null;
@@ -287,23 +287,23 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 		
-		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
-			vKeyDown = true;
-		
-			GameObject obj = gController.getSelectedObject();
-			if (obj instanceof Unit) {
-				Unit u = (Unit)obj;
-				
-				if (game.getPlayer().canUpgrade(u, "attack-upgrade-1", gController)) {
-					Upgrade upg = new Upgrade();
-					upg.turn = gController.getGameTurn();
-					upg.owner = game.getPlayer().getPlayerId();
-					upg.unit = u.getObjId();
-					upg.upgrade = "attack-upgrade-1";
-					
-					game.sendCommand(upg);
-				}
-			}
+		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
+
+            if (Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
+                vKeyDown = true;
+
+                upgradePanel.toggle();
+			} else {
+                vKeyDown = false;
+            }
+
+            if (Gdx.input.isKeyPressed(Keys.B) && !bKeyDown) {
+                bKeyDown = true;
+
+                buildPanel.toggle();
+            } else {
+                bKeyDown = false;
+            }
 			
 		}
 		
