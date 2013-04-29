@@ -213,26 +213,19 @@ public class LevelScreen extends AbstractScreen {
 		Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
 		
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			// TODO fix this - should be able to press (not hold) a key to build
-			
-			
-			if (Gdx.input.isKeyPressed(Keys.B)){
-				// TODO more buttons for more things
-				
-				Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-				
-				loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
-				
-				// TODO should get whether the square is open or not
-				
-				if (game.getPlayer().canBuild("marine-base", gController) && gController.isBoardPosEmpty(loc)) {
+
+			if (buildMode){
+
+				if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos)) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.turn = gController.getGameTurn();
-					bld.building = "marine-base";
-					bld.location = loc;
+					bld.building = buildProto.id;
+					bld.location = boardPos;
 					game.sendCommand(bld);
+                    if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
 				}
+
 			} else {						
 				gController.selectObjAtBoardPos(boardPos);
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
