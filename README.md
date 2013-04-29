@@ -1,13 +1,15 @@
 # VALLEY OF BONES #
 
-__An AHS Gaming Production__
+**An AHS Gaming Production**
 
-(c) 2013 Jami Couch
+_(c) 2013 Jami Couch_
 
 fbcouch 'at' gmail 'dot' com
 
 Full source code available from:
 	www.ahsgaming.com
+
+## LICENSE ##
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +23,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-This project uses:
+## LIBRARIES ##
 
 LibGDX		http://libgdx.badlogicgames.com
 Copyright 2011, Mario Zechner and Nathan Sweet
@@ -34,9 +36,21 @@ See New BSD License at
 
 	   http://opensource.org/licenses/BSD-3-Clause
 
+## ARTWORK ##
+
+The font art assets used were created by Kenney, Inc. licensed as CC-SA.
+	http://kenney.nl/
+	
+Several icons used were licensed from game-icons.net:
+- "Tread Icon" by Lorc, CC-BY
+
+- "Gear Hammer Icon" by Lorc, CC-BY
+
+- "Tinker Icon" by Lorc, CC-BY
+
 All other art assets are original creations by Jami Couch and are licensed as CC-BY-SA.
 
-RUNNING THE GAME
+## RUNNING THE GAME ##
 
 This game was built with Java 7, so you may need to update your Java installation (www.java.com).
 Otherwise, it should just run when you double-click the icon.
