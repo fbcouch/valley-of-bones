@@ -7,6 +7,7 @@ _(c) 2013 Jami Couch_
 fbcouch 'at' gmail 'dot' com
 
 Full source code available from:
+	
 	www.ahsgaming.com
 
 ## LICENSE ##
@@ -42,6 +43,7 @@ The font art assets used were created by Kenney, Inc. licensed as CC-SA.
 	http://kenney.nl/
 	
 Several icons used were licensed from game-icons.net:
+
 - "Tread Icon" by Lorc, CC-BY
 
 - "Gear Hammer Icon" by Lorc, CC-BY
