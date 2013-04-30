@@ -42,7 +42,9 @@ GOALS 2013-04-25
         - currently available upgrades, accessible with v key or click
         - display cost
     - InfoPanel
-        - displays current selected unit information (health, stats) 
+        - displays current selected unit information (health, stats)
+    + map highlighting
+    + Fog of War 
 
 GOALS 2013-04-26
 - Start adding content!

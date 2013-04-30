@@ -141,12 +141,32 @@ public class HexMap {
         if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
     }
 
-    public void highlightArea(Vector2 center, int radius) {
+    public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
+        Array<Unit> units = currentController.getUnits();
+
         for (int i=0;i<boardSquares.length;i++) {
             Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
             if (isBoardPositionVisible(pos) && getMapDist(center, pos) <= radius) {
                 highlighted.add(boardSquares[i]);
                 boardSquares[i].setColor(HIGHLIGHT);
+
+                for (Unit u: units) {
+                    if (u.getBoardPosition().epsilonEquals(pos, 0.1f)) {
+                        dimmed.add(boardSquares[i]);
+                        boardSquares[i].setColor(DIMMED);
+                    }
+                }
+            }
+        }
+    }
+
+    public void dimIfHighlighted(Array<Vector2> positions) {
+        dimmed.clear();
+        for (Vector2 p: positions) {
+            Image square = boardSquares[(int)p.y % (int)bounds.x + (int)p.x];
+            if (highlighted.contains(square, true)) {
+                dimmed.add(square);
+                square.setColor(DIMMED);
             }
         }
     }

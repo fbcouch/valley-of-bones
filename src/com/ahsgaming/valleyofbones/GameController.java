@@ -451,6 +451,15 @@ public class GameController {
 		
 		grpUnits.removeActor(obj);
 	}
+
+    public Array<Unit> getUnits() {
+        Array<Unit> ret = new Array<Unit>();
+
+        for (GameObject obj: gameObjects) {
+            if(obj instanceof Unit) ret.add((Unit)obj);
+        }
+        return ret;
+    }
 	
 	public Array<GameObject> getGameObjects() {
 		Array<GameObject> ret = new Array<GameObject>();

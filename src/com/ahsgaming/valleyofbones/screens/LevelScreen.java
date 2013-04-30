@@ -237,7 +237,7 @@ public class LevelScreen extends AbstractScreen {
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 					Unit u = (Unit)gController.getSelectedObject();
 					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMoveSpeed());
+                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMoveSpeed(), true);
 				}
 			}
 		}
@@ -491,7 +491,7 @@ public class LevelScreen extends AbstractScreen {
 
         // clear highlighting if necessary
         if (gController.getSelectedObject() != lastSelected)
-            gController.getMap().clearHighlight();
+            gController.getMap().clearHighlightAndDim();
 
         lastSelected = gController.getSelectedObject();
 
