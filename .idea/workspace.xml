@@ -16,7 +16,7 @@
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
     <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367279176523" ignored="false" />
     <file path="/EndTurn.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367090717362" ignored="false" />
-    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367280126285" ignored="false" />
+    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367281132389" ignored="false" />
     <file path="/MainMenuScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096167407" ignored="false" />
     <file path="/AbstractScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096049398" ignored="false" />
     <file path="/GameSetupScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367103802853" ignored="false" />
@@ -28,7 +28,7 @@
     <file path="/BuildPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367266512443" ignored="false" />
     <file path="/Panel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367266925352" ignored="false" />
     <file path="/Prototypes.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367251247967" ignored="false" />
-    <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367280038468" ignored="false" />
+    <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367280699135" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,7 @@
       <file leaf-file-name="LevelScreen.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="298" column="41" selection-start="11266" selection-end="11266" vertical-scroll-proportion="0.29580152">
+            <state line="494" column="8" selection-start="16993" selection-end="16993" vertical-scroll-proportion="8.234733">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -108,7 +108,7 @@
       <file leaf-file-name="HexMap.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="181" column="77" selection-start="5812" selection-end="5812" vertical-scroll-proportion="0.0">
+            <state line="140" column="8" selection-start="4838" selection-end="4838" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -814,14 +814,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="181" column="77" selection-start="5812" selection-end="5812" vertical-scroll-proportion="0.0">
+        <state line="140" column="8" selection-start="4838" selection-end="4838" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="298" column="41" selection-start="11266" selection-end="11266" vertical-scroll-proportion="0.29580152">
+        <state line="494" column="8" selection-start="16993" selection-end="16993" vertical-scroll-proportion="8.234733">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

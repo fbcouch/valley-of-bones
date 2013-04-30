@@ -61,6 +61,9 @@ public class HexMap {
 
     Array<Image> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
     Array<Image> dimmed;
+
+    Player currentPlayer;
+    GameController currentController;
 	
 	/**
 	 * 
@@ -104,6 +107,9 @@ public class HexMap {
 	}
 
     public void update(Player player, GameController controller) {
+        currentPlayer = player;
+        currentController = controller;
+
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units = controller.getUnitsByPlayerId(player.getPlayerId());
         for (int i=0; i<boardSquares.length; i++) {
@@ -116,6 +122,32 @@ public class HexMap {
             if (highlighted.contains(bsq, true)) bsq.setColor(HIGHLIGHT);
 
             if (dimmed.contains(bsq, true)) bsq.setColor(DIMMED);
+        }
+    }
+
+    public void clearHighlight() {
+        highlighted.clear();
+        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+    }
+
+    public void clearDim() {
+        dimmed.clear();
+        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+    }
+
+    public void clearHighlightAndDim() {
+        highlighted.clear();
+        dimmed.clear();
+        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+    }
+
+    public void highlightArea(Vector2 center, int radius) {
+        for (int i=0;i<boardSquares.length;i++) {
+            Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
+            if (isBoardPositionVisible(pos) && getMapDist(center, pos) <= radius) {
+                highlighted.add(boardSquares[i]);
+                boardSquares[i].setColor(HIGHLIGHT);
+            }
         }
     }
 

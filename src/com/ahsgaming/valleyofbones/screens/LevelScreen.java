@@ -102,6 +102,8 @@ public class LevelScreen extends AbstractScreen {
     boolean buildMode = false;
     Prototypes.JsonProto buildProto = null;
     Image buildImage = null;
+
+    GameObject lastSelected = null;
 	
 	/**
 	 * @param game
@@ -235,6 +237,7 @@ public class LevelScreen extends AbstractScreen {
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 					Unit u = (Unit)gController.getSelectedObject();
 					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
+                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMoveSpeed());
 				}
 			}
 		}
@@ -485,6 +488,13 @@ public class LevelScreen extends AbstractScreen {
 
         // dim units based on whether the player can see them
         dimUnits();
+
+        // clear highlighting if necessary
+        if (gController.getSelectedObject() != lastSelected)
+            gController.getMap().clearHighlight();
+
+        lastSelected = gController.getSelectedObject();
+
 
 		// DRAW BOXES
 		drawUnitBoxes();
