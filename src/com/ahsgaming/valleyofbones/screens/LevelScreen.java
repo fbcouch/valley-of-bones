@@ -127,14 +127,18 @@ public class LevelScreen extends AbstractScreen {
 		if (posCamera.y > map.getHeight() * map.getTileHeight() * 0.75) posCamera.y = map.getHeight() * map.getTileHeight() * 0.75f;
 	}
 	
-	private void drawSelectionBox() {
-		if (!(boxOrigin == null || boxFinal == null)) {
-			shapeRenderer.begin(ShapeType.Rectangle);
-			shapeRenderer.setColor(1, 1, 1, 1);
-			Vector2 start = mapToScreenCoords(boxOrigin.x, boxOrigin.y), end = mapToScreenCoords(boxFinal.x, boxFinal.y);
-			shapeRenderer.rect(start.x, start.y, end.x - start.x, end.y - start.y);
-			shapeRenderer.end();
-		}
+	private void dimUnits() {
+		for (GameObject o: gController.getGameObjects()) {
+            if (o instanceof Unit) {
+                Unit u = (Unit)o;
+
+                if (u.getOwner().getPlayerId() == game.getPlayer().getPlayerId()) {
+                    u.setVisible(true);
+                } else {
+                    u.setVisible(gController.getMap().isBoardPositionVisible(u.getBoardPosition()));
+                }
+            }
+        }
 	}
 	
 	private void drawUnitBoxes() {
@@ -289,18 +293,18 @@ public class LevelScreen extends AbstractScreen {
 		
 		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
-            if (Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
-                vKeyDown = true;
+            if (Gdx.input.isKeyPressed(Keys.V)) {
+                if (!vKeyDown) upgradePanel.toggle();
 
-                upgradePanel.toggle();
+                vKeyDown = true;
 			} else {
                 vKeyDown = false;
             }
 
-            if (Gdx.input.isKeyPressed(Keys.B) && !bKeyDown) {
-                bKeyDown = true;
+            if (Gdx.input.isKeyPressed(Keys.B)) {
+                if (!bKeyDown) buildPanel.toggle();
 
-                buildPanel.toggle();
+                bKeyDown = true;
             } else {
                 bKeyDown = false;
             }
@@ -479,8 +483,10 @@ public class LevelScreen extends AbstractScreen {
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
 		gController.getMap().update(game.getPlayer(), gController);
 
+        // dim units based on whether the player can see them
+        dimUnits();
+
 		// DRAW BOXES
-		drawSelectionBox();
 		drawUnitBoxes();
 
 		// move the camera around

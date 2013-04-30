@@ -117,10 +117,6 @@ public class HexMap {
 
             if (dimmed.contains(bsq, true)) bsq.setColor(DIMMED);
         }
-
-
-
-
     }
 
 	public int getWidth() {
@@ -173,6 +169,18 @@ public class HexMap {
 		}
 		return mapGroup;
 	}
+
+    public boolean isBoardPositionVisible(Vector2 pos) {
+        return isBoardPositionVisible((int)pos.x, (int)pos.y);
+    }
+
+    public boolean isBoardPositionVisible(float x, float y) {
+        return isBoardPositionVisible((int)x, (int)y);
+    }
+
+    public boolean isBoardPositionVisible(int x, int y) {
+        return (!boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
+    }
 	
 	public void drawDebug(Vector2 offset) {
 		ShapeRenderer renderer = new ShapeRenderer();
