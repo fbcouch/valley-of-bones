@@ -180,8 +180,8 @@ public class GameServer implements NetController {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
 
-                        // discard past, future, or invalid commands
-						if (cmd.turn == controller.getGameTurn() && controller.validate(cmd)) {
+                        // discard past, future, invalid, or duplicated commands
+						if (cmd.turn == controller.getGameTurn() && !controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
 							controller.queueCommand(cmd);
 							server.sendToAllTCP(cmd);
 						}
