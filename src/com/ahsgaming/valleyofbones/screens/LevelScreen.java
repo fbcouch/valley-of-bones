@@ -222,7 +222,7 @@ public class LevelScreen extends AbstractScreen {
 
 			if (buildMode){
 
-				if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos)) {
+				if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
 					Build bld = new Build();
 					bld.owner = game.getPlayer().getPlayerId();
 					bld.turn = gController.getGameTurn();
