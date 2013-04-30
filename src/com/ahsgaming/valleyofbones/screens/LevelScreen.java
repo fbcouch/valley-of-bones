@@ -159,38 +159,6 @@ public class LevelScreen extends AbstractScreen {
 			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.75f, base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f);
 			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f, base.x + gController.getMap().getTileWidth() * 0.5f, base.y);
 			shapeRenderer.end();
-			
-			shapeRenderer.begin(ShapeType.FilledRectangle);
-			// TODO move this elsewhere?
-			if (obj instanceof Unit) {
-				for (Command cmd: ((Unit)obj).getCommandQueue()) {
-					Vector2 point = null;
-					if (cmd instanceof Attack) {
-						Unit target = (Unit) gController.getObjById(((Attack) cmd).target);
-						if (target != null) {
-							point = target.getPosition("center");
-						}
-					} else if (cmd instanceof Move) {
-						point = ((Move)cmd).toLocation;
-					}
-					
-					if (point != null) {
-						point = mapToScreenCoords(point.x, point.y);
-						
-						shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-						shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
-					}
-				}
-			} else {
-				for (Vector2 waypt: obj.getPath()) {
-					Vector2 point = mapToScreenCoords(waypt.x, waypt.y);
-					
-					shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-					shapeRenderer.filledRect(point.x - 5, point.y - 5, 10, 10);
-					
-				}
-			}
-			shapeRenderer.end();
 		}
 	}
 	
