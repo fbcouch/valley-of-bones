@@ -248,12 +248,12 @@ public class LevelScreen extends AbstractScreen {
 
             if (rightBtnDown && buildMode) {
                 unsetBuildMode();
-            } else if (rightBtnDown && gController.getSelectedObject() != null) {
+            } else if (rightBtnDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 				// TODO issue context-dependent commands
 				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
-				GameObject obj= gController.getSelectedObject();
+				Unit unit = (Unit)gController.getSelectedObject();
 				if (objsUnderCursor == null) {
 					objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
 				
@@ -270,7 +270,7 @@ public class LevelScreen extends AbstractScreen {
 					Attack at = new Attack();
 					at.owner = game.getPlayer().getPlayerId();
 					at.turn = gController.getGameTurn();
-					at.unit = obj.getObjId();
+					at.unit = unit.getObjId();
 					at.target = target.getObjId();
 					at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					
@@ -278,11 +278,11 @@ public class LevelScreen extends AbstractScreen {
 					game.sendCommand(at);
 				} else {
 					// move to this location
-					if (gController.isBoardPosEmpty(boardPos)) {
+					if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMoveSpeed()) {
 						Move mv = new Move();
 						mv.owner = game.getPlayer().getPlayerId();
 						mv.turn = gController.getGameTurn();
-						mv.unit = obj.getObjId();
+						mv.unit = unit.getObjId();
 						mv.toLocation = boardPos;
 						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
 						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
