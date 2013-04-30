@@ -24,7 +24,11 @@ package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
 
+import com.ahsgaming.valleyofbones.GameController;
+import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,12 +36,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
  *
  */
 public class HexMap {
+    public static final String LOG = "HexMap";
+
+    public static final Color HIGHLIGHT = new Color(1, 1, 1, 1);
+    public static final Color NORMAL = new Color(0.8f, 0.8f, 0.8f, 1);
+    public static final Color DIMMED = new Color(0.6f, 0.6f, 0.6f, 1);
+    public static final Color FOG = new Color(0.4f, 0.4f, 0.4f, 1);
 
 	ArrayList<Vector2> controlPoints;
 	ArrayList<Vector2> playerSpawns;
@@ -46,6 +57,13 @@ public class HexMap {
 	
 	Group mapGroup;
 	TextureRegion dirtTexture;
+    Image[] boardSquares;
+
+    Array<Image> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
+    Array<Image> dimmed;
+
+    Player currentPlayer;
+    GameController currentController;
 	
 	/**
 	 * 
@@ -81,11 +99,78 @@ public class HexMap {
 		
 		current.add(thingDist);
 		playerSpawns.add(new Vector2(current.x - 1 - (thingDist.x > 0 ? (thingDist.x / thingDist.x) : 0), current.y - (thingDist.y > 0 ? (thingDist.y / thingDist.y) : 0)));
+
+        boardSquares = new Image[width * height];
+        highlighted = new Array<Image>();
+        dimmed = new Array<Image>();
 		
 	}
-	
-	
-	
+
+    public void update(Player player, GameController controller) {
+        currentPlayer = player;
+        currentController = controller;
+
+        // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
+        Array<Unit> units = controller.getUnitsByPlayerId(player.getPlayerId());
+        for (int i=0; i<boardSquares.length; i++) {
+            Image bsq = boardSquares[i];
+            bsq.setColor(FOG);
+            for (Unit u: units)
+                if (getMapDist(u.getBoardPosition(), new Vector2(i % bounds.x, (int) (i / bounds.x))) <= u.getAttackRange())
+                    bsq.setColor(NORMAL);
+
+            if (highlighted.contains(bsq, true)) bsq.setColor(HIGHLIGHT);
+
+            if (dimmed.contains(bsq, true)) bsq.setColor(DIMMED);
+        }
+    }
+
+    public void clearHighlight() {
+        highlighted.clear();
+        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+    }
+
+    public void clearDim() {
+        dimmed.clear();
+        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+    }
+
+    public void clearHighlightAndDim() {
+        highlighted.clear();
+        dimmed.clear();
+        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+    }
+
+    public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
+        Array<Unit> units = currentController.getUnits();
+
+        for (int i=0;i<boardSquares.length;i++) {
+            Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
+            if (isBoardPositionVisible(pos) && getMapDist(center, pos) <= radius) {
+                highlighted.add(boardSquares[i]);
+                boardSquares[i].setColor(HIGHLIGHT);
+
+                for (Unit u: units) {
+                    if (u.getBoardPosition().epsilonEquals(pos, 0.1f)) {
+                        dimmed.add(boardSquares[i]);
+                        boardSquares[i].setColor(DIMMED);
+                    }
+                }
+            }
+        }
+    }
+
+    public void dimIfHighlighted(Array<Vector2> positions) {
+        dimmed.clear();
+        for (Vector2 p: positions) {
+            Image square = boardSquares[(int)p.y % (int)bounds.x + (int)p.x];
+            if (highlighted.contains(square, true)) {
+                dimmed.add(square);
+                square.setColor(DIMMED);
+            }
+        }
+    }
+
 	public int getWidth() {
 		return (int)bounds.x;
 	}
@@ -129,11 +214,25 @@ public class HexMap {
 					Vector2 pos = this.boardToMapCoords(x, y);
 					img.setPosition(pos.x, pos.y);
 					mapGroup.addActor(img);
+                    img.setColor(FOG);
+                    boardSquares[(int)bounds.x * y + x] = img;
 				}
 			}
 		}
 		return mapGroup;
 	}
+
+    public boolean isBoardPositionVisible(Vector2 pos) {
+        return isBoardPositionVisible((int)pos.x, (int)pos.y);
+    }
+
+    public boolean isBoardPositionVisible(float x, float y) {
+        return isBoardPositionVisible((int)x, (int)y);
+    }
+
+    public boolean isBoardPositionVisible(int x, int y) {
+        return (!boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
+    }
 	
 	public void drawDebug(Vector2 offset) {
 		ShapeRenderer renderer = new ShapeRenderer();

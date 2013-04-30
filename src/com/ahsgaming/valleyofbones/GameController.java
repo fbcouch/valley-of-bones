@@ -219,7 +219,7 @@ public class GameController {
         for (Player p: players) {
 			p.update(this);
 		}
-		
+
 		checkResult();
 		
 		if (gameResult != null) {
@@ -296,7 +296,11 @@ public class GameController {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
 		} else if (cmd instanceof Move) {
-			return true;
+			Move m = (Move)cmd;
+            GameObject o = getObjById(m.unit);
+            if (!(o instanceof Unit)) return false;
+            Unit u = (Unit)o;
+            return (u.getOwner().getPlayerId() == m.owner && isBoardPosEmpty(m.toLocation) && map.getMapDist(u.getBoardPosition(), m.toLocation) <= u.getMoveSpeed());
 		} else if (cmd instanceof Pause) {
 			return true;
 		} else if (cmd instanceof Unpause) {
@@ -447,6 +451,15 @@ public class GameController {
 		
 		grpUnits.removeActor(obj);
 	}
+
+    public Array<Unit> getUnits() {
+        Array<Unit> ret = new Array<Unit>();
+
+        for (GameObject obj: gameObjects) {
+            if(obj instanceof Unit) ret.add((Unit)obj);
+        }
+        return ret;
+    }
 	
 	public Array<GameObject> getGameObjects() {
 		Array<GameObject> ret = new Array<GameObject>();

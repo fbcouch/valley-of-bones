@@ -102,6 +102,8 @@ public class LevelScreen extends AbstractScreen {
     boolean buildMode = false;
     Prototypes.JsonProto buildProto = null;
     Image buildImage = null;
+
+    GameObject lastSelected = null;
 	
 	/**
 	 * @param game
@@ -127,14 +129,18 @@ public class LevelScreen extends AbstractScreen {
 		if (posCamera.y > map.getHeight() * map.getTileHeight() * 0.75) posCamera.y = map.getHeight() * map.getTileHeight() * 0.75f;
 	}
 	
-	private void drawSelectionBox() {
-		if (!(boxOrigin == null || boxFinal == null)) {
-			shapeRenderer.begin(ShapeType.Rectangle);
-			shapeRenderer.setColor(1, 1, 1, 1);
-			Vector2 start = mapToScreenCoords(boxOrigin.x, boxOrigin.y), end = mapToScreenCoords(boxFinal.x, boxFinal.y);
-			shapeRenderer.rect(start.x, start.y, end.x - start.x, end.y - start.y);
-			shapeRenderer.end();
-		}
+	private void dimUnits() {
+		for (GameObject o: gController.getGameObjects()) {
+            if (o instanceof Unit) {
+                Unit u = (Unit)o;
+
+                if (u.getOwner().getPlayerId() == game.getPlayer().getPlayerId()) {
+                    u.setVisible(true);
+                } else {
+                    u.setVisible(gController.getMap().isBoardPositionVisible(u.getBoardPosition()));
+                }
+            }
+        }
 	}
 	
 	private void drawUnitBoxes() {
@@ -231,6 +237,7 @@ public class LevelScreen extends AbstractScreen {
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 					Unit u = (Unit)gController.getSelectedObject();
 					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
+                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMoveSpeed(), true);
 				}
 			}
 		}
@@ -241,12 +248,12 @@ public class LevelScreen extends AbstractScreen {
 
             if (rightBtnDown && buildMode) {
                 unsetBuildMode();
-            } else if (rightBtnDown && gController.getSelectedObject() != null) {
+            } else if (rightBtnDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 				// TODO issue context-dependent commands
 				Array<GameObject> objsUnderCursor = null;
 				GameObject target = null;
 				
-				GameObject obj= gController.getSelectedObject();
+				Unit unit = (Unit)gController.getSelectedObject();
 				if (objsUnderCursor == null) {
 					objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
 				
@@ -263,7 +270,7 @@ public class LevelScreen extends AbstractScreen {
 					Attack at = new Attack();
 					at.owner = game.getPlayer().getPlayerId();
 					at.turn = gController.getGameTurn();
-					at.unit = obj.getObjId();
+					at.unit = unit.getObjId();
 					at.target = target.getObjId();
 					at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					
@@ -271,11 +278,11 @@ public class LevelScreen extends AbstractScreen {
 					game.sendCommand(at);
 				} else {
 					// move to this location
-					if (gController.isBoardPosEmpty(boardPos)) {
+					if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMoveSpeed()) {
 						Move mv = new Move();
 						mv.owner = game.getPlayer().getPlayerId();
 						mv.turn = gController.getGameTurn();
-						mv.unit = obj.getObjId();
+						mv.unit = unit.getObjId();
 						mv.toLocation = boardPos;
 						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
 						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
@@ -289,18 +296,18 @@ public class LevelScreen extends AbstractScreen {
 		
 		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
-            if (Gdx.input.isKeyPressed(Keys.V) && !vKeyDown) {
-                vKeyDown = true;
+            if (Gdx.input.isKeyPressed(Keys.V)) {
+                if (!vKeyDown) upgradePanel.toggle();
 
-                upgradePanel.toggle();
+                vKeyDown = true;
 			} else {
                 vKeyDown = false;
             }
 
-            if (Gdx.input.isKeyPressed(Keys.B) && !bKeyDown) {
-                bKeyDown = true;
+            if (Gdx.input.isKeyPressed(Keys.B)) {
+                if (!bKeyDown) buildPanel.toggle();
 
-                buildPanel.toggle();
+                bKeyDown = true;
             } else {
                 bKeyDown = false;
             }
@@ -395,13 +402,6 @@ public class LevelScreen extends AbstractScreen {
 		
 		stage.addActor(grpLevel);
 		
-		Pixmap pix = new Pixmap((int)grpLevel.getWidth(), (int)grpLevel.getHeight(), Pixmap.Format.RGBA8888);
-		pix.setColor(1, 1, 1, 1);
-		pix.drawRectangle(0, 0, pix.getWidth(), pix.getHeight());
-		Image test = new Image(new Texture(pix));
-		grpLevel.addActor(test);
-		
-		
 		// generate the score panel
 		grpScorePane = new Group();
 		mapScoreLbls = new ObjectMap<Player, Label>();
@@ -484,9 +484,19 @@ public class LevelScreen extends AbstractScreen {
 		
 		// draw a debug map
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
-		
+		gController.getMap().update(game.getPlayer(), gController);
+
+        // dim units based on whether the player can see them
+        dimUnits();
+
+        // clear highlighting if necessary
+        if (gController.getSelectedObject() != lastSelected)
+            gController.getMap().clearHighlightAndDim();
+
+        lastSelected = gController.getSelectedObject();
+
+
 		// DRAW BOXES
-		drawSelectionBox();
 		drawUnitBoxes();
 
 		// move the camera around
