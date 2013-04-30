@@ -101,7 +101,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="kryonet-debug-2.18-all.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/kryonet-debug-2.18-all.jar!/" />

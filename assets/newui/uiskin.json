@@ -1,9 +1,9 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: { 
-    default-font: { file: "../fonts/kenpixel-16.fnt" },
-    small-font: { file: "../fonts/kenpixel-16.fnt" },
-    medium-font: { file: "../fonts/kenpixel-24.fnt" },
-    large-font: { file: "../fonts/kenpixel-32.fnt" },
+    default-font: { file: "fonts/kenpixel-16.fnt" },
+    small-font: { file: "fonts/kenpixel-16.fnt" },
+    medium-font: { file: "fonts/kenpixel-24.fnt" },
+    large-font: { file: "fonts/kenpixel-32.fnt" },
 },
 com.badlogic.gdx.graphics.Color: {
 	green: { a: 1, b: 0, g: 1, r: 0 },
