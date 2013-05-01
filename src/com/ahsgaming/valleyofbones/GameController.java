@@ -205,7 +205,7 @@ public class GameController {
         turnTimer = turnLength;
         nextTurn = false;
 
-        if (gameTurn > 1 || currentPlayer == null) {    // this way when the NetController sets currentPlayer, that player goes first (doTurn is called at the beginning of the game)
+        if (players.size > 0 && (gameTurn > 1 || currentPlayer == null)) {    // this way when the NetController sets currentPlayer, that player goes first (doTurn is called at the beginning of the game)
             int i = players.indexOf(currentPlayer, true);
             i = (i + 1) % players.size;
             currentPlayer = players.get(i);
@@ -584,7 +584,8 @@ public class GameController {
 
     public void setCommandQueue(Command[] commands) {
         this.commandQueue.clear();
-        commandQueue.addAll(commands);
+        if (commands != null)
+            commandQueue.addAll(commands);
     }
 	
 	public void queueCommand(Command cmd) {
