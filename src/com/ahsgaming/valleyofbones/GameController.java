@@ -67,7 +67,8 @@ public class GameController {
 	Array<Command> commandQueue;
 	Array<Command> cmdsToAdd;
 	
-	int gameTurn = 0;
+	Player currentPlayer;
+    int gameTurn = 0;
 	float turnLength = 60;
 	float turnTimer = 0;
 	boolean nextTurn = false;
@@ -75,7 +76,7 @@ public class GameController {
 	int nextObjectId = 0;
 	
 	GameResult gameResult = null;
-	
+
 	/**
 	 * Constructors
 	 */
@@ -154,77 +155,61 @@ public class GameController {
 	public void update(float delta) {
 		
 		if (state == GameStates.RUNNING) {
-			Array<Command> toRemove = new Array<Command>();
-			for (Command c: cmdsToAdd) {
-				if (c instanceof Move) {
-					// future moves on the same unit should override past moves
-					toRemove.clear();
-					for (Command qc: commandQueue) {
-						if (qc instanceof Move && ((Move)c).unit == ((Move)qc).unit) {
-							toRemove.add(qc);
-						}
-					}
-					commandQueue.removeAll(toRemove, true);
-				}
-				commandQueue.add(c);
-			}
-			cmdsToAdd.clear();
-			
-			toRemove.clear();
-			for (Command c: commandQueue) {
-				if (c instanceof EndTurn && c.turn <= getGameTurn()) {
-					toRemove.add(c);
-					
-					if (c.turn == getGameTurn())
-						nextTurn = true;
-				}
-			}
-			commandQueue.removeAll(toRemove, true);
-			
+
+            doCommands();
+
+            updateObjects();
+
+            for (Player p: players) {
+                p.update(this);
+            }
+
 			turnTimer -= delta;
+
+            checkResult();
+
+            if (gameResult != null) {
+                this.state = GameStates.GAMEOVER;
+            }
 
 		}
 
 	}
+
+    public void updateObjects() {
+        GameObject o;
+
+        for (int i=0;i<gameObjects.size;i++) {
+            o = gameObjects.get(i);
+            o.update(this);
+
+            if (o.isRemove()) objsToRemove.add(o);
+        }
+
+        gameObjects.removeAll(objsToRemove, true);
+        for (GameObject obj: objsToRemove) {
+            grpUnits.removeActor(obj);
+        }
+        objsToRemove.clear();
+
+        for (GameObject obj: objsToAdd) {
+            addGameUnitNow(obj);
+        }
+        objsToAdd.clear();
+    }
 	
 	public void doTurn() {
 		Gdx.app.log(LOG, "doTurn");
 
-		// update collection (do simulation for turn)
-		doCommands();
-		GameObject o = null;
-		Gdx.app.log(LOG, String.format("GameObjects: %d", gameObjects.size));
-		for (int i=0;i<gameObjects.size;i++) {
-			o = gameObjects.get(i);
-			o.update(this);
-			
-			if (o.isRemove()) objsToRemove.add(o);
-		}
-		
-		gameObjects.removeAll(objsToRemove, true);
-		for (GameObject obj: objsToRemove) {
-			grpUnits.removeActor(obj);
-		}
-		objsToRemove.clear();
-		
-		for (GameObject obj: objsToAdd) {
-			addGameUnitNow(obj);
-		}
-		objsToAdd.clear();
-		
 		gameTurn += 1;
         turnTimer = turnLength;
         nextTurn = false;
 
-        for (Player p: players) {
-			p.update(this);
-		}
+        int i = players.indexOf(currentPlayer, true);
+        i = (i + 1) % players.size;
+        currentPlayer = players.get(i);
 
-		checkResult();
-		
-		if (gameResult != null) {
-			this.state = GameStates.GAMEOVER;
-		}
+        currentPlayer.startTurn(this);
 	}
 	
 	public void checkResult() {
@@ -260,36 +245,39 @@ public class GameController {
 
 	public void doCommands() {
 		// process commands
-			
+
+        commandQueue.addAll(cmdsToAdd);
+        cmdsToAdd.clear();
+
 		Array<Command> toKeep = new Array<Command>();
 		commandQueue.reverse();
-		Command command = null;
-		if (commandQueue.size > 0) command = commandQueue.pop();
-		while (command != null) {
+		Command command;
+		while (commandQueue.size > 0) {
+            command = commandQueue.pop();
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
-				
+
 			} else if (command.turn == gameTurn) {
 				// execute current commands and remove
-				// TODO execute the command
-				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
+
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
 					executeCommand(command);
 				}
 				commandHistory.add(command);
 			} else {
 				// future commands are left alone
+
 				toKeep.add(command);
 			}
-			if (commandQueue.size > 0) command = commandQueue.pop(); else command = null;
 		}
 		
 		
 	}
 	
 	public boolean validate(Command cmd) {
-		
+		if (cmd.owner != currentPlayer.getPlayerId()) return false; // TODO allow some actions off-turn?
+
 		if (cmd instanceof Attack) {
 			return true;
 		} else if (cmd instanceof Build) {
@@ -317,7 +305,9 @@ public class GameController {
 			}
 			
 			return false;
-		}
+		} else if (cmd instanceof EndTurn) {
+            return (cmd.owner == currentPlayer.getPlayerId());
+        }
 		return false;
 	}
 	
@@ -336,7 +326,9 @@ public class GameController {
 			executeUnpause((Unpause)cmd);
 		} else if (cmd instanceof Upgrade) {
 			executeUpgrade((Upgrade)cmd);
-		} else {
+		} else if (cmd instanceof EndTurn) {
+            setNextTurn(true);
+        } else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
 	}
@@ -567,6 +559,18 @@ public class GameController {
 	public float getTurnTimer() {
 		return turnTimer;
 	}
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player p) {
+        currentPlayer = p;
+    }
+
+    public void setCurrentPlayer(int pid) {
+        currentPlayer = getPlayerById(pid);
+    }
 	
 	public Array<Command> getCommandHistory() {
 		return this.commandHistory;
@@ -584,10 +588,10 @@ public class GameController {
 	public void queueCommand(Command cmd) {
 		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
-			if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
+			//if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
 				cmdsToAdd.add(cmd);
 				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
-			}
+			//}
 		}
 	}
 	

@@ -90,6 +90,7 @@ public class SPGameClient implements NetController {
 
         controller.update(delta);
 
+
         if (controller.isNextTurn() || controller.getTurnTimer() <= 0)
             controller.doTurn();
 
