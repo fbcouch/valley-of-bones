@@ -205,9 +205,11 @@ public class GameController {
         turnTimer = turnLength;
         nextTurn = false;
 
-        int i = players.indexOf(currentPlayer, true);
-        i = (i + 1) % players.size;
-        currentPlayer = players.get(i);
+        if (gameTurn > 1 || currentPlayer == null) {    // this way when the NetController sets currentPlayer, that player goes first (doTurn is called at the beginning of the game)
+            int i = players.indexOf(currentPlayer, true);
+            i = (i + 1) % players.size;
+            currentPlayer = players.get(i);
+        }
 
         currentPlayer.startTurn(this);
 	}
