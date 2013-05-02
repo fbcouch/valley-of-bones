@@ -189,16 +189,19 @@ public class LevelScreen extends AbstractScreen {
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
 			if (buildMode){
-
-				if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
-					Build bld = new Build();
-					bld.owner = game.getPlayer().getPlayerId();
-					bld.turn = gController.getGameTurn();
-					bld.building = buildProto.id;
-					bld.location = boardPos;
-					game.sendCommand(bld);
-                    if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
-				}
+                if (isCurrentPlayer()) {
+                    if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
+                        Build bld = new Build();
+                        bld.owner = game.getPlayer().getPlayerId();
+                        bld.turn = gController.getGameTurn();
+                        bld.building = buildProto.id;
+                        bld.location = boardPos;
+                        game.sendCommand(bld);
+                        if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
+                    }
+                } else {
+                    unsetBuildMode();
+                }
 
 			} else {						
 				gController.selectObjAtBoardPos(boardPos);
@@ -217,47 +220,51 @@ public class LevelScreen extends AbstractScreen {
             if (rightBtnDown && buildMode) {
                 unsetBuildMode();
             } else if (rightBtnDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-				// TODO issue context-dependent commands
-				Array<GameObject> objsUnderCursor = null;
-				GameObject target = null;
-				
-				Unit unit = (Unit)gController.getSelectedObject();
-				if (objsUnderCursor == null) {
-					objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
-				
-					for (GameObject cur: objsUnderCursor) {
-						if (cur.getOwner() != game.getPlayer()) {
-							// TODO find the object with the highest 'threat'?
-							target = cur;
-						}
-					}
-				}
-				
-				if (target != null) {
-					// attack this target!
-					Attack at = new Attack();
-					at.owner = game.getPlayer().getPlayerId();
-					at.turn = gController.getGameTurn();
-					at.unit = unit.getObjId();
-					at.target = target.getObjId();
-					at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-					
-					//game.sendCommand(at);
-					game.sendCommand(at);
-				} else {
-					// move to this location
-					if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMoveSpeed()) {
-						Move mv = new Move();
-						mv.owner = game.getPlayer().getPlayerId();
-						mv.turn = gController.getGameTurn();
-						mv.unit = unit.getObjId();
-						mv.toLocation = boardPos;
-						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
-						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
-						
-						game.sendCommand(mv);
-					}
-				}
+
+				if (isCurrentPlayer()) {
+                    // TODO issue context-dependent commands
+                    Array<GameObject> objsUnderCursor = null;
+                    GameObject target = null;
+
+                    Unit unit = (Unit)gController.getSelectedObject();
+                    if (objsUnderCursor == null) {
+                        objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
+
+                        for (GameObject cur: objsUnderCursor) {
+                            if (cur.getOwner() != game.getPlayer()) {
+                                // TODO find the object with the highest 'threat'?
+                                target = cur;
+                            }
+                        }
+                    }
+
+                    if (target != null) {
+                        // attack this target!
+                        Attack at = new Attack();
+                        at.owner = game.getPlayer().getPlayerId();
+                        at.turn = gController.getGameTurn();
+                        at.unit = unit.getObjId();
+                        at.target = target.getObjId();
+                        at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+
+                        //game.sendCommand(at);
+                        game.sendCommand(at);
+                    } else {
+                        // move to this location
+                        if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMoveSpeed()) {
+                            Move mv = new Move();
+                            mv.owner = game.getPlayer().getPlayerId();
+                            mv.turn = gController.getGameTurn();
+                            mv.unit = unit.getObjId();
+                            mv.toLocation = boardPos;
+                            mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+                            mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
+
+                            game.sendCommand(mv);
+                        }
+                    }
+
+                }
 				rightBtnDown = false;
 			}
 		}
@@ -291,7 +298,7 @@ public class LevelScreen extends AbstractScreen {
 	}
 
     public void setBuildMode(Prototypes.JsonProto proto) {
-        if (game.getPlayer().canBuild(proto.id, gController)) {
+        if (isCurrentPlayer() && game.getPlayer().canBuild(proto.id, gController)) {
             buildMode = true;
             buildProto = proto;
             buildImage = new Image(TextureManager.getTexture(proto.image + ".png"));
@@ -345,6 +352,10 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 	}
+
+    public boolean isCurrentPlayer() {
+        return gController.getCurrentPlayer() == game.getPlayer();
+    }
 
 	
 	/**
@@ -449,7 +460,9 @@ public class LevelScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		
+
+        if (buildMode && !isCurrentPlayer()) unsetBuildMode();
+
 		// draw a debug map
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
 		gController.getMap().update(game.getPlayer(), gController);
