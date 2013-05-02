@@ -52,14 +52,15 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	int attackDamage = 0, attackRange = 0;
 	float attackSpeed = 0;
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
-	int moveSpeed = 0;
+	float moveSpeed = 0;
 	int upkeep = 0;
 	
 	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
 	float upgradeAttackSpeed = 0;
-	int upgradeArmor = 0, upgradeMaxHP = 0, upgradeMoveSpeed = 0;
+	int upgradeArmor = 0, upgradeMaxHP = 0;
+    float upgradeMoveSpeed = 0;
 
-    int movesLeft = 0, attacksLeft = 0;
+    float movesLeft = 0, attacksLeft = 0;
 	
 	Array<String> requires = new Array<String>();
 	
@@ -126,7 +127,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			maxHP = (int)Float.parseFloat(properties.get("maxhp").toString());
 		
 		if (properties.containsKey("movespeed"))
-			moveSpeed = (int)Float.parseFloat(properties.get("movespeed").toString());
+			moveSpeed = Float.parseFloat(properties.get("movespeed").toString());
 		
 		if (properties.containsKey("requires")) {
 			Array<Object> req = (Array<Object>)properties.get("requires");
@@ -275,11 +276,11 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.maxHP = maxHP;
 	}
 
-	public int getMoveSpeed() {
+	public float getMoveSpeed() {
 		return moveSpeed + upgradeMoveSpeed;
 	}
 
-	public void setMoveSpeed(int moveSpeed) {
+	public void setMoveSpeed(float moveSpeed) {
 		this.moveSpeed = moveSpeed;
 	}
 
@@ -391,17 +392,21 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
     public void startTurn() {
-        movesLeft = getMoveSpeed();
-        attacksLeft = (int)getAttackSpeed();
+        movesLeft = (movesLeft % 1) + getMoveSpeed();
+        attacksLeft = (attacksLeft % 1) + getAttackSpeed();
     }
 
     public int getMovesLeft() {
-        return movesLeft;
+        return (int)movesLeft;
+    }
+
+    public boolean canMove(Vector2 location, GameController controller) {
+        return (controller.getMap().getMapDist(getBoardPosition(), location) <= movesLeft);
     }
 
     public void move(Vector2 location, GameController controller) {
         int dist = controller.getMap().getMapDist(getBoardPosition(), location);
-        if (dist <= movesLeft) {
+        if (canMove(location, controller)) {
             movesLeft -= dist;
 
             setBoardPosition(location);
@@ -410,11 +415,15 @@ public class Unit extends GameObject implements Selectable, Targetable {
     }
 
     public int getAttacksLeft() {
-        return attacksLeft;
+        return (int)attacksLeft;
+    }
+
+    public boolean canAttack(Unit other, GameController controller) {
+        return (attacksLeft >= 1 && controller.getMap().getMapDist(getBoardPosition(), other.getBoardPosition()) <= getAttackRange());
     }
 
     public void attack(Unit other, GameController controller) {
-        if (attacksLeft >= 1) {
+        if (canAttack(other, controller)) {
             attacksLeft--;
             Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage());
