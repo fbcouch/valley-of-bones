@@ -83,7 +83,10 @@ public class Panel extends Group {
 
         expanded = true;
         this.clearActions();
-        this.addAction(Actions.moveTo(0, getY(), 0.5f));
+        if (horizontal)
+            this.addAction(Actions.moveTo(0, getY(), 0.5f));
+        else
+            this.addAction(Actions.moveTo(getX(), 0, 0.5f));
     }
 
     public void contract() {
@@ -91,7 +94,10 @@ public class Panel extends Group {
 
         expanded = false;
         this.clearActions();
-        this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
+        if (horizontal)
+            this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
+        else
+            this.addAction(Actions.moveTo(getX(), icon.getY() * -1, 0.5f));
     }
 
     public void toggle() {

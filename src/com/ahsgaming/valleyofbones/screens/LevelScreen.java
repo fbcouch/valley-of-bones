@@ -35,6 +35,7 @@ import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.screens.panels.BuildPanel;
+import com.ahsgaming.valleyofbones.screens.panels.InfoPanel;
 import com.ahsgaming.valleyofbones.screens.panels.Panel;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
@@ -96,6 +97,7 @@ public class LevelScreen extends AbstractScreen {
 
     Panel buildPanel;
     Panel upgradePanel;
+    InfoPanel selectionPanel;
 
 	private boolean vKeyDown = false, bKeyDown = false;
 
@@ -370,6 +372,8 @@ public class LevelScreen extends AbstractScreen {
 
         buildPanel = new BuildPanel(game, this, "gear-hammer");
         upgradePanel = new Panel(game, this, "tinker");
+        selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
+
 	}
 	
 	@Override
@@ -418,6 +422,9 @@ public class LevelScreen extends AbstractScreen {
 
         stage.addActor(upgradePanel);
         upgradePanel.setPosition(0, 64);
+
+        stage.addActor(selectionPanel);
+        selectionPanel.setPosition(500, 0);
 		
 		btnTurnDone.addListener(new ClickListener() {
 
@@ -479,7 +486,11 @@ public class LevelScreen extends AbstractScreen {
         gController.getMap().clearHighlightAndDim();
         lastSelected = gController.getSelectedObject();
 
-        if (lastSelected != null && lastSelected instanceof Unit) gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit)lastSelected).getMovesLeft(), true);
+        selectionPanel.setSelected(null);
+        if (lastSelected != null && lastSelected instanceof Unit) {
+            gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit)lastSelected).getMovesLeft(), true);
+            selectionPanel.setSelected((Unit)lastSelected);
+        }
 
 		// DRAW BOXES
 		drawUnitBoxes();
@@ -499,6 +510,7 @@ public class LevelScreen extends AbstractScreen {
 
         buildPanel.update(delta);
         upgradePanel.update(delta);
+        selectionPanel.update(delta);
 		
 		showCommandPreviews();
 

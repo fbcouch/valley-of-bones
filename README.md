@@ -50,6 +50,8 @@ Several icons used were licensed from game-icons.net:
 
 - "Tinker Icon" by Lorc, CC-BY
 
+- "Invisible Icon" by Delapouite, CC-BY
+
 All other art assets are original creations by Jami Couch and are licensed as CC-BY-SA.
 
 ## RUNNING THE GAME ##
