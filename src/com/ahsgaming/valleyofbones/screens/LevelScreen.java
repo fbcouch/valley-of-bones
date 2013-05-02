@@ -140,7 +140,7 @@ public class LevelScreen extends AbstractScreen {
             if (o instanceof Unit) {
                 Unit u = (Unit)o;
 
-                if (u.getOwner().getPlayerId() == game.getPlayer().getPlayerId()) {
+                if (u.getOwner() != null && u.getOwner().getPlayerId() == game.getPlayer().getPlayerId()) {
                     u.setVisible(true);
                 } else {
                     u.setVisible(gController.getMap().isBoardPositionVisible(u.getBoardPosition()));

@@ -147,7 +147,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
         if (overlay != null) {
             Color color = getColor();
-            batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a);
+            if (owner != null)
+                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a);
+            else
+                batch.setColor(color);
 
             batch.draw(overlay, getX(), getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
         }

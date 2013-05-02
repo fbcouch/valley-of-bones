@@ -226,7 +226,7 @@ public class GameController {
         currentPlayer.startTurn(this);
 
         for (GameObject obj: gameObjects)
-            if (obj instanceof Unit && obj.getOwner().getPlayerId() == currentPlayer.getPlayerId())
+            if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == currentPlayer.getPlayerId())
                 ((Unit) obj).startTurn();
 	}
 	
