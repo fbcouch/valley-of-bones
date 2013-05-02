@@ -39,6 +39,7 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Connection;
@@ -66,7 +67,7 @@ public class GameServer implements NetController {
 	
 	boolean gameStarted = false;
 
-    boolean[] endTurnRecd;
+    boolean endTurnRecd;
 	
 	/**
 	 * 
@@ -174,16 +175,18 @@ public class GameServer implements NetController {
 					// the player represented by this connection is ready
 					if (obj instanceof StartGame) {
 						connMap.get(c).setReady(true);
-					} else if (obj instanceof EndTurn) {
-                        endTurnRecd[players.indexOf(connMap.get(c), true)] = true;
-                    } else if (obj instanceof Command) {
+					} else if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
 
                         // discard past, future, invalid, or duplicated commands
 						if (cmd.turn == controller.getGameTurn() && !controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
-							controller.queueCommand(cmd);
-							server.sendToAllTCP(cmd);
+							if (cmd instanceof EndTurn) {
+                                endTurnRecd = true;
+                            } else {
+                                controller.queueCommand(cmd);
+                                server.sendToAllTCP(cmd);
+                            }
 						}
 					}
 				} else {
@@ -231,7 +234,10 @@ public class GameServer implements NetController {
 		// the host clicked startGame --> send out the StartGame message so that the clients load and report
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#Server";
-		
+
+        // TODO allow configuration of who goes first?
+        controller.setCurrentPlayer(players.get((MathUtils.random(players.size - 1))));
+
 		// don't need to broadcast on UDP anymore - thats just confusing
 		broadcastServer.close();
 		
@@ -279,16 +285,21 @@ public class GameServer implements NetController {
 				server.sendToAllTCP(up);
 				controller.queueCommand(up);
 				gameStarted = true;
-                endTurnRecd = new boolean[players.size];
+                endTurnRecd = false;
 			}
 		}
 
 		if (gameStarted) {
 			controller.update(delta);
 
-            if (isEndTurn()) {
-                server.sendToAllTCP(new EndTurn(controller.getCommandQueue()));
+            if (isEndTurn())
+            {
+                EndTurn endTurn = new EndTurn(controller.getCommandQueue());
+                endTurn.turn = controller.getGameTurn();
+                endTurn.owner = controller.getCurrentPlayer().getPlayerId();
+                server.sendToAllTCP(endTurn);
                 controller.doTurn();
+                endTurnRecd = false;
             }
 		}
 		
@@ -333,14 +344,7 @@ public class GameServer implements NetController {
             if (controller.getTurnTimer() <= 0) return true;
         }
 
-        for (int i=0; i<endTurnRecd.length; i++) {
-            if (!(endTurnRecd[i] || (players.size > i && players.get(i) instanceof AIPlayer))) return false;
-        }
-
-        for (int i=0; i<endTurnRecd.length; i++) {
-            endTurnRecd[i] = false;
-        }
-        return true;
+        return (endTurnRecd || controller.getCurrentPlayer() instanceof AIPlayer);
     }
 
 	@Override
@@ -357,7 +361,10 @@ public class GameServer implements NetController {
 
 	@Override
 	public void sendStartGame() {
-		server.sendToAllTCP(new StartGame());
+		StartGame startGame = new StartGame();
+        startGame.currentPlayer = controller.getCurrentPlayer().getPlayerId();
+
+        server.sendToAllTCP(startGame);
 	}
 
 	@Override

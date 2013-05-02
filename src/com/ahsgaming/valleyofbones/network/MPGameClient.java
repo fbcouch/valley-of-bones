@@ -60,6 +60,7 @@ public class MPGameClient implements NetController {
 	GameSetupConfig gameConfig;
 	
 	Array<Player> players = new Array<Player>();
+    int firstTurnPid = -1;
 	
 	VOBGame game;
 	
@@ -120,6 +121,7 @@ public class MPGameClient implements NetController {
                 if (obj instanceof StartGame) {
                     // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
                     game.setLoadGame();
+                    firstTurnPid = ((StartGame)obj).currentPlayer;
                 }
 
                 if (controller != null) {
@@ -180,7 +182,9 @@ public class MPGameClient implements NetController {
 		// OK, this should be called within an opengl context, so we can create everything
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#MPClient";
-		
+
+        controller.setCurrentPlayer(firstTurnPid);
+
 		sendStartGame();
 	}
 	

@@ -89,7 +89,7 @@ public class LevelScreen extends AbstractScreen {
 	
 	Group grpTurnPane = new Group();
 	Label lblTurnTimer;
-	Button btnTurnDone;
+	TextButton btnTurnDone;
 	
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
@@ -104,6 +104,8 @@ public class LevelScreen extends AbstractScreen {
     Image buildImage = null;
 
     GameObject lastSelected = null;
+
+    Player lastCurrentPlayer = null;
 	
 	/**
 	 * @param game
@@ -189,23 +191,26 @@ public class LevelScreen extends AbstractScreen {
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
 			if (buildMode){
-
-				if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
-					Build bld = new Build();
-					bld.owner = game.getPlayer().getPlayerId();
-					bld.turn = gController.getGameTurn();
-					bld.building = buildProto.id;
-					bld.location = boardPos;
-					game.sendCommand(bld);
-                    if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
-				}
+                if (isCurrentPlayer()) {
+                    if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
+                        Build bld = new Build();
+                        bld.owner = game.getPlayer().getPlayerId();
+                        bld.turn = gController.getGameTurn();
+                        bld.building = buildProto.id;
+                        bld.location = boardPos;
+                        game.sendCommand(bld);
+                        if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
+                    }
+                } else {
+                    unsetBuildMode();
+                }
 
 			} else {						
 				gController.selectObjAtBoardPos(boardPos);
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 					Unit u = (Unit)gController.getSelectedObject();
 					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMoveSpeed(), true);
+                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
 				}
 			}
 		}
@@ -217,47 +222,46 @@ public class LevelScreen extends AbstractScreen {
             if (rightBtnDown && buildMode) {
                 unsetBuildMode();
             } else if (rightBtnDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-				// TODO issue context-dependent commands
-				Array<GameObject> objsUnderCursor = null;
-				GameObject target = null;
-				
-				Unit unit = (Unit)gController.getSelectedObject();
-				if (objsUnderCursor == null) {
-					objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
-				
-					for (GameObject cur: objsUnderCursor) {
-						if (cur.getOwner() != game.getPlayer()) {
-							// TODO find the object with the highest 'threat'?
-							target = cur;
-						}
-					}
-				}
-				
-				if (target != null) {
-					// attack this target!
-					Attack at = new Attack();
-					at.owner = game.getPlayer().getPlayerId();
-					at.turn = gController.getGameTurn();
-					at.unit = unit.getObjId();
-					at.target = target.getObjId();
-					at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-					
-					//game.sendCommand(at);
-					game.sendCommand(at);
-				} else {
-					// move to this location
-					if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMoveSpeed()) {
-						Move mv = new Move();
-						mv.owner = game.getPlayer().getPlayerId();
-						mv.turn = gController.getGameTurn();
-						mv.unit = unit.getObjId();
-						mv.toLocation = boardPos;
-						mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
-						mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
-						
-						game.sendCommand(mv);
-					}
-				}
+
+				if (isCurrentPlayer()) {
+                    // TODO issue context-dependent commands
+                    Array<GameObject> objsUnderCursor = null;
+                    GameObject target = null;
+
+                    Unit unit = (Unit)gController.getSelectedObject();
+                    if (objsUnderCursor == null) {
+                        objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
+
+                        for (GameObject cur: objsUnderCursor) {
+                            if (cur.getOwner() != game.getPlayer()) {
+                                // TODO find the object with the highest 'threat'?
+                                target = cur;
+                            }
+                        }
+                    }
+
+                    if (target != null) {
+                        // attack this target!
+                        Attack at = new Attack();
+                        at.owner = game.getPlayer().getPlayerId();
+                        at.turn = gController.getGameTurn();
+                        at.unit = unit.getObjId();
+                        at.target = target.getObjId();
+
+                        game.sendCommand(at);
+                    } else {
+                        // move to this location
+                        if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMovesLeft()) {
+                            Move mv = new Move();
+                            mv.owner = game.getPlayer().getPlayerId();
+                            mv.turn = gController.getGameTurn();
+                            mv.unit = unit.getObjId();
+                            mv.toLocation = boardPos;
+                            game.sendCommand(mv);
+                        }
+                    }
+
+                }
 				rightBtnDown = false;
 			}
 		}
@@ -291,7 +295,7 @@ public class LevelScreen extends AbstractScreen {
 	}
 
     public void setBuildMode(Prototypes.JsonProto proto) {
-        if (game.getPlayer().canBuild(proto.id, gController)) {
+        if (isCurrentPlayer() && game.getPlayer().canBuild(proto.id, gController)) {
             buildMode = true;
             buildProto = proto;
             buildImage = new Image(TextureManager.getTexture(proto.image + ".png"));
@@ -345,6 +349,10 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 	}
+
+    public boolean isCurrentPlayer() {
+        return gController.getCurrentPlayer() == game.getPlayer();
+    }
 
 	
 	/**
@@ -434,6 +442,10 @@ public class LevelScreen extends AbstractScreen {
 			{
 				lbl.setText(player.toString());
 				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
+                if (player == gController.getCurrentPlayer())
+                    lbl.setFontScale(1);
+                else
+                    lbl.setFontScale(0.8f);
 			}
 		}
 		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
@@ -444,12 +456,18 @@ public class LevelScreen extends AbstractScreen {
 		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
 		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
         grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getTop());
+
+        btnTurnDone.setDisabled(!isCurrentPlayer());
+        btnTurnDone.setColor((isCurrentPlayer() ? new Color(1, 1, 1, 1) : new Color(0.5f, 0.5f, 0.5f, 1)));
+        btnTurnDone.setText((isCurrentPlayer() ? "End Turn" : "Please Wait"));
 	}
 	
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		
+
+        if (buildMode && !isCurrentPlayer()) unsetBuildMode();
+
 		// draw a debug map
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
 		gController.getMap().update(game.getPlayer(), gController);
@@ -458,11 +476,10 @@ public class LevelScreen extends AbstractScreen {
         dimUnits();
 
         // clear highlighting if necessary
-        if (gController.getSelectedObject() != lastSelected)
-            gController.getMap().clearHighlightAndDim();
-
+        gController.getMap().clearHighlightAndDim();
         lastSelected = gController.getSelectedObject();
 
+        if (lastSelected != null && lastSelected instanceof Unit) gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit)lastSelected).getMovesLeft(), true);
 
 		// DRAW BOXES
 		drawUnitBoxes();

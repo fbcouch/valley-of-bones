@@ -67,7 +67,8 @@ public class GameController {
 	Array<Command> commandQueue;
 	Array<Command> cmdsToAdd;
 	
-	int gameTurn = 0;
+	Player currentPlayer;
+    int gameTurn = 0;
 	float turnLength = 60;
 	float turnTimer = 0;
 	boolean nextTurn = false;
@@ -75,7 +76,7 @@ public class GameController {
 	int nextObjectId = 0;
 	
 	GameResult gameResult = null;
-	
+
 	/**
 	 * Constructors
 	 */
@@ -147,6 +148,18 @@ public class GameController {
 		}
 		
 		// TODO load capture points
+
+        if (VOBGame.DEBUG_ATTACK) {
+            Unit unit = new Unit(getNextObjectId(), players.get(0), (JsonProto)Prototypes.getProto("marine-base"));
+            unit.setBoardPosition(9, 0);
+            unit.setPosition(getMap().boardToMapCoords(9, 0));
+            addGameUnit(unit);
+
+            unit = new Unit(getNextObjectId(), players.get(1), (JsonProto)Prototypes.getProto("marine-base"));
+            unit.setBoardPosition(10, 0);
+            unit.setPosition(getMap().boardToMapCoords(10, 0));
+            addGameUnit(unit);
+        }
 		
 		return grpUnits;
 	}
@@ -154,77 +167,67 @@ public class GameController {
 	public void update(float delta) {
 		
 		if (state == GameStates.RUNNING) {
-			Array<Command> toRemove = new Array<Command>();
-			for (Command c: cmdsToAdd) {
-				if (c instanceof Move) {
-					// future moves on the same unit should override past moves
-					toRemove.clear();
-					for (Command qc: commandQueue) {
-						if (qc instanceof Move && ((Move)c).unit == ((Move)qc).unit) {
-							toRemove.add(qc);
-						}
-					}
-					commandQueue.removeAll(toRemove, true);
-				}
-				commandQueue.add(c);
-			}
-			cmdsToAdd.clear();
-			
-			toRemove.clear();
-			for (Command c: commandQueue) {
-				if (c instanceof EndTurn && c.turn <= getGameTurn()) {
-					toRemove.add(c);
-					
-					if (c.turn == getGameTurn())
-						nextTurn = true;
-				}
-			}
-			commandQueue.removeAll(toRemove, true);
-			
+
+            doCommands();
+
+            updateObjects();
+
+            for (Player p: players) {
+                p.update(this);
+            }
+
 			turnTimer -= delta;
+
+            checkResult();
+
+            if (gameResult != null) {
+                this.state = GameStates.GAMEOVER;
+            }
 
 		}
 
 	}
+
+    public void updateObjects() {
+        GameObject o;
+
+        for (int i=0;i<gameObjects.size;i++) {
+            o = gameObjects.get(i);
+            o.update(this);
+
+            if (o.isRemove()) objsToRemove.add(o);
+        }
+
+        gameObjects.removeAll(objsToRemove, true);
+        for (GameObject obj: objsToRemove) {
+            grpUnits.removeActor(obj);
+        }
+        objsToRemove.clear();
+
+        for (GameObject obj: objsToAdd) {
+            addGameUnitNow(obj);
+        }
+        objsToAdd.clear();
+    }
 	
 	public void doTurn() {
 		Gdx.app.log(LOG, "doTurn");
 
-		// update collection (do simulation for turn)
-		doCommands();
-		GameObject o = null;
-		Gdx.app.log(LOG, String.format("GameObjects: %d", gameObjects.size));
-		for (int i=0;i<gameObjects.size;i++) {
-			o = gameObjects.get(i);
-			o.update(this);
-			
-			if (o.isRemove()) objsToRemove.add(o);
-		}
-		
-		gameObjects.removeAll(objsToRemove, true);
-		for (GameObject obj: objsToRemove) {
-			grpUnits.removeActor(obj);
-		}
-		objsToRemove.clear();
-		
-		for (GameObject obj: objsToAdd) {
-			addGameUnitNow(obj);
-		}
-		objsToAdd.clear();
-		
 		gameTurn += 1;
         turnTimer = turnLength;
         nextTurn = false;
 
-        for (Player p: players) {
-			p.update(this);
-		}
+        if (players.size > 0 && (gameTurn > 1 || currentPlayer == null)) {    // this way when the NetController sets currentPlayer, that player goes first (doTurn is called at the beginning of the game)
+            int i = players.indexOf(currentPlayer, true);
+            i = (i + 1) % players.size;
+            currentPlayer = players.get(i);
+        }
 
-		checkResult();
-		
-		if (gameResult != null) {
-			this.state = GameStates.GAMEOVER;
-		}
+        currentPlayer.startTurn(this);
+
+        for (GameObject obj: gameObjects)
+            if (obj instanceof Unit && obj.getOwner().getPlayerId() == currentPlayer.getPlayerId())
+                ((Unit) obj).startTurn();
 	}
 	
 	public void checkResult() {
@@ -260,38 +263,41 @@ public class GameController {
 
 	public void doCommands() {
 		// process commands
-			
+
+        commandQueue.addAll(cmdsToAdd);
+        cmdsToAdd.clear();
+
 		Array<Command> toKeep = new Array<Command>();
 		commandQueue.reverse();
-		Command command = null;
-		if (commandQueue.size > 0) command = commandQueue.pop();
-		while (command != null) {
+		Command command;
+		while (commandQueue.size > 0) {
+            command = commandQueue.pop();
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
-				
+
 			} else if (command.turn == gameTurn) {
 				// execute current commands and remove
-				// TODO execute the command
-				Gdx.app.log(VOBGame.LOG, "Executing command on tick " + Integer.toString(command.turn) + "==" + Integer.toString(gameTurn));
+
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
 					executeCommand(command);
 				}
 				commandHistory.add(command);
 			} else {
 				// future commands are left alone
+
 				toKeep.add(command);
 			}
-			if (commandQueue.size > 0) command = commandQueue.pop(); else command = null;
 		}
 		
 		
 	}
 	
 	public boolean validate(Command cmd) {
-		
+		if (cmd.owner != currentPlayer.getPlayerId()) return false; // TODO allow some actions off-turn?
+
 		if (cmd instanceof Attack) {
-			return true;
+			return ((Unit)getObjById(((Attack)cmd).unit)).getAttacksLeft() >= 1;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
@@ -300,7 +306,7 @@ public class GameController {
             GameObject o = getObjById(m.unit);
             if (!(o instanceof Unit)) return false;
             Unit u = (Unit)o;
-            return (u.getOwner().getPlayerId() == m.owner && isBoardPosEmpty(m.toLocation) && map.getMapDist(u.getBoardPosition(), m.toLocation) <= u.getMoveSpeed());
+            return (u.getOwner().getPlayerId() == m.owner && isBoardPosEmpty(m.toLocation) && map.getMapDist(u.getBoardPosition(), m.toLocation) <= u.getMovesLeft());
 		} else if (cmd instanceof Pause) {
 			return true;
 		} else if (cmd instanceof Unpause) {
@@ -317,7 +323,9 @@ public class GameController {
 			}
 			
 			return false;
-		}
+		} else if (cmd instanceof EndTurn) {
+            return (cmd.owner == currentPlayer.getPlayerId());
+        }
 		return false;
 	}
 	
@@ -336,7 +344,9 @@ public class GameController {
 			executeUnpause((Unpause)cmd);
 		} else if (cmd instanceof Upgrade) {
 			executeUpgrade((Upgrade)cmd);
-		} else {
+		} else if (cmd instanceof EndTurn) {
+            setNextTurn(true);
+        } else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
 	}
@@ -352,7 +362,7 @@ public class GameController {
 			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
 		} else {
 			if (obj instanceof Unit && tar instanceof Unit) {
-				((Unit)obj).doCommand(cmd, cmd.isAdd);// TODO implement shift-click to add to queue
+                ((Unit)obj).attack((Unit)tar, this);
 			} else {
 				if (!(obj instanceof Unit)) {
 					Gdx.app.log(LOG, "Error: unit is not a Unit");
@@ -394,8 +404,12 @@ public class GameController {
 		} else {
 			// TODO implement unit command queue-ing?
 			if (isBoardPosEmpty(cmd.toLocation)) {
-				obj.setBoardPosition(cmd.toLocation);
-				obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
+				if (obj instanceof Unit) {
+                    ((Unit)obj).move(cmd.toLocation, this);
+                } else {
+                    obj.setBoardPosition(cmd.toLocation);
+                    obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
+                }
 			}
 		}
 	}
@@ -567,6 +581,18 @@ public class GameController {
 	public float getTurnTimer() {
 		return turnTimer;
 	}
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player p) {
+        currentPlayer = p;
+    }
+
+    public void setCurrentPlayer(int pid) {
+        currentPlayer = getPlayerById(pid);
+    }
 	
 	public Array<Command> getCommandHistory() {
 		return this.commandHistory;
@@ -578,16 +604,17 @@ public class GameController {
 
     public void setCommandQueue(Command[] commands) {
         this.commandQueue.clear();
-        commandQueue.addAll(commands);
+        if (commands != null)
+            commandQueue.addAll(commands);
     }
 	
 	public void queueCommand(Command cmd) {
 		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
-			if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
+			//if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
 				cmdsToAdd.add(cmd);
 				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
-			}
+			//}
 		}
 	}
 	

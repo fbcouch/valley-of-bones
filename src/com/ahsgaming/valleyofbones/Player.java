@@ -71,9 +71,13 @@ public class Player {
 		this(id, name, color);
 		this.teamId = team;
 	}
-	
+
+    public void startTurn(GameController controller) {
+        updateFoodAndUpkeep(controller, true);
+    }
+
 	public void update(GameController controller) {
-		updateFoodAndUpkeep(controller, true);
+        updateFoodAndUpkeep(controller, false);
 	}
 	
 	public void updateFood(GameController controller) {

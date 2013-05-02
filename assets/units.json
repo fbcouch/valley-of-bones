@@ -37,7 +37,7 @@ entities: [
             attackdamage: 1,
             attackspeed: 1,
             attackrange: 2,
-            movespeed: 1,
+            movespeed: 2,
             cost: 10,
         }
     },

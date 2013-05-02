@@ -55,6 +55,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
 	float upgradeAttackSpeed = 0;
 	int upgradeArmor = 0, upgradeMaxHP = 0, upgradeMoveSpeed = 0;
+
+    int movesLeft = 0, attacksLeft = 0;
 	
 	Array<String> requires = new Array<String>();
 	
@@ -331,46 +333,20 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		
 		return (targets.size > 0 ? targets.get(0) : null);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.ahsgaming.spacetactics.GameObject#moveTo(com.badlogic.gdx.math.Vector2, boolean)
-	 */
-	@Override
-	public void moveTo(Vector2 location, boolean add) {
-		// add to the command queue, no longer using path
-		Move mv = new Move();
-		mv.unit = getObjId();
-		mv.toLocation = location;
-		mv.isAdd = add;
-		mv.isAttack = false;
-		doCommand(mv, mv.isAdd);
-	}
 
 	/* (non-Javadoc)
 	 * @see com.ahsgaming.spacetactics.GameObject#update(com.ahsgaming.spacetactics.GameController, float)
 	 */
 	@Override
 	public void update(GameController controller) {
-		
 		if (getCurHP() <= 0) {
 			// remove self
 			remove = true;
 			// TODO add explosion anim or something
 			return;
 		}
-		
-		Unit target = findTarget(controller);
-		
-		// TODO sort targets by priority?
-		
-		if (target != null) attack(target, controller);
 	}
-	
-	public void attack(Unit other, GameController controller) {
-		Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
-		float damage = other.takeDamage(getAttackDamage());
-	}
-	
+
 	public ArrayList<Command> getCommandQueue() {
 		return commandQueue;
 	}
@@ -394,6 +370,37 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	public boolean isAlive() {
 		return (!this.isRemove() && this.curHP > 0);
 	}
+
+    public void startTurn() {
+        movesLeft = getMoveSpeed();
+        attacksLeft = (int)getAttackSpeed();
+    }
+
+    public int getMovesLeft() {
+        return movesLeft;
+    }
+
+    public void move(Vector2 location, GameController controller) {
+        int dist = controller.getMap().getMapDist(getBoardPosition(), location);
+        if (dist <= movesLeft) {
+            movesLeft -= dist;
+
+            setBoardPosition(location);
+            setPosition(controller.getMap().boardToMapCoords(location.x, location.y));
+        }
+    }
+
+    public int getAttacksLeft() {
+        return attacksLeft;
+    }
+
+    public void attack(Unit other, GameController controller) {
+        if (attacksLeft >= 1) {
+            attacksLeft--;
+            Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
+            float damage = other.takeDamage(getAttackDamage());
+        }
+    }
 	
 	//-------------------------------------------------------------------------
 	// Implemented methods

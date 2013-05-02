@@ -85,7 +85,9 @@ public class KryoCommon {
 		public int id;
 	}
 	
-	public static class StartGame { }
+	public static class StartGame {
+        public int currentPlayer;
+    }
 	
 	public static class GameDetails {
 		public String mapName = "blank.tmx";

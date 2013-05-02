@@ -20,10 +20,10 @@ import com.badlogic.gdx.utils.Array;
 
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
-
+    public static final boolean DEBUG_ATTACK = true;
 	public static final String LOG = "SpaceTactics";
-	
-	FPSLogger fpsLogger = new FPSLogger();
+
+    FPSLogger fpsLogger = new FPSLogger();
 	
 	private GameController gController = null;
 	

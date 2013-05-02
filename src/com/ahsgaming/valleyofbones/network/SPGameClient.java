@@ -69,6 +69,7 @@ public class SPGameClient implements NetController {
 		// OK, this should be called within an opengl context, so we can create everything
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#SPClient";
+        controller.setCurrentPlayer(player); // in SP, player always goes first
 	}
 	
 	public void sendStartGame() {
@@ -89,6 +90,7 @@ public class SPGameClient implements NetController {
 		if (controller == null) return true;
 
         controller.update(delta);
+
 
         if (controller.isNextTurn() || controller.getTurnTimer() <= 0)
             controller.doTurn();
@@ -122,7 +124,8 @@ public class SPGameClient implements NetController {
     }
 	
 	public void sendCommand(Command cmd) {
-		controller.queueCommand(cmd);
+        // only queue if its your turn!
+		if (cmd.owner == controller.getCurrentPlayer().getPlayerId()) controller.queueCommand(cmd);
 	}
 	
 	public Array<Player> getPlayers() {
