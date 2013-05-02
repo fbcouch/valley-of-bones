@@ -89,7 +89,7 @@ public class LevelScreen extends AbstractScreen {
 	
 	Group grpTurnPane = new Group();
 	Label lblTurnTimer;
-	Button btnTurnDone;
+	TextButton btnTurnDone;
 	
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
@@ -464,6 +464,7 @@ public class LevelScreen extends AbstractScreen {
 
         btnTurnDone.setDisabled(!isCurrentPlayer());
         btnTurnDone.setColor((isCurrentPlayer() ? new Color(1, 1, 1, 1) : new Color(0.5f, 0.5f, 0.5f, 1)));
+        btnTurnDone.setText((isCurrentPlayer() ? "End Turn" : "Please Wait"));
 	}
 	
 	@Override
