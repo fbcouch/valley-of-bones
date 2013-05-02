@@ -33,6 +33,9 @@ import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -71,6 +74,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	final JsonProto proto;
 	
 	Array<JsonProto> upgrades = new Array<JsonProto>();
+
+    TextureRegion overlay;
 	
 	/**
 	 * Constructors
@@ -90,6 +95,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		sImage = proto.image;
 		properties.putAll(proto.properties);
 		parseProperties();
+        // TODO load from atlas
+        overlay = TextureManager.getTexture(proto.image + "-overlay.png");
 	}
 	
 	public void parseProperties() {
@@ -132,8 +139,20 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		if (properties.containsKey("upkeep"))
 			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
 	}
-	
-	public void updateProperties() { 
+
+    @Override
+    public void draw(SpriteBatch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+
+        if (overlay != null) {
+            Color color = getColor();
+            batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a);
+
+            batch.draw(overlay, getX(), getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
+        }
+    }
+
+    public void updateProperties() {
 		properties.put("attackdamage", attackDamage);
 		properties.put("attackrange", attackRange);
 		properties.put("attackspeed", attackSpeed);

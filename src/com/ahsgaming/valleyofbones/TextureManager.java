@@ -44,7 +44,8 @@ public class TextureManager {
 	public static TextureRegion getTexture(String file) {
 		if (map.containsKey(file)) return map.get(file);
 		
-		
+		if (!Gdx.files.internal(file).exists()) return null;
+
 		Texture tex = new Texture(Gdx.files.internal(file));
 		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion reg = new TextureRegion(tex); 
