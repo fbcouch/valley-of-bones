@@ -11,14 +11,14 @@ entities: [
             curhp: 100,
             maxhp: 100,
             armor: 0,
-            food: -20,
+            food: -15,
             requires: [],
             attackdamage: 5,
             attackspeed: 1,
             attackrange: 3,
             movespeed: 0,
             cost: 1000,
-            upkeep: -20,
+            upkeep: -100,
         },
     },
     {
@@ -29,16 +29,36 @@ entities: [
         desc: "Basic attacking unit",
         properties:
         {
-            curhp: 10,
-            maxhp: 10,
+            curhp: 15,
+            maxhp: 15,
             armor: 0,
             food: 1,
             requires: [ "castle-base" ],
-            attackdamage: 1,
+            attackdamage: 5,
             attackspeed: 1,
             attackrange: 2,
-            movespeed: 2,
+            movespeed: 3,
             cost: 10,
+        }
+    },
+    {
+        id: "tank-base",
+        type: "unit",
+        image: "tank",
+        title: "Light Tank",
+        desc: "Tank with light armor",
+        properties:
+        {
+            curhp: 50,
+            maxhp: 60,
+            armor: 2,
+            food: 3,
+            requires: ["castle-base" ],
+            attackdamage: 15,
+            attackspeed: 1,
+            attackrange: 3,
+            movespeed: 1,
+            cost: 100,
         }
     },
     {
