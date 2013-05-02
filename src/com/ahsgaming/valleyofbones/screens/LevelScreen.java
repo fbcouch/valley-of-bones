@@ -476,10 +476,10 @@ public class LevelScreen extends AbstractScreen {
         dimUnits();
 
         // clear highlighting if necessary
-        if (gController.getSelectedObject() != lastSelected)
-            gController.getMap().clearHighlightAndDim();
-
+        gController.getMap().clearHighlightAndDim();
         lastSelected = gController.getSelectedObject();
+
+        if (lastSelected != null && lastSelected instanceof Unit) gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit)lastSelected).getMovesLeft(), true);
 
 		// DRAW BOXES
 		drawUnitBoxes();
