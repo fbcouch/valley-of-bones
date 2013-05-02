@@ -148,6 +148,18 @@ public class GameController {
 		}
 		
 		// TODO load capture points
+
+        if (VOBGame.DEBUG_ATTACK) {
+            Unit unit = new Unit(getNextObjectId(), players.get(0), (JsonProto)Prototypes.getProto("marine-base"));
+            unit.setBoardPosition(9, 0);
+            unit.setPosition(getMap().boardToMapCoords(9, 0));
+            addGameUnit(unit);
+
+            unit = new Unit(getNextObjectId(), players.get(1), (JsonProto)Prototypes.getProto("marine-base"));
+            unit.setBoardPosition(10, 0);
+            unit.setPosition(getMap().boardToMapCoords(10, 0));
+            addGameUnit(unit);
+        }
 		
 		return grpUnits;
 	}
@@ -212,6 +224,10 @@ public class GameController {
         }
 
         currentPlayer.startTurn(this);
+
+        for (GameObject obj: gameObjects)
+            if (obj instanceof Unit && obj.getOwner().getPlayerId() == currentPlayer.getPlayerId())
+                ((Unit) obj).startTurn();
 	}
 	
 	public void checkResult() {
@@ -281,7 +297,7 @@ public class GameController {
 		if (cmd.owner != currentPlayer.getPlayerId()) return false; // TODO allow some actions off-turn?
 
 		if (cmd instanceof Attack) {
-			return true;
+			return ((Unit)getObjById(((Attack)cmd).unit)).getAttacksLeft() >= 1;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
@@ -290,7 +306,7 @@ public class GameController {
             GameObject o = getObjById(m.unit);
             if (!(o instanceof Unit)) return false;
             Unit u = (Unit)o;
-            return (u.getOwner().getPlayerId() == m.owner && isBoardPosEmpty(m.toLocation) && map.getMapDist(u.getBoardPosition(), m.toLocation) <= u.getMoveSpeed());
+            return (u.getOwner().getPlayerId() == m.owner && isBoardPosEmpty(m.toLocation) && map.getMapDist(u.getBoardPosition(), m.toLocation) <= u.getMovesLeft());
 		} else if (cmd instanceof Pause) {
 			return true;
 		} else if (cmd instanceof Unpause) {
@@ -346,7 +362,7 @@ public class GameController {
 			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
 		} else {
 			if (obj instanceof Unit && tar instanceof Unit) {
-				((Unit)obj).doCommand(cmd, cmd.isAdd);// TODO implement shift-click to add to queue
+                ((Unit)obj).attack((Unit)tar, this);
 			} else {
 				if (!(obj instanceof Unit)) {
 					Gdx.app.log(LOG, "Error: unit is not a Unit");
@@ -388,8 +404,12 @@ public class GameController {
 		} else {
 			// TODO implement unit command queue-ing?
 			if (isBoardPosEmpty(cmd.toLocation)) {
-				obj.setBoardPosition(cmd.toLocation);
-				obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
+				if (obj instanceof Unit) {
+                    ((Unit)obj).move(cmd.toLocation, this);
+                } else {
+                    obj.setBoardPosition(cmd.toLocation);
+                    obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
+                }
 			}
 		}
 	}

@@ -210,7 +210,7 @@ public class LevelScreen extends AbstractScreen {
 				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
 					Unit u = (Unit)gController.getSelectedObject();
 					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMoveSpeed(), true);
+                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
 				}
 			}
 		}
@@ -247,21 +247,16 @@ public class LevelScreen extends AbstractScreen {
                         at.turn = gController.getGameTurn();
                         at.unit = unit.getObjId();
                         at.target = target.getObjId();
-                        at.isAdd = (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 
-                        //game.sendCommand(at);
                         game.sendCommand(at);
                     } else {
                         // move to this location
-                        if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMoveSpeed()) {
+                        if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMovesLeft()) {
                             Move mv = new Move();
                             mv.owner = game.getPlayer().getPlayerId();
                             mv.turn = gController.getGameTurn();
                             mv.unit = unit.getObjId();
                             mv.toLocation = boardPos;
-                            mv.isAdd = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
-                            mv.isAttack = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT); // TODO implement real control for a-move
-
                             game.sendCommand(mv);
                         }
                     }
@@ -485,7 +480,6 @@ public class LevelScreen extends AbstractScreen {
             gController.getMap().clearHighlightAndDim();
 
         lastSelected = gController.getSelectedObject();
-
 
 		// DRAW BOXES
 		drawUnitBoxes();
