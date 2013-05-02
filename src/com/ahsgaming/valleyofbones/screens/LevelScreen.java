@@ -104,6 +104,8 @@ public class LevelScreen extends AbstractScreen {
     Image buildImage = null;
 
     GameObject lastSelected = null;
+
+    Player lastCurrentPlayer = null;
 	
 	/**
 	 * @param game
@@ -445,6 +447,10 @@ public class LevelScreen extends AbstractScreen {
 			{
 				lbl.setText(player.toString());
 				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
+                if (player == gController.getCurrentPlayer())
+                    lbl.setFontScale(1);
+                else
+                    lbl.setFontScale(0.8f);
 			}
 		}
 		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
@@ -455,6 +461,9 @@ public class LevelScreen extends AbstractScreen {
 		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
 		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
         grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getTop());
+
+        btnTurnDone.setDisabled(!isCurrentPlayer());
+        btnTurnDone.setColor((isCurrentPlayer() ? new Color(1, 1, 1, 1) : new Color(0.5f, 0.5f, 0.5f, 1)));
 	}
 	
 	@Override
