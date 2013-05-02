@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -21,8 +22,8 @@ import com.badlogic.gdx.utils.Array;
 public class BuildPanel extends Panel {
     public static final String LOG = "BuildPanel";
 
-    public BuildPanel(VOBGame game, LevelScreen levelScreen, String icon) {
-        super(game, levelScreen, icon);
+    public BuildPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
+        super(game, levelScreen, icon, skin);
     }
 
     @Override

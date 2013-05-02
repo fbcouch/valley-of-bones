@@ -4,11 +4,13 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -26,7 +28,8 @@ public class Panel extends Group {
     final VOBGame game;
     final LevelScreen levelScreen;
     Image icon;
-    boolean horizontal = true;
+    boolean horizontal = true, topright = false;
+    Vector2 anchor;
 
     boolean expanded = false;
     boolean built = false;
@@ -35,21 +38,27 @@ public class Panel extends Group {
     ObjectMap<Image, Prototypes.JsonProto> buttonMap;
     Array<Prototypes.JsonProto> items;
 
-    public Panel(VOBGame game, LevelScreen levelScreen, String icon) {
+    Skin skin;
+
+    public Panel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
         this.game = game;
         this.icon = new Image(TextureManager.getTexture(icon + ".png"));
         this.levelScreen = levelScreen;
         this.buttonMap = new ObjectMap<Image, Prototypes.JsonProto>();
         this.items = new Array<Prototypes.JsonProto>();
-
+        this.skin = skin;
     }
 
     public void update(float delta) {
         // TODO optimize this
-
+        boolean doexp = false;
+        if (!built) {
+            anchor = new Vector2(getX(), getY());
+            if (topright) doexp = true;
+        }
         if (!built || dirty) rebuild();
 
-
+        if (doexp) expand();
     }
 
     public void rebuild() {
@@ -83,10 +92,15 @@ public class Panel extends Group {
 
         expanded = true;
         this.clearActions();
-        if (horizontal)
-            this.addAction(Actions.moveTo(0, getY(), 0.5f));
-        else
+        if (horizontal) {
+            if (topright)
+                this.addAction(Actions.moveTo(anchor.x - getWidth(), getY(), 0.5f));
+            else
+                this.addAction(Actions.moveTo(0, getY(), 0.5f));
+        } else {
             this.addAction(Actions.moveTo(getX(), 0, 0.5f));
+        }
+
     }
 
     public void contract() {
@@ -94,10 +108,14 @@ public class Panel extends Group {
 
         expanded = false;
         this.clearActions();
-        if (horizontal)
-            this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
-        else
+        if (horizontal) {
+            if (topright)
+                this.addAction(Actions.moveTo(anchor.x - icon.getWidth(), anchor.y, 0.5f));
+            else
+                this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
+        } else {
             this.addAction(Actions.moveTo(getX(), icon.getY() * -1, 0.5f));
+        }
     }
 
     public void toggle() {

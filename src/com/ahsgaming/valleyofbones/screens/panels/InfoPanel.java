@@ -20,10 +20,9 @@ public class InfoPanel extends Panel {
     public static final String LOG = "InfoPanel";
 
     Unit selected;
-    Skin skin;
 
     public InfoPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
-        super(game, levelScreen, icon);
+        super(game, levelScreen, icon, skin);
         this.skin = skin;
         this.horizontal = false;
     }

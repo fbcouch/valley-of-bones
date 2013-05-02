@@ -37,6 +37,7 @@ import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.screens.panels.BuildPanel;
 import com.ahsgaming.valleyofbones.screens.panels.InfoPanel;
 import com.ahsgaming.valleyofbones.screens.panels.Panel;
+import com.ahsgaming.valleyofbones.screens.panels.ScorePanel;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -98,6 +99,7 @@ public class LevelScreen extends AbstractScreen {
     Panel buildPanel;
     Panel upgradePanel;
     InfoPanel selectionPanel;
+    ScorePanel scorePanel;
 
 	private boolean vKeyDown = false, bKeyDown = false;
 
@@ -370,9 +372,10 @@ public class LevelScreen extends AbstractScreen {
 
 		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
 
-        buildPanel = new BuildPanel(game, this, "gear-hammer");
-        upgradePanel = new Panel(game, this, "tinker");
+        buildPanel = new BuildPanel(game, this, "gear-hammer", getSkin());
+        upgradePanel = new Panel(game, this, "tinker", getSkin());
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
+        scorePanel = new ScorePanel(game, this, "scores", getSkin(), gController.getPlayers());
 
 	}
 	
@@ -398,7 +401,7 @@ public class LevelScreen extends AbstractScreen {
 			}
 		}
 		grpScorePane.setPosition(stage.getWidth() - grpScorePane.getWidth() - 10, 264);
-		stage.addActor(grpScorePane);
+		//stage.addActor(grpScorePane);
 		
 		// generate the turn info
 		grpTurnPane = new Group();
@@ -425,6 +428,9 @@ public class LevelScreen extends AbstractScreen {
 
         stage.addActor(selectionPanel);
         selectionPanel.setPosition(500, 0);
+
+        stage.addActor(scorePanel);
+        scorePanel.setPosition(stage.getWidth(), lblTurnTimer.getTop());
 		
 		btnTurnDone.addListener(new ClickListener() {
 
@@ -511,6 +517,7 @@ public class LevelScreen extends AbstractScreen {
         buildPanel.update(delta);
         upgradePanel.update(delta);
         selectionPanel.update(delta);
+        scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());
 		
 		showCommandPreviews();
 
