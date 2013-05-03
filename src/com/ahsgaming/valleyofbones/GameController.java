@@ -297,7 +297,8 @@ public class GameController {
 		if (cmd.owner != currentPlayer.getPlayerId()) return false; // TODO allow some actions off-turn?
 
 		if (cmd instanceof Attack) {
-			return ((Unit)getObjById(((Attack)cmd).unit)).getAttacksLeft() >= 1;
+            Unit u = ((Unit)getObjById(((Attack)cmd).unit));
+            return u != null && u.getAttacksLeft() >= 1;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
