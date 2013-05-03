@@ -205,8 +205,6 @@ public class LevelScreen extends AbstractScreen {
                         game.sendCommand(bld);
                         if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
                     }
-                } else {
-                    unsetBuildMode();
                 }
 
 			} else {						
@@ -266,8 +264,9 @@ public class LevelScreen extends AbstractScreen {
                     }
 
                 }
-				rightBtnDown = false;
+
 			}
+            rightBtnDown = false;
 		}
 		
 		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
@@ -530,6 +529,8 @@ public class LevelScreen extends AbstractScreen {
             loc = gController.getMap().boardToMapCoords(loc.x, loc.y);
 
             buildImage.setPosition(loc.x, loc.y);
+
+            if (!isCurrentPlayer()) unsetBuildMode();
         }
 		
 		// easy exit for debug purposes
