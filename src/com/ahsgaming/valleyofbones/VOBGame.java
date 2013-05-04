@@ -145,6 +145,14 @@ public class VOBGame extends Game {
                 if (loadGame && !started)
                     startGame();
 
+                if (gameResult != null) {
+                    gameResult = null;
+                    loadGame = false;
+                    started = false;
+                    gController = null;
+                    netController = null;
+                    create();
+                }
             } else {
                 if (netController.isConnected() && loadGame && !started)
                     startGame();

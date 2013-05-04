@@ -52,7 +52,9 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer implements NetController {
 	public String LOG = "GameServer";
-	
+
+    final VOBGame game;
+
 	Server server, broadcastServer;
 	GameController controller;
 	
@@ -73,7 +75,7 @@ public class GameServer implements NetController {
 	 * 
 	 */
 	public GameServer(final VOBGame game, GameSetupConfig cfg) {
-		
+		this.game = game;
 		gameConfig = cfg;
 		// setup the KryoNet server
 		server = new Server();
@@ -248,22 +250,20 @@ public class GameServer implements NetController {
 		// the controller has a game result --> broadcast it to everybody and close the server
 		GameResult result = controller.getGameResult();
 		controller.setState(GameStates.GAMEOVER);
-		
+        game.setGameResult(result);
+
 		Gdx.app.log(LOG, String.format("GameResult: winner: %d; Losers: (%d)", result.winner, result.losers.length));
 		
 		server.sendToAllTCP(result);
 		server.close();
 	}
-	
+
 	public void stop() {
-		stopServer = true;
+		server.close();
 	}
 
 	public boolean update(float delta) {
-		if (stopServer) {
-			server.stop();
-			return false;
-		}
+
 		
 		if ((controller == null)) return true;
 		
