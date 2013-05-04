@@ -61,7 +61,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
     float upgradeMoveSpeed = 0;
 
     float movesLeft = 0, attacksLeft = 0;
-	
+
+    ProgressBar healthBar;
+
 	Array<String> requires = new Array<String>();
 	
 	String protoId = "";
@@ -77,6 +79,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	Array<JsonProto> upgrades = new Array<JsonProto>();
 
     TextureRegion overlay;
+
+    boolean isTurn = false;
 	
 	/**
 	 * Constructors
@@ -99,6 +103,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
         // TODO load from atlas
         overlay = TextureManager.getTexture(proto.image + "-overlay.png");
 
+        healthBar = new ProgressBar();
+        healthBar.setSize(getWidth(), 4f);
 	}
 	
 	public void parseProperties() {
@@ -155,6 +161,13 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
             batch.draw(overlay, getX(), getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
         }
+
+        if (healthBar != null) {
+            batch.setColor(getColor());
+            healthBar.setCurrent(curHP / maxHP);
+            healthBar.draw(batch, getX(), getY(), parentAlpha);
+        }
+
     }
 
     public void updateProperties() {
@@ -377,6 +390,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			// TODO add explosion anim or something
 			return;
 		}
+
+        isTurn = (controller.getCurrentPlayer().getPlayerId() == getOwner().getPlayerId());
 	}
 
 	public ArrayList<Command> getCommandQueue() {
