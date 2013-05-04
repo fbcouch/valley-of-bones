@@ -43,13 +43,13 @@ public class InfoPanel extends Panel {
         this.skin = skin;
         this.horizontal = false;
 
-        iconHealth = new Image(TextureManager.getTexture("hospital-cross.png"));
-        iconAttack = new Image(TextureManager.getTexture("crossed-swords.png"));
-        iconRange = new Image(TextureManager.getTexture("archery-target.png"));
-        iconArmor = new Image(TextureManager.getTexture("checked-shield.png"));
-        iconMove = new Image(TextureManager.getTexture("radial-balance.png"));
-        iconMovesLeft = new Image(TextureManager.getTexture("walking-boot.png"));
-        iconAttacksLeft = new Image(TextureManager.getTexture("rune-sword.png"));
+        iconHealth = new Image(TextureManager.getSpriteFromAtlas("assets", "hospital-cross"));
+        iconAttack = new Image(TextureManager.getSpriteFromAtlas("assets", "crossed-swords"));
+        iconRange = new Image(TextureManager.getSpriteFromAtlas("assets", "archery-target"));
+        iconArmor = new Image(TextureManager.getSpriteFromAtlas("assets", "checked-shield"));
+        iconMove = new Image(TextureManager.getSpriteFromAtlas("assets", "radial-balance"));
+        iconMovesLeft = new Image(TextureManager.getSpriteFromAtlas("assets", "walking-boot"));
+        iconAttacksLeft = new Image(TextureManager.getSpriteFromAtlas("assets", "rune-sword"));
 
         lblTitle = new Label("Nothing selected", skin, "medium");
         lblHealth = new Label(String.format(HEALTH, 0, 0), skin, "small");

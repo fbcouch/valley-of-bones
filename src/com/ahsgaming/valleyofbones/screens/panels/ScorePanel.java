@@ -35,7 +35,7 @@ public class ScorePanel extends Panel {
         Pixmap pixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         pixmap.setColor(1, 1, 1, 1);
         pixmap.fillCircle(15, 15, 10);
-        turnIndicator = new Image(TextureManager.getTexture("reticule.png"));
+        turnIndicator = new Image(TextureManager.getSpriteFromAtlas("assets", "reticule"));
 
         int y = 0;
         for (Player p: players) {
@@ -104,8 +104,8 @@ public class ScorePanel extends Panel {
 
             // TODO load from atlas
             nameLabel = new Label(name, skin, "medium");
-            foodIcon = new Image(TextureManager.getTexture("supply.png"));
-            moneyIcon = new Image(TextureManager.getTexture("money.png"));
+            foodIcon = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
+            moneyIcon = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
             foodLabel = new Label(String.format(FOOD, 0, 0), skin, "medium");
             moneyLabel = new Label(String.format(MONEY, 0), skin, "medium");
 

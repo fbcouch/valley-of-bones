@@ -308,7 +308,7 @@ public class LevelScreen extends AbstractScreen {
         if (isCurrentPlayer() && game.getPlayer().canBuild(proto.id, gController)) {
             buildMode = true;
             buildProto = proto;
-            buildImage = new Image(TextureManager.getTexture(proto.image + ".png"));
+            buildImage = new Image(TextureManager.getSpriteFromAtlas("assets", proto.image));
             buildImage.setColor(1, 1, 1, 0.5f);
         }
     }
@@ -345,7 +345,7 @@ public class LevelScreen extends AbstractScreen {
 					Image img = null;
 					Vector2 pos = new Vector2();
 					if (c instanceof Build) {
-						img = new Image(TextureManager.getTexture(Prototypes.getProto(((Build)c).building).image + ".png"));
+						img = new Image(TextureManager.getSpriteFromAtlas("assets", Prototypes.getProto(((Build)c).building).image));
 						pos = ((Build)c).location;
 					} else if (c instanceof Move) {
 						img = new Image(gController.getObjById(((Move)c).unit).getImage());

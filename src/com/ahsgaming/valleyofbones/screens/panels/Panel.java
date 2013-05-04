@@ -42,7 +42,7 @@ public class Panel extends Group {
 
     public Panel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
         this.game = game;
-        this.icon = new Image(TextureManager.getTexture(icon + ".png"));
+        this.icon = new Image(TextureManager.getSpriteFromAtlas("assets", icon));
         this.levelScreen = levelScreen;
         this.buttonMap = new ObjectMap<Image, Prototypes.JsonProto>();
         this.items = new Array<Prototypes.JsonProto>();

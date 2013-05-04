@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -207,7 +208,7 @@ public class HexMap {
 		if (mapGroup == null) {
 			mapGroup = new Group();
 			mapGroup.setSize(getMapWidth(), getMapHeight());
-			dirtTexture = new TextureRegion(new Texture(Gdx.files.internal("dirt-hex.png")));
+			dirtTexture = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
 			for (int x = 0; x < bounds.x; x++) {
 				for (int y = 0; y < bounds.y; y++) {
 					Image img = new Image(dirtTexture);

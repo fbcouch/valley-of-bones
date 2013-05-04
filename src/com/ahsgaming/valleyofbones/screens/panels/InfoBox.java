@@ -34,8 +34,8 @@ public class InfoBox extends Group {
     public InfoBox(Prototypes.JsonProto proto, Skin skin) {
         super();
 
-        iconFood = new Image(TextureManager.getTexture("supply.png"));
-        iconMoney = new Image(TextureManager.getTexture("money.png"));
+        iconFood = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
+        iconMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
         lblTitle = new Label(" ", skin, "medium");
         lblFood = new Label(String.format(FOOD, 0), skin, "medium");
         lblMoney = new Label(String.format(MONEY, 0), skin, "medium");

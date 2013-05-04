@@ -66,15 +66,19 @@ public class TextureManager {
 	
 	public static Sprite getSpriteFromAtlas(String atlas, String name, int id) {
 		if (!atlases.containsKey(atlas))
-			atlases.put(atlas, new TextureAtlas(atlas));
+			atlases.put(atlas, new TextureAtlas(atlas + ".atlas"));
 		
 		if (id == -1)
 			return atlases.get(atlas).createSprite(name);
 		
 		return atlases.get(atlas).createSprite(name, id);
 	}
-	
-	public static Array<Sprite> getSpritesFromAtlas(String atlas, String name) {
+
+    public static Sprite getSpriteFromAtlas(String atlas, String name) {
+        return getSpriteFromAtlas(atlas, name, -1);
+    }
+
+    public static Array<Sprite> getSpritesFromAtlas(String atlas, String name) {
 		if (!atlases.containsKey(atlas))
 			atlases.put(atlas, new TextureAtlas(atlas));
 			

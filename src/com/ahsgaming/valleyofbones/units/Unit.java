@@ -93,7 +93,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	
 	public Unit(int id, Player owner, JsonProto proto) {
 		// TODO load from atlas
-		super(id, owner, TextureManager.getTexture(proto.image + ".png"));
+		super(id, owner, TextureManager.getSpriteFromAtlas("assets", proto.image));
 		
 		this.proto = proto;
 		this.protoId = proto.id;
@@ -102,7 +102,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.putAll(proto.properties);
 		parseProperties();
         // TODO load from atlas
-        overlay = TextureManager.getTexture(proto.image + "-overlay.png");
+        overlay = TextureManager.getSpriteFromAtlas("assets", proto.image + "-overlay");
 
         healthBar = new ProgressBar();
         healthBar.setSize(getWidth(), 4f);
@@ -173,14 +173,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
             int x = 0;
             batch.setColor(getColor());
             if (getMovesLeft() > 0) {
-                TextureRegion tex = TextureManager.getTexture("walking-boot.png");
+                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "walking-boot");
 
                 batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;
             }
 
             if (getAttacksLeft() > 0) {
-                TextureRegion tex = TextureManager.getTexture("rune-sword.png");
+                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "rune-sword");
 
                 batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;

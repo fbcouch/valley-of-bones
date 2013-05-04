@@ -54,7 +54,7 @@ public class BuildPanel extends Panel {
         int spacing = 4;
         for (Prototypes.JsonProto jp: items) {
             final Image btn;
-            btn = new Image(TextureManager.getTexture(jp.image + ".png"));
+            btn = new Image(TextureManager.getSpriteFromAtlas("assets", jp.image));
             this.addActor(btn);
             btn.setX(x);
             x += btn.getWidth() + spacing;
