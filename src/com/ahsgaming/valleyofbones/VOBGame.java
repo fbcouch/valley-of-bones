@@ -45,6 +45,8 @@ public class VOBGame extends Game {
 	boolean loadGame = false;
 	
 	GameResult gameResult = null; // client sets this when a game ends
+
+    public String playerName = "Player";
 	
 	/*
 	 * Constructors
@@ -57,6 +59,18 @@ public class VOBGame extends Game {
 	/*
 	 * Methods
 	 */
+
+    public boolean loadProfile() {
+        if (Gdx.files.local("profile").exists()) {
+            playerName = Gdx.files.local("profile").readString();
+            return true;
+        }
+        return false;
+    }
+
+    public void saveProfile() {
+        Gdx.files.local("profile").writeString(playerName, false);
+    }
 	
 	public void createGame(GameSetupConfig cfg) {
 		if (isServer) {
@@ -121,7 +135,13 @@ public class VOBGame extends Game {
 			createGame(cfg);
 			
 		} else {
-			setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+			if (!loadProfile()) {
+                Gdx.files.local("profile").writeString(playerName, false);
+                setScreen(getOptionsScreen());
+            } else {
+
+                setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+            }
 		}
 		
 	}
@@ -210,7 +230,7 @@ public class VOBGame extends Game {
 		GameSetupConfig cfg = new GameSetupConfig();
 		cfg.isHost = true;
 		cfg.isMulti = false;
-		
+		cfg.playerName = playerName;
 		return new GameSetupScreen(this, cfg);
 	}
 	
@@ -291,7 +311,7 @@ public class VOBGame extends Game {
 	public static void main(String[] args) {
 		
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Valley of Bones";
+		cfg.title = "Valley of Bones | ahsgaming.com | (c) 2013 Jami Couch";
 		cfg.useGL20 = true;
 		cfg.width = 1440;
 		cfg.height = 900;

@@ -97,7 +97,7 @@ public class MainMenuScreen extends AbstractScreen {
 		Table table = new Table(skin);
 		table.setFillParent(true);
 		stage.addActor(table);
-		table.add("Welcome to Space Tactics", "medium-font", new Color(1, 1, 1, 1)).spaceBottom(50f).colspan(2);
+		table.add("Valley of Bones", "medium-font", new Color(1, 1, 1, 1)).spaceBottom(50f).colspan(2);
 		
 		table.row();
 		

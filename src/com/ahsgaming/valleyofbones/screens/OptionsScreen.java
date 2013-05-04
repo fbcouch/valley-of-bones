@@ -23,6 +23,12 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
  * @author jami
@@ -30,7 +36,9 @@ import com.ahsgaming.valleyofbones.VOBGame;
  */
 public class OptionsScreen extends AbstractScreen {
 
-	/**
+	TextField txtName;
+
+    /**
 	 * @param game
 	 */
 	public OptionsScreen(VOBGame game) {
@@ -38,4 +46,65 @@ public class OptionsScreen extends AbstractScreen {
 		// TODO Auto-generated constructor stub
 	}
 
+    @Override
+    public void show() {
+        super.show();    //To change body of overridden methods use File | Settings | File Templates.
+
+        txtName = new TextField(game.playerName, getSkin());
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);    //To change body of overridden methods use File | Settings | File Templates.
+
+        Table table = new Table(getSkin());
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        table.add(new Label("OPTIONS", getSkin(), "medium")).colspan(2).spaceBottom(30);
+        table.row();
+
+        table.add(new Label("Name:", getSkin(), "small")).spaceBottom(15);
+        table.add(txtName).spaceBottom(15);
+
+        table.row();
+
+        TextButton btnSubmit = new TextButton("SAVE", getSkin());
+        TextButton btnCancel = new TextButton("CANCEL", getSkin(), "cancel");
+
+        table.add(btnCancel).pad(4).size(150, 50);
+        table.add(btnSubmit).pad(4).size(150, 50);
+
+        table.row();
+
+        btnSubmit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                if (txtName.getText().trim().length() > 0) {
+                    game.playerName = txtName.getText().trim();
+                    game.saveProfile();
+                    game.setScreen(game.getMainMenuScreen());
+                }
+            }
+        });
+
+        btnCancel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                game.setScreen(game.getMainMenuScreen());
+            }
+        });
+
+
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }
