@@ -286,7 +286,14 @@ public class LevelScreen extends AbstractScreen {
             } else {
                 bKeyDown = false;
             }
-			
+
+            if (Gdx.input.isKeyPressed(Keys.A) && isCurrentPlayer() && game.getPlayer().canBuild("marine-base", gController)) {
+                setBuildMode(Prototypes.getProto("marine-base"));
+            } else if (Gdx.input.isKeyPressed(Keys.S) && isCurrentPlayer() && game.getPlayer().canBuild("saboteur-base", gController)) {
+                setBuildMode(Prototypes.getProto("saboteur-base"));
+            } else if (Gdx.input.isKeyPressed(Keys.D) && isCurrentPlayer() && game.getPlayer().canBuild("tank-base", gController)) {
+                setBuildMode(Prototypes.getProto("tank-base"));
+            }
 		}
 		
 		
@@ -298,6 +305,7 @@ public class LevelScreen extends AbstractScreen {
 	}
 
     public void setBuildMode(Prototypes.JsonProto proto) {
+        if (buildMode) unsetBuildMode();
         if (isCurrentPlayer() && game.getPlayer().canBuild(proto.id, gController)) {
             buildMode = true;
             buildProto = proto;

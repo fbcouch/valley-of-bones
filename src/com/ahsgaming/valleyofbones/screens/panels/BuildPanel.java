@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -80,6 +81,16 @@ public class BuildPanel extends Panel {
                     exited(btn);
                 }
             });
+
+            Label hotkey = new Label(" ", skin, "small");
+            hotkey.setPosition(btn.getX(), btn.getY());
+            addActor(hotkey);
+            if (jp.id.equals("marine-base"))
+                hotkey.setText("A");
+            else if (jp.id.equals("saboteur-base"))
+                hotkey.setText("S");
+            else if (jp.id.equals("tank-base"))
+                hotkey.setText("D");
 
             i++;
         }
