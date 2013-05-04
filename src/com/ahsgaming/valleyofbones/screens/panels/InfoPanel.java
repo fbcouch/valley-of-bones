@@ -3,7 +3,9 @@ package com.ahsgaming.valleyofbones.screens.panels;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
+import com.ahsgaming.valleyofbones.units.ProgressBar;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -34,6 +36,8 @@ public class InfoPanel extends Panel {
 
     Unit selected;
 
+    ProgressBar healthBar;
+
     public InfoPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
         super(game, levelScreen, icon, skin);
         this.skin = skin;
@@ -55,6 +59,9 @@ public class InfoPanel extends Panel {
         lblMove = new Label(String.format(MOVE, 0), skin, "medium");
         lblAttacksLeft = new Label(String.format(ATTACK_LEFT, 0), skin, "medium");
         lblMovesLeft = new Label(String.format(MOVE_LEFT, 0), skin, "medium");
+
+        healthBar = new ProgressBar();
+        healthBar.setSize(lblHealth.getWidth(), 4);
         expand();
     }
 
@@ -86,6 +93,9 @@ public class InfoPanel extends Panel {
                 lbl.layout();
                 lbl.setSize(lbl.getPrefWidth(), lbl.getPrefHeight());
             }
+
+            healthBar.setSize(lblHealth.getWidth(), 4);
+            healthBar.setCurrent(selected.getCurHP() / selected.getMaxHP());
         }
 
         dirty = true;
@@ -96,6 +106,13 @@ public class InfoPanel extends Panel {
         else
             contract();
 
+    }
+
+    @Override
+    public void draw(SpriteBatch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+
+        healthBar.draw(batch, getX() + lblHealth.getX(), getY() + lblHealth.getTop(), parentAlpha);
     }
 
     @Override

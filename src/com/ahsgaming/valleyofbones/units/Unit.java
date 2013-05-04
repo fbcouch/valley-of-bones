@@ -34,6 +34,7 @@ import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -168,6 +169,23 @@ public class Unit extends GameObject implements Selectable, Targetable {
             healthBar.draw(batch, getX(), getY(), parentAlpha);
         }
 
+        if (isTurn) {
+            int x = 0;
+            batch.setColor(getColor());
+            if (getMovesLeft() > 0) {
+                TextureRegion tex = TextureManager.getTexture("walking-boot.png");
+
+                batch.draw(tex, getX() + x, getY() + healthBar.getHeight(), 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                x += tex.getRegionWidth() * 0.5f;
+            }
+
+            if (getAttacksLeft() > 0) {
+                TextureRegion tex = TextureManager.getTexture("rune-sword.png");
+
+                batch.draw(tex, getX() + x, getY() + healthBar.getHeight(), 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                x += tex.getRegionWidth() * 0.5f;
+            }
+        }
     }
 
     public void updateProperties() {

@@ -22,15 +22,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class ScorePanel extends Panel {
     public static final String LOG = "ScorePanel";
 
-
-
     ObjectMap<Integer, PlayerScore> playerScores = new ObjectMap<Integer, PlayerScore>();
 
     public ScorePanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin, Array<Player> players) {
         super(game, levelScreen, icon, skin);
 
         for (Player p: players) {
-            playerScores.put(p.getPlayerId(), new PlayerScore(skin, p.getPlayerName(), p.getPlayerColor()));
+            playerScores.put(p.getPlayerId(), new PlayerScore(skin, p.getPlayerName(), p.getPlayerColor(), false));
         }
 
         topright = true;
@@ -79,9 +77,12 @@ public class ScorePanel extends Panel {
 
         Skin skin;
 
-        public PlayerScore(Skin skin, String name, Color textColor) {
+        boolean showAll = false;
+
+        public PlayerScore(Skin skin, String name, Color textColor, boolean showAll) {
             super();
             this.skin = skin;
+            this.showAll = showAll;
 
             // TODO load from atlas
             nameLabel = new Label(name, skin, "small");
@@ -95,10 +96,12 @@ public class ScorePanel extends Panel {
             moneyLabel.setColor(textColor);
 
             addActor(nameLabel);
-            addActor(foodIcon);
-            addActor(moneyIcon);
-            addActor(foodLabel);
-            addActor(moneyLabel);
+            if (showAll) {
+                addActor(foodIcon);
+                addActor(moneyIcon);
+                addActor(foodLabel);
+                addActor(moneyLabel);
+            }
 
             update(name, 0, 0, 0, false);
         }
@@ -126,24 +129,26 @@ public class ScorePanel extends Panel {
             nameLabel.setX(x);
             x += nameLabel.getPrefWidth();
             maxy = nameLabel.getTop();
+            if (showAll) {
+                foodIcon.setX(x);
+                x += foodIcon.getPrefWidth();
+                if (foodIcon.getTop() > maxy) maxy = foodIcon.getTop();
 
-            foodIcon.setX(x);
-            x += foodIcon.getPrefWidth();
-            if (foodIcon.getTop() > maxy) maxy = foodIcon.getTop();
+                foodLabel.setX(x);
+                x += foodLabel.getPrefWidth();
+                if (foodLabel.getTop() > maxy) maxy = foodLabel.getTop();
 
-            foodLabel.setX(x);
-            x += foodLabel.getPrefWidth();
-            if (foodLabel.getTop() > maxy) maxy = foodLabel.getTop();
+                moneyIcon.setX(x);
+                x += moneyIcon.getPrefWidth();
+                if (moneyIcon.getTop() > maxy) maxy = moneyIcon.getTop();
 
-            moneyIcon.setX(x);
-            x += moneyIcon.getPrefWidth();
-            if (moneyIcon.getTop() > maxy) maxy = moneyIcon.getTop();
+                moneyLabel.setX(x);
+                x += moneyLabel.getPrefWidth();
+                if (moneyLabel.getTop() > maxy) maxy = moneyLabel.getTop();
+            }
 
-            moneyLabel.setX(x);
-            x += moneyLabel.getPrefWidth();
-            if (moneyLabel.getTop() > maxy) maxy = moneyLabel.getTop();
-
-            float extra = (nameLabel.getPrefWidth() + foodLabel.getPrefWidth() + moneyLabel.getPrefWidth()) * 0.25f;
+            float extra = nameLabel.getPrefWidth() * 0.25f;
+            if (showAll) extra += (foodLabel.getPrefWidth() + moneyLabel.getPrefWidth()) * 0.25f;
 
             setSize(x + (current ? 0 : extra), maxy);
         }
