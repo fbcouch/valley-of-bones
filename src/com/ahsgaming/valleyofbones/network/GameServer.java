@@ -102,6 +102,12 @@ public class GameServer implements NetController {
 				
 				if (obj instanceof RegisterPlayer) {
 					RegisterPlayer rp = (RegisterPlayer)obj;
+
+                    if (rp.version != VOBGame.VERSION) {
+                        // wrong version!
+                        server.sendToTCP(c.getID(), new KryoCommon.VersionError());
+                        return;
+                    }
 					
 					if (players.size >= Player.AUTOCOLORS.length) return; // TODO should join as spectator? 
 					

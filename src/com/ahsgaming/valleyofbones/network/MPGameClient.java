@@ -67,11 +67,14 @@ public class MPGameClient implements NetController {
 	boolean stopClient = false;
 	
 	boolean isConnecting = false;
+    boolean recdRegisterPlayer = false;
 	
 	GameResult gameResult = null;
 
     boolean sentEndTurn = false;
     boolean recdEndTurn = false;
+
+    KryoCommon.VersionError versionError;
 	
 	/**
 	 * 
@@ -94,11 +97,19 @@ public class MPGameClient implements NetController {
 			}
 			
 			public void received (Connection c, Object obj) {
+                if (obj instanceof KryoCommon.VersionError) {
+                    Gdx.app.log(LOG, "VersionError");
+                    versionError = (KryoCommon.VersionError)obj;
+                    isConnecting = false;
+                    c.close();
+                }
+
                 if (obj instanceof RegisteredPlayer) {
                     RegisteredPlayer reg = (RegisteredPlayer)obj;
                     playerId = reg.id;
                     gameConfig.isHost = reg.host;
                     Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
+                    recdRegisterPlayer = true;
                 }
 
                 if (obj instanceof RegisteredPlayer[]) {
@@ -172,8 +183,9 @@ public class MPGameClient implements NetController {
 					// TODO Auto-generated catch block
 					Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
 					e.printStackTrace();
+                    isConnecting = false;
 				} 
-				isConnecting = false;
+
 			}
 		}.start();
 	}
@@ -262,12 +274,16 @@ public class MPGameClient implements NetController {
 	public boolean isConnected() {
 		if (client == null) return false;
 		
-		return client.isConnected();
+		return recdRegisterPlayer && client.isConnected();
 	}
 	
 	public boolean isConnecting() {
 		return isConnecting;
 	}
+
+    public KryoCommon.VersionError getVersionError() {
+        return versionError;
+    }
 
 	@Override
 	public void setGameController(GameController controller) {

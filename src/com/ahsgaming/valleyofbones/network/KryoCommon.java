@@ -23,6 +23,7 @@
 package com.ahsgaming.valleyofbones.network;
 
 import com.ahsgaming.valleyofbones.GameResult;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -63,10 +64,12 @@ public class KryoCommon {
 		kryo.register(GameDetails.class);
 		kryo.register(int[].class);
 		kryo.register(GameResult.class);
+        kryo.register(VersionError.class);
 	}
 	
 	public static class RegisterPlayer {
 		public String name;
+        public int version = VOBGame.VERSION;
 	}
 	
 	public static class RegisteredPlayer {
@@ -92,4 +95,8 @@ public class KryoCommon {
 	public static class GameDetails {
 		public String mapName = "blank.tmx";
 	}
+
+    public static class VersionError {
+        public int version = VOBGame.VERSION;
+    }
 }

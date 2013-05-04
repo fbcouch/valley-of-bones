@@ -26,6 +26,7 @@ import java.net.InetAddress;
 
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
+import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -187,10 +188,17 @@ public class GameJoinScreen extends AbstractScreen {
 			if (game.isConnected()) {
 				game.setScreen(gsScreen);
 			} else if (!game.isConnecting()) {
-				this.lblStatus.setText(String.format("Failed to connect to host (%s)", 
-						gsScreen.config.hostName));
+				if (game.getNetController() instanceof MPGameClient && ((MPGameClient)game.getNetController()).getVersionError() != null) {
+                    this.lblStatus.setText(String.format("Server version (%d) is different from client (%d)",
+                                                         ((MPGameClient)game.getNetController()).getVersionError().version,
+                                                         VOBGame.VERSION));
+                } else {
+                    this.lblStatus.setText(String.format("Failed to connect to host (%s)",
+                            gsScreen.config.hostName));
+                }
 				gsScreen = null;
 				game.closeGame();
+
 			}
 		}
 	}

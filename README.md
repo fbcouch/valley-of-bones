@@ -10,6 +10,19 @@ Full source code available from:
 	
 	www.ahsgaming.com
 
+## RUNNING THE GAME ##
+
+This game was built with Java 7, so you may need to update your Java installation (www.java.com).
+Otherwise, it should just run when you double-click the icon.
+Alternatively, you may use the following command in a CLI:
+
+	java -jar ValleyOfBones.jar
+	
+To run the multiplayer server, double click the ValleyOfBonesServer.jar.
+Alternatively, you may use the following command in a CLI:
+
+    java -jar ValleyOfBonesServer.jar
+
 ## LICENSE ##
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,23 +57,34 @@ The font art assets used were created by Kenney, Inc. licensed as CC-SA.
 	
 Several icons used were licensed from game-icons.net:
 
-- "Tread Icon" by Lorc, CC-BY
+- "Archery Target Icon" by Lorc, CC-BY
+
+- "Checked Shield Icon" by Lorc, CC-BY
+
+- "Crossed Swords Icon" by Lorc, CC-BY
 
 - "Gear Hammer Icon" by Lorc, CC-BY
 
-- "Tinker Icon" by Lorc, CC-BY
+- "Hospital Cross Icon" by Lorc, CC-BY
 
 - "Invisible Icon" by Delapouite, CC-BY
 
+- "King Icon" by Lorc, CC-BY
+
+- "Radial Balance Icon" by Lorc, CC-BY
+
+- "Reticule Icon" by Lorc, CC-BY
+
+- "Rune Sword Icon" by Lorc, CC-BY  
+
+- "Tinker Icon" by Lorc, CC-BY
+
+- "Tread Icon" by Lorc, CC-BY
+
+- "Walking Boot Icon" by Lorc, CC-BY
+
+
 All other art assets are original creations by Jami Couch and are licensed as CC-BY-SA.
-
-## RUNNING THE GAME ##
-
-This game was built with Java 7, so you may need to update your Java installation (www.java.com).
-Otherwise, it should just run when you double-click the icon.
-Alternatively, you may use the following command in a CLI:
-
-	java -jar ValleyOfBones.jar
 
 
 
