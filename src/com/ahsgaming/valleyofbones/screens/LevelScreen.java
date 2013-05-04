@@ -484,7 +484,10 @@ public class LevelScreen extends AbstractScreen {
 		doProcessInput(delta);
 		
 		// update level position
-		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
+        if (VOBGame.DEBUG_LOCK_SCREEN)
+            posCamera.set(grpLevel.getWidth() * 0.5f, grpLevel.getHeight() * 0.5f - stage.getHeight() * 0.125f);
+
+            grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
 		updateTurnPane();
 
