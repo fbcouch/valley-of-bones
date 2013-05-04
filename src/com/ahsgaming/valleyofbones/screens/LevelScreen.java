@@ -97,6 +97,8 @@ public class LevelScreen extends AbstractScreen {
     Panel upgradePanel;
     InfoPanel selectionPanel;
     ScorePanel scorePanel;
+    ScorePanel.PlayerScore playerScore;
+
 
 	private boolean vKeyDown = false, bKeyDown = false;
 
@@ -381,6 +383,7 @@ public class LevelScreen extends AbstractScreen {
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
         scorePanel = new ScorePanel(game, this, "scores", getSkin(), gController.getPlayers());
 
+        playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer().getPlayerName(), game.getPlayer().getPlayerColor(), true);
 	}
 	
 	@Override
@@ -418,7 +421,10 @@ public class LevelScreen extends AbstractScreen {
 
         stage.addActor(scorePanel);
         scorePanel.setPosition(stage.getWidth(), lblTurnTimer.getTop());
-		
+
+        stage.addActor(playerScore);
+
+
 		btnTurnDone.addListener(new ClickListener() {
 
 			@Override
@@ -486,7 +492,9 @@ public class LevelScreen extends AbstractScreen {
         upgradePanel.update(delta);
         selectionPanel.update(delta);
         scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());
-		
+        playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney());
+        playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
+
 		showCommandPreviews();
 
         if (buildImage != null) buildImage.remove();

@@ -5,6 +5,9 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -24,9 +27,17 @@ public class ScorePanel extends Panel {
 
     ObjectMap<Integer, PlayerScore> playerScores = new ObjectMap<Integer, PlayerScore>();
 
+    Image turnIndicator;
+
     public ScorePanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin, Array<Player> players) {
         super(game, levelScreen, icon, skin);
 
+        Pixmap pixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        pixmap.setColor(1, 1, 1, 1);
+        pixmap.fillCircle(15, 15, 10);
+        turnIndicator = new Image(TextureManager.getTexture("reticule.png"));
+
+        int y = 0;
         for (Player p: players) {
             playerScores.put(p.getPlayerId(), new PlayerScore(skin, p.getPlayerName(), p.getPlayerColor(), false));
         }
@@ -40,7 +51,10 @@ public class ScorePanel extends Panel {
 
         for (Player p: players) {
             if (playerScores.containsKey(p.getPlayerId())) {
-                playerScores.get(p.getPlayerId()).update(p.getPlayerName(), p.getCurFood(), p.getMaxFood(), (int)p.getBankMoney(), p == currentPlayer);
+                PlayerScore ps = playerScores.get(p.getPlayerId());
+                ps.update(p.getPlayerName(), p.getCurFood(), p.getMaxFood(), (int)p.getBankMoney());
+                if (p == currentPlayer)
+                    turnIndicator.setY(ps.getY());
             }
         }
     }
@@ -49,21 +63,25 @@ public class ScorePanel extends Panel {
     public void rebuild() {
         super.rebuild();
 
+        float x = icon.getWidth() + turnIndicator.getWidth();
         int y = 0;
         float width = 0;
         for (Integer i: playerScores.keys()) {
             PlayerScore ps = playerScores.get(i);
             addActor(ps);
-            ps.setPosition(icon.getWidth(), y);
+            ps.setPosition(x, y);
             y += ps.getHeight();
             if (ps.getWidth() > width) width = ps.getWidth();
         }
 
-        setWidth(icon.getWidth() + width);
+        turnIndicator.setX(icon.getWidth());
+        addActor(turnIndicator);
+
+        setWidth(x + width);
         if (icon.getTop() < y) setHeight(y);
     }
 
-    private static class PlayerScore extends Group {
+    public static class PlayerScore extends Group {
         final String FOOD = "%02d/%02d";
         final String MONEY = "%04d";
 
@@ -85,11 +103,11 @@ public class ScorePanel extends Panel {
             this.showAll = showAll;
 
             // TODO load from atlas
-            nameLabel = new Label(name, skin, "small");
+            nameLabel = new Label(name, skin, "medium");
             foodIcon = new Image(TextureManager.getTexture("supply.png"));
             moneyIcon = new Image(TextureManager.getTexture("money.png"));
-            foodLabel = new Label(String.format(FOOD, 0, 0), skin, "small");
-            moneyLabel = new Label(String.format(MONEY, 0), skin, "small");
+            foodLabel = new Label(String.format(FOOD, 0, 0), skin, "medium");
+            moneyLabel = new Label(String.format(MONEY, 0), skin, "medium");
 
             nameLabel.setColor(textColor);
             foodLabel.setColor(textColor);
@@ -103,23 +121,14 @@ public class ScorePanel extends Panel {
                 addActor(moneyLabel);
             }
 
-            update(name, 0, 0, 0, false);
+            update(name, 0, 0, 0);
         }
 
-        public void update(String name, int curFood, int maxFood, int money, boolean current) {
+        public void update(String name, int curFood, int maxFood, int money) {
             nameLabel.setText(name);
             foodLabel.setText(String.format(FOOD, curFood, maxFood));
             moneyLabel.setText(String.format(MONEY, money));
 
-            if (current) {
-                moneyLabel.setFontScale(1.25f);
-                foodLabel.setFontScale(1.25f);
-                nameLabel.setFontScale(1.25f);
-            } else {
-                moneyLabel.setFontScale(1f);
-                foodLabel.setFontScale(1f);
-                nameLabel.setFontScale(1f);
-            }
             moneyLabel.invalidate();
             foodLabel.invalidate();
             nameLabel.invalidate();
@@ -147,10 +156,7 @@ public class ScorePanel extends Panel {
                 if (moneyLabel.getTop() > maxy) maxy = moneyLabel.getTop();
             }
 
-            float extra = nameLabel.getPrefWidth() * 0.25f;
-            if (showAll) extra += (foodLabel.getPrefWidth() + moneyLabel.getPrefWidth()) * 0.25f;
-
-            setSize(x + (current ? 0 : extra), maxy);
+            setSize(x, maxy);
         }
     }
 }

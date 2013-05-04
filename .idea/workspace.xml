@@ -7,9 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -22,7 +21,7 @@
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
     <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367554540094" ignored="false" />
     <file path="/EndTurn.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367090717362" ignored="false" />
-    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367681800996" ignored="false" />
+    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367687487065" ignored="false" />
     <file path="/MainMenuScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096167407" ignored="false" />
     <file path="/AbstractScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096049398" ignored="false" />
     <file path="/GameSetupScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367103802853" ignored="false" />
@@ -38,7 +37,7 @@
     <file path="/MPGameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367414037090" ignored="false" />
     <file path="/TextureManager.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367468432250" ignored="false" />
     <file path="/InfoPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367686052481" ignored="false" />
-    <file path="/ScorePanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367686372224" ignored="false" />
+    <file path="/ScorePanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367687705433" ignored="false" />
     <file path="/InfoBox.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367674836405" ignored="false" />
     <file path="/HealthBar.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367683881850" ignored="false" />
     <file path="/ProgressBar.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367683876551" ignored="false" />
@@ -110,7 +109,7 @@
       <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="414" column="0" selection-start="15611" selection-end="15611" vertical-scroll-proportion="0.0">
+            <state line="497" column="8" selection-start="18567" selection-end="18567" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -127,11 +126,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ScorePanel.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ScorePanel.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="43" selection-start="892" selection-end="892" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="57" column="51" selection-start="2151" selection-end="2151" vertical-scroll-proportion="0.5811966">
+              <folding>
+                <element signature="e#1001#1023#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -145,10 +146,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Unit.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Unit.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="171" column="12" selection-start="5371" selection-end="5371" vertical-scroll-proportion="0.31643358">
+            <state line="171" column="12" selection-start="5371" selection-end="5371" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#2162#2170#0" expanded="true" />
               </folding>
@@ -184,12 +185,12 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/GameServer.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/HealthBar.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/ProgressBar.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java" />
       </list>
     </option>
   </component>
@@ -824,29 +825,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="414" column="0" selection-start="15611" selection-end="15611" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="109" column="57" selection-start="4375" selection-end="4375" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#2962#2969#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="43" selection-start="892" selection-end="892" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/ProgressBar.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="39" column="16" selection-start="1094" selection-end="1094" vertical-scroll-proportion="0.0">
@@ -865,9 +843,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="171" column="12" selection-start="5371" selection-end="5371" vertical-scroll-proportion="0.31643358">
+        <state line="171" column="12" selection-start="5371" selection-end="5371" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#2162#2170#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="109" column="57" selection-start="4375" selection-end="4375" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#2962#2969#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="497" column="8" selection-start="18567" selection-end="18567" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="51" selection-start="2151" selection-end="2151" vertical-scroll-proportion="0.5811966">
+          <folding>
+            <element signature="e#1001#1023#0" expanded="true" />
           </folding>
         </state>
       </provider>
