@@ -4,6 +4,7 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -22,8 +23,12 @@ import com.badlogic.gdx.utils.Array;
 public class BuildPanel extends Panel {
     public static final String LOG = "BuildPanel";
 
+    InfoBox tooltip;
+
     public BuildPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
         super(game, levelScreen, icon, skin);
+
+        tooltip = new InfoBox(null, skin);
     }
 
     @Override
@@ -60,7 +65,22 @@ public class BuildPanel extends Panel {
 
                     buttonClicked(btn);
                 }
+
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+
+                    entered(btn);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+
+                    exited(btn);
+                }
             });
+
             i++;
         }
 
@@ -78,5 +98,18 @@ public class BuildPanel extends Panel {
 
         levelScreen.setBuildMode(jp);
         return true;
+    }
+
+    public void entered(Image button) {
+        if (!buttonMap.containsKey(button)) return;
+
+        Prototypes.JsonProto jp = buttonMap.get(button);
+        tooltip.setProto(jp);
+        addActor(tooltip);
+        tooltip.setPosition(button.getX(), button.getTop());
+    }
+
+    public void exited(Image button) {
+        tooltip.remove();
     }
 }

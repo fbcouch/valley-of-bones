@@ -419,11 +419,12 @@ public class LevelScreen extends AbstractScreen {
 		stage.addActor(grpTurnPane);
 		
 		// panels
+        // TODO add back upgrade panel
+        //stage.addActor(upgradePanel);
+        upgradePanel.setPosition(0, 64);
+
         stage.addActor(buildPanel);
         buildPanel.setPosition(0, 0);
-
-        stage.addActor(upgradePanel);
-        upgradePanel.setPosition(0, 64);
 
         stage.addActor(selectionPanel);
         selectionPanel.setPosition(500, 0);
