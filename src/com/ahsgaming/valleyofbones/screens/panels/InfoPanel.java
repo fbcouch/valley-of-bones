@@ -95,7 +95,7 @@ public class InfoPanel extends Panel {
             }
 
             healthBar.setSize(lblHealth.getWidth(), 4);
-            healthBar.setCurrent(selected.getCurHP() / selected.getMaxHP());
+            healthBar.setCurrent((float)selected.getCurHP() / selected.getMaxHP());
         }
 
         dirty = true;

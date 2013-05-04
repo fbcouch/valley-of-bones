@@ -165,7 +165,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
         if (healthBar != null) {
             batch.setColor(getColor());
-            healthBar.setCurrent(curHP / maxHP);
+            healthBar.setCurrent((float)curHP / maxHP);
             healthBar.draw(batch, getX(), getY(), parentAlpha);
         }
 
