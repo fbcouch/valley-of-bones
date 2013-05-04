@@ -239,7 +239,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			curHP -= damage;
 
             if (LevelScreen.getInstance() != null)
-                LevelScreen.getInstance().addFloatingLabel(String.format("-%d", (int)damage), getX(), getY());
+                LevelScreen.getInstance().addFloatingLabel(String.format("-%d", (int)damage), getX() + getWidth() * 0.5f, getY() + getHeight() * 0.5f);
 
 			return damage;
 		}
