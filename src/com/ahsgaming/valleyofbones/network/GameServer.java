@@ -226,7 +226,7 @@ public class GameServer implements NetController {
                     }
 				}
 
-                sendPlayerList();
+                if (controller == null || controller.getGameResult() == null) sendPlayerList();
 			}
 		});
 		
