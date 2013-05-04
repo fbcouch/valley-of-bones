@@ -1,9 +1,11 @@
 package com.ahsgaming.valleyofbones.screens.panels;
 
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -19,13 +21,16 @@ import com.badlogic.gdx.utils.Array;
 public class InfoPanel extends Panel {
     public static final String LOG = "InfoPanel";
 
-    final String HEALTH = "HP %d/%d";
-    final String ATTACK = "ATTACK %d (RANGE %d)";
-    final String MOVE = "SPEED %d";
-    final String ATTACK_LEFT = "ATTACKS LEFT %d";
-    final String MOVE_LEFT = "MOVES LEFT %d";
+    final String HEALTH = "%d/%d";
+    final String ATTACK = "%d";
+    final String RANGE = "%d";
+    final String ARMOR = "%d";
+    final String MOVE = "%d";
+    final String ATTACK_LEFT = "%d";
+    final String MOVE_LEFT = "%d";
 
-    Label lblTitle, lblHealth, lblAttack, lblMove, lblAttacksLeft, lblMovesLeft;
+    Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft;
+    Image iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft;
 
     Unit selected;
 
@@ -34,12 +39,22 @@ public class InfoPanel extends Panel {
         this.skin = skin;
         this.horizontal = false;
 
+        iconHealth = new Image(TextureManager.getTexture("hospital-cross.png"));
+        iconAttack = new Image(TextureManager.getTexture("crossed-swords.png"));
+        iconRange = new Image(TextureManager.getTexture("archery-target.png"));
+        iconArmor = new Image(TextureManager.getTexture("checked-shield.png"));
+        iconMove = new Image(TextureManager.getTexture("radial-balance.png"));
+        iconMovesLeft = new Image(TextureManager.getTexture("walking-boot.png"));
+        iconAttacksLeft = new Image(TextureManager.getTexture("rune-sword.png"));
+
         lblTitle = new Label("Nothing selected", skin, "medium");
         lblHealth = new Label(String.format(HEALTH, 0, 0), skin, "small");
-        lblAttack = new Label(String.format(ATTACK, 0, 0), skin, "small");
-        lblMove = new Label(String.format(MOVE, 0), skin, "small");
-        lblAttacksLeft = new Label(String.format(ATTACK_LEFT, 0), skin, "small");
-        lblMovesLeft = new Label(String.format(MOVE_LEFT, 0), skin, "small");
+        lblAttack = new Label(String.format(ATTACK, 0), skin, "medium");
+        lblRange = new Label(String.format(RANGE, 0), skin, "medium");
+        lblArmor = new Label(String.format(ARMOR, 0), skin, "medium");
+        lblMove = new Label(String.format(MOVE, 0), skin, "medium");
+        lblAttacksLeft = new Label(String.format(ATTACK_LEFT, 0), skin, "medium");
+        lblMovesLeft = new Label(String.format(MOVE_LEFT, 0), skin, "medium");
         expand();
     }
 
@@ -47,12 +62,30 @@ public class InfoPanel extends Panel {
     public void update(float delta) {
 
         if (selected != null) {
-            lblTitle.setText(selected.getProtoId());
+            Array<Label> labels = new Array<Label>();
+
+            lblTitle.setText(selected.getTitle());
+            labels.add(lblTitle);
             lblHealth.setText(String.format(HEALTH, selected.getCurHP(), selected.getMaxHP()));
-            lblAttack.setText(String.format(ATTACK, selected.getAttackDamage(), selected.getAttackRange()));
-            lblMove.setText(String.format(MOVE, (int)selected.getMoveSpeed()));
+            labels.add(lblHealth);
+            lblAttack.setText(String.format(ATTACK, selected.getAttackDamage()));
+            labels.add(lblAttack);
+            lblRange.setText(String.format(RANGE, selected.getAttackRange()));
+            labels.add(lblRange);
+            lblArmor.setText(String.format(ARMOR, selected.getArmor()));
+            labels.add(lblArmor);
+            lblMove.setText(String.format(MOVE, (int) selected.getMoveSpeed()));
+            labels.add(lblMove);
             lblAttacksLeft.setText(String.format(ATTACK_LEFT, selected.getAttacksLeft()));
+            labels.add(lblAttacksLeft);
             lblMovesLeft.setText(String.format(MOVE_LEFT, selected.getMovesLeft()));
+            labels.add(lblMovesLeft);
+
+            for (Label lbl: labels) {
+                lbl.invalidate();
+                lbl.layout();
+                lbl.setSize(lbl.getPrefWidth(), lbl.getPrefHeight());
+            }
         }
 
         dirty = true;
@@ -67,30 +100,74 @@ public class InfoPanel extends Panel {
 
     @Override
     public void rebuild() {
+        super.rebuild();
+        icon.removeListener(icon.getListeners().first());
 
+        int y = 0;
+        float x = 0;
 
-            this.clear();
+        iconMovesLeft.setPosition(0, y);
+        addActor(iconMovesLeft);
 
-            this.addActor(icon);
-            icon.setPosition(0, 0);
+        lblMovesLeft.setPosition(iconMovesLeft.getRight(), y);
+        addActor(lblMovesLeft);
 
-            Array<Label> labels = new Array<Label>();
+        iconAttacksLeft.setPosition(lblMovesLeft.getRight(), y);
+        addActor(iconAttacksLeft);
 
-            labels.add(lblTitle);
-            labels.add(lblHealth);
-            labels.add(lblAttack);
-            labels.add(lblMove);
-            labels.add(lblAttacksLeft);
-            labels.add(lblMovesLeft);
+        lblAttacksLeft.setPosition(iconAttacksLeft.getRight(), y);
+        if (lblAttacksLeft.getRight() > x) x = lblAttacksLeft.getRight();
+        y += iconAttacksLeft.getHeight();
+        addActor(lblAttacksLeft);
 
-            int y = 0;
-            while(labels.size > 0) {
-                Label lbl = labels.pop();
-                lbl.setPosition(0, y);
-                y += lbl.getHeight();
-                this.addActor(lbl);
-            }
-            icon.setPosition(0, y);
+        iconMove.setPosition(0, y);
+        addActor(iconMove);
+
+        lblMove.setPosition(iconMove.getRight(), y);
+        addActor(lblMove);
+//        if (lblMove.getRight() > x) x = lblMove.getRight();
+//        y += iconMove.getHeight();
+
+        iconArmor.setPosition(lblMove.getRight(), y);
+        addActor(iconArmor);
+
+        lblArmor.setPosition(iconArmor.getRight(), y);
+        if (lblArmor.getRight() > x) x = lblArmor.getRight();
+        y += iconArmor.getHeight();
+        addActor(lblArmor);
+
+        iconAttack.setPosition(0, y);
+        addActor(iconAttack);
+
+        lblAttack.setPosition(iconAttack.getWidth(), y);
+        addActor(lblAttack);
+
+        iconRange.setPosition(lblAttack.getRight(), y);
+        addActor(iconRange);
+
+        lblRange.setPosition(iconRange.getRight(), y);
+        addActor(lblRange);
+        if (lblRange.getRight() > x) x = lblRange.getRight();
+        y += iconRange.getHeight();
+
+        iconHealth.setPosition(0, y);
+        addActor(iconHealth);
+
+        lblHealth.setPosition(iconHealth.getWidth(), y);
+        if (lblHealth.getRight() > x) x = lblHealth.getRight();
+        y += iconHealth.getHeight();
+        addActor(lblHealth);
+
+        lblTitle.setPosition(0, y);
+        addActor(lblTitle);
+        if (lblTitle.getRight() > x) x = lblTitle.getRight();
+        y += lblTitle.getHeight();
+
+        icon.setPosition(0, y);
+        y += icon.getHeight();
+        if (icon.getRight() > x) x = icon.getRight();
+
+        setSize(x, y);
         built = true;
         dirty = false;
     }

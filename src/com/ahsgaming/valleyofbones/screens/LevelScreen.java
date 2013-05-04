@@ -86,9 +86,6 @@ public class LevelScreen extends AbstractScreen {
 	private Vector2 posCamera = new Vector2();
 	
 	// UX stuff
-	Group grpScorePane = new Group();
-	ObjectMap<Player, Label> mapScoreLbls = new ObjectMap<Player, Label>();
-	
 	Group grpTurnPane = new Group();
 	Label lblTurnTimer;
 	TextButton btnTurnDone;
@@ -391,25 +388,7 @@ public class LevelScreen extends AbstractScreen {
 		super.resize(width, height);
 		
 		stage.addActor(grpLevel);
-		
-		// generate the score panel
-		grpScorePane = new Group();
-		mapScoreLbls = new ObjectMap<Player, Label>();
-		int y = 0;
-		if (VOBGame.DEBUG) {
-			for (Player player: gController.getPlayers()) {
-				Label lbl = new Label(player.toString(), getSkin());
-				lbl.setColor(player.getPlayerColor());
-				lbl.setY(y);
-				y += lbl.getHeight() + 5;
-				mapScoreLbls.put(player, lbl);
-				grpScorePane.addActor(lbl);
-				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
-			}
-		}
-		grpScorePane.setPosition(stage.getWidth() - grpScorePane.getWidth() - 10, 264);
-		//stage.addActor(grpScorePane);
-		
+
 		// generate the turn info
 		grpTurnPane = new Group();
 		lblTurnTimer = new Label(" ", new LabelStyle(getLargeFont(), new Color(1,1,1,1)));
@@ -435,7 +414,7 @@ public class LevelScreen extends AbstractScreen {
         buildPanel.setPosition(0, 0);
 
         stage.addActor(selectionPanel);
-        selectionPanel.setPosition(500, 0);
+        selectionPanel.setPosition(stage.getWidth() * 0.5f, 0);
 
         stage.addActor(scorePanel);
         scorePanel.setPosition(stage.getWidth(), lblTurnTimer.getTop());
@@ -455,24 +434,7 @@ public class LevelScreen extends AbstractScreen {
 			
 		});
 	}
-	
-	public void updateScorePane() {
-		for (Player player: gController.getPlayers()) {
-			Label lbl = mapScoreLbls.get(player);
-			if (lbl != null)
-			{
-				lbl.setText(player.toString());
-				if (grpScorePane.getWidth() < lbl.getWidth()) grpScorePane.setWidth(lbl.getWidth());
-                if (player == gController.getCurrentPlayer())
-                    lbl.setFontScale(1);
-                else
-                    lbl.setFontScale(0.8f);
-			}
-		}
-		grpScorePane.setX(stage.getWidth() - grpScorePane.getWidth() - 10);
-        grpScorePane.setY(grpTurnPane.getTop() + 10);
-	}
-	
+
 	public void updateTurnPane() {
 		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
 		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
@@ -518,8 +480,6 @@ public class LevelScreen extends AbstractScreen {
 		// update level position
 		grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
-		updateScorePane();
-		
 		updateTurnPane();
 
         buildPanel.update(delta);

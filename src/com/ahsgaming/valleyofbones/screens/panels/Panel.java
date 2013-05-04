@@ -110,7 +110,7 @@ public class Panel extends Group {
         this.clearActions();
         if (horizontal) {
             if (topright)
-                this.addAction(Actions.moveTo(anchor.x - icon.getWidth(), anchor.y, 0.5f));
+                this.addAction(Actions.moveTo(anchor.x - icon.getWidth(), getY(), 0.5f));
             else
                 this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
         } else {

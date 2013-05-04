@@ -98,6 +98,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		parseProperties();
         // TODO load from atlas
         overlay = TextureManager.getTexture(proto.image + "-overlay.png");
+
 	}
 	
 	public void parseProperties() {
@@ -287,14 +288,6 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.moveSpeed = moveSpeed;
 	}
 
-	public int getUpkeep() {
-		return upkeep;
-	}
-
-	public void setUpkeep(int upkeep) {
-		this.upkeep = upkeep;
-	}
-
 	public Array<String> getRequires() {
 		return requires;
 	}
@@ -302,6 +295,22 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	public void setRequires(Array<String> requires) {
 		this.requires = requires;
 	}
+
+    public String getTitle() {
+        return proto.title;
+    }
+
+    public void setTitle(String title) {
+        proto.title = title;
+    }
+
+    public int getUpkeep() {
+        return upkeep;
+    }
+
+    public void setUpkeep(int upkeep) {
+        this.upkeep = upkeep;
+    }
 
 	public ObjectMap<String, Object> getProperties() {
 		return properties;
