@@ -166,7 +166,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (healthBar != null) {
             batch.setColor(getColor());
             healthBar.setCurrent((float)curHP / maxHP);
-            healthBar.draw(batch, getX(), getY(), parentAlpha);
+            healthBar.draw(batch, getX(), getY() + 8, parentAlpha);
         }
 
         if (isTurn) {
@@ -175,14 +175,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
             if (getMovesLeft() > 0) {
                 TextureRegion tex = TextureManager.getTexture("walking-boot.png");
 
-                batch.draw(tex, getX() + x, getY() + healthBar.getHeight(), 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;
             }
 
             if (getAttacksLeft() > 0) {
                 TextureRegion tex = TextureManager.getTexture("rune-sword.png");
 
-                batch.draw(tex, getX() + x, getY() + healthBar.getHeight(), 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;
             }
         }

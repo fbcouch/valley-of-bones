@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
     </list>
     <ignored path="valley-of-bones.iws" />
@@ -28,7 +27,7 @@
     <file path="/GameJoinScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367097349590" ignored="false" />
     <file path="/GameOverScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367106703340" ignored="false" />
     <file path="/Player.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367384686181" ignored="false" />
-    <file path="/Unit.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367689182814" ignored="false" />
+    <file path="/Unit.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367690058827" ignored="false" />
     <file path="/SPGameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367413288908" ignored="false" />
     <file path="/BuildPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367675831267" ignored="false" />
     <file path="/Panel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367681705814" ignored="false" />
@@ -169,7 +168,7 @@
       <file leaf-file-name="Unit.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="171" column="42" selection-start="5387" selection-end="5387" vertical-scroll-proportion="0.4458042">
+            <state line="180" column="31" selection-start="5801" selection-end="5801" vertical-scroll-proportion="0.80244756">
               <folding>
                 <element signature="e#2162#2170#0" expanded="true" />
               </folding>
@@ -888,7 +887,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="171" column="42" selection-start="5387" selection-end="5387" vertical-scroll-proportion="0.4458042">
+        <state line="180" column="31" selection-start="5801" selection-end="5801" vertical-scroll-proportion="0.80244756">
           <folding>
             <element signature="e#2162#2170#0" expanded="true" />
           </folding>
