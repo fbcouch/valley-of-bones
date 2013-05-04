@@ -139,6 +139,7 @@ public class GameServer implements NetController {
 					reg.color = p.getPlayerColor();
 					reg.team = p.getTeam();
                     reg.host = (c == host);
+
 					server.sendToTCP(c.getID(), reg);
 					sendPlayerList();
 					sendSetupInfo();
@@ -199,7 +200,7 @@ public class GameServer implements NetController {
 			}
 			
 			public void connected (Connection c) {
-				if (host == null) host = c;
+				if (host == null || !host.isConnected()) host = c;
 				
 				if (gameStarted) c.close();
 			}
@@ -222,7 +223,7 @@ public class GameServer implements NetController {
                         reg.color = p.getPlayerColor();
                         reg.team = p.getTeam();
                         reg.host = true;
-                        server.sendToTCP(c.getID(), reg);
+                        server.sendToTCP(host.getID(), reg);
                     }
 				}
 

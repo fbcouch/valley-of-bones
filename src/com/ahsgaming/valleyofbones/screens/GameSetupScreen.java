@@ -49,6 +49,8 @@ public class GameSetupScreen extends AbstractScreen {
 	GameSetupConfig config;
 	
 	Array<Player> pList;
+
+    boolean isHost = false;
 	
 	/**
 	 * @param game
@@ -166,7 +168,8 @@ public class GameSetupScreen extends AbstractScreen {
 
 		
 		if (!config.isMulti || config.isHost) {
-		TextButton start = new TextButton("Start Game",getSkin());
+            isHost = true;
+		    TextButton start = new TextButton("Start Game",getSkin());
 			start.addListener(new ClickListener() {
 	
 				/* (non-Javadoc)
@@ -183,7 +186,9 @@ public class GameSetupScreen extends AbstractScreen {
 			});
 		table.add(start).size(150, 50).pad(4).right().bottom().colspan(2);
 		
-		}
+		} else {
+            isHost = false;
+        }
 		table.row();
 		
 
@@ -259,7 +264,7 @@ public class GameSetupScreen extends AbstractScreen {
 		Array<Player> players = game.getPlayers();
 		
 		synchronized (players) {
-			if (!pList.equals(players)) {
+			if (!pList.equals(players) || isHost != config.isHost) {
 				stage.clear();
 				setupScreen();
 			}
