@@ -303,6 +303,17 @@
     <!-- Delete temporary files -->
     <delete dir="${artifacts.temp.dir}"/>
   </target>
+
+  <target name="package.artifacts" depends="build.all.artifacts" description="Package into zip file">
+      <zip destfile="${artifacts.temp.dir}/ValleyOfBones-${DSTAMP}.zip">
+          <fileset dir="${artifact.output.valleyofbones:jar}" includes="*.jar" />
+          <fileset file="${basedir}/README.md" />
+      </zip>
+      <copy todir="${artifact.output.valleyofbones:jar}">
+          <fileset file="${artifacts.temp.dir}/ValleyOfBones-${DSTAMP}.zip"/>
+      </copy>
+      <delete dir="${artifacts.temp.dir}"/>
+  </target>
   
   <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>
