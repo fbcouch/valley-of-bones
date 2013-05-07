@@ -387,6 +387,7 @@ public class GameController {
 		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
 		unit.setPosition(levelPos);
 		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
+        unit.setVisible(false); // BUGFIX: prevent players from seeing invisible units momentarily
 		
 		addGameUnitNow(unit);
 		owner.setBankMoney(owner.getBankMoney() - unit.getCost());
