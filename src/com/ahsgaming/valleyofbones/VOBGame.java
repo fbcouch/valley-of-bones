@@ -313,10 +313,10 @@ public class VOBGame extends Game {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Valley of Bones | ahsgaming.com | (c) 2013 Jami Couch";
 		cfg.useGL20 = true;
-		cfg.width = 1440;
-		cfg.height = 900;
+		cfg.width = 1280;
+		cfg.height = 768;
 		cfg.fullscreen = false;
-		cfg.resizable = false;
+		cfg.resizable = true;
 		
 		new LwjglApplication(new VOBGame(false), cfg);
 	}
