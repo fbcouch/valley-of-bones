@@ -515,7 +515,7 @@ public class GameController {
 	}
 	
 	public void selectObjAtBoardPos(int x, int y) {
-		selectedObject = getObjAtBoardPos(x, y);
+		selectedObject = (map.isBoardPositionVisible(x, y) ? getObjAtBoardPos(x, y) : null);   // BUGFIX: prevent selecting non-visible objects
 	}
 	
 	public void selectObjAtBoardPos(float x, float y) {
