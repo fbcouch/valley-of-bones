@@ -195,7 +195,7 @@
   
   <target name="compile.module.valley-of-bones.production" depends="register.custom.compilers" description="Compile module valley-of-bones; production classes">
     <mkdir dir="${valley-of-bones.output.dir}"/>
-    <javac2 destdir="${valley-of-bones.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.valley-of-bones}/javac">
+    <javac2 target="1.6" source="1.6" destdir="${valley-of-bones.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.valley-of-bones}/javac">
       <compilerarg line="${compiler.args.valley-of-bones}"/>
       <bootclasspath refid="valley-of-bones.module.bootclasspath"/>
       <classpath refid="valley-of-bones.module.production.classpath"/>
@@ -315,5 +315,5 @@
       <delete dir="${artifacts.temp.dir}"/>
   </target>
   
-  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+  <target name="all" depends="build.modules, build.all.artifacts, package.artifacts" description="build all"/>
 </project>

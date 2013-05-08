@@ -24,7 +24,7 @@ public class VOBGame extends Game {
     public static final boolean DEBUG_LOCK_SCREEN = true;
 	public static final String LOG = "VOBGame";
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     FPSLogger fpsLogger = new FPSLogger();
 	
@@ -54,6 +54,8 @@ public class VOBGame extends Game {
 	
 	public VOBGame(boolean isServer) {
 		this.isServer = isServer;
+
+
 	}
 	
 	/*
@@ -73,7 +75,7 @@ public class VOBGame extends Game {
     }
 	
 	public void createGame(GameSetupConfig cfg) {
-		if (isServer) {
+        if (isServer) {
 			netController = new GameServer(this, cfg);
 		} else {
 			if (cfg.isMulti) { 
@@ -135,6 +137,7 @@ public class VOBGame extends Game {
 			createGame(cfg);
 			
 		} else {
+            Gdx.app.log(LOG, String.format("Valley of Bones Client Version %d", VERSION));
 			if (!loadProfile()) {
                 Gdx.files.local("profile").writeString(playerName, false);
                 setScreen(getOptionsScreen());
