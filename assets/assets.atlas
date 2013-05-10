@@ -32,7 +32,7 @@ gear-hammer
   index: -1
 walking-boot
   rotate: false
-  xy: 876, 68
+  xy: 942, 68
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -46,14 +46,14 @@ archery-target
   index: -1
 tank
   rotate: false
-  xy: 744, 68
+  xy: 810, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 tinker
   rotate: false
-  xy: 810, 68
+  xy: 876, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -74,14 +74,21 @@ reticule
   index: -1
 tank-overlay
   rotate: false
-  xy: 678, 68
+  xy: 744, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sniper
+  rotate: false
+  xy: 2, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 splash
   rotate: false
-  xy: 2, 68
+  xy: 68, 68
   size: 640, 480
   orig: 640, 480
   offset: 0, 0
@@ -109,7 +116,7 @@ hospital-cross
   index: -1
 supply
   rotate: false
-  xy: 644, 68
+  xy: 710, 68
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -152,6 +159,13 @@ radial-balance
 castle-overlay
   rotate: false
   xy: 36, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sniper-overlay
+  rotate: false
+  xy: 954, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

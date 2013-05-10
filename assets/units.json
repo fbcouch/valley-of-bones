@@ -91,6 +91,31 @@ entities: [
         }
     },
     {
+        id: "sniper-base",
+        type: "unit",
+        image: "sniper",
+        title: "Sniper",
+        desc: "Light unit with long range",
+        properties:
+        {
+            curhp: 10,
+            maxhp: 10,
+            armor: 0,
+            food: 2,
+            requires: [ "castle-base" ],
+            attackdamage: 5,
+            attackspeed: 1,
+            attackrange: 4,
+            movespeed: 2,
+            cost: 100,
+            subtype: "light",
+            bonus:
+            {
+                light: 4,
+            },
+        }
+    },
+    {
         id: "attack-upgrade-1",
         type: "upgrade",
         image: "marine",

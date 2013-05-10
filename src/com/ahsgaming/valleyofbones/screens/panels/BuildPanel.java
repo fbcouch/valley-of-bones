@@ -4,6 +4,7 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -54,7 +55,8 @@ public class BuildPanel extends Panel {
         int spacing = 4;
         for (Prototypes.JsonProto jp: items) {
             final Image btn;
-            btn = new Image(TextureManager.getSpriteFromAtlas("assets", jp.image));
+            Sprite sp = TextureManager.getSpriteFromAtlas("assets", jp.image);
+            btn = new Image(sp);
             this.addActor(btn);
             btn.setX(x);
             x += btn.getWidth() + spacing;
