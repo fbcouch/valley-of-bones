@@ -53,7 +53,7 @@ public class Panel extends Group {
         // TODO optimize this
         boolean doexp = false;
         if (!built) {
-            anchor = new Vector2(getX(), getY());
+            if (anchor == null) anchor = new Vector2(getX(), getY()); else setPosition(anchor.x, anchor.y);
             if (topright) doexp = true;
         }
         if (!built || dirty) rebuild();
@@ -92,14 +92,8 @@ public class Panel extends Group {
 
         expanded = true;
         this.clearActions();
-        if (horizontal) {
-            if (topright)
-                this.addAction(Actions.moveTo(anchor.x - getWidth(), getY(), 0.5f));
-            else
-                this.addAction(Actions.moveTo(0, getY(), 0.5f));
-        } else {
-            this.addAction(Actions.moveTo(getX(), 0, 0.5f));
-        }
+        Vector2 newPos = getPreferredPosition();
+        this.addAction(Actions.moveTo(newPos.x, newPos.y, 0.5f));
 
     }
 
@@ -108,17 +102,50 @@ public class Panel extends Group {
 
         expanded = false;
         this.clearActions();
-        if (horizontal) {
-            if (topright)
-                this.addAction(Actions.moveTo(anchor.x - icon.getWidth(), getY(), 0.5f));
-            else
-                this.addAction(Actions.moveTo(icon.getX() * -1, getY(), 0.5f));
-        } else {
-            this.addAction(Actions.moveTo(getX(), icon.getY() * -1, 0.5f));
-        }
+        Vector2 newPos = getPreferredPosition();
+        this.addAction(Actions.moveTo(newPos.x, newPos.y, 0.5f));
     }
 
     public void toggle() {
         if (expanded) contract(); else expand();
+    }
+
+    public void setAnchor(float x, float y) {
+        if (anchor == null)
+            anchor = new Vector2(x, y);
+        else
+            anchor.set(x, y);
+
+        Vector2 newPos = getPreferredPosition();
+        setPosition(newPos.x, newPos.y);
+    }
+
+    public Vector2 getAnchor() {
+        return anchor;
+    }
+
+    public Vector2 getPreferredPosition() {
+        if (expanded) {
+            if (horizontal) {
+                if (topright) {
+                    return new Vector2(anchor.x - getWidth(), anchor.y);
+                } else {
+                    return new Vector2(0, anchor.y);
+                }
+            } else {
+                return new Vector2(anchor.x, 0);
+            }
+
+        } else {
+            if (horizontal) {
+                if (topright) {
+                    return new Vector2(anchor.x - icon.getWidth(), anchor.y);
+                } else {
+                    return new Vector2(icon.getX() * -1, anchor.y);
+                }
+            } else {
+                return new Vector2(anchor.x, icon.getY() * -1);
+            }
+        }
     }
 }

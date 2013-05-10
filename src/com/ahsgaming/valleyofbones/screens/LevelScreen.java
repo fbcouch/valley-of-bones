@@ -414,16 +414,18 @@ public class LevelScreen extends AbstractScreen {
 		// panels
         // TODO add back upgrade panel
         //stage.addActor(upgradePanel);
-        upgradePanel.setPosition(0, 64);
+        upgradePanel.setAnchor(0, 64);
 
         stage.addActor(buildPanel);
-        buildPanel.setPosition(0, 0);
+        buildPanel.setAnchor(0, 0);
 
         stage.addActor(selectionPanel);
-        selectionPanel.setPosition(stage.getWidth() * 0.5f, 0);
+        selectionPanel.setAnchor(stage.getWidth() * 0.5f, 0);
+
 
         stage.addActor(scorePanel);
-        scorePanel.setPosition(stage.getWidth(), lblTurnTimer.getTop());
+        scorePanel.setAnchor(stage.getWidth(), lblTurnTimer.getTop());
+
 
         stage.addActor(playerScore);
 

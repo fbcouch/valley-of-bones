@@ -62,7 +62,7 @@ public class InfoPanel extends Panel {
 
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
-        expand();
+        expanded = true;
     }
 
     @Override
