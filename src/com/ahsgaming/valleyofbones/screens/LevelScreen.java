@@ -295,6 +295,8 @@ public class LevelScreen extends AbstractScreen {
                 setBuildMode(Prototypes.getProto("saboteur-base"));
             } else if (Gdx.input.isKeyPressed(Keys.D) && isCurrentPlayer() && game.getPlayer().canBuild("tank-base", gController)) {
                 setBuildMode(Prototypes.getProto("tank-base"));
+            } else if (Gdx.input.isKeyPressed(Keys.F) && isCurrentPlayer() && game.getPlayer().canBuild("sniper-base", gController)) {
+                setBuildMode(Prototypes.getProto("sniper-base"));
             }
 		}
 		

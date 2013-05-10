@@ -36,7 +36,7 @@ entities: [
             food: 1,
             requires: [ "castle-base" ],
             attackdamage: 5,
-            attackspeed: 1,
+            attackspeed: 2,
             attackrange: 3,
             movespeed: 3,
             cost: 45,
@@ -98,8 +98,8 @@ entities: [
         desc: "Light unit with long range",
         properties:
         {
-            curhp: 10,
-            maxhp: 10,
+            curhp: 15,
+            maxhp: 15,
             armor: 0,
             food: 2,
             requires: [ "castle-base" ],
@@ -107,7 +107,7 @@ entities: [
             attackspeed: 1,
             attackrange: 4,
             movespeed: 2,
-            cost: 100,
+            cost: 75,
             subtype: "light",
             bonus:
             {

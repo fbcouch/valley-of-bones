@@ -93,6 +93,8 @@ public class BuildPanel extends Panel {
                 hotkey.setText("S");
             else if (jp.id.equals("tank-base"))
                 hotkey.setText("D");
+            else if (jp.id.equals("sniper-base"))
+                hotkey.setText("F");
 
             i++;
         }
