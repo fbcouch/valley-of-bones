@@ -12,7 +12,7 @@ Full source code available from:
 
 ## RUNNING THE GAME ##
 
-This game was built with Java 7, so you may need to update your Java installation (www.java.com).
+This game requires at least Java 1.6, so you may need to update your Java installation (www.java.com).
 Otherwise, it should just run when you double-click the icon.
 Alternatively, you may use the following command in a CLI:
 
@@ -22,6 +22,10 @@ To run the multiplayer server, double click the ValleyOfBonesServer.jar.
 Alternatively, you may use the following command in a CLI:
 
     java -jar ValleyOfBonesServer.jar
+
+The latest nightly build can be found at 
+
+	http://ahsgaming.com/downloads/nightlies/ValleyOfBones-latest.zip
 
 ## LICENSE ##
 
