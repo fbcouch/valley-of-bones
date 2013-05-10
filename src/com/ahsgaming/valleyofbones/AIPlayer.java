@@ -22,6 +22,7 @@
  */
 package com.ahsgaming.valleyofbones;
 
+import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
@@ -31,6 +32,10 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class AIPlayer extends Player {
 	public String LOG = "AIPlayer";
+
+    float countdown = 5;
+    float timer = 5;
+
 	/**
 	 * @param id
 	 * @param name
@@ -58,5 +63,16 @@ public class AIPlayer extends Player {
 	public void update(GameController controller) {
 		super.update(controller);
 		//Gdx.app.log(LOG, "Update");
+        if (controller.getCurrentPlayer().getPlayerId() == getPlayerId()) {
+            timer -= Gdx.graphics.getDeltaTime();
+            if (timer < 0) {
+                timer = countdown;
+                EndTurn et = new EndTurn();
+                et.owner = getPlayerId();
+                et.turn = controller.getGameTurn();
+                controller.queueCommand(et);
+            }
+        }
+
 	}
 }

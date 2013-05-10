@@ -24,7 +24,7 @@ public class VOBGame extends Game {
     public static final boolean DEBUG_LOCK_SCREEN = true;
 	public static final String LOG = "VOBGame";
 
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     FPSLogger fpsLogger = new FPSLogger();
 	

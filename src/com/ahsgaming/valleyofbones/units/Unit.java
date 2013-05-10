@@ -55,6 +55,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	float moveSpeed = 0;
 	int upkeep = 0;
+
+    String subtype = "";
+    ObjectMap<String, Float> bonus = new ObjectMap<String, Float>();
 	
 	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
 	float upgradeAttackSpeed = 0;
@@ -121,6 +124,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		
 		if (properties.containsKey("armor"))
 			armor = (int)Float.parseFloat(properties.get("armor").toString());
+
+        if (properties.containsKey("bonus")) {
+            bonus.clear();
+            ObjectMap<String, Object> jb = (ObjectMap<String, Object>)properties.get("bonus");
+            for (String key: jb.keys()) {
+                bonus.put(key, Float.parseFloat(jb.get(key).toString()));
+            }
+        }
 		
 		if (properties.containsKey("cost"))
 			cost = (int)Float.parseFloat(properties.get("cost").toString());
@@ -144,6 +155,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 				requires.add(o.toString());
 			}
 		}
+
+        if (properties.containsKey("subtype"))
+            subtype = properties.get("subtype").toString();
 		
 		if (properties.containsKey("upkeep"))
 			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
@@ -193,12 +207,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("attackrange", attackRange);
 		properties.put("attackspeed", attackSpeed);
 		properties.put("armor", armor);
+        properties.put("bonus", bonus);
 		properties.put("cost", cost);
 		properties.put("curhp", curHP);
 		properties.put("food", food);
 		properties.put("maxhp", maxHP);
 		properties.put("movespeed", moveSpeed);
 		properties.put("requires", requires);
+        properties.put("subtype", subtype);
 		properties.put("upkeep", upkeep);
 	}
 	
@@ -278,8 +294,18 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	public void setArmor(int armor) {
 		this.armor = armor;
 	}
-	
-	public int getCost() {
+
+    public float getBonus(String subtype) {
+        if (bonus.containsKey(subtype))
+            return bonus.get(subtype);
+        return 1;
+    }
+
+    public void setBonus(String subtype, float bonus) {
+        this.bonus.put(subtype, bonus);
+    }
+
+    public int getCost() {
 		return cost;
 	}
 	
@@ -326,6 +352,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	public void setRequires(Array<String> requires) {
 		this.requires = requires;
 	}
+
+    public String getSubtype() {
+        return subtype;
+    }
+
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
+    }
 
     public String getTitle() {
         return proto.title;
@@ -471,7 +505,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (canAttack(other, controller)) {
             attacksLeft--;
             Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
-            float damage = other.takeDamage(getAttackDamage());
+            float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
         }
     }
 	
