@@ -23,18 +23,13 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -218,8 +213,8 @@ public class GameSetupScreen extends AbstractScreen {
 		table.row();
 	}
 	
-	private ImageButton getRemovePlayerButton(final Player p) {
-		ImageButton remove = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("data/tread32.png"))))); 
+	private Image getRemovePlayerButton(final Player p) {
+		Image remove = new Image(TextureManager.getSpriteFromAtlas("assets", "walking-boot"));
 		remove.addListener(new ClickListener() {
 
 			/* (non-Javadoc)
