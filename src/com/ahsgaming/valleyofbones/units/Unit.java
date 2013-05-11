@@ -480,7 +480,6 @@ public class Unit extends GameObject implements Selectable, Targetable {
             }
         }
         uncontested = p;
-        Gdx.app.log(LOG, String.format("Capturable - %d", capUnitCount));
     }
 
 	public ArrayList<Command> getCommandQueue() {
