@@ -443,7 +443,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			return;
 		}
 
-        isTurn = (controller.getCurrentPlayer().getPlayerId() == getOwner().getPlayerId());
+        isTurn = (getOwner() != null && controller.getCurrentPlayer().getPlayerId() == getOwner().getPlayerId());
 	}
 
 	public ArrayList<Command> getCommandQueue() {

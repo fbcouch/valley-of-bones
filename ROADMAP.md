@@ -11,16 +11,23 @@
 ### Chapter 2: Sniper (May)
 
 - Add a few new units
-    - Sniper
+    * Sniper
     - Artillery?
 - Attachments for base
     - "Defense platform" --> grants extra attack/damage
     - "Research facility" --> allows upgrades
 - Control points
     - Grant small income/food --> less income/food from base
+    - Mechanics:
+        - can be captured by moving unit to adjacent space when uncontrolled
+        - gains 5 HP per turn per adjacent unit up to 30 HP total (does not increase when 'contested' - enemy unit also adjacent)
+        - grants $25/turn and 5 food
+        - control resets when "destroyed"
+        - spawns "destroyed" (uncontrolled)
+        - 30HP, 5 dmg, 1 attack/turn, 3 range?
 - Rewards for kills --> also allows less income from base
 - Basic sounds
-- Package system, move game assets to local rather than interal to jar
+- Package system, move game assets to local rather than internal to jar
 
 ### Chapter 3: (June)
 

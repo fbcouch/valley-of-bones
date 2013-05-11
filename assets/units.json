@@ -23,6 +23,28 @@ entities: [
         },
     },
     {
+        id: "tower-base",
+        type: "building",
+        image: "tower",
+        title: "Tower",
+        desc: "Capture these to gain extra income and supply",
+        properties:
+        {
+            curhp: 5,
+            maxhp: 30,
+            armor: 1,
+            food: -5,
+            requires: [],
+            attackdamage: 5,
+            attackspeed: 1,
+            attackrange: 3,
+            movespeed: 0,
+            cost: 1000,
+            upkeep: -25,
+            subtype: "building",
+        },
+    },
+    {
         id: "marine-base",
         type: "unit",
         image: "marine",

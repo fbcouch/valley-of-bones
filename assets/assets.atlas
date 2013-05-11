@@ -16,6 +16,13 @@ saboteur
   orig: 64, 64
   offset: 0, 0
   index: -1
+tower
+  rotate: false
+  xy: 2, 550
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 invisible
   rotate: false
   xy: 402, 2
@@ -32,7 +39,7 @@ gear-hammer
   index: -1
 walking-boot
   rotate: false
-  xy: 942, 68
+  xy: 68, 550
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -131,6 +138,13 @@ checked-shield
 scores
   rotate: false
   xy: 888, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+tower-overlay
+  rotate: false
+  xy: 942, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

@@ -129,10 +129,10 @@ public class GameController {
 			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;
 			if (player >= 0 && player < players.size) {
-				unit = new Unit(getNextObjectId(), players.get(player), (JsonProto)Prototypes.getProto("castle-base"));
+				unit = new Unit(getNextObjectId(), players.get(player), Prototypes.getProto("castle-base"));
 				players.get(player).setBaseUnit(unit);
 			} else {
-				unit = new Unit(getNextObjectId(), null, (JsonProto)Prototypes.getProto("castle-base"));
+				unit = new Unit(getNextObjectId(), null, Prototypes.getProto("castle-base"));
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
 			Gdx.app.log(LOG, spawn.toString());
@@ -148,14 +148,23 @@ public class GameController {
 		}
 		
 		// TODO load capture points
+        for (Vector2 point : map.getControlPoints()) {
+            Unit unit;
+            unit = new Unit(getNextObjectId(), null, Prototypes.getProto("tower-base"));
+            Vector2 pos = map.boardToMapCoords(point.x, point.y);
+            Gdx.app.log(LOG, point.toString());
+            unit.setPosition(pos.x, pos.y);
+            unit.setBoardPosition(point);
+            addGameUnit(unit);
+        }
 
         if (VOBGame.DEBUG_ATTACK) {
-            Unit unit = new Unit(getNextObjectId(), players.get(0), (JsonProto)Prototypes.getProto("marine-base"));
+            Unit unit = new Unit(getNextObjectId(), players.get(0), Prototypes.getProto("marine-base"));
             unit.setBoardPosition(9, 0);
             unit.setPosition(getMap().boardToMapCoords(9, 0));
             addGameUnit(unit);
 
-            unit = new Unit(getNextObjectId(), players.get(1), (JsonProto)Prototypes.getProto("marine-base"));
+            unit = new Unit(getNextObjectId(), players.get(1), Prototypes.getProto("marine-base"));
             unit.setBoardPosition(10, 0);
             unit.setPosition(getMap().boardToMapCoords(10, 0));
             addGameUnit(unit);
