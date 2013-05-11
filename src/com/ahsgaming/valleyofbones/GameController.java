@@ -518,6 +518,17 @@ public class GameController {
 		
 		return ret;
 	}
+
+    public Array<Unit> getUnitsInArea(Vector2 boardPos, int radius) {
+        Array<Unit> units = new Array<Unit>();
+
+        for (GameObject obj: gameObjects) {
+            if (obj instanceof Unit && map.getMapDist(boardPos, obj.getBoardPosition()) <= radius)
+                units.add((Unit)obj);
+        }
+
+        return units;
+    }
 	
 	public GameObject getSelectedObject() {
 		return selectedObject;

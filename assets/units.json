@@ -30,7 +30,7 @@ entities: [
         desc: "Capture these to gain extra income and supply",
         properties:
         {
-            curhp: 5,
+            curhp: 0,
             maxhp: 30,
             armor: 1,
             food: -5,
@@ -42,6 +42,7 @@ entities: [
             cost: 1000,
             upkeep: -25,
             subtype: "building",
+            capturable: true,
         },
     },
     {
