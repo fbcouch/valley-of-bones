@@ -150,13 +150,13 @@ public class LevelScreen extends AbstractScreen {
 	
 	private void drawUnitBoxes() {
 		if (gController.getSelectedObject() != null) {
-			GameObject obj = gController.getSelectedObject();
+            shapeRenderer.setProjectionMatrix(stage.getCamera().combined); // BUGFIX: rescaling the window threw off the selection drawings
+
+            GameObject obj = gController.getSelectedObject();
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
 			Vector2 start = gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
 			start = mapToScreenCoords(start.x, start.y);
-
-            shapeRenderer.setProjectionMatrix(stage.getCamera().combined); // BUGFIX: rescaling the window threw off the selection drawings
 
 			Vector2 base = new Vector2(start.x, start.y);
 			shapeRenderer.line(base.x + gController.getMap().getTileWidth() * 0.5f, base.y, base.x, base.y + gController.getMap().getTileHeight() * 0.25f);
@@ -167,6 +167,63 @@ public class LevelScreen extends AbstractScreen {
 			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f, base.x + gController.getMap().getTileWidth() * 0.5f, base.y);
 			shapeRenderer.end();
 
+            if (obj instanceof Unit && ((Unit)obj).getAttackRange() > 0) {
+                shapeRenderer.begin(ShapeType.Line);
+                Color color = new Color((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+                color.mul(0.5f);
+                shapeRenderer.setColor(color);
+
+                int r = ((Unit)obj).getAttackRange(); // todo set this to attack range
+                int segments = 6 + 12 * r;
+                int segperside = segments / 6;
+                Vector2 tileSize = new Vector2(gController.getMap().getTileWidth(), gController.getMap().getTileHeight());
+                Vector2 origin = new Vector2(start.x - (r - 1) * tileSize.x * 0.5f,
+                        start.y - r * tileSize.y * 0.75f);
+                Vector2 cur = new Vector2(origin);
+                Vector2 next = new Vector2();
+
+                Vector2 slope = new Vector2(-1, 1);
+                for (int side = 0; side < 6; side ++) {
+                    for (int seg = 0; seg < segperside; seg++) {
+
+
+                        if ((seg % 2 == 0 && slope.x == -1 * (slope.y != 0 ? slope.y : 1)) || (seg % 2 == 1 && slope.x == (slope.y != 0 ? slope.y : 1))) {
+                            if (slope.y != 0) {
+                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
+                                next.y = cur.y + (0.25f * tileSize.y * slope.y);
+                            } else {
+                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
+                                next.y = cur.y - (0.25f * tileSize.y);
+                            }
+                        } else {
+                            if (slope.y != 0) {
+                                next.x = cur.x;
+                                next.y = cur.y + (0.5f * tileSize.y * slope.y);
+                            } else {
+                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
+                                next.y = cur.y + (0.25f * tileSize.y);
+                            }
+
+                        }
+                        shapeRenderer.line(cur.x, cur.y, next.x, next.y);
+                        cur.set(next);
+                    }
+
+                    if (slope.x == -1 && slope.y == 1)
+                        slope.set(1, 1);
+                    else if (slope.x == 1 && slope.y == 1)
+                        slope.set(1, 0);
+                    else if (slope.x == 1 && slope.y == 0)
+                        slope.set(1, -1);
+                    else if (slope.x == 1 && slope.y == -1)
+                        slope.set(-1, -1);
+                    else if (slope.x == -1 && slope.y == -1)
+                        slope.set(-1, 0);
+                }
+
+
+                shapeRenderer.end();
+            }
 		}
 	}
 	
