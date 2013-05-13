@@ -545,6 +545,10 @@ public class GameController {
 	public void selectObjAtBoardPos(Vector2 boardPos) {
 		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
 	}
+
+    public void clearSelection() {
+        selectedObject = null;
+    }
 	
 	public Array<GameObject> getObjsAtPosition(Vector2 mapCoords) {
 		Array<GameObject> returnVal = new Array<GameObject>();

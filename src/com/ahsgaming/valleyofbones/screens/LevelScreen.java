@@ -463,6 +463,7 @@ public class LevelScreen extends AbstractScreen {
 		super.render(delta);
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
+        if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
 
 		// draw a debug map
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
