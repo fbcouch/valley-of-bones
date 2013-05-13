@@ -58,6 +58,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     String subtype = "";
     ObjectMap<String, Float> bonus = new ObjectMap<String, Float>();
+
+    boolean capturable = false;
+    Player uncontested = null;
+    int capUnitCount = 0;
 	
 	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
 	float upgradeAttackSpeed = 0;
@@ -132,6 +136,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 bonus.put(key, Float.parseFloat(jb.get(key).toString()));
             }
         }
+
+        if (properties.containsKey("capturable"))
+            capturable = Boolean.parseBoolean(properties.get("capturable").toString());
 		
 		if (properties.containsKey("cost"))
 			cost = (int)Float.parseFloat(properties.get("cost").toString());
@@ -209,6 +216,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("armor", armor);
         properties.put("bonus", bonus);
 		properties.put("cost", cost);
+        properties.put("capturable", capturable);
 		properties.put("curhp", curHP);
 		properties.put("food", food);
 		properties.put("maxhp", maxHP);
@@ -319,6 +327,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	public void setCurHP(int curHP) {
 		this.curHP = curHP;
+        if (this.curHP > getMaxHP()) this.curHP = getMaxHP();
 	}
 	
 	public int getFood() {
@@ -436,15 +445,43 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 */
 	@Override
 	public void update(GameController controller) {
-		if (getCurHP() <= 0) {
-			// remove self
-			remove = true;
-			// TODO add explosion anim or something
-			return;
+		if (capturable)
+            findNewOwner(controller);
+
+        if (getCurHP() <= 0) {
+			if (capturable) {
+                setCurHP(0);
+                setOwner(uncontested);
+            } else {
+                // remove self
+                remove = true;
+                // TODO add explosion anim or something
+                return;
+            }
 		}
 
-        isTurn = (controller.getCurrentPlayer().getPlayerId() == getOwner().getPlayerId());
+        isTurn = (getOwner() != null && controller.getCurrentPlayer().getPlayerId() == getOwner().getPlayerId());
 	}
+
+    public void findNewOwner(GameController controller) {
+        Player p = null;
+        capUnitCount = 0;
+        for (Unit unit: controller.getUnitsInArea(boardPos, 1)) {
+            if (unit != this && unit.getOwner() != null) {
+                if (p == null) {
+                    p = unit.getOwner();
+                    capUnitCount ++;
+                } else if (p != unit.getOwner()) {
+                    uncontested = null;
+                    capUnitCount = 0;
+                    return;
+                } else {
+                    capUnitCount ++;
+                }
+            }
+        }
+        uncontested = p;
+    }
 
 	public ArrayList<Command> getCommandQueue() {
 		return commandQueue;
@@ -473,6 +510,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
     public void startTurn() {
         movesLeft = (movesLeft % 1) + getMoveSpeed();
         attacksLeft = (attacksLeft % 1) + getAttackSpeed();
+
+        if (capturable && uncontested == getOwner()) {
+            setCurHP(getCurHP() + 5 * capUnitCount);
+        }
     }
 
     public int getMovesLeft() {

@@ -79,27 +79,63 @@ public class HexMap {
 		Vector2 thingDist = new Vector2(0, 0);
 		Vector2 current = new Vector2(0, 0);
 		if (width > height) {
-			thingDist.set((int) (width / things), 0);
-			current.set(0, (int)(height * 0.5f) - 1);
+
+			current.set(0, (int)Math.round(height * 0.5f) - 1);
 		} else if (height > width) {
-			thingDist.set(0, (int) (height / things));
+
 			current.set((int)(width * 0.5f), 0);
-		} else {
-			int d = (int)Math.sqrt((height * height) + (width * width));
-			thingDist.set((int) (d / things), 0);
-			thingDist.rotate(45);
-			thingDist.set((int)thingDist.x, (int)thingDist.y);
 		}
-		//current.add(thingDist);
-		playerSpawns.add(new Vector2(current.x + (thingDist.x > 0 ? (thingDist.x / thingDist.x) : 0), current.y + (thingDist.y > 0 ? (thingDist.y / thingDist.y) : 0)));
-		
-		for (int i = 0; i < points; i++) {
-			current.add(thingDist);
-			controlPoints.add(new Vector2(current));
+
+        playerSpawns.add(new Vector2(current.x + (thingDist.x > 0 ? 0 : 1), current.y + (thingDist.y > 0 ? 1 : 0)));
+        playerSpawns.add(new Vector2((current.x > 0 && current.y == 0 ? current.x : width - 2), (current.y > 0 && current.x == 0 ? current.y : height - 2)));
+
+		int pointsLeft = points;
+
+        int spawnDist = getMapDist(playerSpawns.get(0), playerSpawns.get(1));
+
+        if (pointsLeft >= 2 && spawnDist >= 9) {
+            // add "home base" control points
+            // TODO make this more flexible
+            Vector2 cp = new Vector2(playerSpawns.get(0));
+            cp.add(3, 0);
+            controlPoints.add(cp);
+            cp = new Vector2(playerSpawns.get(1));
+            cp.add(-3, 0);
+            controlPoints.add(cp);
+
+            pointsLeft -= 2;
+            spawnDist = getMapDist(controlPoints.get(0), controlPoints.get(1));
+            current.set(controlPoints.get(0));
+        }
+
+        // TODO make this more flexible
+        int cpNotInRow = 0;
+        int rowDist = spawnDist / (pointsLeft + 1);
+        while (rowDist <= 3) {
+            cpNotInRow += 1;
+            rowDist = spawnDist / (pointsLeft - cpNotInRow + 1);
+        }
+
+        int rows = (spawnDist - 1) / rowDist;
+        int remainder = spawnDist % rowDist;
+        Gdx.app.log(LOG, String.format("rows %d (rem %d)", rows, remainder));
+        for (int r = 0; r < rows; r++) {
+			current.add(rowDist + (remainder / 2), 0);
+            if (cpNotInRow > 0) {
+                int numInRow = cpNotInRow / rows + 1;
+                int totalY = 4 * (numInRow - 1);
+                current.sub(0, totalY / 2);
+                Gdx.app.log(LOG, String.format("num in row %d", numInRow));
+                for (int i = 0; i < numInRow; i++) {
+                    controlPoints.add(new Vector2(current));
+                    current.add(0, 4);
+                }
+            } else {
+			    controlPoints.add(new Vector2(current));
+            }
 		}
-		
-		current.add(thingDist);
-		playerSpawns.add(new Vector2(current.x - 1 - (thingDist.x > 0 ? (thingDist.x / thingDist.x) : 0), current.y - (thingDist.y > 0 ? (thingDist.y / thingDist.y) : 0)));
+
+
 
         boardSquares = new Image[width * height];
         highlighted = new Array<Image>();
@@ -232,7 +268,7 @@ public class HexMap {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        return (!boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
+        return (y * (int)bounds.x + x < boardSquares.length && !boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
     }
 	
 	public void drawDebug(Vector2 offset) {
