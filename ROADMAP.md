@@ -16,7 +16,7 @@
 - Attachments for base
     - "Defense platform" --> grants extra attack/damage
     - "Research facility" --> allows upgrades
-- Control points
++ Control points
     - Grant small income/food --> less income/food from base
     - Mechanics:
         - can be captured by moving unit to adjacent space when uncontrolled

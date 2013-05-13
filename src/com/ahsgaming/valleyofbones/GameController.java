@@ -118,7 +118,7 @@ public class GameController {
 		// loads the map based on the value in mapName
 		if (mapName == null || mapName.length() == 0) mapName = DEFAULT_MAP;
 		// TODO implement loading of maps
-		map = new HexMap(20, 10, 2, 3);
+		map = new HexMap(19, 13, 2, 4);
 		
 		return map;
 	}
