@@ -24,8 +24,10 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.GameResult;
 import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -70,11 +72,11 @@ public class GameOverScreen extends AbstractScreen {
 
         table.add("Name", "small-font", "white").pad(4).minWidth(250);
 
-        table.add("Food", "small-font", "white").pad(4);
+        table.add(new Image(TextureManager.getSpriteFromAtlas("assets", "supply"))).pad(4).height(32);
 
-        table.add("Money", "small-font", "white").pad(4);
+        table.add(new Image(TextureManager.getSpriteFromAtlas("assets", "money"))).pad(4).height(32);
 
-        table.row().pad(4);
+        table.row();
 
         addPlayerRow(table, players, result.winner, "*");
 
