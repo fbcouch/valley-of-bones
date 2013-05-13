@@ -474,6 +474,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 } else if (p != unit.getOwner()) {
                     uncontested = null;
                     capUnitCount = 0;
+                    return;
                 } else {
                     capUnitCount ++;
                 }
