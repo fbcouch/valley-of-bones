@@ -378,6 +378,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
         proto.title = title;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void getType(String type) {
+        this.type = type;
+    }
+
     public int getUpkeep() {
         return upkeep;
     }
@@ -548,6 +556,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
             Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
         }
+    }
+
+    public int getRefund() {
+        return (int)(cost * 0.5f * (getCurHP() / getMaxHP()));
     }
 	
 	//-------------------------------------------------------------------------

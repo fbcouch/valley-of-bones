@@ -519,6 +519,14 @@ public class GameController {
 		return ret;
 	}
 
+    public boolean canPlayerRefundUnit(Player player, Unit unit) {
+        return unit.getOwner() == player && !unit.getType().equals("building") && gameObjects.contains(unit, true);
+    }
+
+    public void refundUnit(Player player, Unit unit) {
+        // TODO implement this
+    }
+
     public Array<Unit> getUnitsInArea(Vector2 boardPos, int radius) {
         Array<Unit> units = new Array<Unit>();
 

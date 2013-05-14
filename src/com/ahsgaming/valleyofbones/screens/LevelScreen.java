@@ -100,7 +100,7 @@ public class LevelScreen extends AbstractScreen {
     ScorePanel.PlayerScore playerScore;
 
 
-	private boolean vKeyDown = false, bKeyDown = false;
+	private boolean vKeyDown = false, bKeyDown = false, delKeyDown = false;
 
     boolean buildMode = false;
     Prototypes.JsonProto buildProto = null;
@@ -366,6 +366,19 @@ public class LevelScreen extends AbstractScreen {
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
             if (buildMode) unsetBuildMode();
+        }
+
+        if (Gdx.input.isKeyPressed(Keys.FORWARD_DEL)) {
+            if (!delKeyDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
+                if (gController.canPlayerRefundUnit(game.getPlayer(), (Unit)gController.getSelectedObject())) {
+                    int refund = ((Unit)gController.getSelectedObject()).getRefund();
+                    gController.refundUnit(game.getPlayer(), (Unit)gController.getSelectedObject());
+                    addFloatingLabel(String.format("+$%02d", refund), gController.getSelectedObject().getX() + gController.getSelectedObject().getWidth() * 0.5f, gController.getSelectedObject().getY());
+                }
+            }
+            delKeyDown = true;
+        } else {
+            delKeyDown = false;
         }
 	}
 
