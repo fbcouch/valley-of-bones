@@ -522,7 +522,8 @@ public class GameController {
 	}
 
     public boolean canPlayerRefundUnit(Player player, Unit unit) {
-        return player == currentPlayer && unit.getOwner() == player
+        return player != null && unit != null
+                && player == currentPlayer && unit.getOwner() == player
                 && !unit.getType().equals("building")
                 && gameObjects.contains(unit, true)
                 && !unit.isRemove();

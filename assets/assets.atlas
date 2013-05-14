@@ -18,7 +18,7 @@ saboteur
   index: -1
 tower
   rotate: false
-  xy: 2, 550
+  xy: 68, 550
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -39,7 +39,7 @@ gear-hammer
   index: -1
 walking-boot
   rotate: false
-  xy: 68, 550
+  xy: 134, 550
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -53,14 +53,14 @@ archery-target
   index: -1
 tank
   rotate: false
-  xy: 810, 68
+  xy: 876, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 tinker
   rotate: false
-  xy: 876, 68
+  xy: 942, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -81,21 +81,21 @@ reticule
   index: -1
 tank-overlay
   rotate: false
-  xy: 744, 68
+  xy: 810, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sniper
   rotate: false
-  xy: 2, 68
+  xy: 68, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 splash
   rotate: false
-  xy: 68, 68
+  xy: 134, 68
   size: 640, 480
   orig: 640, 480
   offset: 0, 0
@@ -123,7 +123,7 @@ hospital-cross
   index: -1
 supply
   rotate: false
-  xy: 710, 68
+  xy: 776, 68
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -144,7 +144,7 @@ scores
   index: -1
 tower-overlay
   rotate: false
-  xy: 942, 68
+  xy: 2, 550
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -179,7 +179,7 @@ castle-overlay
   index: -1
 sniper-overlay
   rotate: false
-  xy: 954, 2
+  xy: 2, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -194,6 +194,13 @@ castle
 money
   rotate: false
   xy: 620, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+skull-crossed-bones
+  rotate: false
+  xy: 954, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

@@ -5,7 +5,9 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.ProgressBar;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -30,16 +32,17 @@ public class InfoPanel extends Panel {
     final String MOVE = "%d";
     final String ATTACK_LEFT = "%d";
     final String MOVE_LEFT = "%d";
+    final String REFUND = "$%d";
 
-    Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft;
-    Image iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft;
+    Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft, lblRefund;
+    Image iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund;
 
     Unit selected;
 
     ProgressBar healthBar;
 
-    public InfoPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
-        super(game, levelScreen, icon, skin);
+    public InfoPanel(VOBGame game, LevelScreen lvlScreen, String icon, Skin skin) {
+        super(game, lvlScreen, icon, skin);
         this.skin = skin;
         this.horizontal = false;
 
@@ -50,6 +53,27 @@ public class InfoPanel extends Panel {
         iconMove = new Image(TextureManager.getSpriteFromAtlas("assets", "radial-balance"));
         iconMovesLeft = new Image(TextureManager.getSpriteFromAtlas("assets", "walking-boot"));
         iconAttacksLeft = new Image(TextureManager.getSpriteFromAtlas("assets", "rune-sword"));
+        iconRefund = new Image(TextureManager.getSpriteFromAtlas("assets", "skull-crossed-bones"));
+
+        iconRefund.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                levelScreen.refundUnit(selected);
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                levelScreen.setClickInterrupt(true);
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                levelScreen.setClickInterrupt(false);
+            }
+        });
 
         lblTitle = new Label("Nothing selected", skin, "medium");
         lblHealth = new Label(String.format(HEALTH, 0, 0), skin, "small");
@@ -59,10 +83,13 @@ public class InfoPanel extends Panel {
         lblMove = new Label(String.format(MOVE, 0), skin, "medium");
         lblAttacksLeft = new Label(String.format(ATTACK_LEFT, 0), skin, "medium");
         lblMovesLeft = new Label(String.format(MOVE_LEFT, 0), skin, "medium");
+        lblRefund = new Label(String.format(REFUND, 0), skin, "medium");
 
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
         expanded = true;
+
+
     }
 
     @Override
@@ -87,6 +114,8 @@ public class InfoPanel extends Panel {
             labels.add(lblAttacksLeft);
             lblMovesLeft.setText(String.format(MOVE_LEFT, selected.getMovesLeft()));
             labels.add(lblMovesLeft);
+            lblRefund.setText(String.format(REFUND, selected.getRefund()));
+            labels.add(lblRefund);
 
             for (Label lbl: labels) {
                 lbl.invalidate();
@@ -96,6 +125,7 @@ public class InfoPanel extends Panel {
 
             healthBar.setSize(lblHealth.getWidth(), 4);
             healthBar.setCurrent((float)selected.getCurHP() / selected.getMaxHP());
+
         }
 
         dirty = true;
@@ -122,6 +152,16 @@ public class InfoPanel extends Panel {
 
         int y = 0;
         float x = 0;
+
+        if (levelScreen.canRefund(selected)) {
+            iconRefund.setPosition(0, y);
+            addActor(iconRefund);
+
+            lblRefund.setPosition(iconRefund.getRight(), y);
+            addActor(lblRefund);
+            y += iconRefund.getHeight();
+
+        }
 
         iconMovesLeft.setPosition(0, y);
         addActor(iconMovesLeft);

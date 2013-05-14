@@ -94,6 +94,7 @@ public class LevelScreen extends AbstractScreen {
     ScorePanel scorePanel;
     ScorePanel.PlayerScore playerScore;
 
+    boolean clickInterrupt = false;
 
 	private boolean vKeyDown = false, bKeyDown = false, delKeyDown = false;
 
@@ -262,12 +263,14 @@ public class LevelScreen extends AbstractScreen {
                 }
 
 			} else {						
-				gController.selectObjAtBoardPos(boardPos);
-				if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-					Unit u = (Unit)gController.getSelectedObject();
-					Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-                    gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
-				}
+				if (!clickInterrupt) {
+                    gController.selectObjAtBoardPos(boardPos);
+                    if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
+                        Unit u = (Unit)gController.getSelectedObject();
+                        Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
+                        gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
+                    }
+                }
 			}
 		}
 		
@@ -365,21 +368,29 @@ public class LevelScreen extends AbstractScreen {
 
         if (Gdx.input.isKeyPressed(Keys.FORWARD_DEL)) {
             if (!delKeyDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-                if (gController.canPlayerRefundUnit(game.getPlayer(), (Unit)gController.getSelectedObject())) {
-                    int refund = ((Unit)gController.getSelectedObject()).getRefund();
-                    Refund r = new Refund();
-                    r.owner = game.getPlayer().getPlayerId();
-                    r.turn = gController.getGameTurn();
-                    r.unit = gController.getSelectedObject().getObjId();
-                    game.sendCommand(r);
-                    addFloatingLabel(String.format("+$%02d", refund), gController.getSelectedObject().getX() + gController.getSelectedObject().getWidth() * 0.5f, gController.getSelectedObject().getY());
-                }
+                refundUnit((Unit)gController.getSelectedObject());
             }
             delKeyDown = true;
         } else {
             delKeyDown = false;
         }
 	}
+
+    public boolean canRefund(Unit unit) {
+        return gController.canPlayerRefundUnit(game.getPlayer(), unit);
+    }
+
+    public void refundUnit(Unit unit) {
+        if (canRefund(unit)) {
+            int refund = unit.getRefund();
+            Refund r = new Refund();
+            r.owner = game.getPlayer().getPlayerId();
+            r.turn = gController.getGameTurn();
+            r.unit = unit.getObjId();
+            game.sendCommand(r);
+            addFloatingLabel(String.format("+$%02d", refund), unit.getX() + unit.getWidth() * 0.5f, unit.getY());
+        }
+    }
 
     public void setBuildMode(Prototypes.JsonProto proto) {
         if (buildMode) unsetBuildMode();
@@ -400,7 +411,14 @@ public class LevelScreen extends AbstractScreen {
         }
     }
 	
-	
+	public boolean getClickInterrupt() {
+        return clickInterrupt;
+    }
+
+    public void setClickInterrupt(boolean interrupt) {
+        clickInterrupt = interrupt;
+    }
+
 	public Vector2 screenToMapCoords(float x, float y) {
 		return new Vector2(x + (posCamera.x - stage.getWidth() * 0.5f), y + (posCamera.y - stage.getHeight() * 0.5f));  
 	}
