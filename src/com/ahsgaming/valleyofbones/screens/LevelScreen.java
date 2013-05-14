@@ -363,6 +363,10 @@ public class LevelScreen extends AbstractScreen {
 		if (vKeyDown && !Gdx.input.isKeyPressed(Keys.V)) {
 			vKeyDown = false;
 		}
+
+        if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+            if (buildMode) unsetBuildMode();
+        }
 	}
 
     public void setBuildMode(Prototypes.JsonProto proto) {
@@ -577,12 +581,7 @@ public class LevelScreen extends AbstractScreen {
 
             if (!isCurrentPlayer()) unsetBuildMode();
         }
-		
-		// easy exit for debug purposes
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE) && VOBGame.DEBUG) {
-			game.quitGame();
-		}
-		
+
 	}
 	
 	public void addFloatingLabel(String text, float x, float y) {
