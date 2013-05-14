@@ -25,14 +25,7 @@ package com.ahsgaming.valleyofbones;
 import java.util.List;
 
 import com.ahsgaming.valleyofbones.map.HexMap;
-import com.ahsgaming.valleyofbones.network.Attack;
-import com.ahsgaming.valleyofbones.network.Build;
-import com.ahsgaming.valleyofbones.network.Command;
-import com.ahsgaming.valleyofbones.network.EndTurn;
-import com.ahsgaming.valleyofbones.network.Move;
-import com.ahsgaming.valleyofbones.network.Pause;
-import com.ahsgaming.valleyofbones.network.Unpause;
-import com.ahsgaming.valleyofbones.network.Upgrade;
+import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
@@ -335,6 +328,12 @@ public class GameController {
 			return false;
 		} else if (cmd instanceof EndTurn) {
             return (cmd.owner == currentPlayer.getPlayerId());
+        } else if (cmd instanceof Refund) {
+            Refund r = (Refund)cmd;
+            Player p = getPlayerById(r.owner);
+            GameObject o = getObjById(r.unit);
+            if (!(o instanceof Unit)) return false;
+            return canPlayerRefundUnit(p, (Unit)o);
         }
 		return false;
 	}
@@ -356,6 +355,9 @@ public class GameController {
 			executeUpgrade((Upgrade)cmd);
 		} else if (cmd instanceof EndTurn) {
             setNextTurn(true);
+        } else if (cmd instanceof Refund) {
+            Refund r = (Refund)cmd;
+            refundUnit(getPlayerById(r.owner), (Unit)getObjById(r.unit));
         } else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
@@ -520,11 +522,16 @@ public class GameController {
 	}
 
     public boolean canPlayerRefundUnit(Player player, Unit unit) {
-        return unit.getOwner() == player && !unit.getType().equals("building") && gameObjects.contains(unit, true);
+        return player == currentPlayer && unit.getOwner() == player
+                && !unit.getType().equals("building")
+                && gameObjects.contains(unit, true)
+                && !unit.isRemove();
     }
 
     public void refundUnit(Player player, Unit unit) {
-        // TODO implement this
+        unit.setRemove(true);
+        player.setBankMoney(player.getBankMoney() + unit.getRefund());
+        removeGameUnit(unit);
     }
 
     public Array<Unit> getUnitsInArea(Vector2 boardPos, int radius) {

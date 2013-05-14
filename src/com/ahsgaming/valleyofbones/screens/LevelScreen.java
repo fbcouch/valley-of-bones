@@ -28,12 +28,7 @@ import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.map.HexMap;
-import com.ahsgaming.valleyofbones.network.Attack;
-import com.ahsgaming.valleyofbones.network.Build;
-import com.ahsgaming.valleyofbones.network.Command;
-import com.ahsgaming.valleyofbones.network.EndTurn;
-import com.ahsgaming.valleyofbones.network.Move;
-import com.ahsgaming.valleyofbones.network.Upgrade;
+import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.panels.BuildPanel;
 import com.ahsgaming.valleyofbones.screens.panels.InfoPanel;
 import com.ahsgaming.valleyofbones.screens.panels.Panel;
@@ -372,7 +367,11 @@ public class LevelScreen extends AbstractScreen {
             if (!delKeyDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
                 if (gController.canPlayerRefundUnit(game.getPlayer(), (Unit)gController.getSelectedObject())) {
                     int refund = ((Unit)gController.getSelectedObject()).getRefund();
-                    gController.refundUnit(game.getPlayer(), (Unit)gController.getSelectedObject());
+                    Refund r = new Refund();
+                    r.owner = game.getPlayer().getPlayerId();
+                    r.turn = gController.getGameTurn();
+                    r.unit = gController.getSelectedObject().getObjId();
+                    game.sendCommand(r);
                     addFloatingLabel(String.format("+$%02d", refund), gController.getSelectedObject().getX() + gController.getSelectedObject().getWidth() * 0.5f, gController.getSelectedObject().getY());
                 }
             }
