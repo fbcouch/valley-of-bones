@@ -29,8 +29,8 @@ import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -38,6 +38,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * @author jami
@@ -51,7 +53,13 @@ public class HexMap {
     public static final Color DIMMED = new Color(0.6f, 0.6f, 0.6f, 1);
     public static final Color FOG = new Color(0.4f, 0.4f, 0.4f, 1);
 
-	ArrayList<Vector2> controlPoints;
+    Array<TileSet> tilesets;
+    Array<TileLayer> tileLayers;
+    Array<ObjectLayer> objLayers;
+
+    ObjectMap<String, Object> properties;
+
+    ArrayList<Vector2> controlPoints;
 	ArrayList<Vector2> playerSpawns;
 	Vector2 bounds;
 	Vector2 tileSize;
@@ -64,32 +72,57 @@ public class HexMap {
     Array<Image> dimmed;
 
     Player currentPlayer;
-    GameController currentController;
+    final GameController parent;
 	
 	/**
 	 * 
 	 */
-	public HexMap(int width, int height, int players, int points) {
-		bounds = new Vector2(width, height);
-		controlPoints = new ArrayList<Vector2>();
-		playerSpawns = new ArrayList<Vector2>();
-		this.tileSize = new Vector2(64, 64);
-		
-		int things = points + 1;
-		Vector2 thingDist = new Vector2(0, 0);
-		Vector2 current = new Vector2(0, 0);
-		if (width > height) {
+	public HexMap(GameController parent, int width, int height, int players, int points) {
+		this.parent = parent;
 
-			current.set(0, (int)Math.round(height * 0.5f) - 1);
-		} else if (height > width) {
+		generateMap(width, height, players, points);
+	}
 
-			current.set((int)(width * 0.5f), 0);
-		}
+    public HexMap(GameController parent, FileHandle jsonFile) {
+        this.parent = parent;
+
+        loadFromFile(jsonFile);
+    }
+
+    public HexMap(GameController parent, String jsonString) {
+        this.parent = parent;
+
+        loadFromString(jsonString);
+    }
+
+    public HexMap(GameController parent, Object json) {
+        this.parent = parent;
+
+        loadFromJson(json);
+    }
+
+    // TODO split this up into smaller chunks
+    public void generateMap(int width, int height, int players, int points) {
+        bounds = new Vector2(width, height);
+        controlPoints = new ArrayList<Vector2>();
+        playerSpawns = new ArrayList<Vector2>();
+        this.tileSize = new Vector2(64, 64);
+
+        int things = points + 1;
+        Vector2 thingDist = new Vector2(0, 0);
+        Vector2 current = new Vector2(0, 0);
+        if (width > height) {
+
+            current.set(0, (int)Math.round(height * 0.5f) - 1);
+        } else if (height > width) {
+
+            current.set((int)(width * 0.5f), 0);
+        }
 
         playerSpawns.add(new Vector2(current.x + (thingDist.x > 0 ? 0 : 1), current.y + (thingDist.y > 0 ? 1 : 0)));
         playerSpawns.add(new Vector2((current.x > 0 && current.y == 0 ? current.x : width - 2), (current.y > 0 && current.x == 0 ? current.y : height - 2)));
 
-		int pointsLeft = points;
+        int pointsLeft = points;
 
         int spawnDist = getMapDist(playerSpawns.get(0), playerSpawns.get(1));
 
@@ -120,7 +153,7 @@ public class HexMap {
         int remainder = spawnDist % rowDist;
         Gdx.app.log(LOG, String.format("rows %d (rem %d)", rows, remainder));
         for (int r = 0; r < rows; r++) {
-			current.add(rowDist + (remainder / 2), 0);
+            current.add(rowDist + (remainder / 2), 0);
             if (cpNotInRow > 0) {
                 int numInRow = cpNotInRow / rows + 1;
                 int totalY = 4 * (numInRow - 1);
@@ -131,24 +164,40 @@ public class HexMap {
                     current.add(0, 4);
                 }
             } else {
-			    controlPoints.add(new Vector2(current));
+                controlPoints.add(new Vector2(current));
             }
-		}
+        }
 
 
 
         boardSquares = new Image[width * height];
         highlighted = new Array<Image>();
         dimmed = new Array<Image>();
-		
-	}
+    }
 
-    public void update(Player player, GameController controller) {
+    void loadFromFile(FileHandle jsonFile) {
+        JsonReader jsonReader = new JsonReader();
+        Object json = jsonReader.parse(jsonFile);
+
+        loadFromJson(json);
+    }
+
+    void loadFromString(String jsonString) {
+        JsonReader jsonReader = new JsonReader();
+        Object json = jsonReader.parse(jsonString);
+
+        loadFromJson(json);
+    }
+
+    void loadFromJson(Object json) {
+
+    }
+
+    public void update(Player player) {
         currentPlayer = player;
-        currentController = controller;
 
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
-        Array<Unit> units = controller.getUnitsByPlayerId(player.getPlayerId());
+        Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
         for (int i=0; i<boardSquares.length; i++) {
             Image bsq = boardSquares[i];
             bsq.setColor(FOG);
@@ -164,22 +213,22 @@ public class HexMap {
 
     public void clearHighlight() {
         highlighted.clear();
-        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void clearDim() {
         dimmed.clear();
-        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void clearHighlightAndDim() {
         highlighted.clear();
         dimmed.clear();
-        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
-        Array<Unit> units = currentController.getUnits();
+        Array<Unit> units = parent.getUnits();
 
         for (int i=0;i<boardSquares.length;i++) {
             Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
