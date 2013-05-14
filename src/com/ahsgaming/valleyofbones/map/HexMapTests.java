@@ -52,7 +52,7 @@ public class HexMapTests {
 	 */
 	@Test
 	public void testGetMapDist() {
-		HexMap map = new HexMap(10, 10, 2, 3);
+		HexMap map = new HexMap(null, 10, 10, 2, 3);
 		
 		Array<DistTestCase> cases = new Array<DistTestCase>();
 		

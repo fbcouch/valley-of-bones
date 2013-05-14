@@ -558,7 +558,7 @@ public class LevelScreen extends AbstractScreen {
 
 		// draw a debug map
 		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
-		gController.getMap().update(game.getPlayer(), gController);
+		gController.getMap().update(game.getPlayer());
 
         // dim units based on whether the player can see them
         dimUnits();

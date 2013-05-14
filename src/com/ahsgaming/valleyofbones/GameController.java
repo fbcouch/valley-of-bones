@@ -111,8 +111,8 @@ public class GameController {
 		// loads the map based on the value in mapName
 		if (mapName == null || mapName.length() == 0) mapName = DEFAULT_MAP;
 		// TODO implement loading of maps
-		map = new HexMap(19, 13, 2, 4);
-		
+		//map = new HexMap(this, 19, 13, 2, 4);
+		map = new HexMap(this, Gdx.files.internal("maps/blank.json"));
 		return map;
 	}
 	

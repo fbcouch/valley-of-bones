@@ -54,8 +54,12 @@ public class HexMap {
     public static final Color FOG = new Color(0.4f, 0.4f, 0.4f, 1);
 
     Array<TileSet> tilesets;
-    Array<TileLayer> tileLayers;
-    Array<ObjectLayer> objLayers;
+    Array<Object> tileLayers;
+    Array<Object> objLayers;
+    String title = "", description = "";
+    String file = "";
+
+    String version = "";
 
     ObjectMap<String, Object> properties;
 
@@ -73,10 +77,7 @@ public class HexMap {
 
     Player currentPlayer;
     final GameController parent;
-	
-	/**
-	 * 
-	 */
+
 	public HexMap(GameController parent, int width, int height, int players, int points) {
 		this.parent = parent;
 
@@ -190,7 +191,40 @@ public class HexMap {
     }
 
     void loadFromJson(Object json) {
+        tilesets = new Array<TileSet>();
+        tileLayers = new Array<Object>();
+        objLayers = new Array<Object>();
+        bounds = new Vector2();
+        tileSize = new Vector2();
+        properties = new ObjectMap<String, Object>();
 
+        ObjectMap<String, Object> jsonObjects = (ObjectMap<String, Object>)json;
+
+        if (jsonObjects.containsKey("width"))
+            bounds.x = (int)Float.parseFloat(jsonObjects.get("width").toString());
+
+        if (jsonObjects.containsKey("height"))
+            bounds.y = (int)Float.parseFloat(jsonObjects.get("height").toString());
+
+        if (jsonObjects.containsKey("tilewidth"))
+            tileSize.x = (int)Float.parseFloat(jsonObjects.get("tilewidth").toString());
+
+        if (jsonObjects.containsKey("tileheight"))
+            tileSize.y = (int)Float.parseFloat(jsonObjects.get("tileheight").toString());
+
+        if (jsonObjects.containsKey("version"))
+            version = jsonObjects.get("version").toString();
+
+        if (jsonObjects.containsKey("properties"))
+            properties = (ObjectMap<String, Object>)jsonObjects.get("properties");
+
+        if (jsonObjects.containsKey("title"))
+            title = jsonObjects.get("title").toString();
+
+        if (jsonObjects.containsKey("description"))
+            description = jsonObjects.get("description").toString();
+
+        // TODO load tilesets, tilelayers, and objects
     }
 
     public void update(Player player) {
