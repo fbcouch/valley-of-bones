@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 
 
 /**
@@ -25,6 +26,9 @@ public class InfoBox extends Group {
 
     Skin skin;
 
+    Image iconHealth, iconAttack, iconRange, iconSpeed, iconArmor;
+    Label lblHealth, lblAttack, lblRange, lblSpeed, lblArmor;
+
     Image iconFood;
     Image iconMoney;
     Label lblTitle;
@@ -36,18 +40,37 @@ public class InfoBox extends Group {
 
         iconFood = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
         iconMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
+        iconHealth = new Image(TextureManager.getSpriteFromAtlas("assets", "hospital-cross"));
+        iconAttack = new Image(TextureManager.getSpriteFromAtlas("assets", "crossed-swords"));
+        iconRange = new Image(TextureManager.getSpriteFromAtlas("assets", "archery-target"));
+        iconSpeed = new Image(TextureManager.getSpriteFromAtlas("assets", "radial-balance"));
+        iconArmor = new Image(TextureManager.getSpriteFromAtlas("assets", "checked-shield"));
         lblTitle = new Label(" ", skin, "medium");
         lblFood = new Label(String.format(FOOD, 0), skin, "medium");
         lblMoney = new Label(String.format(MONEY, 0), skin, "medium");
+        lblHealth = new Label(" ", skin, "medium");
+        lblAttack = new Label(String.format("%d", 0), skin, "medium");
+        lblRange = new Label(String.format("%d", 0), skin, "medium");
+        lblSpeed = new Label(String.format("%d", 0), skin, "medium");
+        lblArmor = new Label(String.format("%d", 0), skin, "medium");
 
         this.addActor(iconFood);
         this.addActor(iconMoney);
+        this.addActor(iconHealth);
+        this.addActor(iconAttack);
+        this.addActor(iconRange);
+        this.addActor(iconSpeed);
+        this.addActor(iconArmor);
         this.addActor(lblTitle);
         this.addActor(lblFood);
         this.addActor(lblMoney);
+        this.addActor(lblHealth);
+        this.addActor(lblAttack);
+        this.addActor(lblRange);
+        this.addActor(lblSpeed);
+        this.addActor(lblArmor);
 
         this.setProto(proto);
-
     }
 
     public void setProto(Prototypes.JsonProto proto) {
@@ -67,12 +90,68 @@ public class InfoBox extends Group {
             food = (int)Float.parseFloat(this.proto.getProperty("food").toString());
         lblFood.setText(String.format(FOOD, food));
 
+        int maxhp = 0;
+        if (this.proto.hasProperty("maxhp"))
+            maxhp = (int)Float.parseFloat(this.proto.getProperty("maxhp").toString());
+        lblHealth.setText(String.format("%d", maxhp));
+
+        int attack = 0;
+        if (this.proto.hasProperty("attackdamage"))
+            attack = (int)Float.parseFloat(this.proto.getProperty("attackdamage").toString());
+        lblAttack.setText(String.format("%d", attack));
+
+        int range = 0;
+        if (this.proto.hasProperty("attackrange"))
+            range = (int)Float.parseFloat(this.proto.getProperty("attackrange").toString());
+        lblRange.setText(String.format("%d", range));
+
+        int speed = 0;
+        if (this.proto.hasProperty("movespeed"))
+            speed = (int)Float.parseFloat(this.proto.getProperty("movespeed").toString());
+        lblSpeed.setText(String.format("%d", speed));
+
+        int armor = 0;
+        if (this.proto.hasProperty("armor"))
+            range = (int)Float.parseFloat(this.proto.getProperty("armor").toString());
+        lblArmor.setText(String.format("%d", range));
+
+        Array<Label> labels = new Array<Label>();
+        labels.add(lblFood);
+        labels.add(lblMoney);
+        labels.add(lblHealth);
+        labels.add(lblAttack);
+        labels.add(lblRange);
+        labels.add(lblSpeed);
+        labels.add(lblArmor);
+
+        for (Label lbl: labels) {
+            lbl.invalidate();
+            lbl.layout();
+            lbl.setSize(lbl.getPrefWidth(), lbl.getPrefHeight());
+        }
+
         int y = 0;
+        iconSpeed.setPosition(0, y);
+        lblSpeed.setPosition(iconSpeed.getRight(), y);
+
+        iconArmor.setPosition(lblSpeed.getRight(), y);
+        lblArmor.setPosition(iconArmor.getRight(), y);
+        if (iconArmor.getHeight() > lblArmor.getHeight()) y += iconArmor.getHeight(); else y += lblArmor.getHeight();
+
+        iconHealth.setPosition(0, y);
+        lblHealth.setPosition(iconHealth.getRight(), y);
+
+        iconAttack.setPosition(lblHealth.getRight(), y);
+        lblAttack.setPosition(iconAttack.getRight(), y);
+
+        iconRange.setPosition(lblAttack.getRight(), y);
+        lblRange.setPosition(iconRange.getRight(), y);
+        if (iconRange.getHeight() > lblRange.getHeight()) y += iconRange.getHeight(); else y += lblRange.getHeight();
+
         iconMoney.setPosition(0, y);
         lblMoney.setPosition(iconMoney.getRight(), y);
-        if (iconMoney.getTop() > lblMoney.getTop()) y += iconMoney.getHeight(); else y += lblMoney.getHeight();
 
-        iconFood.setPosition(0, y);
+        iconFood.setPosition(lblMoney.getRight(), y);
         lblFood.setPosition(iconFood.getRight(), y);
         if (iconFood.getHeight() > lblFood.getHeight()) y += iconFood.getHeight(); else y += lblFood.getHeight();
 
