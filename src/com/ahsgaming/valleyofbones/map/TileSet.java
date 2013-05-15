@@ -48,8 +48,8 @@ public class TileSet {
         if (set.containsKey("atlas"))
             atlas = set.get("atlas").toString();
 
-        if (set.containsKey("images")) {
-            Array<Object> objectArray = (Array<Object>)set.get("images");
+        if (set.containsKey("tiles")) {
+            Array<Object> objectArray = (Array<Object>)set.get("tiles");
             images = new Array<String>();
             tiles = new Array<TextureRegion>();
 
@@ -61,7 +61,7 @@ public class TileSet {
 	}
 
 	public TextureRegion getTile(int gid) {
-		if (gid >= tiles.size) return null;
+		if (gid - firstgid >= tiles.size) return null;
 		return tiles.get(gid - firstgid);
 	}
 	
@@ -83,6 +83,10 @@ public class TileSet {
 	public int getFirstgid() {
 		return firstgid;
 	}
+
+    public int getLastgid() {
+        return firstgid + tiles.size - 1;
+    }
 
 	/**
 	 * @return the name

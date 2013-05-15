@@ -17,7 +17,8 @@
  */
 package com.ahsgaming.valleyofbones.map;
 
-import com.ahsgaming.roguelike.Utils;
+import com.badlogic.gdx.math.Vector2;
+import com.ahsgaming.valleyofbones.Utils;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -29,40 +30,20 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class TileLayer {
 	int[] data = new int[0];
-	int x = 0, y = 0, width = 0, height = 0;
-	String name = "";
-	String type = "tilelayer";
+	Vector2 size = new Vector2();
+    boolean collidable = true;
 	boolean visible = true;
 	float opacity = 1;
 	
-	final Room room;
+	final HexMap map;
 	
 	Group layerGroup = new Group();
-	
-	public TileLayer(Room map) {
-		this.room = map;
-		
-	}
-	
-	public TileLayer(Room map, String name) {
-		this(map);
-		this.name = name;
-	}
-	
-	public TileLayer(Room map, String name, int x, int y, int width, int height) {
-		this(map, name);
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		
-		this.data = new int[width * height];
-	}
-	
+
 	@SuppressWarnings("unchecked")
-	public TileLayer(Room map, ObjectMap<String, Object> layer) {
-		this(map);
-		if (layer.containsKey("data")) {
+	public TileLayer(HexMap map, ObjectMap<String, Object> layer) {
+		this.map = map;
+
+        if (layer.containsKey("data")) {
 			Array<Object> arr = (Array<Object>)layer.get("data");
 			data = new int[arr.size];
 			for (int i=0; i<arr.size; i++) {
@@ -70,29 +51,18 @@ public class TileLayer {
 			}
 		}
 		
-		if (layer.containsKey("x"))
-			this.x = (int)Float.parseFloat(layer.get("x").toString());
-		
-		if (layer.containsKey("y"))
-			this.y = (int)Float.parseFloat(layer.get("y").toString());
-		
-		if (layer.containsKey("width"))
-			this.width = (int)Float.parseFloat(layer.get("width").toString());
-		
-		if (layer.containsKey("height"))
-			this.height = (int)Float.parseFloat(layer.get("height").toString());
-		
-		if (layer.containsKey("name"))
-			this.name = layer.get("name").toString();
-		
 		if (layer.containsKey("opacity"))
-			this.opacity = Float.parseFloat(layer.get("opacity").toString());
+			opacity = Float.parseFloat(layer.get("opacity").toString());
 		
 		if (layer.containsKey("visible"))
-			this.visible = Boolean.parseBoolean(layer.get("visible").toString());
-		
-		if (layer.containsKey("type"))
-			this.type = layer.get("type").toString();
+			visible = Boolean.parseBoolean(layer.get("visible").toString());
+
+        if (layer.containsKey("collidable"))
+            collidable = Boolean.parseBoolean(layer.get("collidable").toString());
+
+        size.set(map.getWidth(), map.getHeight());
+
+        init();
 	}
 	
 	public Group getGroup() {
@@ -101,12 +71,12 @@ public class TileLayer {
 	
 	public void init() {
 		layerGroup.remove();
-		layerGroup.setBounds(x, y, width, height);
+		layerGroup.setBounds(0, 0, size.x, size.y);
 		
 		for (int i=0; i < data.length; i++) {
 			if (data[i] == 0) continue;
-			Image img = new Image(room.getTile(data[i]));
-			img.setPosition(i % room.getWidth() * room.getTilewidth(), (int)(i / room.getWidth()) * room.getTileheight());
+			Image img = new Image(map.getTile(data[i]));
+			img.setPosition(i % map.getWidth() * map.getTileWidth() + ((i / map.getWidth()) % 2) * map.getTileWidth() * 0.5f, (int)(i / map.getWidth()) * map.getTileHeight() * 0.75f);
 			layerGroup.addActor(img);
 		}
 	}
@@ -121,14 +91,9 @@ public class TileLayer {
 		}
 		
 		json += Utils.toJsonProperty("data", data);
-		json += Utils.toJsonProperty("name", this.name);
-		json += Utils.toJsonProperty("x", this.x);
-		json += Utils.toJsonProperty("y", this.y);
-		json += Utils.toJsonProperty("width", this.width);
-		json += Utils.toJsonProperty("height", this.height);
 		json += Utils.toJsonProperty("opacity", this.opacity);
 		json += Utils.toJsonProperty("visible", this.visible);
-		json += Utils.toJsonProperty("type", this.type);
+        json += Utils.toJsonProperty("collidable", this.collidable);
 		
 		return json + "}";
 	}
@@ -141,65 +106,7 @@ public class TileLayer {
 	}
 	
 	public void setTile(int x, int y, int gid) {
-		data[x + y * this.width] = gid; 
-	}
-
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
-	}
-	
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	/**
-	 * @return the width
-	 */
-	public int getWidth() {
-		return width;
-	}
-	
-	public void setWidth(int w) {
-		this.width = w;
-	}
-
-	/**
-	 * @return the height
-	 */
-	public int getHeight() {
-		return height;
-	}
-	
-	public void setHeight(int h) {
-		this.height = h;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
+		data[x + y * (int)size.x] = gid;
 	}
 
 	/**
@@ -208,6 +115,10 @@ public class TileLayer {
 	public boolean isVisible() {
 		return visible;
 	}
+
+    public boolean isCollidable() {
+        return collidable;
+    }
 
 	/**
 	 * @return the opacity
@@ -219,8 +130,8 @@ public class TileLayer {
 	/**
 	 * @return the map
 	 */
-	public Room getMap() {
-		return room;
+	public HexMap getMap() {
+		return map;
 	}
 
 	/**

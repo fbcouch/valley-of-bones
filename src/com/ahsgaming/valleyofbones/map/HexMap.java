@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -54,7 +55,7 @@ public class HexMap {
     public static final Color FOG = new Color(0.4f, 0.4f, 0.4f, 1);
 
     Array<TileSet> tilesets;
-    Array<Object> tileLayers;
+    Array<TileLayer> tileLayers;
     Array<Object> objLayers;
     String title = "", description = "";
     String file = "";
@@ -192,7 +193,7 @@ public class HexMap {
 
     void loadFromJson(Object json) {
         tilesets = new Array<TileSet>();
-        tileLayers = new Array<Object>();
+        tileLayers = new Array<TileLayer>();
         objLayers = new Array<Object>();
         bounds = new Vector2();
         tileSize = new Vector2();
@@ -231,12 +232,21 @@ public class HexMap {
             }
         }
 
-        // TODO load tilelayers, and objects
+        if (jsonObjects.containsKey("tilelayers")) {
+            Array<Object> objs = (Array<Object>)jsonObjects.get("tilelayers");
+            for (Object o: objs) {
+                tileLayers.add(new TileLayer(this, (ObjectMap<String, Object>)o));
+            }
+        }
+
+        // TODO load objects
+
+        generateMap((int)bounds.x, (int)bounds.y, 2, 4);
     }
 
     public void update(Player player) {
         currentPlayer = player;
-
+        if (VOBGame.DEBUG) return; // TODO remove this
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
         for (int i=0; i<boardSquares.length; i++) {
@@ -305,6 +315,15 @@ public class HexMap {
 	public int getHeight() {
 		return (int)bounds.y;
 	}
+
+    public TextureRegion getTile(int gid) {
+        for (TileSet ts: tilesets) {
+            if (ts.getFirstgid() <= gid && ts.getLastgid() >= gid) {
+                return ts.getTile(gid);
+            }
+        }
+        return null;
+    }
 	
 	public int getTileWidth() {
 		return (int)tileSize.x;
@@ -334,7 +353,7 @@ public class HexMap {
 		if (mapGroup == null) {
 			mapGroup = new Group();
 			mapGroup.setSize(getMapWidth(), getMapHeight());
-			dirtTexture = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
+			/*dirtTexture = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
 			for (int x = 0; x < bounds.x; x++) {
 				for (int y = 0; y < bounds.y; y++) {
 					Image img = new Image(dirtTexture);
@@ -344,7 +363,8 @@ public class HexMap {
                     img.setColor(FOG);
                     boardSquares[(int)bounds.x * y + x] = img;
 				}
-			}
+			}*/
+            for (TileLayer tl: tileLayers) mapGroup.addActor(tl.getGroup());
 		}
 		return mapGroup;
 	}
@@ -358,7 +378,8 @@ public class HexMap {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        return (y * (int)bounds.x + x < boardSquares.length && !boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
+        // TODO fix this
+        return false && (y * (int)bounds.x + x < boardSquares.length && !boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
     }
 	
 	public void drawDebug(Vector2 offset) {
