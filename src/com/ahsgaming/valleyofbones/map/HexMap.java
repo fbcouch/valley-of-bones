@@ -224,7 +224,14 @@ public class HexMap {
         if (jsonObjects.containsKey("description"))
             description = jsonObjects.get("description").toString();
 
-        // TODO load tilesets, tilelayers, and objects
+        if (jsonObjects.containsKey("tilesets")) {
+            Array<Object> objs = (Array<Object>)jsonObjects.get("tilesets");
+            for (Object o: objs) {
+                tilesets.add(new TileSet((ObjectMap<String, Object>)o));
+            }
+        }
+
+        // TODO load tilelayers, and objects
     }
 
     public void update(Player player) {
