@@ -4,42 +4,42 @@ filter: Linear,Linear
 repeat: none
 marine-overlay
   rotate: false
-  xy: 488, 2
+  xy: 620, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 saboteur
   rotate: false
-  xy: 822, 2
+  xy: 954, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 tower
   rotate: false
-  xy: 68, 550
+  xy: 200, 550
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 invisible
   rotate: false
-  xy: 402, 2
+  xy: 534, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 gear-hammer
   rotate: false
-  xy: 302, 2
+  xy: 368, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 walking-boot
   rotate: false
-  xy: 134, 550
+  xy: 266, 550
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -51,16 +51,23 @@ archery-target
   orig: 32, 32
   offset: 0, 0
   index: -1
+flying-flag
+  rotate: false
+  xy: 302, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 tank
   rotate: false
-  xy: 876, 68
+  xy: 2, 550
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 tinker
   rotate: false
-  xy: 942, 68
+  xy: 68, 550
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -74,37 +81,30 @@ crossed-swords
   index: -1
 reticule
   rotate: false
-  xy: 688, 2
+  xy: 820, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 tank-overlay
   rotate: false
-  xy: 810, 68
+  xy: 910, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sniper
   rotate: false
-  xy: 68, 68
+  xy: 168, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 splash
   rotate: false
-  xy: 134, 68
+  xy: 234, 68
   size: 640, 480
   orig: 640, 480
-  offset: 0, 0
-  index: -1
-rune-sword
-  rotate: false
-  xy: 722, 2
-  size: 32, 32
-  orig: 32, 32
   offset: 0, 0
   index: -1
 dirt-hex
@@ -114,16 +114,23 @@ dirt-hex
   orig: 64, 64
   offset: 0, 0
   index: -1
+rune-sword
+  rotate: false
+  xy: 854, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 hospital-cross
   rotate: false
-  xy: 368, 2
+  xy: 500, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 supply
   rotate: false
-  xy: 776, 68
+  xy: 876, 68
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -137,35 +144,35 @@ checked-shield
   index: -1
 scores
   rotate: false
-  xy: 888, 2
+  xy: 2, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 tower-overlay
   rotate: false
-  xy: 2, 550
+  xy: 134, 550
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 marine
   rotate: false
-  xy: 554, 2
+  xy: 686, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 laser-red
   rotate: false
-  xy: 468, 2
+  xy: 600, 2
   size: 18, 2
   orig: 18, 2
   offset: 0, 0
   index: -1
 radial-balance
   rotate: false
-  xy: 654, 2
+  xy: 786, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -179,7 +186,7 @@ castle-overlay
   index: -1
 sniper-overlay
   rotate: false
-  xy: 2, 68
+  xy: 102, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -193,21 +200,28 @@ castle
   index: -1
 money
   rotate: false
-  xy: 620, 2
+  xy: 752, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 skull-crossed-bones
   rotate: false
-  xy: 954, 2
+  xy: 68, 68
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+hazard-sign
+  rotate: false
+  xy: 434, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 saboteur-overlay
   rotate: false
-  xy: 756, 2
+  xy: 888, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

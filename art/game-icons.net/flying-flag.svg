@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 512 512"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   width="100%"
+   height="100%"
+   sodipodi:docname="flying-flag.svg"
+   inkscape:export-filename="/home/jami/workspace/valley-of-bones/art/exported/flying-flag.png"
+   inkscape:export-xdpi="11.25"
+   inkscape:export-ydpi="11.25">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs16" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview14"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="256"
+     inkscape:cy="256"
+     inkscape:window-x="0"
+     inkscape:window-y="40"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <path
+     d="m0,0h512v512h-512z"
+     id="path4" />
+  <g
+     transform="matrix(18.68858,0,0,18.68858,1980.72462,-9854.73343)"
+     id="g6">
+    <path
+       d="m-84.3345,540.2345c-1.6461-3.2857.8101-8.4179 3.6102-10.5004-14.409-7.0299-6.0664,8.2909-20.7318,1.0614-.4521,2.2408-1.9798,7.8498-3.6102,10.5004 14.6654,7.2296 6.3228-8.0913 20.7318-1.0614z"
+       fill="#fff"
+       fill-rule="evenodd"
+       stroke="#000"
+       id="path8" />
+    <path
+       d="m-80.218,529.1109c-.2343.0523-.4784.2367-.6466.5938l-9.6289,24.2188h1.2633l9.5156-23.9688c.2125-.6209-.113-.931-.5034-.8438z"
+       fill="#fff"
+       id="path10" />
+    <path
+       d="m-91.6617,534.0668c-2.9246,5.3861-3.2711,9.1225-7.25,9.3125"
+       fill="none"
+       stroke="#000"
+       id="path12" />
+  </g>
+</svg>

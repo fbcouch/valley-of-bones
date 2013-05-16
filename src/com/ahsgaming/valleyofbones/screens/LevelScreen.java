@@ -29,10 +29,7 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.*;
-import com.ahsgaming.valleyofbones.screens.panels.BuildPanel;
-import com.ahsgaming.valleyofbones.screens.panels.InfoPanel;
-import com.ahsgaming.valleyofbones.screens.panels.Panel;
-import com.ahsgaming.valleyofbones.screens.panels.ScorePanel;
+import com.ahsgaming.valleyofbones.screens.panels.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -94,6 +91,7 @@ public class LevelScreen extends AbstractScreen {
     InfoPanel selectionPanel;
     ScorePanel scorePanel;
     ScorePanel.PlayerScore playerScore;
+    SurrenderPanel surrenderPanel;
 
     boolean clickInterrupt = false;
 
@@ -484,6 +482,9 @@ public class LevelScreen extends AbstractScreen {
         scorePanel = new ScorePanel(game, this, "scores", getSkin(), gController.getPlayers());
 
         playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer().getPlayerName(), game.getPlayer().getPlayerColor(), true);
+
+        surrenderPanel = new SurrenderPanel(game, this, getSkin());
+
 	}
 	
 	@Override
@@ -525,6 +526,9 @@ public class LevelScreen extends AbstractScreen {
 
 
         stage.addActor(playerScore);
+
+        stage.addActor(surrenderPanel);
+        surrenderPanel.setAnchor(0, stage.getHeight() - 64);
 
 
 		btnTurnDone.addListener(new ClickListener() {
@@ -604,6 +608,7 @@ public class LevelScreen extends AbstractScreen {
         scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());
         playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney());
         playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
+        surrenderPanel.update(delta);
 
 		showCommandPreviews();
 
