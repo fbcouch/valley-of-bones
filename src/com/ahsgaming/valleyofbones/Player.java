@@ -111,6 +111,8 @@ public class Player {
 			food = (int)Float.parseFloat(proto.getProperty("food").toString());
 		if (proto.hasProperty("cost"))
 			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
+
+        if (cost < 0) return false; // Cannot build negative cost things
 		
 		return checkFoodAndCost(food, cost, controller);
 	}

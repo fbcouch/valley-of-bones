@@ -17,7 +17,7 @@ entities: [
             attackspeed: 1,
             attackrange: 3,
             movespeed: 0,
-            cost: 1000,
+            cost: -1,
             upkeep: -75,
             subtype: "building",
         },
@@ -39,7 +39,7 @@ entities: [
             attackspeed: 1,
             attackrange: 3,
             movespeed: 0,
-            cost: 1000,
+            cost: -1,
             upkeep: -25,
             subtype: "building",
             capturable: true,
@@ -66,27 +66,33 @@ entities: [
             subtype: "light",
         }
     },
+    
     {
-        id: "tank-base",
+        id: "sniper-base",
         type: "unit",
-        image: "tank",
-        title: "Light Tank",
-        desc: "Tank with light armor",
+        image: "sniper",
+        title: "Sniper",
+        desc: "Light unit with long range",
         properties:
         {
-            curhp: 60,
-            maxhp: 60,
-            armor: 2,
-            food: 5,
+            curhp: 15,
+            maxhp: 15,
+            armor: 0,
+            food: 2,
             requires: [ "castle-base" ],
-            attackdamage: 15,
+            attackdamage: 5,
             attackspeed: 1,
-            attackrange: 3,
-            movespeed: 1,
-            cost: 150,
-            subtype: "armored",
+            attackrange: 5,
+            movespeed: 2,
+            cost: 75,
+            subtype: "light",
+            bonus:
+            {
+                light: 4,
+            },
         }
     },
+    
     {
         id: "saboteur-base",
         type: "unit",
@@ -113,31 +119,29 @@ entities: [
             },
         }
     },
+    
     {
-        id: "sniper-base",
+        id: "tank-base",
         type: "unit",
-        image: "sniper",
-        title: "Sniper",
-        desc: "Light unit with long range",
+        image: "tank",
+        title: "Light Tank",
+        desc: "Tank with light armor",
         properties:
         {
-            curhp: 15,
-            maxhp: 15,
-            armor: 0,
-            food: 2,
+            curhp: 60,
+            maxhp: 60,
+            armor: 2,
+            food: 5,
             requires: [ "castle-base" ],
-            attackdamage: 5,
+            attackdamage: 15,
             attackspeed: 1,
-            attackrange: 5,
-            movespeed: 2,
-            cost: 75,
-            subtype: "light",
-            bonus:
-            {
-                light: 4,
-            },
+            attackrange: 3,
+            movespeed: 1,
+            cost: 150,
+            subtype: "armored",
         }
     },
+    
     {
         id: "attack-upgrade-1",
         type: "upgrade",

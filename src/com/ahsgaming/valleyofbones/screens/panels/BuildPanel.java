@@ -39,10 +39,10 @@ public class BuildPanel extends Panel {
 
         // need to get all the buildings this guy can build
         Array<Prototypes.JsonProto> items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
-        if (!items.equals(this.items)) {
-            this.items = items;
-            dirty = true;
-        }
+
+        this.items = items;
+        dirty = true;
+
 
     }
 
@@ -60,6 +60,8 @@ public class BuildPanel extends Panel {
             this.addActor(btn);
             btn.setX(x);
             x += btn.getWidth() + spacing;
+            if (!game.getPlayer().canBuild(jp.id, game.getNetController().getGameController()))
+                btn.setColor(0.8f, 0.4f, 0.4f, 1.0f);
             buttonMap.put(btn, jp);
             btn.addListener(new ClickListener() {
                 @Override

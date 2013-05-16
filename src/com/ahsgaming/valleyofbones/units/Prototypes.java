@@ -25,8 +25,34 @@ public class Prototypes {
     public static Array<JsonProto> getPlayerCanBuild(Player p, GameController gc) {
         Array<JsonProto> returnVal = new Array<JsonProto>();
         for (JsonProto jp: protos.values()) {
-            if ((jp.type.equals("building") || jp.type.equals("unit")) && p.canBuild(jp.id, gc)) returnVal.add(jp);
+            int cost = 0;
+            if (jp.hasProperty("cost"))
+                cost = (int)Float.parseFloat(jp.getProperty("cost").toString());
+            if ((jp.type.equals("building") || jp.type.equals("unit")) && cost >= 0) returnVal.add(jp);
         }
+
+        for (int i=0; i<returnVal.size; i++) {
+            int max = i;
+            int maxcost = 0;
+            if (returnVal.get(max).hasProperty("cost"))
+                maxcost = (int)Float.parseFloat(returnVal.get(max).getProperty("cost").toString());
+
+            for (int j=i+1; j<returnVal.size; j++) {
+                int jcost = 0;
+                if (returnVal.get(j).hasProperty("cost"))
+                    jcost = (int)Float.parseFloat(returnVal.get(j).getProperty("cost").toString());
+
+                if (jcost > maxcost) {
+                    max = j;
+                    maxcost = jcost;
+                }
+            }
+
+            if (max != i) {
+                returnVal.insert(i, returnVal.removeIndex(max));
+            }
+        }
+
         return returnVal;
     }
 	
