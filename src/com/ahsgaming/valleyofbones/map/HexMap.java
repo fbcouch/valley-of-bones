@@ -70,7 +70,8 @@ public class HexMap {
 	Vector2 tileSize;
 	
 	Group mapGroup;
-	TextureRegion dirtTexture;
+    Group objectGroup = new Group();
+    int objDepth;
     Color[] hexStatus;
 
     Array<Color> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
@@ -175,11 +176,15 @@ public class HexMap {
         hexStatus = new Color[width * height];
         highlighted = new Array<Color>();
         dimmed = new Array<Color>();
+
+        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = new Color(NORMAL);
     }
 
     void loadFromFile(FileHandle jsonFile) {
         JsonReader jsonReader = new JsonReader();
         Object json = jsonReader.parse(jsonFile);
+
+        file = jsonFile.name();
 
         loadFromJson(json);
     }
@@ -225,6 +230,9 @@ public class HexMap {
         if (jsonObjects.containsKey("description"))
             description = jsonObjects.get("description").toString();
 
+        if (jsonObjects.containsKey("objdepth"))
+            objDepth = (int)Float.parseFloat(jsonObjects.get("objdepth").toString());
+
         if (jsonObjects.containsKey("tilesets")) {
             Array<Object> objs = (Array<Object>)jsonObjects.get("tilesets");
             for (Object o: objs) {
@@ -263,14 +271,14 @@ public class HexMap {
             }
         }
 
-
-        //generateMap((int)bounds.x, (int)bounds.y, 2, 4);
-
         hexStatus = new Color[(int) (bounds.x * bounds.y)];
         highlighted = new Array<Color>();
         dimmed = new Array<Color>();
 
-        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = new Color(NORMAL);
+        for (int i = 0; i < hexStatus.length; i++) {
+            hexStatus[i] = new Color(NORMAL);
+
+        }
 
     }
 
@@ -387,6 +395,7 @@ public class HexMap {
 	public Group getMapGroup() {
 		if (mapGroup == null) {
 			mapGroup = new Group();
+
 			mapGroup.setSize(getMapWidth(), getMapHeight());
 			/*dirtTexture = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
 			for (int x = 0; x < bounds.x; x++) {
@@ -399,10 +408,17 @@ public class HexMap {
                     hexStatus[(int)bounds.x * y + x] = img;
 				}
 			}*/
-            for (TileLayer tl: tileLayers) mapGroup.addActor(tl.getGroup());
+            for (int i=0; i < tileLayers.size; i++) {
+                if (i == objDepth) mapGroup.addActor(objectGroup);
+                mapGroup.addActor(tileLayers.get(i).getGroup());
+            }
 		}
 		return mapGroup;
 	}
+
+    public Group getObjectGroup() {
+        return objectGroup;
+    }
 
     public boolean isBoardPositionVisible(Vector2 pos) {
         return isBoardPositionVisible((int)pos.x, (int)pos.y);

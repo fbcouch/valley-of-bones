@@ -7,6 +7,7 @@
     tileheight: 64,
     version: 1,
     properties: {},
+    objdepth: 2,
     tilesets: 
     [
         {
