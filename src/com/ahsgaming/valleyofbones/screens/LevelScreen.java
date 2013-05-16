@@ -554,6 +554,10 @@ public class LevelScreen extends AbstractScreen {
                 lblTurnTimer.addAction(Actions.sequence(Actions.color(new Color(1.0f, 0, 0, 1.0f)), Actions.delay(0.2f), Actions.color(new Color(1.0f, 1f, 1f, 1f))));
             }
         }
+
+        if (gController.getTurnTimer() > 59 && isCurrentPlayer() && lastTurnTick < gController.getTurnTimer()) {
+            popupMessage("YOUR TURN!", "hazard-sign", 1);
+        }
         lastTurnTick = gController.getTurnTimer();
 		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
         grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getTop());
@@ -636,6 +640,22 @@ public class LevelScreen extends AbstractScreen {
 		lbl.addAction(Actions.parallel(Actions.fadeOut(1f), Actions.moveBy(0, 64f, 1f)));
 		grpLevel.addActor(lbl);
 	}
+
+    public Group popupMessage(String text, String icon, float duration) {
+        Gdx.app.log(LOG, "Popup message!");
+        Group popup = new Group();
+        Label lbl = new Label(text, getSkin(), "medium");
+        Image img = new Image(TextureManager.getSpriteFromAtlas("assets", icon));
+        popup.addActor(img);
+        popup.addActor(lbl);
+        lbl.setPosition(img.getRight(), (img.getHeight() - lbl.getHeight()) * 0.5f);
+        popup.setSize(lbl.getRight(), img.getTop());
+        popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, (stage.getHeight() - popup.getHeight()) * 0.5f);
+        popup.setColor(popup.getColor().r, popup.getColor().g, popup.getColor().b, 0);
+        stage.addActor(popup);
+        popup.addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(duration), Actions.fadeOut(0.5f)));
+        return popup;
+    }
 
     /*
      * Static methods

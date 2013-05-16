@@ -6,15 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/SurrenderPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets.png" afterPath="$PROJECT_DIR$/assets/assets.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/assets.tps" afterPath="$PROJECT_DIR$/art/exported/assets.tps" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets.atlas" afterPath="$PROJECT_DIR$/assets/assets.atlas" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/newui/uiskin.json" afterPath="$PROJECT_DIR$/assets/newui/uiskin.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="" />
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368740444013" ignored="false" />
@@ -26,7 +18,7 @@
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
     <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368677655170" ignored="false" />
     <file path="/EndTurn.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367090717362" ignored="false" />
-    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368740996982" ignored="false" />
+    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368742361870" ignored="false" />
     <file path="/MainMenuScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096167407" ignored="false" />
     <file path="/AbstractScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096049398" ignored="false" />
     <file path="/GameSetupScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368232618295" ignored="false" />
@@ -147,19 +139,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="LevelScreen.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="636" column="43" selection-start="24866" selection-end="24866" vertical-scroll-proportion="0.0">
+            <state line="655" column="8" selection-start="25789" selection-end="25789" vertical-scroll-proportion="1.0101833">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SurrenderPanel.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="SurrenderPanel.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/SurrenderPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="46" selection-start="1343" selection-end="1343" vertical-scroll-proportion="0.67241377">
+            <state line="41" column="8" selection-start="1288" selection-end="1288" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -217,8 +209,8 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/Player.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/SurrenderPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
       </list>
     </option>
   </component>
@@ -691,7 +683,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="40" width="1922" height="1041" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
@@ -706,8 +698,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24946581" sideWeight="0.67741936" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24357602" sideWeight="0.6927438" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30725622" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24357602" sideWeight="0.60657597" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30725622" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3259177" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -899,13 +891,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="636" column="43" selection-start="24866" selection-end="24866" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="106" column="89" selection-start="3492" selection-end="3573" vertical-scroll-proportion="0.0">
@@ -915,10 +900,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/SurrenderPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="46" selection-start="1343" selection-end="1343" vertical-scroll-proportion="0.67241377">
+        <state line="41" column="8" selection-start="1288" selection-end="1288" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="655" column="8" selection-start="25789" selection-end="25789" vertical-scroll-proportion="1.0101833">
+          <folding />
         </state>
       </provider>
     </entry>
