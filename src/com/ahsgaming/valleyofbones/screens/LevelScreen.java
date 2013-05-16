@@ -84,6 +84,7 @@ public class LevelScreen extends AbstractScreen {
 	Group grpTurnPane = new Group();
 	Label lblTurnTimer;
 	TextButton btnTurnDone;
+    float lastTurnTick = 0;
 	
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
@@ -544,6 +545,12 @@ public class LevelScreen extends AbstractScreen {
 
 	public void updateTurnPane() {
 		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
+        if (gController.getTurnTimer() <= 5 && isCurrentPlayer()) {
+            if ((int)lastTurnTick > (int)gController.getTurnTimer()) {
+                lblTurnTimer.addAction(Actions.sequence(Actions.color(new Color(1.0f, 0, 0, 1.0f)), Actions.delay(0.2f), Actions.color(new Color(1.0f, 1f, 1f, 1f))));
+            }
+        }
+        lastTurnTick = gController.getTurnTimer();
 		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
         grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getTop());
 
