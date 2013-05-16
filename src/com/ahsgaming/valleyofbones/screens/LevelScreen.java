@@ -556,10 +556,6 @@ public class LevelScreen extends AbstractScreen {
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
         if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
 
-		// draw a debug map
-		//gController.getMap().drawDebug(new Vector2(grpLevel.getX(), grpLevel.getY()));
-		gController.getMap().update(game.getPlayer());
-
         // dim units based on whether the player can see them
         dimUnits();
 
@@ -572,6 +568,8 @@ public class LevelScreen extends AbstractScreen {
             gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit)lastSelected).getMovesLeft(), true);
             selectionPanel.setSelected((Unit)lastSelected);
         }
+
+        gController.getMap().update(game.getPlayer());
 
 		// DRAW BOXES
 		drawUnitBoxes();

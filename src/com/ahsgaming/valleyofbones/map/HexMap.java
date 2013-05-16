@@ -294,12 +294,13 @@ public class HexMap {
                 if (getMapDist(u.getBoardPosition(), new Vector2(i % bounds.x, (int) (i / bounds.x))) <= u.getAttackRange())
                     bsq.set(NORMAL);
 
-            if (highlighted.contains(bsq, true)) bsq.set(HIGHLIGHT);
+            if (highlighted.contains(bsq, true))
+                bsq.set(HIGHLIGHT);
 
-            if (dimmed.contains(bsq, true)) bsq.set(DIMMED);
+            if (dimmed.contains(bsq, true))
+                bsq.set(DIMMED);
 
             for (TileLayer tl: tileLayers) {
-                // TODO check that colors apply to this
                 tl.setTileStatus((int) (i % bounds.x), (int) (i / bounds.x), bsq);
             }
         }
@@ -397,17 +398,7 @@ public class HexMap {
 			mapGroup = new Group();
 
 			mapGroup.setSize(getMapWidth(), getMapHeight());
-			/*dirtTexture = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
-			for (int x = 0; x < bounds.x; x++) {
-				for (int y = 0; y < bounds.y; y++) {
-					Image img = new Image(dirtTexture);
-					Vector2 pos = this.boardToMapCoords(x, y);
-					img.setPosition(pos.x, pos.y);
-					mapGroup.addActor(img);
-                    img.setColor(FOG);
-                    hexStatus[(int)bounds.x * y + x] = img;
-				}
-			}*/
+
             for (int i=0; i < tileLayers.size; i++) {
                 if (i == objDepth) mapGroup.addActor(objectGroup);
                 mapGroup.addActor(tileLayers.get(i).getGroup());
