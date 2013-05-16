@@ -23,14 +23,15 @@
 package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -38,6 +39,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * @author jami
@@ -51,45 +54,78 @@ public class HexMap {
     public static final Color DIMMED = new Color(0.6f, 0.6f, 0.6f, 1);
     public static final Color FOG = new Color(0.4f, 0.4f, 0.4f, 1);
 
-	ArrayList<Vector2> controlPoints;
+    Array<TileSet> tilesets;
+    Array<TileLayer> tileLayers;
+    Array<Object> objLayers;
+    String title = "", description = "";
+    String file = "";
+
+    String version = "";
+
+    ObjectMap<String, Object> properties;
+
+    ArrayList<Vector2> controlPoints;
 	ArrayList<Vector2> playerSpawns;
 	Vector2 bounds;
 	Vector2 tileSize;
 	
 	Group mapGroup;
-	TextureRegion dirtTexture;
-    Image[] boardSquares;
+    Group objectGroup = new Group();
+    int objDepth;
+    Color[] hexStatus;
 
-    Array<Image> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
-    Array<Image> dimmed;
+    Array<Color> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
+    Array<Color> dimmed;
 
     Player currentPlayer;
-    GameController currentController;
-	
-	/**
-	 * 
-	 */
-	public HexMap(int width, int height, int players, int points) {
-		bounds = new Vector2(width, height);
-		controlPoints = new ArrayList<Vector2>();
-		playerSpawns = new ArrayList<Vector2>();
-		this.tileSize = new Vector2(64, 64);
-		
-		int things = points + 1;
-		Vector2 thingDist = new Vector2(0, 0);
-		Vector2 current = new Vector2(0, 0);
-		if (width > height) {
+    final GameController parent;
 
-			current.set(0, (int)Math.round(height * 0.5f) - 1);
-		} else if (height > width) {
+	public HexMap(GameController parent, int width, int height, int players, int points) {
+		this.parent = parent;
 
-			current.set((int)(width * 0.5f), 0);
-		}
+		generateMap(width, height, players, points);
+	}
+
+    public HexMap(GameController parent, FileHandle jsonFile) {
+        this.parent = parent;
+
+        loadFromFile(jsonFile);
+    }
+
+    public HexMap(GameController parent, String jsonString) {
+        this.parent = parent;
+
+        loadFromString(jsonString);
+    }
+
+    public HexMap(GameController parent, Object json) {
+        this.parent = parent;
+
+        loadFromJson(json);
+    }
+
+    // TODO split this up into smaller chunks
+    public void generateMap(int width, int height, int players, int points) {
+        bounds = new Vector2(width, height);
+        controlPoints = new ArrayList<Vector2>();
+        playerSpawns = new ArrayList<Vector2>();
+        this.tileSize = new Vector2(64, 64);
+
+        int things = points + 1;
+        Vector2 thingDist = new Vector2(0, 0);
+        Vector2 current = new Vector2(0, 0);
+        if (width > height) {
+
+            current.set(0, (int)Math.round(height * 0.5f) - 1);
+        } else if (height > width) {
+
+            current.set((int)(width * 0.5f), 0);
+        }
 
         playerSpawns.add(new Vector2(current.x + (thingDist.x > 0 ? 0 : 1), current.y + (thingDist.y > 0 ? 1 : 0)));
         playerSpawns.add(new Vector2((current.x > 0 && current.y == 0 ? current.x : width - 2), (current.y > 0 && current.x == 0 ? current.y : height - 2)));
 
-		int pointsLeft = points;
+        int pointsLeft = points;
 
         int spawnDist = getMapDist(playerSpawns.get(0), playerSpawns.get(1));
 
@@ -120,7 +156,7 @@ public class HexMap {
         int remainder = spawnDist % rowDist;
         Gdx.app.log(LOG, String.format("rows %d (rem %d)", rows, remainder));
         for (int r = 0; r < rows; r++) {
-			current.add(rowDist + (remainder / 2), 0);
+            current.add(rowDist + (remainder / 2), 0);
             if (cpNotInRow > 0) {
                 int numInRow = cpNotInRow / rows + 1;
                 int totalY = 4 * (numInRow - 1);
@@ -131,66 +167,174 @@ public class HexMap {
                     current.add(0, 4);
                 }
             } else {
-			    controlPoints.add(new Vector2(current));
+                controlPoints.add(new Vector2(current));
             }
-		}
+        }
 
 
 
-        boardSquares = new Image[width * height];
-        highlighted = new Array<Image>();
-        dimmed = new Array<Image>();
-		
-	}
+        hexStatus = new Color[width * height];
+        highlighted = new Array<Color>();
+        dimmed = new Array<Color>();
 
-    public void update(Player player, GameController controller) {
+        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = new Color(NORMAL);
+    }
+
+    void loadFromFile(FileHandle jsonFile) {
+        JsonReader jsonReader = new JsonReader();
+        Object json = jsonReader.parse(jsonFile);
+
+        file = jsonFile.name();
+
+        loadFromJson(json);
+    }
+
+    void loadFromString(String jsonString) {
+        JsonReader jsonReader = new JsonReader();
+        Object json = jsonReader.parse(jsonString);
+
+        loadFromJson(json);
+    }
+
+    void loadFromJson(Object json) {
+        tilesets = new Array<TileSet>();
+        tileLayers = new Array<TileLayer>();
+        objLayers = new Array<Object>();
+        bounds = new Vector2();
+        tileSize = new Vector2();
+        properties = new ObjectMap<String, Object>();
+
+        ObjectMap<String, Object> jsonObjects = (ObjectMap<String, Object>)json;
+
+        if (jsonObjects.containsKey("width"))
+            bounds.x = (int)Float.parseFloat(jsonObjects.get("width").toString());
+
+        if (jsonObjects.containsKey("height"))
+            bounds.y = (int)Float.parseFloat(jsonObjects.get("height").toString());
+
+        if (jsonObjects.containsKey("tilewidth"))
+            tileSize.x = (int)Float.parseFloat(jsonObjects.get("tilewidth").toString());
+
+        if (jsonObjects.containsKey("tileheight"))
+            tileSize.y = (int)Float.parseFloat(jsonObjects.get("tileheight").toString());
+
+        if (jsonObjects.containsKey("version"))
+            version = jsonObjects.get("version").toString();
+
+        if (jsonObjects.containsKey("properties"))
+            properties = (ObjectMap<String, Object>)jsonObjects.get("properties");
+
+        if (jsonObjects.containsKey("title"))
+            title = jsonObjects.get("title").toString();
+
+        if (jsonObjects.containsKey("description"))
+            description = jsonObjects.get("description").toString();
+
+        if (jsonObjects.containsKey("objdepth"))
+            objDepth = (int)Float.parseFloat(jsonObjects.get("objdepth").toString());
+
+        if (jsonObjects.containsKey("tilesets")) {
+            Array<Object> objs = (Array<Object>)jsonObjects.get("tilesets");
+            for (Object o: objs) {
+                tilesets.add(new TileSet((ObjectMap<String, Object>)o));
+            }
+        }
+
+        if (jsonObjects.containsKey("tilelayers")) {
+            Array<Object> objs = (Array<Object>)jsonObjects.get("tilelayers");
+            for (Object o: objs) {
+                tileLayers.add(new TileLayer(this, (ObjectMap<String, Object>)o));
+            }
+        }
+
+        // TODO load objects properly
+        controlPoints = new ArrayList<Vector2>();
+        playerSpawns = new ArrayList<Vector2>();
+        if (jsonObjects.containsKey("objects")) {
+            Array<Object> objs = (Array<Object>)jsonObjects.get("objects");
+            for (Object o: objs) {
+                ObjectMap<String, Object> om = (ObjectMap<String, Object>)o;
+                Vector2 position = new Vector2();
+                if (om.containsKey("x"))
+                    position.x = (int)Float.parseFloat(om.get("x").toString());
+
+                if (om.containsKey("y"))
+                    position.y = (int)Float.parseFloat(om.get("y").toString());
+
+                if (om.containsKey("type")) {
+                    if (om.get("type").toString().equals("spawn")) {
+                        playerSpawns.add(position);
+                    } else if (om.get("type").toString().equals("unit")) {
+                        controlPoints.add(position);
+                    }
+                }
+            }
+        }
+
+        hexStatus = new Color[(int) (bounds.x * bounds.y)];
+        highlighted = new Array<Color>();
+        dimmed = new Array<Color>();
+
+        for (int i = 0; i < hexStatus.length; i++) {
+            hexStatus[i] = new Color(NORMAL);
+
+        }
+
+    }
+
+    public void update(Player player) {
         currentPlayer = player;
-        currentController = controller;
 
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
-        Array<Unit> units = controller.getUnitsByPlayerId(player.getPlayerId());
-        for (int i=0; i<boardSquares.length; i++) {
-            Image bsq = boardSquares[i];
-            bsq.setColor(FOG);
+        Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
+        for (int i=0; i< hexStatus.length; i++) {
+            Color bsq = hexStatus[i];
+            bsq.set(FOG);
             for (Unit u: units)
                 if (getMapDist(u.getBoardPosition(), new Vector2(i % bounds.x, (int) (i / bounds.x))) <= u.getAttackRange())
-                    bsq.setColor(NORMAL);
+                    bsq.set(NORMAL);
 
-            if (highlighted.contains(bsq, true)) bsq.setColor(HIGHLIGHT);
+            if (highlighted.contains(bsq, true))
+                bsq.set(HIGHLIGHT);
 
-            if (dimmed.contains(bsq, true)) bsq.setColor(DIMMED);
+            if (dimmed.contains(bsq, true))
+                bsq.set(DIMMED);
+
+            for (TileLayer tl: tileLayers) {
+                tl.setTileStatus((int) (i % bounds.x), (int) (i / bounds.x), bsq);
+            }
         }
     }
 
     public void clearHighlight() {
         highlighted.clear();
-        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void clearDim() {
         dimmed.clear();
-        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void clearHighlightAndDim() {
         highlighted.clear();
         dimmed.clear();
-        if (currentPlayer != null && currentController != null) update(currentPlayer, currentController);
+        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
-        Array<Unit> units = currentController.getUnits();
+        Array<Unit> units = parent.getUnits();
 
-        for (int i=0;i<boardSquares.length;i++) {
+        for (int i=0;i< hexStatus.length;i++) {
             Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
             if (isBoardPositionVisible(pos) && getMapDist(center, pos) <= radius) {
-                highlighted.add(boardSquares[i]);
-                boardSquares[i].setColor(HIGHLIGHT);
+                highlighted.add(hexStatus[i]);
+                hexStatus[i].set(HIGHLIGHT);
 
                 for (Unit u: units) {
                     if (u.getBoardPosition().epsilonEquals(pos, 0.1f)) {
-                        dimmed.add(boardSquares[i]);
-                        boardSquares[i].setColor(DIMMED);
+                        dimmed.add(hexStatus[i]);
+                        hexStatus[i].set(DIMMED);
                     }
                 }
             }
@@ -200,10 +344,10 @@ public class HexMap {
     public void dimIfHighlighted(Array<Vector2> positions) {
         dimmed.clear();
         for (Vector2 p: positions) {
-            Image square = boardSquares[(int)p.y % (int)bounds.x + (int)p.x];
+            Color square = hexStatus[(int)p.y % (int)bounds.x + (int)p.x];
             if (highlighted.contains(square, true)) {
                 dimmed.add(square);
-                square.setColor(DIMMED);
+                square.set(DIMMED);
             }
         }
     }
@@ -215,6 +359,15 @@ public class HexMap {
 	public int getHeight() {
 		return (int)bounds.y;
 	}
+
+    public TextureRegion getTile(int gid) {
+        for (TileSet ts: tilesets) {
+            if (ts.getFirstgid() <= gid && ts.getLastgid() >= gid) {
+                return ts.getTile(gid);
+            }
+        }
+        return null;
+    }
 	
 	public int getTileWidth() {
 		return (int)tileSize.x;
@@ -243,21 +396,20 @@ public class HexMap {
 	public Group getMapGroup() {
 		if (mapGroup == null) {
 			mapGroup = new Group();
+
 			mapGroup.setSize(getMapWidth(), getMapHeight());
-			dirtTexture = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
-			for (int x = 0; x < bounds.x; x++) {
-				for (int y = 0; y < bounds.y; y++) {
-					Image img = new Image(dirtTexture);
-					Vector2 pos = this.boardToMapCoords(x, y);
-					img.setPosition(pos.x, pos.y);
-					mapGroup.addActor(img);
-                    img.setColor(FOG);
-                    boardSquares[(int)bounds.x * y + x] = img;
-				}
-			}
+
+            for (int i=0; i < tileLayers.size; i++) {
+                if (i == objDepth) mapGroup.addActor(objectGroup);
+                mapGroup.addActor(tileLayers.get(i).getGroup());
+            }
 		}
 		return mapGroup;
 	}
+
+    public Group getObjectGroup() {
+        return objectGroup;
+    }
 
     public boolean isBoardPositionVisible(Vector2 pos) {
         return isBoardPositionVisible((int)pos.x, (int)pos.y);
@@ -268,7 +420,7 @@ public class HexMap {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        return (y * (int)bounds.x + x < boardSquares.length && !boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
+        return (y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
     }
 	
 	public void drawDebug(Vector2 offset) {
