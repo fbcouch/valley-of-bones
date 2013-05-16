@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -71,10 +70,10 @@ public class HexMap {
 	
 	Group mapGroup;
 	TextureRegion dirtTexture;
-    Image[] boardSquares;
+    Color[] hexStatus;
 
-    Array<Image> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
-    Array<Image> dimmed;
+    Array<Color> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
+    Array<Color> dimmed;
 
     Player currentPlayer;
     final GameController parent;
@@ -172,9 +171,9 @@ public class HexMap {
 
 
 
-        boardSquares = new Image[width * height];
-        highlighted = new Array<Image>();
-        dimmed = new Array<Image>();
+        hexStatus = new Color[width * height];
+        highlighted = new Array<Color>();
+        dimmed = new Array<Color>();
     }
 
     void loadFromFile(FileHandle jsonFile) {
@@ -242,23 +241,35 @@ public class HexMap {
         // TODO load objects
 
         generateMap((int)bounds.x, (int)bounds.y, 2, 4);
+
+        hexStatus = new Color[(int) (bounds.x * bounds.y)];
+        highlighted = new Array<Color>();
+        dimmed = new Array<Color>();
+
+        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = new Color(NORMAL);
+
     }
 
     public void update(Player player) {
         currentPlayer = player;
-        if (VOBGame.DEBUG) return; // TODO remove this
+        //if (VOBGame.DEBUG) return; // TODO remove this
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
-        for (int i=0; i<boardSquares.length; i++) {
-            Image bsq = boardSquares[i];
-            bsq.setColor(FOG);
+        for (int i=0; i< hexStatus.length; i++) {
+            Color bsq = hexStatus[i];
+            bsq.set(FOG);
             for (Unit u: units)
                 if (getMapDist(u.getBoardPosition(), new Vector2(i % bounds.x, (int) (i / bounds.x))) <= u.getAttackRange())
-                    bsq.setColor(NORMAL);
+                    bsq.set(NORMAL);
 
-            if (highlighted.contains(bsq, true)) bsq.setColor(HIGHLIGHT);
+            if (highlighted.contains(bsq, true)) bsq.set(HIGHLIGHT);
 
-            if (dimmed.contains(bsq, true)) bsq.setColor(DIMMED);
+            if (dimmed.contains(bsq, true)) bsq.set(DIMMED);
+
+            for (TileLayer tl: tileLayers) {
+                // TODO check that colors apply to this
+                tl.setTileStatus((int) (i % bounds.x), (int) (i / bounds.x), bsq);
+            }
         }
     }
 
@@ -281,16 +292,16 @@ public class HexMap {
     public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
         Array<Unit> units = parent.getUnits();
 
-        for (int i=0;i<boardSquares.length;i++) {
+        for (int i=0;i< hexStatus.length;i++) {
             Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
             if (isBoardPositionVisible(pos) && getMapDist(center, pos) <= radius) {
-                highlighted.add(boardSquares[i]);
-                boardSquares[i].setColor(HIGHLIGHT);
+                highlighted.add(hexStatus[i]);
+                hexStatus[i].set(HIGHLIGHT);
 
                 for (Unit u: units) {
                     if (u.getBoardPosition().epsilonEquals(pos, 0.1f)) {
-                        dimmed.add(boardSquares[i]);
-                        boardSquares[i].setColor(DIMMED);
+                        dimmed.add(hexStatus[i]);
+                        hexStatus[i].set(DIMMED);
                     }
                 }
             }
@@ -300,10 +311,10 @@ public class HexMap {
     public void dimIfHighlighted(Array<Vector2> positions) {
         dimmed.clear();
         for (Vector2 p: positions) {
-            Image square = boardSquares[(int)p.y % (int)bounds.x + (int)p.x];
+            Color square = hexStatus[(int)p.y % (int)bounds.x + (int)p.x];
             if (highlighted.contains(square, true)) {
                 dimmed.add(square);
-                square.setColor(DIMMED);
+                square.set(DIMMED);
             }
         }
     }
@@ -361,7 +372,7 @@ public class HexMap {
 					img.setPosition(pos.x, pos.y);
 					mapGroup.addActor(img);
                     img.setColor(FOG);
-                    boardSquares[(int)bounds.x * y + x] = img;
+                    hexStatus[(int)bounds.x * y + x] = img;
 				}
 			}*/
             for (TileLayer tl: tileLayers) mapGroup.addActor(tl.getGroup());
@@ -378,8 +389,7 @@ public class HexMap {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        // TODO fix this
-        return false && (y * (int)bounds.x + x < boardSquares.length && !boardSquares[y * (int)bounds.x + x].getColor().equals(FOG));
+        return (y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
     }
 	
 	public void drawDebug(Vector2 offset) {

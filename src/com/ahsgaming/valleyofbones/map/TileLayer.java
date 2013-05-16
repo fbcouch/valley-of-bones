@@ -17,6 +17,7 @@
  */
 package com.ahsgaming.valleyofbones.map;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.ahsgaming.valleyofbones.Utils;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -38,6 +39,7 @@ public class TileLayer {
 	final HexMap map;
 	
 	Group layerGroup = new Group();
+    Image[] tiles;
 
 	@SuppressWarnings("unchecked")
 	public TileLayer(HexMap map, ObjectMap<String, Object> layer) {
@@ -72,12 +74,13 @@ public class TileLayer {
 	public void init() {
 		layerGroup.remove();
 		layerGroup.setBounds(0, 0, size.x, size.y);
-		
+		tiles = new Image[(int)(size.x * size.y)];
 		for (int i=0; i < data.length; i++) {
 			if (data[i] == 0) continue;
 			Image img = new Image(map.getTile(data[i]));
 			img.setPosition(i % map.getWidth() * map.getTileWidth() + ((i / map.getWidth()) % 2) * map.getTileWidth() * 0.5f, (int)(i / map.getWidth()) * map.getTileHeight() * 0.75f);
 			layerGroup.addActor(img);
+            tiles[i] = img;
 		}
 	}
 	
@@ -108,6 +111,14 @@ public class TileLayer {
 	public void setTile(int x, int y, int gid) {
 		data[x + y * (int)size.x] = gid;
 	}
+
+    public void setTileStatus(int x, int y, Color status) {
+        if (tiles[x + y * (int)size.x] != null) tiles[x + y * (int)size.x].setColor(status);
+    }
+
+    public Color getTileStatus(int x, int y) {
+        return (tiles[x + y * (int)size.x] == null ? null : tiles[x + y * (int)size.x].getColor());
+    }
 
 	/**
 	 * @return the visible
