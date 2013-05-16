@@ -251,7 +251,10 @@ public class LevelScreen extends AbstractScreen {
 
 			if (buildMode){
                 if (isCurrentPlayer()) {
-                    if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
+
+                    if (boardPos.x < 0 || boardPos.y < 0 || boardPos.x >= gController.getMap().getWidth() || boardPos.y >= gController.getMap().getHeight()) {
+                        unsetBuildMode();
+                    } else if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
                         Build bld = new Build();
                         bld.owner = game.getPlayer().getPlayerId();
                         bld.turn = gController.getGameTurn();
@@ -603,6 +606,8 @@ public class LevelScreen extends AbstractScreen {
 
             Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
             loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
+            if (loc.x < 0) loc.x = 0; else if (loc.x >= gController.getMap().getWidth()) loc.x = gController.getMap().getWidth() - 1;
+            if (loc.y < 0) loc.y = 0; else if (loc.y >= gController.getMap().getHeight()) loc.y = gController.getMap().getHeight() - 1;
             loc = gController.getMap().boardToMapCoords(loc.x, loc.y);
 
             buildImage.setPosition(loc.x, loc.y);

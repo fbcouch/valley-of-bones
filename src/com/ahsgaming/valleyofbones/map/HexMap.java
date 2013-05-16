@@ -420,7 +420,7 @@ public class HexMap {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        return (y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
+        return (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
     }
 	
 	public void drawDebug(Vector2 offset) {
@@ -471,10 +471,7 @@ public class HexMap {
 				boardCoords.y -= 1;
 			}
 		}
-		
-		if (boardCoords.y >= getHeight()) boardCoords.y = getHeight() - 1;
-		if (boardCoords.y < 0) boardCoords.y = 0;
-		
+
 		if (boardCoords.y % 2 == 1) {
 			dx = (x - getTileWidth() * 0.5f) / getTileWidth();
 			mx = (x - getTileWidth() * 0.5f) % getTileWidth();
@@ -483,8 +480,6 @@ public class HexMap {
 			mx = x % getTileWidth();
 		}
 		boardCoords.x = (float) Math.floor(dx);
-		if (boardCoords.x >= getWidth()) boardCoords.x = getWidth() - 1;
-		if (boardCoords.x < 0) boardCoords.x = 0;
 		
 		return boardCoords;
 	}
