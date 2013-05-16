@@ -23,6 +23,7 @@
 package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
@@ -238,9 +239,32 @@ public class HexMap {
             }
         }
 
-        // TODO load objects
+        // TODO load objects properly
+        controlPoints = new ArrayList<Vector2>();
+        playerSpawns = new ArrayList<Vector2>();
+        if (jsonObjects.containsKey("objects")) {
+            Array<Object> objs = (Array<Object>)jsonObjects.get("objects");
+            for (Object o: objs) {
+                ObjectMap<String, Object> om = (ObjectMap<String, Object>)o;
+                Vector2 position = new Vector2();
+                if (om.containsKey("x"))
+                    position.x = (int)Float.parseFloat(om.get("x").toString());
 
-        generateMap((int)bounds.x, (int)bounds.y, 2, 4);
+                if (om.containsKey("y"))
+                    position.y = (int)Float.parseFloat(om.get("y").toString());
+
+                if (om.containsKey("type")) {
+                    if (om.get("type").toString().equals("spawn")) {
+                        playerSpawns.add(position);
+                    } else if (om.get("type").toString().equals("unit")) {
+                        controlPoints.add(position);
+                    }
+                }
+            }
+        }
+
+
+        //generateMap((int)bounds.x, (int)bounds.y, 2, 4);
 
         hexStatus = new Color[(int) (bounds.x * bounds.y)];
         highlighted = new Array<Color>();
@@ -252,7 +276,7 @@ public class HexMap {
 
     public void update(Player player) {
         currentPlayer = player;
-        //if (VOBGame.DEBUG) return; // TODO remove this
+
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
         for (int i=0; i< hexStatus.length; i++) {
