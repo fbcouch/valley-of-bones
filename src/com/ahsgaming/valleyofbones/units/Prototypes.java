@@ -22,6 +22,25 @@ public class Prototypes {
 		return protos.get(id);
 	}
 
+    public static ObjectMap<String, JsonProto> getProtos() {
+        if (protos == null) loadUnits(UNIT_FILE);
+        ObjectMap<String, JsonProto> pmap = new ObjectMap<String, JsonProto>();
+        pmap.putAll(protos);
+        return pmap;
+    }
+
+    public static void setProto(String id, JsonProto proto) {
+        if (protos == null) loadUnits(UNIT_FILE);
+
+        protos.put(id, proto);
+    }
+
+    public static void setProtos(ObjectMap<String, JsonProto> protos) {
+        if (protos == null) loadUnits(UNIT_FILE);
+
+        protos.putAll(protos);
+    }
+
     public static Array<JsonProto> getPlayerCanBuild(Player p, GameController gc) {
         Array<JsonProto> returnVal = new Array<JsonProto>();
         for (JsonProto jp: protos.values()) {

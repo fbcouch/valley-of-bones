@@ -7,16 +7,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" />
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
+<<<<<<< HEAD
     <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368856073486" ignored="false" />
     <file path="/fragment.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368507843706" ignored="false" />
+=======
+    <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368795360623" ignored="false" />
+    <file path="/fragment.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796711725" ignored="false" />
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
     <file path="/KryoCommon.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368507993755" ignored="false" />
     <file path="/GameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367105013238" ignored="false" />
-    <file path="/VOBGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367984061868" ignored="false" />
+    <file path="/VOBGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796464934" ignored="false" />
     <file path="/GameServer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367695971819" ignored="false" />
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
     <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368677655170" ignored="false" />
@@ -32,7 +42,7 @@
     <file path="/SPGameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367413288908" ignored="false" />
     <file path="/BuildPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368856109600" ignored="false" />
     <file path="/Panel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368552196993" ignored="false" />
-    <file path="/Prototypes.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367251247967" ignored="false" />
+    <file path="/Prototypes.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796380569" ignored="false" />
     <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368679586285" ignored="false" />
     <file path="/MPGameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367695895266" ignored="false" />
     <file path="/TextureManager.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367711030179" ignored="false" />
@@ -50,6 +60,8 @@
     <file path="/HexMapTests.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368570396259" ignored="false" />
     <file path="/TileSet.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368592673388" ignored="false" />
     <file path="/TileLayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368679528069" ignored="false" />
+    <file path="/JsonUnitModelTool.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796456301" ignored="false" />
+    <file path="/ServerMain.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796478543" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,18 +144,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GameController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
+      <file leaf-file-name="JsonUnitModelTool.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="469" column="0" selection-start="13903" selection-end="13903" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="78" column="27" selection-start="1830" selection-end="1830" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+      <file leaf-file-name="VOBGame.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state line="61" column="13" selection-start="2336" selection-end="2336" vertical-scroll-proportion="0.0">
               <folding />
             </state>
@@ -154,25 +169,37 @@
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="43" column="12" selection-start="1559" selection-end="1559" vertical-scroll-proportion="0.55050504">
+=======
+            <state line="317" column="27" selection-start="7521" selection-end="7521" vertical-scroll-proportion="0.0">
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="Player.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/Player.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="104" column="41" selection-start="3133" selection-end="3133" vertical-scroll-proportion="0.0">
+=======
+      <file leaf-file-name="TextureManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="38" column="13" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0">
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HexMap.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
+      <file leaf-file-name="Prototypes.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="423" column="41" selection-start="13806" selection-end="13806" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="34" column="31" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.54468805">
+              <folding>
+                <element signature="e#795#814#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -195,9 +222,12 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoBox.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/Refund.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/KryoCommon.java" />
+=======
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" />
@@ -210,7 +240,14 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/Player.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
+=======
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ServerMain.java" />
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
       </list>
     </option>
   </component>
@@ -365,6 +402,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valleyofbones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="screens" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -493,7 +552,7 @@
       <recent name="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.VOBGame">
+  <component name="RunManager" selected="Application.VOBUnitTool">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -626,9 +685,26 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="2">
+    <configuration default="false" name="VOBUnitTool" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.ahsgaming.valleyofbones.tools.JsonUnitModelTool" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="valley-of-bones" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Application.VOBGame" />
       <item index="1" class="java.lang.String" itemvalue="Application.VOBServer" />
+      <item index="2" class="java.lang.String" itemvalue="Application.VOBUnitTool" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -802,35 +878,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/ui/Widget.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="99" column="16" selection-start="3083" selection-end="3083" vertical-scroll-proportion="0.33333334" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/ui/Label.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="22" selection-start="4538" selection-end="4538" vertical-scroll-proportion="0.35121107" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/utils/ClickListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="16" selection-start="3869" selection-end="3869" vertical-scroll-proportion="0.3413729" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoBox.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="168" column="0" selection-start="6217" selection-end="6217" vertical-scroll-proportion="0.7975133">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="48" selection-start="2585" selection-end="2585" vertical-scroll-proportion="0.03374778">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="60" column="43" selection-start="2643" selection-end="2643" vertical-scroll-proportion="0.03374778">
@@ -859,6 +906,9 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java">
+=======
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileSet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="55" column="69" selection-start="1463" selection-end="1463" vertical-scroll-proportion="0.02866779">
@@ -867,15 +917,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java">
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
       <provider selected="true" editor-type-id="text-editor">
         <state line="117" column="92" selection-start="3161" selection-end="3161" vertical-scroll-proportion="0.43448275">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="469" column="0" selection-start="13903" selection-end="13903" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -890,7 +934,9 @@
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="61" column="13" selection-start="2336" selection-end="2336" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <marker date="1368795689615" expanded="true" signature="-1:-1" placeholder="/**...*/" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -901,10 +947,72 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="469" column="0" selection-start="13903" selection-end="13903" vertical-scroll-proportion="10.639655">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="13" selection-start="1595" selection-end="1595" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="13" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="27" selection-start="1830" selection-end="1830" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ServerMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="27" selection-start="466" selection-end="466" vertical-scroll-proportion="0.45868465">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state line="61" column="13" selection-start="2336" selection-end="2336" vertical-scroll-proportion="0.0">
+=======
+        <state line="317" column="27" selection-start="7521" selection-end="7521" vertical-scroll-proportion="0.0">
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state line="104" column="41" selection-start="3133" selection-end="3133" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="43" column="12" selection-start="1559" selection-end="1559" vertical-scroll-proportion="0.55050504">
           <folding />
+=======
+        <state line="34" column="31" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.54468805">
+          <folding>
+            <element signature="e#795#814#0" expanded="true" />
+          </folding>
+>>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
         </state>
       </provider>
     </entry>
