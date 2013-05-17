@@ -23,6 +23,7 @@
 package com.ahsgaming.valleyofbones.tools;
 
 
+import com.ahsgaming.valleyofbones.tools.screens.UnitModelScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -37,7 +38,7 @@ public class JsonUnitModelTool extends Game {
 
     @Override
     public void create() {
-
+        setScreen(new UnitModelScreen(this));
     }
 
     @Override

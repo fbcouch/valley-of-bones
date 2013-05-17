@@ -8,11 +8,16 @@
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
 =======
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" />
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" />
+>>>>>>> Setting up UnitModelScreen
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="valley-of-bones.iws" />
@@ -60,8 +65,9 @@
     <file path="/HexMapTests.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368570396259" ignored="false" />
     <file path="/TileSet.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368592673388" ignored="false" />
     <file path="/TileLayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368679528069" ignored="false" />
-    <file path="/JsonUnitModelTool.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796456301" ignored="false" />
+    <file path="/JsonUnitModelTool.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368797700316" ignored="false" />
     <file path="/ServerMain.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368796478543" ignored="false" />
+    <file path="/UnitModelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368799098287" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +153,7 @@
       <file leaf-file-name="JsonUnitModelTool.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="78" column="27" selection-start="1830" selection-end="1830" vertical-scroll-proportion="0.0">
+            <state line="41" column="42" selection-start="1234" selection-end="1234" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -155,9 +161,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VOBGame.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
+      <file leaf-file-name="UnitModelScreen.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
 <<<<<<< HEAD
             <state line="61" column="13" selection-start="2336" selection-end="2336" vertical-scroll-proportion="0.0">
               <folding />
@@ -173,10 +180,17 @@
             <state line="317" column="27" selection-start="7521" selection-end="7521" vertical-scroll-proportion="0.0">
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
               <folding />
+=======
+            <state line="46" column="0" selection-start="1498" selection-end="1498" vertical-scroll-proportion="0.59865093">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+>>>>>>> Setting up UnitModelScreen
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
 <<<<<<< HEAD
       <file leaf-file-name="Player.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/Player.java">
@@ -188,18 +202,13 @@
           <provider selected="true" editor-type-id="text-editor">
             <state line="38" column="13" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0">
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Prototypes.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
+=======
+      <file leaf-file-name="AbstractScreen.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="31" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.54468805">
-              <folding>
-                <element signature="e#795#814#0" expanded="true" />
-              </folding>
+            <state line="87" column="24" selection-start="1978" selection-end="2096" vertical-scroll-proportion="0.0">
+>>>>>>> Setting up UnitModelScreen
+              <folding />
             </state>
           </provider>
         </entry>
@@ -223,12 +232,15 @@
     <option name="changedFiles">
       <list>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoBox.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/Refund.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/KryoCommon.java" />
 =======
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
+=======
+>>>>>>> Setting up UnitModelScreen
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/Map.java" />
@@ -244,10 +256,14 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
 =======
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ServerMain.java" />
+<<<<<<< HEAD
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
+=======
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java" />
+>>>>>>> Setting up UnitModelScreen
       </list>
     </option>
   </component>
@@ -403,6 +419,32 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valleyofbones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="screens" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -759,7 +801,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1919" y="32" width="1922" height="1049" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
@@ -774,8 +816,13 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24946581" sideWeight="0.67741936" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24358974" sideWeight="0.6929922" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3070078" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24358974" sideWeight="0.69187987" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30812013" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+>>>>>>> Setting up UnitModelScreen
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3259177" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -878,20 +925,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="43" selection-start="2643" selection-end="2643" vertical-scroll-proportion="0.03374778">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMapTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="38" selection-start="1430" selection-end="1430" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/utils/Array.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="154" column="19" selection-start="6077" selection-end="6077" vertical-scroll-proportion="0.3322091">
@@ -961,22 +994,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="13" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="27" selection-start="1830" selection-end="1830" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ServerMain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="27" selection-start="466" selection-end="466" vertical-scroll-proportion="0.45868465">
@@ -984,33 +1001,72 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="31" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.54468805">
+          <folding>
+            <element signature="e#795#814#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="13" selection-start="1214" selection-end="1214" vertical-scroll-proportion="-0.51602024">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
 <<<<<<< HEAD
         <state line="61" column="13" selection-start="2336" selection-end="2336" vertical-scroll-proportion="0.0">
 =======
         <state line="317" column="27" selection-start="7521" selection-end="7521" vertical-scroll-proportion="0.0">
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
+=======
+        <state line="317" column="27" selection-start="7521" selection-end="7521" vertical-scroll-proportion="0.51264757">
+>>>>>>> Setting up UnitModelScreen
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
+<<<<<<< HEAD
         <state line="104" column="41" selection-start="3133" selection-end="3133" vertical-scroll-proportion="0.0">
+=======
+        <state line="87" column="24" selection-start="1978" selection-end="2096" vertical-scroll-proportion="0.0">
+>>>>>>> Setting up UnitModelScreen
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="43" column="12" selection-start="1559" selection-end="1559" vertical-scroll-proportion="0.55050504">
           <folding />
 =======
         <state line="34" column="31" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.54468805">
+=======
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/JsonUnitModelTool.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="42" selection-start="1234" selection-end="1234" vertical-scroll-proportion="0.0">
+>>>>>>> Setting up UnitModelScreen
           <folding>
-            <element signature="e#795#814#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="0" selection-start="1498" selection-end="1498" vertical-scroll-proportion="0.59865093">
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
 >>>>>>> Changed JsonUnitModelTool to implement Game and have its own main
         </state>
