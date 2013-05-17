@@ -96,7 +96,12 @@ public class Player {
 		curFood = food;
 		maxFood = mFood;
 		this.upkeep = upkeep;
-		
+
+        if (controller.getGameTurn() == 1 && upkeep < 0) {
+            upkeep *= 0.5f;
+            if (upkeep > -45) upkeep = -45;
+        }
+
 		if (updateBank) bankMoney -= upkeep;
 	}
 	
