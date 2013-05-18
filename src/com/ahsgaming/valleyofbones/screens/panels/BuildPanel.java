@@ -39,9 +39,10 @@ public class BuildPanel extends Panel {
 
         // need to get all the buildings this guy can build
         Array<Prototypes.JsonProto> items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
-
-        this.items = items;
-        dirty = true;
+        if (!items.equals(this.items)) {
+            this.items = items;
+            dirty = true;
+        }
 
 
     }
