@@ -67,7 +67,11 @@ Several icons used were licensed from game-icons.net:
 
 - "Crossed Swords Icon" by Lorc, CC-BY
 
+- "Flying Flag Icon" by Lorc, CC-BY
+
 - "Gear Hammer Icon" by Lorc, CC-BY
+
+- "Hazard Sign Icon" by Lorc, CC-BY
 
 - "Hospital Cross Icon" by Lorc, CC-BY
 
@@ -80,6 +84,8 @@ Several icons used were licensed from game-icons.net:
 - "Reticule Icon" by Lorc, CC-BY
 
 - "Rune Sword Icon" by Lorc, CC-BY  
+
+- "Skull Crossed Bones Icon" by Lorc, CC-BY
 
 - "Tinker Icon" by Lorc, CC-BY
 
