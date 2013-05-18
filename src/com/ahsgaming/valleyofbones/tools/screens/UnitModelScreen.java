@@ -163,6 +163,7 @@ public class UnitModelScreen implements Screen {
         }
 
         setSelectedProto(Prototypes.getProto(protoList.getSelection()));
+        Prototypes.saveUnits(Prototypes.UNIT_FILE);
     }
 
     @Override

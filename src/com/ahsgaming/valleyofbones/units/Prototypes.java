@@ -1,9 +1,12 @@
 package com.ahsgaming.valleyofbones.units;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.*;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -13,7 +16,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 
 public class Prototypes {
-	static final String UNIT_FILE = "units.json";
+    public static final String LOG = "Prototypes";
+	public static final String UNIT_FILE = "units.json";
 	static ObjectMap<String, JsonProto> protos = null; 
 	
 	public static JsonProto getProto(String id) {
@@ -143,4 +147,30 @@ public class Prototypes {
 			}
 		}
 	}
+
+    public static void saveUnits(String file) {
+        Writer writer = Gdx.files.local("assets/" + file).writer(false);
+
+        Array<JsonProto> protoArray = new Array<JsonProto>();
+        int i = 0;
+
+        for (JsonProto p: protos.values()) {
+            protoArray.add(p);
+            i++;
+        }
+        String json = "{";
+        json += Utils.toJsonProperty("entities", protoArray);
+        json += "}";
+
+        PrettyJsonWriter pjw = new PrettyJsonWriter(writer);
+        try {
+            pjw.write(json);
+            pjw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Gdx.app.log(LOG, "Failed to write " + "assets/" + file);
+        }
+
+
+    }
 }
