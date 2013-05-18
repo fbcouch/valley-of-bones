@@ -32,6 +32,12 @@ public class UnitModelScreen implements Screen {
 
     final JsonUnitModelTool parent;
 
+    String[] attributes = {
+            "id", "type", "image", "title", "desc"
+    };
+
+    TextField[] attributeFields;
+
     String[] properties = {
             "curhp", "maxhp", "armor", "food",
             "requires", "attackdamage", "attackspeed", "attackrange", "movespeed",
@@ -41,6 +47,8 @@ public class UnitModelScreen implements Screen {
             PropertyTypes.LIST_ID, PropertyTypes.INT, PropertyTypes.FLOAT, PropertyTypes.FLOAT,
             PropertyTypes.INT, PropertyTypes.STRING, PropertyTypes.OBJECT_STR_INT
     };
+
+    TextField[] propertyFields;
 
     /**
      * Constructor
@@ -70,6 +78,33 @@ public class UnitModelScreen implements Screen {
         return skin;
     }
 
+    public void setSelectedProto(Prototypes.JsonProto proto) {
+        selectedProto = proto;
+
+        for (int a=0; a<attributes.length; a++) {
+            if (attributes[a].equals("id"))
+                attributeFields[a].setText(proto.id);
+            else if (attributes[a].equals("type"))
+                attributeFields[a].setText(proto.type);
+            else if (attributes[a].equals("image"))
+                attributeFields[a].setText(proto.image);
+            else if (attributes[a].equals("title"))
+                attributeFields[a].setText(proto.title);
+            else if (attributes[a].equals("desc"))
+                attributeFields[a].setText(proto.desc);
+            else
+                attributeFields[a].setText("");
+
+        }
+
+        for (int a=0; a<properties.length; a++) {
+            if (proto.hasProperty(properties[a]))
+                propertyFields[a].setText(proto.getProperty(properties[a]).toString());
+            else
+                propertyFields[a].setText("");
+        }
+    }
+
     @Override
     public void show() {
         stage.clear();
@@ -88,7 +123,7 @@ public class UnitModelScreen implements Screen {
 
         mainTable.add(protoList).expandY().width(stage.getWidth() * 0.3f).top();
 
-        protoTable.setFillParent(true);
+        //protoTable.setFillParent(true);
 
         mainTable.add(protoTable).expand();
 
@@ -102,7 +137,32 @@ public class UnitModelScreen implements Screen {
 
         mainTable.add(g);
 
+        mainTable.row();
 
+        // proto table
+        attributeFields = new TextField[attributes.length];
+
+        propertyFields = new TextField[properties.length];
+
+        for (int i=0; i<propertyFields.length; i++) {
+            if (i < attributes.length) {
+                protoTable.add(attributes[i]).left().pad(4);
+                attributeFields[i] = new TextField("", getSkin());
+                protoTable.add(attributeFields[i]).pad(4).padRight(30);
+            } else {
+                protoTable.add().colspan(2).pad(4).padRight(30);
+            }
+
+            protoTable.add(properties[i]).pad(4).left();
+
+            propertyFields[i] = new TextField("", getSkin());
+
+            protoTable.add(propertyFields[i]).pad(4);
+
+            protoTable.row();
+        }
+
+        setSelectedProto(Prototypes.getProto(protoList.getSelection()));
     }
 
     @Override
@@ -126,6 +186,10 @@ public class UnitModelScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.draw();
+
+        if (selectedProto == null || !selectedProto.id.equals(protoList.getSelection())) {
+            setSelectedProto(Prototypes.getProto(protoList.getSelection()));
+        }
     }
 
     @Override
