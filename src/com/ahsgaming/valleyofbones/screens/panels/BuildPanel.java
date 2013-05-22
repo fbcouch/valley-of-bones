@@ -44,7 +44,14 @@ public class BuildPanel extends Panel {
             dirty = true;
         }
 
-
+        // moved this here so that it updates every time without rebuilding
+        for (Image btn: this.buttonMap.keys()) {
+            Prototypes.JsonProto jp = buttonMap.get(btn);
+            if (jp != null && !game.getPlayer().canBuild(jp.id, game.getNetController().getGameController()))
+                btn.setColor(0.8f, 0.4f, 0.4f, 1.0f);
+            else
+                btn.setColor(1, 1, 1, 1);
+        }
     }
 
     @Override
@@ -61,8 +68,7 @@ public class BuildPanel extends Panel {
             this.addActor(btn);
             btn.setX(x);
             x += btn.getWidth() + spacing;
-            if (!game.getPlayer().canBuild(jp.id, game.getNetController().getGameController()))
-                btn.setColor(0.8f, 0.4f, 0.4f, 1.0f);
+
             buttonMap.put(btn, jp);
             btn.addListener(new ClickListener() {
                 @Override
