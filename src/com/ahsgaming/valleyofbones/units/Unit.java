@@ -29,12 +29,10 @@ import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.network.Command;
-import com.ahsgaming.valleyofbones.network.Move;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -63,7 +61,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     // stealth
     int lastStealthToggleTurn = 0;
-    boolean invisible = false;
+    boolean stealthActive = false;
 
     boolean capturable = false;
     Player uncontested = null;
@@ -526,7 +524,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
     public void startTurn() {
-        movesLeft = (movesLeft % 1) + getMoveSpeed();
+        movesLeft = (movesLeft % 1) + (getMoveSpeed() * (stealthActive ? 0.5f : 1f));
         attacksLeft = (attacksLeft % 1) + getAttackSpeed();
 
         if (capturable && uncontested == getOwner()) {
@@ -576,18 +574,28 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (ability.equals("stealth")) {
             if (lastStealthToggleTurn == controller.getGameTurn()) return; // cannot toggle again on the same turn
 
-            invisible = !invisible;
+            stealthActive = !stealthActive;
 
             lastStealthToggleTurn = controller.getGameTurn();
+
+            if (stealthActive) {
+                int totalMoves = (int)(getMoveSpeed() / 2);
+                int usedMoves = (int)(getMoveSpeed() - getMovesLeft());
+                movesLeft = totalMoves - usedMoves;
+                if (movesLeft < 0) movesLeft = 0;
+            } else {
+                int usedMoves = (int)(getMoveSpeed() / 2) - getMovesLeft();
+                movesLeft = (int)(getMoveSpeed() - usedMoves);
+            }
         }
     }
 
     public boolean getInvisible() {
-        return invisible;
+        return stealthActive;
     }
 
     public void setInvisible(boolean invisible) {
-        this.invisible = invisible;
+        this.stealthActive = invisible;
     }
 	
 	//-------------------------------------------------------------------------
