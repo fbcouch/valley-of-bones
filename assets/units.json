@@ -32,25 +32,18 @@
       "desc": "Uses high explosives",
       "properties": 
       {
-        "curhp": 20.0,
-        "maxhp": 20.0,
-        "armor": 0.0,
-        "food": 2.0,
-        "requires": 
-        [
-          "castle-base",
-        ],
-        "attackdamage": 5.0,
-        "attackspeed": 1.0,
-        "attackrange": 1.0,
-        "movespeed": 4.0,
-        "cost": 100.0,
+        "curhp": "20.0",
+        "maxhp": "20.0",
+        "armor": "0.0",
+        "food": "2.0",
+        "requires": "[castle-base]",
+        "attackdamage": "5.0",
+        "attackspeed": "1.0",
+        "attackrange": "1.0",
+        "movespeed": "4.0",
+        "cost": "100.0",
         "subtype": "light",
-        "bonus": 
-        {
-          "armored": 4.0,
-          "building": 4.0,
-        },
+        "bonus": "{armored=4.0, building=4.0}",
       },
     },
     {
@@ -61,73 +54,18 @@
       "desc": "Light unit with long range",
       "properties": 
       {
-        "curhp": 15.0,
-        "maxhp": 15.0,
-        "armor": 0.0,
-        "food": 2.0,
-        "requires": 
-        [
-          "castle-base",
-        ],
-        "attackdamage": 5.0,
-        "attackspeed": 1.0,
-        "attackrange": 5.0,
-        "movespeed": 2.0,
-        "cost": 75.0,
+        "curhp": "15.0",
+        "maxhp": "15.0",
+        "armor": "0.0",
+        "food": "2.0",
+        "requires": "[castle-base]",
+        "attackdamage": "5.0",
+        "attackspeed": "1.0",
+        "attackrange": "5.0",
+        "movespeed": "2.0",
+        "cost": "75.0",
         "subtype": "light",
-        "bonus": 
-        {
-          "light": 4.0,
-        },
-      },
-    },
-    {
-      "id": "tank-base",
-      "type": "unit",
-      "image": "tank",
-      "title": "Light Tank",
-      "desc": "Tank with light armor",
-      "properties": 
-      {
-        "curhp": 60.0,
-        "maxhp": 60.0,
-        "armor": 2.0,
-        "food": 5.0,
-        "requires": 
-        [
-          "castle-base",
-        ],
-        "attackdamage": 15.0,
-        "attackspeed": 1.0,
-        "attackrange": 3.0,
-        "movespeed": 1.0,
-        "cost": 150.0,
-        "subtype": "armored",
-      },
-    },
-    {
-      "id": "tower-base",
-      "type": "building",
-      "image": "tower",
-      "title": "Tower",
-      "desc": "Capture these to gain extra income and supply",
-      "properties": 
-      {
-        "curhp": 0.0,
-        "maxhp": 30.0,
-        "armor": 1.0,
-        "food": -5.0,
-        "requires": 
-        [
-        ],
-        "attackdamage": 5.0,
-        "attackspeed": 1.0,
-        "attackrange": 3.0,
-        "movespeed": 0.0,
-        "cost": -1.0,
-        "upkeep": -25.0,
-        "subtype": "building",
-        "capturable": true,
+        "bonus": "{light=4.0}",
       },
     },
     {
@@ -138,15 +76,68 @@
       "desc": "Adds +1 attack",
       "properties": 
       {
-        "requires": 
-        [
-          "castle-base",
-        ],
+        "requires": "[castle-base]",
         "applies-to": 
         [
           "space-marine",
         ],
-        "attackdamage": 1.0,
+        "attackdamage": "1.0",
+        "curhp": "",
+        "maxhp": "",
+        "armor": "",
+        "food": "",
+        "attackspeed": "",
+        "attackrange": "",
+        "movespeed": "",
+        "cost": "",
+        "subtype": "",
+        "bonus": "",
+      },
+    },
+    {
+      "id": "tank-base",
+      "type": "unit",
+      "image": "tank",
+      "title": "Light Tank",
+      "desc": "Tank with light armor",
+      "properties": 
+      {
+        "curhp": "60.0",
+        "maxhp": "60.0",
+        "armor": "2.0",
+        "food": "5.0",
+        "requires": "[castle-base]",
+        "attackdamage": "15.0",
+        "attackspeed": "1.0",
+        "attackrange": "3.0",
+        "movespeed": "1.0",
+        "cost": "150.0",
+        "subtype": "armored",
+        "bonus": "",
+      },
+    },
+    {
+      "id": "tower-base",
+      "type": "building",
+      "image": "tower",
+      "title": "Tower",
+      "desc": "Capture these to gain extra income and supply",
+      "properties": 
+      {
+        "curhp": "0.0",
+        "maxhp": "30.0",
+        "armor": "1.0",
+        "food": "-5.0",
+        "requires": "[]",
+        "attackdamage": "5.0",
+        "attackspeed": "1.0",
+        "attackrange": "3.0",
+        "movespeed": "0.0",
+        "cost": "-1.0",
+        "upkeep": -25.0,
+        "subtype": "building",
+        "capturable": true,
+        "bonus": "",
       },
     },
     {
@@ -157,20 +148,18 @@
       "desc": "Basic attacking unit",
       "properties": 
       {
-        "curhp": 15.0,
-        "maxhp": 15.0,
-        "armor": 0.0,
-        "food": 1.0,
-        "requires": 
-        [
-          "castle-base",
-        ],
-        "attackdamage": 5.0,
-        "attackspeed": 2.0,
-        "attackrange": 2.0,
-        "movespeed": 3.0,
-        "cost": 45.0,
+        "curhp": "15.0",
+        "maxhp": "15.0",
+        "armor": "0.0",
+        "food": "1.0",
+        "requires": "[castle-base]",
+        "attackdamage": "5.0",
+        "attackspeed": "2.0",
+        "attackrange": "2.0",
+        "movespeed": "3.0",
+        "cost": "45.0",
         "subtype": "light",
+        "bonus": "",
       },
     },
   ],

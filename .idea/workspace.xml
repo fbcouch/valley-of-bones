@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/units.json" afterPath="$PROJECT_DIR$/assets/units.json" />
     </list>
@@ -51,7 +50,7 @@
     <file path="/HexMapTests.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368570396259" ignored="false" />
     <file path="/TileSet.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368592673388" ignored="false" />
     <file path="/TileLayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368679528069" ignored="false" />
-    <file path="/UnitModelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369281536701" ignored="false" />
+    <file path="/UnitModelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369282347434" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,19 +133,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="UnitModelScreen.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="UnitModelScreen.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="209" column="43" selection-start="6671" selection-end="6671" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Prototypes.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="110" column="54" selection-start="3410" selection-end="3410" vertical-scroll-proportion="2.1142857">
+            <state line="127" column="84" selection-start="4228" selection-end="4228" vertical-scroll-proportion="0.51428574">
               <folding />
             </state>
           </provider>
@@ -490,7 +480,7 @@
       <recent name="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.JsonUnitModelTool">
+  <component name="RunManager" selected="Application.VOBGame">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -635,7 +625,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="valley-of-bones" />
       <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -816,20 +812,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMapTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="38" selection-start="1430" selection-end="1430" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/utils/Array.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="154" column="19" selection-start="6077" selection-end="6077" vertical-scroll-proportion="0.3322091">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/graphics/Color.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="73" column="17" selection-start="2650" selection-end="2650" vertical-scroll-proportion="0.3322091" />
@@ -912,16 +894,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java">
+    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/ui/List.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="209" column="43" selection-start="6671" selection-end="6671" vertical-scroll-proportion="0.0">
+        <state line="46" column="11" selection-start="2024" selection-end="2024" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="110" column="54" selection-start="3410" selection-end="3410" vertical-scroll-proportion="2.1142857">
+        <state line="17" column="13" selection-start="482" selection-end="482" vertical-scroll-proportion="0.16472869">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="133" column="0" selection-start="3957" selection-end="3957" vertical-scroll-proportion="0.33333334">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/tools/screens/UnitModelScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="127" column="84" selection-start="4228" selection-end="4228" vertical-scroll-proportion="0.51428574">
           <folding />
         </state>
       </provider>

@@ -126,6 +126,10 @@ public class UnitModelScreen implements Screen {
 
         for (int a=0; a<properties.length; a++)
             selectedProto.setProperty(properties[a], propertyArray.get(a).getValue());
+
+        int i = protoList.getSelectedIndex();
+        protoList.setItems(getProtoIds());
+        protoList.setSelectedIndex(i);
     }
 
     @Override
@@ -242,6 +246,7 @@ public class UnitModelScreen implements Screen {
             updateCurrent();
             setSelectedProto(Prototypes.getProto(protoList.getSelection()));
         }
+
     }
 
     @Override
@@ -298,7 +303,7 @@ public class UnitModelScreen implements Screen {
             setValue(value);
         }
 
-        public void setValue(String value) {
+        public void setValue(Object value) {
             switch(this.type) {
                 case LIST_ID:
 
@@ -310,11 +315,11 @@ public class UnitModelScreen implements Screen {
                 case FLOAT:
                 case STRING:
                 default:
-                    ((TextField)widget).setText(value);
+                    ((TextField)widget).setText(value.toString());
             }
         }
 
-        public String getValue() {
+        public Object getValue() {
             switch(this.type) {
                 case LIST_ID:
 
