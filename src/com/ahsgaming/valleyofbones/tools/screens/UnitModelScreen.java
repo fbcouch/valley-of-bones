@@ -108,6 +108,26 @@ public class UnitModelScreen implements Screen {
         }
     }
 
+    public void updateCurrent() {
+        if (selectedProto == null) return;
+
+        for (int a=0; a<attributes.length; a++) {
+            if (attributes[a].equals("id"))
+                selectedProto.id = attributeFields[a].getText();
+            else if (attributes[a].equals("type"))
+                selectedProto.type = attributeFields[a].getText();
+            else if (attributes[a].equals("image"))
+                selectedProto.image = attributeFields[a].getText();
+            else if (attributes[a].equals("title"))
+                selectedProto.title = attributeFields[a].getText();
+            else if (attributes[a].equals("desc"))
+                selectedProto.desc = attributeFields[a].getText();
+        }
+
+        for (int a=0; a<properties.length; a++)
+            selectedProto.setProperty(properties[a], propertyArray.get(a).getValue());
+    }
+
     @Override
     public void show() {
         stage.clear();
@@ -179,7 +199,15 @@ public class UnitModelScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
+                updateCurrent();
                 Prototypes.saveUnits(Prototypes.UNIT_FILE);
+            }
+        });
+
+        btnCancel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
             }
         });
 
@@ -211,6 +239,7 @@ public class UnitModelScreen implements Screen {
         stage.draw();
 
         if (selectedProto == null || !selectedProto.id.equals(protoList.getSelection())) {
+            updateCurrent();
             setSelectedProto(Prototypes.getProto(protoList.getSelection()));
         }
     }

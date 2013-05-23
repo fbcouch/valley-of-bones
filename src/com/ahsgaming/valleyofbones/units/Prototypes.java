@@ -131,6 +131,10 @@ public class Prototypes {
 		public Object getProperty(String name) {
 			return properties.get(name);
 		}
+
+        public void setProperty(String name, String value) {
+            properties.put(name, value);
+        }
 	}
 	
 	public static void loadUnits(String file) {
