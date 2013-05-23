@@ -77,7 +77,7 @@ entities: [
         {
             curhp: 15,
             maxhp: 15,
-            armor: 0,
+            armor: 1,
             food: 2,
             requires: [ "castle-base" ],
             attackdamage: 5,
@@ -128,8 +128,8 @@ entities: [
         desc: "Tank with light armor",
         properties:
         {
-            curhp: 60,
-            maxhp: 60,
+            curhp: 45,
+            maxhp: 45,
             armor: 2,
             food: 5,
             requires: [ "castle-base" ],
