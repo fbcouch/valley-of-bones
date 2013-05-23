@@ -383,7 +383,7 @@ public class GameController {
 		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
 			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
 		} else {
-			if (obj instanceof Unit && tar instanceof Unit) {
+			if (obj instanceof Unit && tar instanceof Unit && !((Unit) tar).getInvisible()) {
                 ((Unit)obj).attack((Unit)tar, this);
 			} else {
 				if (!(obj instanceof Unit)) {
