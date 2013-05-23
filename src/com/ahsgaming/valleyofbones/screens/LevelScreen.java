@@ -136,13 +136,15 @@ public class LevelScreen extends AbstractScreen {
 
                 if (u.getOwner() != null && u.getOwner().getPlayerId() == game.getPlayer().getPlayerId()) {
                     u.setVisible(true);
-                    if (u.getInvisible()) {
-                        u.setColor(u.getColor().r, u.getColor().g, u.getColor().b, 0.5f);
-                    } else {
-                        u.setColor(u.getColor().r, u.getColor().g, u.getColor().b, 1f);
-                    }
+
                 } else {
-                    u.setVisible(!u.getInvisible() && gController.getMap().isBoardPositionVisible(u.getBoardPosition()));
+                    u.setVisible(gController.getMap().isBoardPositionVisible(u.getBoardPosition()));
+                }
+
+                if (u.getInvisible()) {
+                    u.setColor(u.getColor().r, u.getColor().g, u.getColor().b, 0.5f);
+                } else {
+                    u.setColor(u.getColor().r, u.getColor().g, u.getColor().b, 1f);
                 }
             }
         }

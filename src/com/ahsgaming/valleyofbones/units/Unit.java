@@ -563,6 +563,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
             attacksLeft--;
             Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
+
+            if (stealthActive) activateAbility(controller);
         }
     }
 
@@ -572,7 +574,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     public void activateAbility(GameController controller) {
         if (ability.equals("stealth")) {
-            if (lastStealthToggleTurn == controller.getGameTurn()) return; // cannot toggle again on the same turn
+            if (lastStealthToggleTurn == controller.getGameTurn() && !stealthActive) return; // cannot toggle again on the same turn
 
             stealthActive = !stealthActive;
 

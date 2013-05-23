@@ -561,20 +561,8 @@ public class GameController {
 	}
 	
 	public void selectObjAtBoardPos(int x, int y, Player player) {
-		GameObject obj = (map.isBoardPositionVisible(x, y) ? getObjAtBoardPos(x, y) : null);   // BUGFIX: prevent selecting non-visible objects
-        if (obj instanceof Unit) {
-            if (((Unit)obj).getInvisible()) {
-                if (obj.getOwner().equals(player)) {
-                    selectedObject = obj;
-                } else {
-                    selectedObject = null;
-                }
-            } else {
-                selectedObject = obj;
-            }
-        } else {
-            selectedObject = obj;
-        }
+		selectedObject = (map.isBoardPositionVisible(x, y) ? getObjAtBoardPos(x, y) : null);   // BUGFIX: prevent selecting non-visible objects
+
 	}
 	
 	public void selectObjAtBoardPos(float x, float y, Player player) {
