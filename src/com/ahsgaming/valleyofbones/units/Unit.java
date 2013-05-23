@@ -59,6 +59,12 @@ public class Unit extends GameObject implements Selectable, Targetable {
     String subtype = "";
     ObjectMap<String, Float> bonus = new ObjectMap<String, Float>();
 
+    String ability = "";
+
+    // stealth
+    int lastStealthToggleTurn = 0;
+    boolean invisible = false;
+
     boolean capturable = false;
     Player uncontested = null;
     int capUnitCount = 0;
@@ -116,6 +122,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public void parseProperties() {
+
+        if (properties.containsKey("ability"))
+            ability = properties.get("ability").toString();
 		
 		if (properties.containsKey("attackdamage"))
 			attackDamage = (int)Float.parseFloat(properties.get("attackdamage").toString());
@@ -224,6 +233,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		properties.put("requires", requires);
         properties.put("subtype", subtype);
 		properties.put("upkeep", upkeep);
+        properties.put("ability", ability);
 	}
 	
 	public void parseUpgrades() {
@@ -560,6 +570,24 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     public int getRefund() {
         return (int)(cost * 0.5f * (getCurHP() / getMaxHP()));
+    }
+
+    public void activateAbility(GameController controller) {
+        if (ability.equals("stealth")) {
+            if (lastStealthToggleTurn == controller.getGameTurn()) return; // cannot toggle again on the same turn
+
+            invisible = !invisible;
+
+            lastStealthToggleTurn = controller.getGameTurn();
+        }
+    }
+
+    public boolean getInvisible() {
+        return invisible;
+    }
+
+    public void setInvisible(boolean invisible) {
+        this.invisible = invisible;
     }
 	
 	//-------------------------------------------------------------------------

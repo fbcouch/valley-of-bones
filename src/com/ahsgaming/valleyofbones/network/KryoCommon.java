@@ -53,6 +53,7 @@ public class KryoCommon {
 		kryo.register(Pause.class);
 		kryo.register(Unpause.class);
 		kryo.register(EndTurn.class);
+        kryo.register(ActivateAbility.class);
         kryo.register(Command[].class);
 		kryo.register(StartTurn.class);
 		kryo.register(Color.class);

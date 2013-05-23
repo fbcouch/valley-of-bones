@@ -90,6 +90,7 @@ entities: [
             {
                 light: 4,
             },
+            ability: "stealth",
         }
     },
     

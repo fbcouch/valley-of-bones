@@ -335,6 +335,11 @@ public class GameController {
             GameObject o = getObjById(r.unit);
             if (!(o instanceof Unit)) return false;
             return canPlayerRefundUnit(p, (Unit)o);
+        } else if (cmd instanceof ActivateAbility) {
+            ActivateAbility ab = (ActivateAbility)cmd;
+            GameObject o = getObjById(ab.unit);
+            if (!(o instanceof Unit) || ((Unit)o).getOwner().getPlayerId() != ab.owner) return false;
+            return true;
         }
 		return false;
 	}
@@ -359,6 +364,10 @@ public class GameController {
         } else if (cmd instanceof Refund) {
             Refund r = (Refund)cmd;
             refundUnit(getPlayerById(r.owner), (Unit)getObjById(r.unit));
+        } else if (cmd instanceof ActivateAbility) {
+            ActivateAbility ab = (ActivateAbility)cmd;
+            Unit u = (Unit)getObjById(ab.unit);
+            u.activateAbility(this);
         } else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
