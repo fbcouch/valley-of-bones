@@ -77,7 +77,7 @@ entities: [
         {
             curhp: 15,
             maxhp: 15,
-            armor: 1,
+            armor: 0,
             food: 2,
             requires: [ "castle-base" ],
             attackdamage: 5,
