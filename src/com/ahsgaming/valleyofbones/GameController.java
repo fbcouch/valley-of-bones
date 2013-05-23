@@ -560,16 +560,29 @@ public class GameController {
 		return selectedObject;
 	}
 	
-	public void selectObjAtBoardPos(int x, int y) {
-		selectedObject = (map.isBoardPositionVisible(x, y) ? getObjAtBoardPos(x, y) : null);   // BUGFIX: prevent selecting non-visible objects
+	public void selectObjAtBoardPos(int x, int y, Player player) {
+		GameObject obj = (map.isBoardPositionVisible(x, y) ? getObjAtBoardPos(x, y) : null);   // BUGFIX: prevent selecting non-visible objects
+        if (obj instanceof Unit) {
+            if (((Unit)obj).getInvisible()) {
+                if (obj.getOwner().equals(player)) {
+                    selectedObject = obj;
+                } else {
+                    selectedObject = null;
+                }
+            } else {
+                selectedObject = obj;
+            }
+        } else {
+            selectedObject = obj;
+        }
 	}
 	
-	public void selectObjAtBoardPos(float x, float y) {
-		selectObjAtBoardPos((int)x, (int)y);
+	public void selectObjAtBoardPos(float x, float y, Player player) {
+		selectObjAtBoardPos((int)x, (int)y, player);
 	}
 	
-	public void selectObjAtBoardPos(Vector2 boardPos) {
-		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
+	public void selectObjAtBoardPos(Vector2 boardPos, Player player) {
+		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y, player);
 	}
 
     public void clearSelection() {
