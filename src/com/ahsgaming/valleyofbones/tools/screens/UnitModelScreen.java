@@ -1,15 +1,16 @@
 package com.ahsgaming.valleyofbones.tools.screens;
 
-import com.ahsgaming.valleyofbones.VOBGame;
-import com.ahsgaming.valleyofbones.screens.AbstractScreen;
 import com.ahsgaming.valleyofbones.tools.JsonUnitModelTool;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,8 @@ public class UnitModelScreen implements Screen {
     List protoList;
     Button btnAdd, btnRemove;
 
+    Button btnSave, btnCancel;
+
     Prototypes.JsonProto selectedProto;
 
     final JsonUnitModelTool parent;
@@ -42,13 +45,13 @@ public class UnitModelScreen implements Screen {
             "curhp", "maxhp", "armor", "food",
             "requires", "attackdamage", "attackspeed", "attackrange", "movespeed",
             "cost", "subtype", "bonus" };
-    PropertyTypes[] propertyTypes = {
-            PropertyTypes.INT, PropertyTypes.INT, PropertyTypes.INT, PropertyTypes.INT,
-            PropertyTypes.LIST_ID, PropertyTypes.INT, PropertyTypes.FLOAT, PropertyTypes.FLOAT,
-            PropertyTypes.INT, PropertyTypes.STRING, PropertyTypes.OBJECT_STR_INT
+    PropertyType[] propertyTypes = {
+            PropertyType.INT, PropertyType.INT, PropertyType.INT, PropertyType.INT,
+            PropertyType.LIST_ID, PropertyType.INT, PropertyType.FLOAT, PropertyType.FLOAT, PropertyType.INT,
+            PropertyType.INT, PropertyType.STRING, PropertyType.OBJECT_STR_INT
     };
 
-    TextField[] propertyFields;
+    Array<Property> propertyArray;
 
     /**
      * Constructor
@@ -99,9 +102,9 @@ public class UnitModelScreen implements Screen {
 
         for (int a=0; a<properties.length; a++) {
             if (proto.hasProperty(properties[a]))
-                propertyFields[a].setText(proto.getProperty(properties[a]).toString());
+                propertyArray.get(a).setValue(proto.getProperty(properties[a]).toString());
             else
-                propertyFields[a].setText("");
+                propertyArray.get(a).setValue("");
         }
     }
 
@@ -142,9 +145,9 @@ public class UnitModelScreen implements Screen {
         // proto table
         attributeFields = new TextField[attributes.length];
 
-        propertyFields = new TextField[properties.length];
+        propertyArray = new Array<Property>();
 
-        for (int i=0; i<propertyFields.length; i++) {
+        for (int i=0; i<properties.length; i++) {
             if (i < attributes.length) {
                 protoTable.add(attributes[i]).left().pad(4);
                 attributeFields[i] = new TextField("", getSkin());
@@ -155,12 +158,31 @@ public class UnitModelScreen implements Screen {
 
             protoTable.add(properties[i]).pad(4).left();
 
-            propertyFields[i] = new TextField("", getSkin());
+            Property p = new Property(properties[i], propertyTypes[i], "", getSkin());
+            propertyArray.add(p);
 
-            protoTable.add(propertyFields[i]).pad(4);
+            protoTable.add(p.widget).pad(4);
 
             protoTable.row();
         }
+
+        btnSave = new TextButton("SAVE", getSkin(), "medium");
+        btnCancel = new TextButton("CANCEL", getSkin(), "medium-cancel");
+
+        protoTable.add(btnCancel).pad(4).minSize(150, 50);
+        protoTable.add().colspan(2);
+        protoTable.add(btnSave).pad(4).minSize(150, 50);
+
+
+        btnSave.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                Prototypes.saveUnits(Prototypes.UNIT_FILE);
+            }
+        });
+
 
         setSelectedProto(Prototypes.getProto(protoList.getSelection()));
         Prototypes.saveUnits(Prototypes.UNIT_FILE);
@@ -215,7 +237,69 @@ public class UnitModelScreen implements Screen {
         if (skin != null) skin.dispose();
     }
 
-    public enum PropertyTypes {
+    public enum PropertyType {
         INT, FLOAT, STRING, OBJECT_STR_INT, LIST_ID;
+    }
+
+    public static class Property {
+        String name;
+
+        PropertyType type;
+
+        Widget widget;
+
+        public Property(String name, PropertyType type, String value, Skin skin) {
+            this.name = name;
+            this.type = type;
+
+            switch(this.type) {
+                case LIST_ID:
+
+                    //break;
+                case OBJECT_STR_INT:
+
+                    //break;
+                case INT:
+                case FLOAT:
+                case STRING:
+                default:
+                    widget = new TextField("", skin);
+            }
+
+            setValue(value);
+        }
+
+        public void setValue(String value) {
+            switch(this.type) {
+                case LIST_ID:
+
+                    //break;
+                case OBJECT_STR_INT:
+
+                    //break;
+                case INT:
+                case FLOAT:
+                case STRING:
+                default:
+                    ((TextField)widget).setText(value);
+            }
+        }
+
+        public String getValue() {
+            switch(this.type) {
+                case LIST_ID:
+
+                    //break;
+                case OBJECT_STR_INT:
+
+                    //break;
+                case INT:
+                case FLOAT:
+                case STRING:
+                default:
+                    return ((TextField)widget).getText();
+            }
+            //return "";
+        }
     }
 }
