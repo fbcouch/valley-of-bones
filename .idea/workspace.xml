@@ -8,7 +8,10 @@
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/maps/test.json" afterPath="$PROJECT_DIR$/assets/maps/test.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -19,7 +22,7 @@
     <file path="/VOBGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367984061868" ignored="false" />
     <file path="/GameServer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367695971819" ignored="false" />
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
-    <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369433697965" ignored="false" />
+    <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369435003173" ignored="false" />
     <file path="/EndTurn.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367090717362" ignored="false" />
     <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369433793395" ignored="false" />
     <file path="/MainMenuScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367096167407" ignored="false" />
@@ -33,7 +36,7 @@
     <file path="/BuildPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369197064087" ignored="false" />
     <file path="/Panel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368552196993" ignored="false" />
     <file path="/Prototypes.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367251247967" ignored="false" />
-    <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369431617397" ignored="false" />
+    <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369434988747" ignored="false" />
     <file path="/MPGameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368339988" ignored="false" />
     <file path="/TextureManager.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367711030179" ignored="false" />
     <file path="/InfoPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368552889446" ignored="false" />
@@ -49,7 +52,7 @@
     <file path="/Refund.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368507907164" ignored="false" />
     <file path="/HexMapTests.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369428092412" ignored="false" />
     <file path="/TileSet.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368592673388" ignored="false" />
-    <file path="/TileLayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369404726195" ignored="false" />
+    <file path="/TileLayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369434813392" ignored="false" />
     <file path="/ActivateAbility.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369287021011" ignored="false" />
     <file path="/SurrenderPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368052731" ignored="false" />
     <file path="/Surrender.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368028926" ignored="false" />
@@ -138,16 +141,37 @@
       <file leaf-file-name="GameController.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="452" column="8" selection-start="14136" selection-end="14136" vertical-scroll-proportion="0.0">
+            <state line="630" column="26" selection-start="18617" selection-end="18617" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LevelScreen.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="321" column="50" selection-start="13731" selection-end="13731" vertical-scroll-proportion="0.63222414">
+            <state line="262" column="105" selection-start="10823" selection-end="10823" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HexMap.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="584" column="33" selection-start="19553" selection-end="19553" vertical-scroll-proportion="0.43607706">
+              <folding>
+                <element signature="e#19481#19490#0" expanded="true" />
+                <element signature="e#19510#19519#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TileLayer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="66" column="51" selection-start="1835" selection-end="1835" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -182,11 +206,11 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/KryoCommon.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/MPGameClient.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMapTests.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
       </list>
     </option>
   </component>
@@ -427,6 +451,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="maps" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -700,6 +742,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32426304" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.248394" sideWeight="0.68331444" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39342403" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -714,7 +757,6 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30272108" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32444444" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -814,20 +856,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="49" selection-start="2735" selection-end="2735" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/Attack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="39" selection-start="85" selection-end="281" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/GameServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="52" column="13" selection-start="1922" selection-end="1922" vertical-scroll-proportion="0.0">
@@ -884,13 +912,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="51" selection-start="2543" selection-end="2543" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMapTests.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="146" column="57" selection-start="4805" selection-end="4805" vertical-scroll-proportion="0.6862385">
@@ -905,27 +926,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="581" column="21" selection-start="19285" selection-end="19285" vertical-scroll-proportion="0.30297723">
-          <folding>
-            <element signature="e#19588#19597#0" expanded="true" />
-            <element signature="e#19617#19626#0" expanded="true" />
-          </folding>
+        <state line="630" column="26" selection-start="18617" selection-end="18617" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
+    <entry file="file://$PROJECT_DIR$/assets/maps/blank.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="452" column="8" selection-start="14136" selection-end="14136" vertical-scroll-proportion="0.0">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-3.6190476">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/maps/test.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-1.2440476">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="66" column="51" selection-start="1835" selection-end="1835" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="321" column="50" selection-start="13731" selection-end="13731" vertical-scroll-proportion="0.63222414">
+        <state line="262" column="105" selection-start="10823" selection-end="10823" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="584" column="33" selection-start="19553" selection-end="19553" vertical-scroll-proportion="0.43607706">
+          <folding>
+            <element signature="e#19481#19490#0" expanded="true" />
+            <element signature="e#19510#19519#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -44,7 +44,7 @@
         {
             visible: true,
             collidable: false,
-            traversable: true,
+            traversible: true,
             name: "map",
             opacity: 1,
             data: 

@@ -22,8 +22,6 @@
  */
 package com.ahsgaming.valleyofbones;
 
-import java.util.List;
-
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
@@ -454,7 +452,7 @@ public class GameController {
         int[] start = {(int)(u.getBoardPosition().y * map.getWidth() + u.getBoardPosition().x)};
         int[] radii = {u.getMovesLeft()};
 
-        boolean[] available = map.getAvailablePositions(start, radii, notavailable);
+        boolean[] available = map.getAvailablePositions(start, radii, notavailable, true);
 
         int to = (int)(m.toLocation.y * map.getWidth() + m.toLocation.x);
         return (available[to] && !notavailable[to]);
@@ -630,7 +628,7 @@ public class GameController {
 	}
 	
 	public boolean isBoardPosEmpty(int x, int y) {
-        if (!map.isBoardPositionTraversable(x, y)) return false;
+        if (!map.isBoardPositionTraversible(x, y)) return false;
         for (GameObject obj: this.gameObjects) {
 			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) {
 				return false;

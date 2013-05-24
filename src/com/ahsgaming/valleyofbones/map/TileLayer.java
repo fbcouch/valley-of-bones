@@ -33,7 +33,7 @@ public class TileLayer {
     public static final String LOG = "TileLayer";
 	int[] data = new int[0];
 	Vector2 size = new Vector2();
-    boolean traversable = false;
+    boolean traversible = false;
     boolean collidable = false;
 	boolean visible = true;
 	float opacity = 1;
@@ -64,8 +64,8 @@ public class TileLayer {
 		if (layer.containsKey("visible"))
 			visible = Boolean.parseBoolean(layer.get("visible").toString());
 
-        if (layer.containsKey("traversable"))
-            traversable = Boolean.parseBoolean(layer.get("traversable").toString());
+        if (layer.containsKey("traversible"))
+            traversible = Boolean.parseBoolean(layer.get("traversible").toString());
 
         size.set(map.getWidth(), map.getHeight());
 
@@ -102,7 +102,7 @@ public class TileLayer {
         json += Utils.toJsonProperty("collidable", this.collidable);
         json += Utils.toJsonProperty("opacity", this.opacity);
 		json += Utils.toJsonProperty("visible", this.visible);
-        json += Utils.toJsonProperty("traversable", this.traversable);
+        json += Utils.toJsonProperty("traversible", this.traversible);
 		
 		return json + "}";
 	}
@@ -137,8 +137,8 @@ public class TileLayer {
 		return visible;
 	}
 
-    public boolean isTraversable() {
-        return traversable;
+    public boolean isTraversible() {
+        return traversible;
     }
 
 	/**

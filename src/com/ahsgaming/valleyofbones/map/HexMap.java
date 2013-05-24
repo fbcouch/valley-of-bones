@@ -23,13 +23,10 @@
 package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -37,7 +34,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -307,7 +303,7 @@ public class HexMap {
                 notavailable[(int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x)] = true;
         } */
 
-        boolean[] available = getAvailablePositions(unitpositions, radii, notavailable);
+        boolean[] available = getAvailablePositions(unitpositions, radii, notavailable, false);
 
         for (int i=0; i< hexStatus.length; i++) {
             Color bsq = hexStatus[i];
@@ -353,7 +349,7 @@ public class HexMap {
 
         int[] start = {(int)(center.y * bounds.x + center.x)};
         int[] radii = {radius};
-        boolean[] available = getAvailablePositions(start, radii, notavailable);
+        boolean[] available = getAvailablePositions(start, radii, notavailable, true);
 
         for (int i=0;i< hexStatus.length;i++) {
             if (available[i] && !hexStatus[i].equals(FOG)) {
@@ -456,14 +452,14 @@ public class HexMap {
         return (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
     }
 
-    public boolean isBoardPositionTraversable(int x, int y) {
+    public boolean isBoardPositionTraversible(int x, int y) {
         if (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length) {
             boolean traversible = false;
             for (TileLayer tl: tileLayers) {
                 if (tl.isCollidable() && tl.getData()[y * (int)bounds.x + x] != 0) {
                     return false;
                 }
-                if (tl.isTraversable() && tl.getData()[y * (int)bounds.x + x] != 0) {
+                if (tl.isTraversible() && tl.getData()[y * (int)bounds.x + x] != 0) {
                     traversible = true;
                 }
             }
@@ -579,7 +575,7 @@ public class HexMap {
         return adjacent;
     }
 
-    public boolean[] getAvailablePositions(int[] start, int[] radii, boolean[] unavailable) {
+    public boolean[] getAvailablePositions(int[] start, int[] radii, boolean[] unavailable, boolean requireTraversible) {
         boolean[] available = new boolean[(int)(bounds.x * bounds.y)];
 
         for (int u=0;u<start.length;u++) {
@@ -592,8 +588,11 @@ public class HexMap {
 
                     int p = current.pop();
                     available[p] = true;
-                    if (unavailable[p]) continue; // we can see this point but not beyond it
 
+                    // check if this position is traversible and not blocked
+                    if (requireTraversible && !isBoardPositionTraversible((int) (p % bounds.x), (int) (p / bounds.x))) unavailable[p] = true;
+
+                    if (unavailable[p]) continue; // we can see this point but not beyond it
                     for (Vector2 point: getAdjacent((int)(p % bounds.x), (int)(p / bounds.x))) {
                         if (point.x < 0 || point.y < 0 || point.x >= bounds.x || point.y >= bounds.y)
                             continue;
