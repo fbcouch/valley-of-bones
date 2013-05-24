@@ -17,7 +17,6 @@
  */
 package com.ahsgaming.valleyofbones.map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.ahsgaming.valleyofbones.Utils;
@@ -34,7 +33,8 @@ public class TileLayer {
     public static final String LOG = "TileLayer";
 	int[] data = new int[0];
 	Vector2 size = new Vector2();
-    boolean collidable = true;
+    boolean traversable = false;
+    boolean collidable = false;
 	boolean visible = true;
 	float opacity = 1;
 	
@@ -46,6 +46,9 @@ public class TileLayer {
 	@SuppressWarnings("unchecked")
 	public TileLayer(HexMap map, ObjectMap<String, Object> layer) {
 		this.map = map;
+
+        if (layer.containsKey("collidable"))
+            collidable = Boolean.parseBoolean(layer.get("collidable").toString());
 
         if (layer.containsKey("data")) {
 			Array<Object> arr = (Array<Object>)layer.get("data");
@@ -61,8 +64,8 @@ public class TileLayer {
 		if (layer.containsKey("visible"))
 			visible = Boolean.parseBoolean(layer.get("visible").toString());
 
-        if (layer.containsKey("collidable"))
-            collidable = Boolean.parseBoolean(layer.get("collidable").toString());
+        if (layer.containsKey("traversable"))
+            traversable = Boolean.parseBoolean(layer.get("traversable").toString());
 
         size.set(map.getWidth(), map.getHeight());
 
@@ -94,11 +97,12 @@ public class TileLayer {
 		for (int i=0;i<this.data.length; i++) {
 			data.add(this.data[i]);
 		}
-		
+
 		json += Utils.toJsonProperty("data", data);
-		json += Utils.toJsonProperty("opacity", this.opacity);
-		json += Utils.toJsonProperty("visible", this.visible);
         json += Utils.toJsonProperty("collidable", this.collidable);
+        json += Utils.toJsonProperty("opacity", this.opacity);
+		json += Utils.toJsonProperty("visible", this.visible);
+        json += Utils.toJsonProperty("traversable", this.traversable);
 		
 		return json + "}";
 	}
@@ -122,6 +126,10 @@ public class TileLayer {
         return (tiles[x + y * (int)size.x] == null ? null : tiles[x + y * (int)size.x].getColor());
     }
 
+    public boolean isCollidable() {
+        return collidable;
+    }
+
 	/**
 	 * @return the visible
 	 */
@@ -129,8 +137,8 @@ public class TileLayer {
 		return visible;
 	}
 
-    public boolean isCollidable() {
-        return collidable;
+    public boolean isTraversable() {
+        return traversable;
     }
 
 	/**

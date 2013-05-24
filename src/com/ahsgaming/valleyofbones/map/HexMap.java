@@ -422,6 +422,22 @@ public class HexMap {
     public boolean isBoardPositionVisible(int x, int y) {
         return (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
     }
+
+    public boolean isBoardPositionTraversable(int x, int y) {
+        if (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length) {
+            boolean traversible = false;
+            for (TileLayer tl: tileLayers) {
+                if (tl.isCollidable() && tl.getData()[y * (int)bounds.x + x] != 0) {
+                    return false;
+                }
+                if (tl.isTraversable() && tl.getData()[y * (int)bounds.x + x] != 0) {
+                    traversible = true;
+                }
+            }
+            return traversible;
+        }
+        return false;
+    }
 	
 	public void drawDebug(Vector2 offset) {
 		ShapeRenderer renderer = new ShapeRenderer();
