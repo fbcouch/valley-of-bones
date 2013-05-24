@@ -599,6 +599,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
     public void setInvisible(boolean invisible) {
         this.stealthActive = invisible;
     }
+
+    public boolean isDetector() {
+        return ability.equals("detect");
+    }
 	
 	//-------------------------------------------------------------------------
 	// Implemented methods

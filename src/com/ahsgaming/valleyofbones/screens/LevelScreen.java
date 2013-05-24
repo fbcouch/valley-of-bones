@@ -303,7 +303,7 @@ public class LevelScreen extends AbstractScreen {
                         for (GameObject cur: objsUnderCursor) {
                             if (cur.getOwner() != game.getPlayer()) {
                                 // TODO find the object with the highest 'threat'?
-                                if (!(cur instanceof Unit && ((Unit)cur).getInvisible()))
+                                if ((cur instanceof Unit && (!((Unit)cur).getInvisible() || unit.isDetector())))
                                     target = cur;
                             }
                         }

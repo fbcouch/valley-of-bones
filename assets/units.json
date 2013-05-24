@@ -64,6 +64,7 @@ entities: [
             movespeed: 3,
             cost: 45,
             subtype: "light",
+            ability: "detect",
         }
     },
     
