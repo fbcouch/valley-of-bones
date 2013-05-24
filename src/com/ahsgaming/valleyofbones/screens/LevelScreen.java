@@ -320,14 +320,15 @@ public class LevelScreen extends AbstractScreen {
                         game.sendCommand(at);
                     } else {
                         // move to this location
-                        if (gController.isBoardPosEmpty(boardPos) && gController.getMap().getMapDist(unit.getBoardPosition(), boardPos) <= unit.getMovesLeft()) {
-                            Move mv = new Move();
-                            mv.owner = game.getPlayer().getPlayerId();
-                            mv.turn = gController.getGameTurn();
-                            mv.unit = unit.getObjId();
-                            mv.toLocation = boardPos;
+
+                        Move mv = new Move();
+                        mv.owner = game.getPlayer().getPlayerId();
+                        mv.turn = gController.getGameTurn();
+                        mv.unit = unit.getObjId();
+                        mv.toLocation = boardPos;
+                        if (gController.validate(mv))
                             game.sendCommand(mv);
-                        }
+
                     }
 
                 }

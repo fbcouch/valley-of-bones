@@ -306,11 +306,7 @@ public class GameController {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
 		} else if (cmd instanceof Move) {
-			Move m = (Move)cmd;
-            GameObject o = getObjById(m.unit);
-            if (!(o instanceof Unit)) return false;
-            Unit u = (Unit)o;
-            return (u.getOwner().getPlayerId() == m.owner && isBoardPosEmpty(m.toLocation) && map.getMapDist(u.getBoardPosition(), m.toLocation) <= u.getMovesLeft());
+			return validateMove((Move)cmd);
 		} else if (cmd instanceof Pause) {
 			return true;
 		} else if (cmd instanceof Unpause) {
@@ -441,6 +437,28 @@ public class GameController {
 			}
 		}
 	}
+
+    public boolean validateMove(Move m) {
+        GameObject o = getObjById(m.unit);
+        if (!(o instanceof Unit)) return false;
+        Unit u = (Unit)o;
+
+        if (u.getOwner().getPlayerId() != m.owner) return false;
+
+        boolean[] notavailable = new boolean[map.getWidth() * map.getHeight()];
+        for (Unit unit: getUnits()) {
+            if (unit.getObjId() != u.getObjId())
+                notavailable[(int)(unit.getBoardPosition().y * map.getWidth() + unit.getBoardPosition().x)] = true;
+        }
+
+        int[] start = {(int)(u.getBoardPosition().y * map.getWidth() + u.getBoardPosition().x)};
+        int[] radii = {u.getMovesLeft()};
+
+        boolean[] available = map.getAvailablePositions(start, radii, notavailable);
+
+        int to = (int)(m.toLocation.y * map.getWidth() + m.toLocation.x);
+        return (available[to] && !notavailable[to]);
+    }
 	
 	public void executePause(Pause cmd) {
 		state = GameStates.PAUSED;
