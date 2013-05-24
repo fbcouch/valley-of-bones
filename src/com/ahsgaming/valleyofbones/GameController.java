@@ -297,7 +297,7 @@ public class GameController {
 	}
 	
 	public boolean validate(Command cmd) {
-		if (cmd.owner != currentPlayer.getPlayerId()) return false; // TODO allow some actions off-turn?
+		if (cmd.owner != currentPlayer.getPlayerId() && ! (cmd instanceof Surrender)) return false;
 
 		if (cmd instanceof Attack) {
             Unit u = ((Unit)getObjById(((Attack)cmd).unit));
@@ -340,6 +340,8 @@ public class GameController {
             GameObject o = getObjById(ab.unit);
             if (!(o instanceof Unit) || ((Unit)o).getOwner().getPlayerId() != ab.owner) return false;
             return true;
+        } else if (cmd instanceof Surrender) {
+            return true;
         }
 		return false;
 	}
@@ -368,6 +370,9 @@ public class GameController {
             ActivateAbility ab = (ActivateAbility)cmd;
             Unit u = (Unit)getObjById(ab.unit);
             u.activateAbility(this);
+        } else if (cmd instanceof Surrender) {
+            Player p = getPlayerById(cmd.owner);
+            p.getBaseUnit().setCurHP(0);
         } else {
 			Gdx.app.log(LOG, "Unknown command");
 		}

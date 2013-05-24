@@ -260,6 +260,7 @@ public class MPGameClient implements NetController {
 	}
 	
 	public void sendCommand(Command cmd) {
+        cmd.turn = controller.getGameTurn();
 		client.sendTCP(cmd);
 	}
 	

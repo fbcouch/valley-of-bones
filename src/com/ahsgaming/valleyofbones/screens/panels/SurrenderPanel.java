@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.screens.panels;
 
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.network.Surrender;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -28,7 +29,9 @@ public class SurrenderPanel extends Panel {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                game.getPlayer().getBaseUnit().setCurHP(0);
+                Surrender s = new Surrender();
+                s.owner = game.getPlayer().getPlayerId();
+                game.sendCommand(s);
             }
         });
     }
