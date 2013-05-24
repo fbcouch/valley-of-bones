@@ -569,7 +569,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
     }
 
     public int getRefund() {
-        return (int)(cost * 0.5f * (getCurHP() / getMaxHP()));
+        return (int)(cost * 0.5f * ((float)getCurHP() / (float)getMaxHP()));
     }
 
     public void activateAbility(GameController controller) {
