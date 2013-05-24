@@ -154,14 +154,14 @@ public class HexMap {
 
         int rows = (spawnDist - 1) / rowDist;
         int remainder = spawnDist % rowDist;
-        Gdx.app.log(LOG, String.format("rows %d (rem %d)", rows, remainder));
+        //Gdx.app.log(LOG, String.format("rows %d (rem %d)", rows, remainder));
         for (int r = 0; r < rows; r++) {
             current.add(rowDist + (remainder / 2), 0);
             if (cpNotInRow > 0) {
                 int numInRow = cpNotInRow / rows + 1;
                 int totalY = 4 * (numInRow - 1);
                 current.sub(0, totalY / 2);
-                Gdx.app.log(LOG, String.format("num in row %d", numInRow));
+                //Gdx.app.log(LOG, String.format("num in row %d", numInRow));
                 for (int i = 0; i < numInRow; i++) {
                     controlPoints.add(new Vector2(current));
                     current.add(0, 4);
@@ -290,9 +290,56 @@ public class HexMap {
         for (int i=0; i< hexStatus.length; i++) {
             Color bsq = hexStatus[i];
             bsq.set(FOG);
-            for (Unit u: units)
-                if (getMapDist(u.getBoardPosition(), new Vector2(i % bounds.x, (int) (i / bounds.x))) <= u.getAttackRange())
-                    bsq.set(NORMAL);
+        }
+
+        Array<Integer> unitpositions = new Array<Integer>();
+        Array<Integer> radii = new Array<Integer>();
+        for (Unit u: units) {
+            unitpositions.add((int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x));
+            radii.add(u.getAttackRange());
+        }
+
+        boolean[] available = new boolean[hexStatus.length];
+        boolean[] notavailable = new boolean[hexStatus.length];
+
+        for (Unit u: parent.getUnits()) {
+            if (u.getOwner() == null || !u.getOwner().equals(player))
+                notavailable[(int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x)] = true;
+        }
+
+        for (int u=0;u<unitpositions.size;u++) {
+            int unit = unitpositions.get(u);
+            available[unit] = true;
+            Array<Integer> current = new Array<Integer>(), next = new Array<Integer>();
+            current.add(unit);
+            for(int r=0;r<=radii.get(u);r++) {
+                while (current.size > 0) {
+
+                    int p = current.pop();
+                    available[p] = true;
+                    if (notavailable[p]) continue; // we can see this point but not beyond it
+
+                    for (Vector2 point: getAdjacent((int)(p % bounds.x), (int)(p / bounds.x))) {
+                        if (point.x < 0 || point.y < 0 || point.x >= bounds.x || point.y >= bounds.y)
+                            continue;
+
+                        next.add((int)(point.y * bounds.x + point.x));
+
+                    }
+
+                }
+
+                current.addAll(next);
+                next.clear();
+            }
+
+
+        }
+
+        for (int i=0; i< hexStatus.length; i++) {
+            Color bsq = hexStatus[i];
+
+            if (available[i]) bsq.set(NORMAL);
 
             if (highlighted.contains(bsq, true))
                 bsq.set(HIGHLIGHT);
@@ -534,4 +581,15 @@ public class HexMap {
 		
 		return 1 + getMapDist(from, to);
 	}
+
+    public Vector2[] getAdjacent(int x, int y) {
+        Vector2[] adjacent = new Vector2[6];
+        adjacent[0] = new Vector2(x + 1, y);
+        adjacent[1] = new Vector2(x - 1, y);
+        adjacent[2] = new Vector2(x + (y % 2 == 0 ? 0 : 1), y - 1);
+        adjacent[3] = new Vector2(x + (y % 2 == 0 ? 0 : 1), y + 1);
+        adjacent[4] = new Vector2(x + (y % 2 == 0 ? -1 : 0), y - 1);
+        adjacent[5] = new Vector2(x + (y % 2 == 0 ? -1 : 0), y + 1);
+        return adjacent;
+    }
 }

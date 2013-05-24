@@ -123,4 +123,27 @@ public class HexMapTests {
 		
 	}
 
+    @Test
+    public void testGetAdjacent() {
+        HexMap map = new HexMap(null, 10, 10, 2, 3);
+
+        Vector2[] adjacent = map.getAdjacent(0, 0);
+
+        assertEquals(adjacent[0], new Vector2(1, 0));
+        assertEquals(adjacent[1], new Vector2(-1, 0));
+        assertEquals(adjacent[2], new Vector2(0, -1));
+        assertEquals(adjacent[3], new Vector2(0, 1));
+        assertEquals(adjacent[4], new Vector2(-1, -1));
+        assertEquals(adjacent[5], new Vector2(-1, 1));
+
+        adjacent = map.getAdjacent(0, 1);
+
+        assertEquals(adjacent[0], new Vector2(1, 1));
+        assertEquals(adjacent[1], new Vector2(-1, 1));
+        assertEquals(adjacent[2], new Vector2(1, 0));
+        assertEquals(adjacent[3], new Vector2(1, 2));
+        assertEquals(adjacent[4], new Vector2(0, 0));
+        assertEquals(adjacent[5], new Vector2(0, 2));
+    }
+
 }
