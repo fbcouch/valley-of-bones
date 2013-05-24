@@ -292,49 +292,22 @@ public class HexMap {
             bsq.set(FOG);
         }
 
-        Array<Integer> unitpositions = new Array<Integer>();
-        Array<Integer> radii = new Array<Integer>();
-        for (Unit u: units) {
-            unitpositions.add((int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x));
-            radii.add(u.getAttackRange());
+        int[] unitpositions = new int[units.size];
+        int[] radii = new int[units.size];
+        for (int u=0;u<units.size;u++) {
+            Unit unit = units.get(u);
+            unitpositions[u] = (int)(unit.getBoardPosition().y * bounds.x + unit.getBoardPosition().x);
+            radii[u] = unit.getAttackRange();
         }
 
-        boolean[] available = new boolean[hexStatus.length];
         boolean[] notavailable = new boolean[hexStatus.length];
 
-        for (Unit u: parent.getUnits()) {
+        /*for (Unit u: parent.getUnits()) {
             if (u.getOwner() == null || !u.getOwner().equals(player))
                 notavailable[(int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x)] = true;
-        }
+        } */
 
-        for (int u=0;u<unitpositions.size;u++) {
-            int unit = unitpositions.get(u);
-            available[unit] = true;
-            Array<Integer> current = new Array<Integer>(), next = new Array<Integer>();
-            current.add(unit);
-            for(int r=0;r<=radii.get(u);r++) {
-                while (current.size > 0) {
-
-                    int p = current.pop();
-                    available[p] = true;
-                    if (notavailable[p]) continue; // we can see this point but not beyond it
-
-                    for (Vector2 point: getAdjacent((int)(p % bounds.x), (int)(p / bounds.x))) {
-                        if (point.x < 0 || point.y < 0 || point.x >= bounds.x || point.y >= bounds.y)
-                            continue;
-
-                        next.add((int)(point.y * bounds.x + point.x));
-
-                    }
-
-                }
-
-                current.addAll(next);
-                next.clear();
-            }
-
-
-        }
+        boolean[] available = getAvailablePositions(unitpositions, radii, notavailable);
 
         for (int i=0; i< hexStatus.length; i++) {
             Color bsq = hexStatus[i];
@@ -372,17 +345,30 @@ public class HexMap {
     public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
         Array<Unit> units = parent.getUnits();
 
-        for (int i=0;i< hexStatus.length;i++) {
-            Vector2 pos = new Vector2(i % bounds.x, (int) (i / bounds.x));
-            if (isBoardPositionVisible(pos) && getMapDist(center, pos) <= radius) {
-                highlighted.add(hexStatus[i]);
-                hexStatus[i].set(HIGHLIGHT);
+        boolean[] notavailable = new boolean[hexStatus.length];
 
-                for (Unit u: units) {
-                    if (u.getBoardPosition().epsilonEquals(pos, 0.1f)) {
-                        dimmed.add(hexStatus[i]);
-                        hexStatus[i].set(DIMMED);
-                    }
+        for (Unit u: parent.getUnits()) {
+            if (!u.getBoardPosition().equals(center)) notavailable[(int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x)] = true;
+        }
+
+        int[] start = {(int)(center.y * bounds.x + center.x)};
+        int[] radii = {radius};
+        boolean[] available = getAvailablePositions(start, radii, notavailable);
+
+        for (int i=0;i< hexStatus.length;i++) {
+            if (available[i] && !hexStatus[i].equals(FOG)) {
+                if (notavailable[i] || i == start[0]) {
+                    dimmed.add(hexStatus[i]);
+                    hexStatus[i].set(DIMMED);
+                } else {
+                    highlighted.add(hexStatus[i]);
+                    hexStatus[i].set(HIGHLIGHT);
+                }
+
+            } else {
+                if (getMapDist(center, new Vector2((int)(i % bounds.x), (int)(i / bounds.x))) <= radius) {
+                    dimmed.add(hexStatus[i]);
+                    hexStatus[i].set(DIMMED);
                 }
             }
         }
@@ -591,5 +577,34 @@ public class HexMap {
         adjacent[4] = new Vector2(x + (y % 2 == 0 ? -1 : 0), y - 1);
         adjacent[5] = new Vector2(x + (y % 2 == 0 ? -1 : 0), y + 1);
         return adjacent;
+    }
+
+    public boolean[] getAvailablePositions(int[] start, int[] radii, boolean[] unavailable) {
+        boolean[] available = new boolean[(int)(bounds.x * bounds.y)];
+
+        for (int u=0;u<start.length;u++) {
+            int unit = start[u];
+            available[unit] = true;
+            Array<Integer> current = new Array<Integer>(), next = new Array<Integer>();
+            current.add(unit);
+            for(int r=0;r<=radii[u];r++) {
+                while (current.size > 0) {
+
+                    int p = current.pop();
+                    available[p] = true;
+                    if (unavailable[p]) continue; // we can see this point but not beyond it
+
+                    for (Vector2 point: getAdjacent((int)(p % bounds.x), (int)(p / bounds.x))) {
+                        if (point.x < 0 || point.y < 0 || point.x >= bounds.x || point.y >= bounds.y)
+                            continue;
+                        next.add((int)(point.y * bounds.x + point.x));
+                    }
+                }
+                current.addAll(next);
+                next.clear();
+            }
+        }
+
+        return available;
     }
 }

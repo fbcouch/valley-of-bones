@@ -6,7 +6,9 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="" />
+    <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
+    </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369426547884" ignored="false" />
@@ -30,7 +32,7 @@
     <file path="/BuildPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369197064087" ignored="false" />
     <file path="/Panel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368552196993" ignored="false" />
     <file path="/Prototypes.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367251247967" ignored="false" />
-    <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369429189490" ignored="false" />
+    <file path="/HexMap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369431617397" ignored="false" />
     <file path="/MPGameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368339988" ignored="false" />
     <file path="/TextureManager.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367711030179" ignored="false" />
     <file path="/InfoPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368552889446" ignored="false" />
@@ -189,12 +191,10 @@
       <file leaf-file-name="HexMap.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="338" column="57" selection-start="11735" selection-end="11735" vertical-scroll-proportion="0.61646235">
+            <state line="347" column="8" selection-start="11851" selection-end="11851" vertical-scroll-proportion="0.13485114">
               <folding>
-                <element signature="e#10119#10128#0" expanded="true" />
-                <element signature="e#10172#10181#0" expanded="true" />
-                <element signature="e#10896#10905#0" expanded="true" />
-                <element signature="e#10925#10934#0" expanded="true" />
+                <element signature="e#19588#19597#0" expanded="true" />
+                <element signature="e#19617#19626#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -241,8 +241,8 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMapTests.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
       </list>
     </option>
   </component>
@@ -527,7 +527,7 @@
       <recent name="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.HexMapTests">
+  <component name="RunManager" selected="Application.VOBGame">
     <configuration default="false" name="HexMapTests" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="valley-of-bones" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -977,12 +977,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="338" column="57" selection-start="11735" selection-end="11735" vertical-scroll-proportion="0.61646235">
+        <state line="347" column="8" selection-start="11851" selection-end="11851" vertical-scroll-proportion="0.13485114">
           <folding>
-            <element signature="e#10119#10128#0" expanded="true" />
-            <element signature="e#10172#10181#0" expanded="true" />
-            <element signature="e#10896#10905#0" expanded="true" />
-            <element signature="e#10925#10934#0" expanded="true" />
+            <element signature="e#19588#19597#0" expanded="true" />
+            <element signature="e#19617#19626#0" expanded="true" />
           </folding>
         </state>
       </provider>
