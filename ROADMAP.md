@@ -11,7 +11,7 @@
 ### Chapter 2: Sniper (May)
 
 - Add a few new units
-    * Sniper
+    + Sniper
     - Artillery?
 - Attachments for base
     - "Defense platform" --> grants extra attack/damage
@@ -28,7 +28,9 @@
 - Rewards for kills --> also allows less income from base
 - Basic sounds
 - Package system, move game assets to local rather than internal to jar
-
+    + game assets now local
+    - packaging system
+    
 ### Chapter 3: (June)
 
 - Another race
