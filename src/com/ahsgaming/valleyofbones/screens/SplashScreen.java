@@ -56,7 +56,7 @@ public class SplashScreen extends AbstractScreen {
 	public void show() {
 		super.show();
 		
-		Texture tex = new Texture(Gdx.files.internal("splash.png"));
+		Texture tex = new Texture(Gdx.files.local("assets/splash.png"));
 		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		splashImage = new Image(tex);

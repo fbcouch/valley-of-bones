@@ -186,7 +186,7 @@
   <path id="valley-of-bones.module.sourcepath">
     <dirset dir="${module.valley-of-bones.basedir}">
       <include name="src"/>
-      <include name="assets"/>
+
     </dirset>
   </path>
   
@@ -205,10 +205,6 @@
     
     <copy todir="${valley-of-bones.output.dir}">
       <fileset dir="${module.valley-of-bones.basedir}/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.valley-of-bones.basedir}/assets">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
@@ -299,6 +295,10 @@
     <copy todir="${artifact.output.valleyofbonesserver:jar}">
       <fileset dir="${artifact.temp.output.valleyofbonesserver:jar}"/>
     </copy>
+
+   <copy todir="${artifact.output.valleyofbones:jar}">
+      <fileset dir="${basedir}" includes="assets/**" />
+   </copy>
     
     <!-- Delete temporary files -->
     <delete dir="${artifacts.temp.dir}"/>
@@ -308,6 +308,7 @@
       <zip destfile="${artifacts.temp.dir}/ValleyOfBones-${DSTAMP}.zip">
           <fileset dir="${artifact.output.valleyofbones:jar}" includes="*.jar" />
           <fileset file="${basedir}/README.md" />
+          <fileset dir="${basedir}" includes="assets/**" />
       </zip>
       <copy todir="${artifact.output.valleyofbones:jar}">
           <fileset file="${artifacts.temp.dir}/ValleyOfBones-${DSTAMP}.zip"/>

@@ -114,7 +114,7 @@ public class Prototypes {
 		if (protos == null) protos = new ObjectMap<String, JsonProto>();
 		
 		JsonReader reader = new JsonReader();
-		ObjectMap<String, Object> json = (ObjectMap<String, Object>)reader.parse(Gdx.files.internal(file));
+		ObjectMap<String, Object> json = (ObjectMap<String, Object>)reader.parse(Gdx.files.local("assets/" + file));
 		
 		if (json.containsKey("entities") && json.get("entities") instanceof Array) {
 			Array<Object> jsonArray = (Array<Object>)json.get("entities");

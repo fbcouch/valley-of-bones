@@ -147,7 +147,7 @@ public class AbstractScreen implements Screen {
 	
 	public Skin getSkin() {
 		if (skin == null) {
-			skin = new Skin(Gdx.files.internal("newui/uiskin.json"));
+			skin = new Skin(Gdx.files.local("assets/" + "newui/uiskin.json"));
 		}
 		return skin;
 	}
