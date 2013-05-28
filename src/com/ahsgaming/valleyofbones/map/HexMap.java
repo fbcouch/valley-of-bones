@@ -361,7 +361,7 @@ public class HexMap {
                     hexStatus[i].set(HIGHLIGHT);
                 }
 
-            } else {
+            } else if (!hexStatus[i].equals(FOG)){
                 if (getMapDist(center, new Vector2((int)(i % bounds.x), (int)(i / bounds.x))) <= radius) {
                     dimmed.add(hexStatus[i]);
                     hexStatus[i].set(DIMMED);
