@@ -139,6 +139,7 @@ public class LevelScreen extends AbstractScreen {
 
                 } else {
                     u.setVisible(gController.getMap().isBoardPositionVisible(u.getBoardPosition()));
+                    if (!u.isVisible() && u == gController.getSelectedObject()) gController.clearSelection();
                 }
 
                 if (u.getInvisible()) {
