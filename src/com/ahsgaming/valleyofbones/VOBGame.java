@@ -13,8 +13,6 @@ import com.ahsgaming.valleyofbones.screens.ServerScreen;
 import com.ahsgaming.valleyofbones.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.utils.Array;
 
@@ -303,25 +301,6 @@ public class VOBGame extends Game {
 	
 	public NetController getNetController() {
 		return netController;
-	}
-	
-	
-	/**
-	 * Program entry point
-	 * @param args
-	 */
-	
-	public static void main(String[] args) {
-		
-		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Valley of Bones | ahsgaming.com | (c) 2013 Jami Couch";
-		cfg.useGL20 = false;
-		cfg.width = 1280;
-		cfg.height = 768;
-		cfg.fullscreen = false;
-		cfg.resizable = true;
-		
-		new LwjglApplication(new VOBGame(false), cfg);
 	}
 
 	/**

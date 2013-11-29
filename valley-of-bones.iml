@@ -24,44 +24,6 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
-      <library name="gdx-backend-lwjgl-natives.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-backend-lwjgl-natives.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="gdx-backend-lwjgl-sources.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-backend-lwjgl-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="gdx-backend-lwjgl.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-backend-lwjgl.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-backend-lwjgl-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="gdx-natives.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-natives.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
       <library name="gdx-sources.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/gdx-sources.jar!/" />
@@ -78,26 +40,6 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/libs/gdx-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="gdx-openal-sources.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-openal-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="gdx-openal.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-openal.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/libs/gdx-openal-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
