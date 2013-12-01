@@ -119,6 +119,10 @@ public class TileLayer {
 		data[x + y * (int)size.x] = gid;
 	}
 
+    public int getTileData(int x, int y) {
+        return data[x + y * (int)size.x];
+    }
+
     public void setTileStatus(int x, int y, Color status) {
         if (tiles[x + y * (int)size.x] != null) tiles[x + y * (int)size.x].setColor(status);
     }

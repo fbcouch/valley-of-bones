@@ -93,7 +93,7 @@ public class GameController {
 		this.loadMap();
 		this.loadMapObjects();
 		
-		grpRoot.addActor(map.getMapGroup());
+//		grpRoot.addActor(map.getMapGroup());
         grpRoot.setTransform(false);
 
 		grpRoot.setSize(map.getMapWidth(), map.getMapHeight());
@@ -117,7 +117,7 @@ public class GameController {
 	
 	private Group loadMapObjects() {
 		int player = 0;
-        grpUnits = map.getObjectGroup();
+//        grpUnits = map.getObjectGroup();
 		for (Vector2 spawn : map.getPlayerSpawns()) {
 			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;

@@ -216,6 +216,47 @@ public class Unit extends GameObject implements Selectable, Targetable {
         }
     }
 
+    @Override
+    public void draw(SpriteBatch batch, float offsetX, float offsetY, float parentAlpha) {
+        super.draw(batch, offsetX, offsetY, parentAlpha);
+
+
+        if (overlay != null) {
+            Color color = getColor();
+            if (owner != null)
+                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a);
+            else
+                batch.setColor(color);
+
+            batch.draw(overlay, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
+        }
+
+        if (healthBar != null) {
+            batch.setColor(getColor());
+            healthBar.setCurrent((float)curHP / maxHP);
+//            healthBar.draw(batch, offsetX + getX(), offsetY + getY() + 8, parentAlpha);
+            batch.draw(new TextureRegion(healthBar.img), offsetX + getX(), offsetY + getY() + 8, getWidth(), 8);
+        }
+//
+        if (isTurn) {
+            int x = 0;
+            batch.setColor(getColor());
+            if (getMovesLeft() > 0) {
+                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "walking-boot");
+
+                batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                x += tex.getRegionWidth() * 0.5f;
+            }
+
+            if (getAttacksLeft() > 0) {
+                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "rune-sword");
+
+                batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                x += tex.getRegionWidth() * 0.5f;
+            }
+        }
+    }
+
     public void updateProperties() {
 		properties.put("attackdamage", attackDamage);
 		properties.put("attackrange", attackRange);

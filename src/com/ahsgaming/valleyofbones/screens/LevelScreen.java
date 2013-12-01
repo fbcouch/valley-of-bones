@@ -36,6 +36,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -110,8 +111,7 @@ public class LevelScreen extends AbstractScreen {
 
     Player lastCurrentPlayer = null;
 
-    TextureRegion hexRegion;
-    Texture texMap;
+    boolean mapDirty = true;
 	
 	/**
 	 * @param game
@@ -515,8 +515,6 @@ public class LevelScreen extends AbstractScreen {
         playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer().getPlayerName(), game.getPlayer().getPlayerColor(), true);
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
-
-        hexRegion = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
 	}
 	
 	@Override
@@ -539,27 +537,27 @@ public class LevelScreen extends AbstractScreen {
 
 		grpTurnPane.setSize(btnTurnDone.getWidth(), lblTurnTimer.getTop());
 
-//		stage.addActor(grpTurnPane);  // -8fps
+		stage.addActor(grpTurnPane);  // -8fps
 
 		// panels
         // TODO add back upgrade panel
-        //stage.addActor(upgradePanel);
+//        stage.addActor(upgradePanel);
         upgradePanel.setAnchor(0, 64);
 
-//        stage.addActor(buildPanel);
+        stage.addActor(buildPanel);
         buildPanel.setAnchor(0, 0);
 
-//        stage.addActor(selectionPanel);
+        stage.addActor(selectionPanel);
         selectionPanel.setAnchor(stage.getWidth() * 0.5f, 0);
 
 
-//        stage.addActor(scorePanel);
+        stage.addActor(scorePanel);
         scorePanel.setAnchor(stage.getWidth(), lblTurnTimer.getTop());
 
 
-//        stage.addActor(playerScore);
+        stage.addActor(playerScore);
 
-//        stage.addActor(surrenderPanel);
+        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
 
 
@@ -601,31 +599,20 @@ public class LevelScreen extends AbstractScreen {
 	
 	@Override
 	public void render(float delta) {
-		super.render(delta);
-
+//        super.render(delta);
+        stage.act(delta);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.getSpriteBatch().begin();
-        renderGroup(grpLevel, stage.getSpriteBatch(), grpLevel.getX(), grpLevel.getY());
-//        Rectangle rect = new Rectangle();
-//        Gdx.app.log("TextureFilter", Boolean.toString(hexRegion.getTexture().getMinFilter() ==  Texture.TextureFilter.Nearest));
-//        int r = 0;
-//        float dx = 0;
-//        float dy = 0;
-//        for (int y = 0; y < 11; y++) {
-//            dx = (y % 2 == 1 ? hexRegion.getRegionWidth() * 0.5f : 0);
-//            for (int x = 0; x < 20; x++) {
-//                rect.set(dx, dy, hexRegion.getRegionWidth(), hexRegion.getRegionHeight());
-////                if (!(rect.x > stage.getWidth() || rect.y > stage.getHeight() || rect.x + rect.width < 0 || rect.y + rect.height < 0)) {
-//                    stage.getSpriteBatch().draw(hexRegion, rect.x, rect.y, rect.width, rect.height);
-//                    r++;
-////                }
-//                dx += hexRegion.getRegionWidth();
-//            }
-//            dy += hexRegion.getRegionHeight() * 0.75f;
-//        }
+        gController.getMap().draw(stage.getSpriteBatch(), -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
         stage.getSpriteBatch().end();
+        stage.draw();
+//        stage.getCamera().update();
+//        stage.getSpriteBatch().setProjectionMatrix(stage.getCamera().combined);
+
 //        Gdx.app.log("Rendered", Integer.toString(r));
-        Gdx.app.log("maxSpritesInBatch", Integer.toString(stage.getSpriteBatch().maxSpritesInBatch));
-        Gdx.app.log("renderCalls", Integer.toString(stage.getSpriteBatch().renderCalls));
+//        Gdx.app.log("maxSpritesInBatch", Integer.toString(stage.getSpriteBatch().maxSpritesInBatch));
+//        Gdx.app.log("renderCalls", Integer.toString(stage.getSpriteBatch().renderCalls));
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
         if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
@@ -643,7 +630,11 @@ public class LevelScreen extends AbstractScreen {
             selectionPanel.setSelected((Unit)lastSelected);
         }
 
-//        gController.getMap().update(game.getPlayer()); // -22fps
+        if (mapDirty) {
+            gController.getMap().update(game.getPlayer()); // -22fps
+            Gdx.app.log("mapDirty", "yes?");
+            mapDirty = false;
+        }
 
 		// DRAW BOXES
 		drawUnitBoxes();
@@ -660,14 +651,14 @@ public class LevelScreen extends AbstractScreen {
 
             grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
-//		updateTurnPane(); // -9fps (25ms)
+		updateTurnPane(); // -9fps (25ms)
 //
-//        buildPanel.update(delta); // -16fps (83ms)
+        buildPanel.update(delta); // -16fps (83ms)
 //        upgradePanel.update(delta); // 0
-//        selectionPanel.update(delta); // -4 fps
-//        scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());   // -10fps
-//        playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney()); // -7fps
-//        playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
+        selectionPanel.update(delta); // -4 fps
+        scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());   // -10fps
+        playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney()); // -7fps
+        playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
         surrenderPanel.update(delta); // 0
 //
 //		showCommandPreviews();

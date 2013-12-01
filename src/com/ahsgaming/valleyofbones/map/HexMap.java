@@ -26,9 +26,11 @@ import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -45,10 +47,12 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class HexMap {
     public static final String LOG = "HexMap";
 
-    public static final Color HIGHLIGHT = new Color(1, 1, 1, 1);
-    public static final Color NORMAL = new Color(0.8f, 0.8f, 0.8f, 1);
-    public static final Color DIMMED = new Color(0.6f, 0.6f, 0.6f, 1);
-    public static final Color FOG = new Color(0.4f, 0.4f, 0.4f, 1);
+    public static final int HIGHLIGHT = 0;
+    public static final int NORMAL = 1;
+    public static final int DIMMED = 2;
+    public static final int FOG = 3;
+
+    public static final Color[] HEX_COLOR = new Color[] {new Color(1, 1, 1, 1), new Color(0.8f, 0.8f, 0.8f, 1), new Color(0.6f, 0.6f, 0.6f, 1), new Color(0.4f, 0.4f, 0.4f, 1)};
 
     Array<TileSet> tilesets;
     Array<TileLayer> tileLayers;
@@ -65,13 +69,13 @@ public class HexMap {
 	Vector2 bounds;
 	Vector2 tileSize;
 	
-	Group mapGroup;
-    Group objectGroup = new Group();
+//	Group mapGroup;
+//    Group objectGroup = new Group();
     int objDepth;
-    Color[] hexStatus;
+    int[] hexStatus;
 
-    Array<Color> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
-    Array<Color> dimmed;
+    Array<Integer> highlighted;        //highlight and dim are transient effects, so we want to be able to clear them easily
+    Array<Integer> dimmed;
 
     Player currentPlayer;
     final GameController parent;
@@ -169,11 +173,11 @@ public class HexMap {
 
 
 
-        hexStatus = new Color[width * height];
-        highlighted = new Array<Color>();
-        dimmed = new Array<Color>();
+        hexStatus = new int[width * height];
+        highlighted = new Array<Integer>();
+        dimmed = new Array<Integer>();
 
-        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = new Color(NORMAL);
+        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = NORMAL;
     }
 
     void loadFromFile(FileHandle jsonFile) {
@@ -267,12 +271,12 @@ public class HexMap {
             }
         }
 
-        hexStatus = new Color[(int) (bounds.x * bounds.y)];
-        highlighted = new Array<Color>();
-        dimmed = new Array<Color>();
+        hexStatus = new int[(int) (bounds.x * bounds.y)];
+        highlighted = new Array<Integer>();
+        dimmed = new Array<Integer>();
 
         for (int i = 0; i < hexStatus.length; i++) {
-            hexStatus[i] = new Color(NORMAL);
+            hexStatus[i] = NORMAL;
 
         }
 
@@ -284,8 +288,8 @@ public class HexMap {
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
         for (int i=0; i< hexStatus.length; i++) {
-            Color bsq = hexStatus[i];
-            bsq.set(FOG);
+            hexStatus[i] = FOG;
+
         }
 
         int[] unitpositions = new int[units.size];
@@ -306,36 +310,72 @@ public class HexMap {
         boolean[] available = getAvailablePositions(unitpositions, radii, notavailable, false);
 
         for (int i=0; i< hexStatus.length; i++) {
-            Color bsq = hexStatus[i];
 
-            if (available[i]) bsq.set(NORMAL);
+            if (available[i]) hexStatus[i] = NORMAL;
 
-            if (highlighted.contains(bsq, true))
-                bsq.set(HIGHLIGHT);
+            if (highlighted.contains(i, true))
+                hexStatus[i] = HIGHLIGHT;
 
-            if (dimmed.contains(bsq, true))
-                bsq.set(DIMMED);
+            if (dimmed.contains(i, true))
+                hexStatus[i] = DIMMED;
 
-            for (TileLayer tl: tileLayers) {
-                tl.setTileStatus((int) (i % bounds.x), (int) (i / bounds.x), bsq);
-            }
+//            for (TileLayer tl: tileLayers) {
+//                tl.setTileStatus((int) (i % bounds.x), (int) (i / bounds.x), bsq);
+//            }
         }
+    }
+
+    public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units) {
+        float curX = x;
+        float curY = y;
+        Color save = batch.getColor();
+        int prev = -1;
+        TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
+        boolean odd = false;
+        for (int j = 0; j < bounds.y; j++) {
+            curX = x + (odd ? tileSize.x * 0.5f : 0);
+            odd = !odd;
+            for (int i = 0; i < bounds.x; i++) {
+                if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
+                    prev = hexStatus[i + j * (int)bounds.x];
+                    batch.setColor(HEX_COLOR[prev]);
+                }
+//                batch.draw(tex, curX, curY);
+                for (TileLayer l: tileLayers) {
+                    int gid = l.getTileData(i, j);
+                    if (gid != 0)
+                        batch.draw(getTile(gid), curX, curY);
+                }
+
+                curX += tileSize.x;
+            }
+            curY += tileSize.y * 0.75;
+        }
+
+
+        // TODO put this at the proper depth
+        for (Unit u: units) {
+            if (hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG)
+                u.draw(batch, x, y, alpha);
+        }
+
+        batch.setColor(save);
     }
 
     public void clearHighlight() {
         highlighted.clear();
-        if (currentPlayer != null && parent != null) update(currentPlayer);
+//        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void clearDim() {
         dimmed.clear();
-        if (currentPlayer != null && parent != null) update(currentPlayer);
+//        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void clearHighlightAndDim() {
         highlighted.clear();
         dimmed.clear();
-        if (currentPlayer != null && parent != null) update(currentPlayer);
+//        if (currentPlayer != null && parent != null) update(currentPlayer);
     }
 
     public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
@@ -352,19 +392,19 @@ public class HexMap {
         boolean[] available = getAvailablePositions(start, radii, notavailable, true);
 
         for (int i=0;i< hexStatus.length;i++) {
-            if (available[i] && !hexStatus[i].equals(FOG)) {
+            if (available[i] && hexStatus[i] != FOG) {
                 if (notavailable[i] || i == start[0]) {
-                    dimmed.add(hexStatus[i]);
-                    hexStatus[i].set(DIMMED);
+                    dimmed.add(i);
+                    hexStatus[i] = DIMMED;
                 } else {
-                    highlighted.add(hexStatus[i]);
-                    hexStatus[i].set(HIGHLIGHT);
+                    highlighted.add(i);
+                    hexStatus[i] = HIGHLIGHT;
                 }
 
-            } else if (!hexStatus[i].equals(FOG)){
+            } else if (hexStatus[i] != FOG){
                 if (getMapDist(center, new Vector2((int)(i % bounds.x), (int)(i / bounds.x))) <= radius) {
-                    dimmed.add(hexStatus[i]);
-                    hexStatus[i].set(DIMMED);
+                    dimmed.add(i);
+                    hexStatus[i] = DIMMED;
                 }
             }
         }
@@ -373,10 +413,10 @@ public class HexMap {
     public void dimIfHighlighted(Array<Vector2> positions) {
         dimmed.clear();
         for (Vector2 p: positions) {
-            Color square = hexStatus[(int)p.y % (int)bounds.x + (int)p.x];
-            if (highlighted.contains(square, true)) {
-                dimmed.add(square);
-                square.set(DIMMED);
+            int ind = (int)p.y * (int)bounds.x + (int)p.x;
+            if (highlighted.contains(ind, true)) {
+                dimmed.add(ind);
+                hexStatus[ind] = DIMMED;
             }
         }
     }
@@ -421,26 +461,6 @@ public class HexMap {
 	public ArrayList<Vector2> getControlPoints() {
 		return controlPoints;
 	}
-	
-	public Group getMapGroup() {
-		if (mapGroup == null) {
-			mapGroup = new Group();
-            mapGroup.setTransform(false);
-            objectGroup.setTransform(false);
-
-			mapGroup.setSize(getMapWidth(), getMapHeight());
-
-            for (int i=0; i < tileLayers.size; i++) {
-                if (i == objDepth) mapGroup.addActor(objectGroup);
-                mapGroup.addActor(tileLayers.get(i).getGroup());
-            }
-		}
-		return mapGroup;
-	}
-
-    public Group getObjectGroup() {
-        return objectGroup;
-    }
 
     public boolean isBoardPositionVisible(Vector2 pos) {
         return isBoardPositionVisible((int)pos.x, (int)pos.y);
@@ -451,7 +471,7 @@ public class HexMap {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        return (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length && !hexStatus[y * (int)bounds.x + x].equals(FOG));
+        return (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length && hexStatus[y * (int)bounds.x + x] != FOG);
     }
 
     public boolean isBoardPositionTraversible(int x, int y) {

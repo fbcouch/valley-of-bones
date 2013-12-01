@@ -1,9 +1,11 @@
 package com.ahsgaming.valleyofbones.units;
 
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -24,7 +26,7 @@ public class ProgressBar {
     Color medColor = new Color(1, 1, 0, 1);
     Color lowColor = new Color(1, 0, 0, 1);
 
-    Texture img;
+    TextureRegion img;
 
     Vector2 size;
 
@@ -33,8 +35,11 @@ public class ProgressBar {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(1, 1, 1, 1);
         pixmap.fill();
-        img = new Texture(pixmap);
+        Texture t = new Texture(1, 1, Pixmap.Format.RGBA8888);
+        t.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        img = TextureManager.getSpriteFromAtlas("assets", "flying-flag");
         size = new Vector2(1, 1);
+
     }
 
     public void draw(SpriteBatch batch, float x, float y, float parentAlpha) {

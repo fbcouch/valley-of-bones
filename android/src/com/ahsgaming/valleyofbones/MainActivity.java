@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones;
 
 import android.os.Bundle;
+import android.os.Debug;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -19,5 +20,18 @@ public class MainActivity extends AndroidApplication {
         cfg.useGL20 = true;
 
         initialize(new VOBGame(false), cfg);
+        Debug.startMethodTracing("all");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
+        Debug.stopMethodTracing();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
+        Debug.stopMethodTracing();
     }
 }
