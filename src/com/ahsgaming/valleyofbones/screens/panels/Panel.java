@@ -36,7 +36,7 @@ public class Panel extends Group {
     boolean built = false;
     boolean dirty = false;
 
-    ObjectMap<Image, Prototypes.JsonProto> buttonMap;
+    Array<Image> buttons;
     Array<Prototypes.JsonProto> items;
 
     Skin skin;
@@ -45,7 +45,7 @@ public class Panel extends Group {
         this.game = game;
         this.icon = new Image(TextureManager.getSpriteFromAtlas("assets", icon));
         this.levelScreen = levelScreen;
-        this.buttonMap = new ObjectMap<Image, Prototypes.JsonProto>();
+        this.buttons = new Array<Image>();
         this.items = new Array<Prototypes.JsonProto>();
         this.skin = skin;
     }
@@ -72,7 +72,7 @@ public class Panel extends Group {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                buttonClicked(icon);
+                buttonClicked(icon, -1);
             }
         });
         built = true;
@@ -80,7 +80,7 @@ public class Panel extends Group {
 
     }
 
-    public boolean buttonClicked(Image button) {
+    public boolean buttonClicked(Image button, int i) {
         if (button == icon) {
             toggle();
             return true;

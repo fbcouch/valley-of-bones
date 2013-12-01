@@ -20,18 +20,18 @@ public class MainActivity extends AndroidApplication {
         cfg.useGL20 = true;
 
         initialize(new VOBGame(false), cfg);
-        Debug.startMethodTracing("all");
+//        Debug.startMethodTracing("all");
     }
 
     @Override
     protected void onPause() {
         super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
-        Debug.stopMethodTracing();
+//        Debug.stopMethodTracing();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
-        Debug.stopMethodTracing();
+//        Debug.stopMethodTracing();
     }
 }

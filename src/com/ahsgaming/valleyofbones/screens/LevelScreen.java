@@ -59,6 +59,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * @author jami
@@ -88,6 +89,7 @@ public class LevelScreen extends AbstractScreen {
 	Label lblTurnTimer;
 	TextButton btnTurnDone;
     float lastTurnTick = 0;
+    int lastTickSecs = -1;
 	
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
@@ -512,7 +514,7 @@ public class LevelScreen extends AbstractScreen {
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
         scorePanel = new ScorePanel(game, this, "scores", getSkin(), gController.getPlayers());
 
-        playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer().getPlayerName(), game.getPlayer().getPlayerColor(), true);
+        playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer(), true);
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
 	}
@@ -578,9 +580,10 @@ public class LevelScreen extends AbstractScreen {
 	}
 
 	public void updateTurnPane() {
-		lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
-        if (gController.getTurnTimer() <= 5 && isCurrentPlayer()) {
-            if ((int)lastTurnTick > (int)gController.getTurnTimer()) {
+
+        if ((int)lastTurnTick > (int)gController.getTurnTimer()) {
+            lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
+            if (gController.getTurnTimer() <= 5 && isCurrentPlayer()) {
                 lblTurnTimer.addAction(Actions.sequence(Actions.color(new Color(1.0f, 0, 0, 1.0f)), Actions.delay(0.2f), Actions.color(new Color(1.0f, 1f, 1f, 1f))));
             }
         }
@@ -607,18 +610,9 @@ public class LevelScreen extends AbstractScreen {
         gController.getMap().draw(stage.getSpriteBatch(), -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
         stage.getSpriteBatch().end();
         stage.draw();
-//        stage.getCamera().update();
-//        stage.getSpriteBatch().setProjectionMatrix(stage.getCamera().combined);
-
-//        Gdx.app.log("Rendered", Integer.toString(r));
-//        Gdx.app.log("maxSpritesInBatch", Integer.toString(stage.getSpriteBatch().maxSpritesInBatch));
-//        Gdx.app.log("renderCalls", Integer.toString(stage.getSpriteBatch().renderCalls));
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
         if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
-
-        // dim units based on whether the player can see them
-//        dimUnits(); // -3fps?
 
         // clear highlighting if necessary
         gController.getMap().clearHighlightAndDim();    // 0fps
@@ -628,6 +622,7 @@ public class LevelScreen extends AbstractScreen {
         if (lastSelected != null && lastSelected instanceof Unit) {
             gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit)lastSelected).getMovesLeft(), true);
             selectionPanel.setSelected((Unit)lastSelected);
+            mapDirty = true;
         }
 
         if (mapDirty) {
@@ -651,16 +646,14 @@ public class LevelScreen extends AbstractScreen {
 
             grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
-		updateTurnPane(); // -9fps (25ms)
-//
-        buildPanel.update(delta); // -16fps (83ms)
-//        upgradePanel.update(delta); // 0
-        selectionPanel.update(delta); // -4 fps
-        scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());   // -10fps
-        playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney()); // -7fps
+		updateTurnPane();
+        buildPanel.update(delta);
+        selectionPanel.update(delta);
+        scorePanel.update(delta, gController.getCurrentPlayer());
+        playerScore.update(); // -7fps
         playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
         surrenderPanel.update(delta); // 0
-//
+
 //		showCommandPreviews();
 
         if (buildImage != null) buildImage.remove();

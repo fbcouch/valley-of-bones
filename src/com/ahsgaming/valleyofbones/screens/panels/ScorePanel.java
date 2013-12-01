@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -26,7 +27,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class ScorePanel extends Panel {
     public static final String LOG = "ScorePanel";
 
-    ObjectMap<Integer, PlayerScore> playerScores = new ObjectMap<Integer, PlayerScore>();
+    PlayerScore[] playerScores;
+    Player[] players;
 
     Image turnIndicator;
 
@@ -39,25 +41,28 @@ public class ScorePanel extends Panel {
         turnIndicator = new Image(TextureManager.getSpriteFromAtlas("assets", "reticule"));
 
         int y = 0;
-        for (Player p: players) {
-            playerScores.put(p.getPlayerId(), new PlayerScore(skin, p.getPlayerName(), p.getPlayerColor(), false));
+
+        this.players = new Player[players.size];
+        for (int i = 0; i < players.size; i++) this.players[i] = players.get(i);
+        this.playerScores = new PlayerScore[players.size];
+
+        for (int i = 0; i < this.players.length; i++) {
+            playerScores[i] = new PlayerScore(skin, this.players[i]);
         }
 
         topright = true;
     }
 
-    public void update(float delta, Array<Player> players, Player currentPlayer) {
+    public void update(float delta, Player currentPlayer) {
         //dirty = true;
         super.update(delta);
 
-        for (Player p: players) {
-            if (playerScores.containsKey(p.getPlayerId())) {
-                PlayerScore ps = playerScores.get(p.getPlayerId());
-                ps.update(p.getPlayerName(), p.getCurFood(), p.getMaxFood(), (int)p.getBankMoney());
-                if (p == currentPlayer)
-                    turnIndicator.setY(ps.getY());
-            }
+        for (int i = 0; i < players.length; i++) {
+            playerScores[i].update();
+            if (players[i] == currentPlayer)
+                turnIndicator.setY(playerScores[i].getY());
         }
+
     }
 
     @Override
@@ -67,12 +72,11 @@ public class ScorePanel extends Panel {
         float x = icon.getWidth() + turnIndicator.getWidth();
         int y = 0;
         float width = 0;
-        for (Integer i: playerScores.keys()) {
-            PlayerScore ps = playerScores.get(i);
-            addActor(ps);
-            ps.setPosition(x, y);
-            y += ps.getHeight();
-            if (ps.getWidth() > width) width = ps.getWidth();
+        for (int i = 0; i < playerScores.length; i++) {
+            addActor(playerScores[i]);
+            playerScores[i].setPosition(x, y);
+            y += playerScores[i].getHeight();
+            if (playerScores[i].getWidth() > width) width = playerScores[i].getWidth();
         }
 
         turnIndicator.setX(icon.getWidth());
@@ -95,24 +99,33 @@ public class ScorePanel extends Panel {
         Label moneyLabel;
 
         Skin skin;
+        Player player;
 
         boolean showAll = false;
 
-        public PlayerScore(Skin skin, String name, Color textColor, boolean showAll) {
+        String name;
+        int curFood, maxFood, money;
+
+        public PlayerScore(Skin skin, Player player) {
+            this(skin, player, false);
+        }
+
+        public PlayerScore(Skin skin, Player player, boolean showAll) {
             super();
             this.skin = skin;
+            this.player = player;
             this.showAll = showAll;
 
             // TODO load from atlas
-            nameLabel = new Label(name, skin, "medium");
+            nameLabel = new Label(player.getPlayerName(), skin, "medium");
             foodIcon = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
             moneyIcon = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
             foodLabel = new Label(String.format(FOOD, 0, 0), skin, "medium");
             moneyLabel = new Label(String.format(MONEY, 0), skin, "medium");
 
-            nameLabel.setColor(textColor);
-            foodLabel.setColor(textColor);
-            moneyLabel.setColor(textColor);
+            nameLabel.setColor(player.getPlayerColor());
+            foodLabel.setColor(player.getPlayerColor());
+            moneyLabel.setColor(player.getPlayerColor());
 
             addActor(nameLabel);
             if (showAll) {
@@ -122,17 +135,33 @@ public class ScorePanel extends Panel {
                 addActor(moneyLabel);
             }
 
-            update(name, 0, 0, 0);
+            update();
         }
 
-        public void update(String name, int curFood, int maxFood, int money) {
-            nameLabel.setText(name);
-            foodLabel.setText(String.format(FOOD, curFood, maxFood));
-            moneyLabel.setText(String.format(MONEY, money));
+        public void update() {
 
-            moneyLabel.invalidate();
-            foodLabel.invalidate();
-            nameLabel.invalidate();
+            String name = player.getPlayerName();
+            if (!name.equals(this.name)) {
+                nameLabel.setText(player.getPlayerName());
+                nameLabel.invalidate();
+                this.name = name;
+            }
+
+            int curFood = player.getCurFood(), maxFood = player.getMaxFood();
+
+            if (this.curFood != curFood || this.maxFood != maxFood) {
+                foodLabel.setText(String.format(FOOD, player.getCurFood(), player.getMaxFood()));
+                foodIcon.invalidate();
+                this.curFood = curFood;
+                this.maxFood = maxFood;
+            }
+
+            int money = (int)player.getBankMoney();
+            if (this.money != money) {
+                moneyLabel.setText(String.format(MONEY, (int)player.getBankMoney()));
+                moneyLabel.invalidate();
+                this.money = money;
+            }
 
             int x = 0;
             float maxy = 0;

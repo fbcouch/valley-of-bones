@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +32,7 @@ public class BuildPanel extends Panel {
         super(game, levelScreen, icon, skin);
 
         tooltip = new InfoBox(null, skin);
+        items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
     }
 
     @Override
@@ -38,19 +40,20 @@ public class BuildPanel extends Panel {
         super.update(delta);
 
         // need to get all the buildings this guy can build
-        Array<Prototypes.JsonProto> items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
-        if (!items.equals(this.items)) {
-            this.items = items;
-            dirty = true;
-        }
+        // TODO future optimization - make proto lookups efficient so that this can actually be done
+//        Array<Prototypes.JsonProto> items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
+//        if (!items.equals(this.items)) {
+//            this.items = items;
+//            dirty = true;
+//        }
 
         // moved this here so that it updates every time without rebuilding
-        for (Image btn: this.buttonMap.keys()) {
-            Prototypes.JsonProto jp = buttonMap.get(btn);
+        for (int i = 0; i < buttons.size; i++) {
+            Prototypes.JsonProto jp = items.get(i);
             if (jp != null && !game.getPlayer().canBuild(jp.id, game.getNetController().getGameController()))
-                btn.setColor(0.8f, 0.4f, 0.4f, 1.0f);
+                buttons.get(i).setColor(0.8f, 0.4f, 0.4f, 1.0f);
             else
-                btn.setColor(1, 1, 1, 1);
+                buttons.get(i).setColor(1, 1, 1, 1);
         }
     }
 
@@ -61,6 +64,7 @@ public class BuildPanel extends Panel {
 
         int x = 0, i = 0;
         int spacing = 4;
+        buttons.clear();
         for (Prototypes.JsonProto jp: items) {
             final Image btn;
             Sprite sp = TextureManager.getSpriteFromAtlas("assets", jp.image);
@@ -68,28 +72,28 @@ public class BuildPanel extends Panel {
             this.addActor(btn);
             btn.setX(x);
             x += btn.getWidth() + spacing;
-
-            buttonMap.put(btn, jp);
+            final int j = i;
+            buttons.add(btn);
             btn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
 
-                    buttonClicked(btn);
+                    buttonClicked(btn, j);
                 }
 
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                     super.enter(event, x, y, pointer, fromActor);
 
-                    entered(btn);
+                    entered(btn, j);
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                     super.exit(event, x, y, pointer, toActor);
 
-                    exited(btn);
+                    exited(btn, j);
                 }
             });
 
@@ -115,25 +119,21 @@ public class BuildPanel extends Panel {
     }
 
     @Override
-    public boolean buttonClicked(Image button) {
-        if (super.buttonClicked(button)) return true;
+    public boolean buttonClicked(Image button, int i) {
+        if (super.buttonClicked(button, i)) return true;
 
-        Prototypes.JsonProto jp = buttonMap.get(button);
-
-        levelScreen.setBuildMode(jp);
+        levelScreen.setBuildMode(items.get(i));
         return true;
     }
 
-    public void entered(Image button) {
-        if (!buttonMap.containsKey(button)) return;
-
-        Prototypes.JsonProto jp = buttonMap.get(button);
-        tooltip.setProto(jp);
+    public void entered(Image button, int i) {
+        if (!(i >= 0 && i < items.size)) return;
+        tooltip.setProto(items.get(i));
         addActor(tooltip);
         tooltip.setPosition(button.getX(), button.getTop());
     }
 
-    public void exited(Image button) {
+    public void exited(Image button, int i) {
         tooltip.remove();
     }
 }

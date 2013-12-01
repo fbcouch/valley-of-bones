@@ -62,6 +62,9 @@ public class Prototypes {
 		public String image = "";
 		public String title = "";
 		public String desc = "";
+
+        public int cost = 0;
+        public int food = 0;
 		
 		public ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
 		
@@ -86,6 +89,12 @@ public class Prototypes {
 			
 			if (json.containsKey("desc"))
 				desc = json.get("desc").toString();
+
+            if (hasProperty("cost"))
+                cost = (int)Float.parseFloat(getProperty("cost").toString());
+
+            if (hasProperty("food"))
+                food = (int)Float.parseFloat(getProperty("food").toString());
 		}
 		
 		@Override

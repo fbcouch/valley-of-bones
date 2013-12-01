@@ -28,8 +28,10 @@ import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * @author jami
@@ -107,19 +109,12 @@ public class Player {
 	
 	public boolean canBuild(String protoId, GameController controller) {
 		JsonProto proto = Prototypes.getProto(protoId);
-		
-		if (!checkRequirements(proto, controller)) return false;
-		
-		// figure out if food/cost limitations are OK
-		int food = 0, cost = 0;
-		if (proto.hasProperty("food"))
-			food = (int)Float.parseFloat(proto.getProperty("food").toString());
-		if (proto.hasProperty("cost"))
-			cost = (int)Float.parseFloat(proto.getProperty("cost").toString());
 
-        if (cost < 0) return false; // Cannot build negative cost things
-		
-		return checkFoodAndCost(food, cost, controller);
+		if (!checkRequirements(proto, controller)) return false; // TODO speed this up?
+
+        // TODO took out checkFoodAndCost for now because it is very expensive
+
+		return (proto.cost > 0 && proto.cost <= bankMoney && curFood + proto.food <= maxFood);
 	}
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
@@ -155,20 +150,20 @@ public class Player {
 		for (int i=0;i<controller.getCommandQueue().size;i++) {
 			c = controller.getCommandQueue().get(i);
 			if (c.owner != getPlayerId()) continue;
-			
+
 			proto = null;
 			if (c instanceof Build) {
 				proto = Prototypes.getProto(((Build)c).building);
-				
+
 			} else if (c instanceof Upgrade) {
 				proto = Prototypes.getProto(((Upgrade)c).upgrade);
 			}
-			
+
 			if (proto != null && proto.hasProperty("food")) {
 				int foodToAdd = (int)Float.parseFloat(proto.getProperty("food").toString());
 				qFood += (foodToAdd > 0 ? foodToAdd: 0);	// cannot borrow against future food
 			}
-			
+
 			if (proto != null && proto.hasProperty("cost")) {
 				int costToAdd = (int)Float.parseFloat(proto.getProperty("cost").toString());
 				qCost += (costToAdd > 0 ? costToAdd: 0);	// cannot borrow against future cost (theoretically - that shouldn't really happen)
