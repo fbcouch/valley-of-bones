@@ -78,6 +78,7 @@ public class TileLayer {
 	
 	public void init() {
 		layerGroup.remove();
+        layerGroup.setTransform(false);
 		layerGroup.setBounds(0, 0, size.x, size.y);
 		tiles = new Image[(int)(size.x * size.y)];
 		for (int i=0; i < data.length; i++) {

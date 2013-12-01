@@ -128,6 +128,15 @@ public class GameObject extends Actor {
 			batch.draw(image, getX(), getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
 		}
 	}
+
+    public void draw(SpriteBatch batch, float x, float y, float parentAlpha) {
+        if (image != null) {
+            Color color = getColor();
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+            //batch.draw(image, getX(), getY(), image.getU(), image.getV(), image.getRegionWidth(), image.getRegionHeight(), 1, 1, getRotation());
+            batch.draw(image, x + getX(), y + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
+        }
+    }
 	
 	@Override
 	public void act(float delta) {

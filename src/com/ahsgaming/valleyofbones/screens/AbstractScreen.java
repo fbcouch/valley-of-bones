@@ -22,6 +22,7 @@
  */
 package com.ahsgaming.valleyofbones.screens;
 
+import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -147,7 +148,7 @@ public class AbstractScreen implements Screen {
 	
 	public Skin getSkin() {
 		if (skin == null) {
-			skin = new Skin(Gdx.files.local("assets/" + "newui/uiskin.json"));
+			skin = new Skin(Gdx.files.internal("newui/uiskin.json"));
 		}
 		return skin;
 	}

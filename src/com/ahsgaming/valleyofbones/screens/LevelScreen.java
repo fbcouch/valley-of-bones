@@ -38,10 +38,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -51,6 +55,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -104,6 +109,9 @@ public class LevelScreen extends AbstractScreen {
     GameObject lastSelected = null;
 
     Player lastCurrentPlayer = null;
+
+    TextureRegion hexRegion;
+    Texture texMap;
 	
 	/**
 	 * @param game
@@ -508,49 +516,50 @@ public class LevelScreen extends AbstractScreen {
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
 
+        hexRegion = TextureManager.getSpriteFromAtlas("assets", "dirt-hex");
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		stage.addActor(grpLevel);
+//		stage.addActor(grpLevel);     // -21fps
 
 		// generate the turn info
 		grpTurnPane = new Group();
 		lblTurnTimer = new Label(" ", new LabelStyle(getLargeFont(), new Color(1,1,1,1)));
-		
+
 		btnTurnDone = new TextButton("END TURN", getSkin(), "large");
 		btnTurnDone.setSize(350, 150);
 
 		lblTurnTimer.setY(btnTurnDone.getHeight());
-		
+
 		grpTurnPane.addActor(btnTurnDone);
 		grpTurnPane.addActor(lblTurnTimer);
-		
+
 		grpTurnPane.setSize(btnTurnDone.getWidth(), lblTurnTimer.getTop());
-		
-		stage.addActor(grpTurnPane);
-		
+
+//		stage.addActor(grpTurnPane);  // -8fps
+
 		// panels
         // TODO add back upgrade panel
         //stage.addActor(upgradePanel);
         upgradePanel.setAnchor(0, 64);
 
-        stage.addActor(buildPanel);
+//        stage.addActor(buildPanel);
         buildPanel.setAnchor(0, 0);
 
-        stage.addActor(selectionPanel);
+//        stage.addActor(selectionPanel);
         selectionPanel.setAnchor(stage.getWidth() * 0.5f, 0);
 
 
-        stage.addActor(scorePanel);
+//        stage.addActor(scorePanel);
         scorePanel.setAnchor(stage.getWidth(), lblTurnTimer.getTop());
 
 
-        stage.addActor(playerScore);
+//        stage.addActor(playerScore);
 
-        stage.addActor(surrenderPanel);
+//        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
 
 
@@ -594,14 +603,38 @@ public class LevelScreen extends AbstractScreen {
 	public void render(float delta) {
 		super.render(delta);
 
+        stage.getSpriteBatch().begin();
+        renderGroup(grpLevel, stage.getSpriteBatch(), grpLevel.getX(), grpLevel.getY());
+//        Rectangle rect = new Rectangle();
+//        Gdx.app.log("TextureFilter", Boolean.toString(hexRegion.getTexture().getMinFilter() ==  Texture.TextureFilter.Nearest));
+//        int r = 0;
+//        float dx = 0;
+//        float dy = 0;
+//        for (int y = 0; y < 11; y++) {
+//            dx = (y % 2 == 1 ? hexRegion.getRegionWidth() * 0.5f : 0);
+//            for (int x = 0; x < 20; x++) {
+//                rect.set(dx, dy, hexRegion.getRegionWidth(), hexRegion.getRegionHeight());
+////                if (!(rect.x > stage.getWidth() || rect.y > stage.getHeight() || rect.x + rect.width < 0 || rect.y + rect.height < 0)) {
+//                    stage.getSpriteBatch().draw(hexRegion, rect.x, rect.y, rect.width, rect.height);
+//                    r++;
+////                }
+//                dx += hexRegion.getRegionWidth();
+//            }
+//            dy += hexRegion.getRegionHeight() * 0.75f;
+//        }
+        stage.getSpriteBatch().end();
+//        Gdx.app.log("Rendered", Integer.toString(r));
+        Gdx.app.log("maxSpritesInBatch", Integer.toString(stage.getSpriteBatch().maxSpritesInBatch));
+        Gdx.app.log("renderCalls", Integer.toString(stage.getSpriteBatch().renderCalls));
+
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
         if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
 
         // dim units based on whether the player can see them
-        dimUnits();
+//        dimUnits(); // -3fps?
 
         // clear highlighting if necessary
-        gController.getMap().clearHighlightAndDim();
+        gController.getMap().clearHighlightAndDim();    // 0fps
         lastSelected = gController.getSelectedObject();
 
         selectionPanel.setSelected(null);
@@ -610,7 +643,7 @@ public class LevelScreen extends AbstractScreen {
             selectionPanel.setSelected((Unit)lastSelected);
         }
 
-        gController.getMap().update(game.getPlayer());
+//        gController.getMap().update(game.getPlayer()); // -22fps
 
 		// DRAW BOXES
 		drawUnitBoxes();
@@ -627,17 +660,17 @@ public class LevelScreen extends AbstractScreen {
 
             grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
-		updateTurnPane();
-
-        buildPanel.update(delta);
-        upgradePanel.update(delta);
-        selectionPanel.update(delta);
-        scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());
-        playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney());
-        playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
-        surrenderPanel.update(delta);
-
-		showCommandPreviews();
+//		updateTurnPane(); // -9fps (25ms)
+//
+//        buildPanel.update(delta); // -16fps (83ms)
+//        upgradePanel.update(delta); // 0
+//        selectionPanel.update(delta); // -4 fps
+//        scorePanel.update(delta, gController.getPlayers(), gController.getCurrentPlayer());   // -10fps
+//        playerScore.update(game.getPlayer().getPlayerName(), game.getPlayer().getCurFood(), game.getPlayer().getMaxFood(), (int)game.getPlayer().getBankMoney()); // -7fps
+//        playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
+        surrenderPanel.update(delta); // 0
+//
+//		showCommandPreviews();
 
         if (buildImage != null) buildImage.remove();
         if (buildMode) {
@@ -655,6 +688,27 @@ public class LevelScreen extends AbstractScreen {
         }
 
 	}
+
+    public void renderGroup(Group group, SpriteBatch batch, float x, float y) {
+        for (Actor child : group.getChildren()) {
+            if (child instanceof Group) {
+                renderGroup((Group)child, batch, x + child.getX(), y + child.getY());
+            } else if (child instanceof GameObject) {
+                ((GameObject)child).draw(batch, x, y, 1);
+
+            } else if (child instanceof Image) {
+//                Gdx.app.log("renderGroup", "image");
+
+                if (((Image)child).getDrawable().getClass() == TextureRegionDrawable.class) {
+//                    Gdx.app.log("renderGroup", "TextureRegionDrawable");
+                    TextureRegion region = ((TextureRegionDrawable)((Image)child).getDrawable()).getRegion();
+                    batch.draw(region, x + child.getX() + ((Image) child).getImageX(), y + child.getY() + ((Image) child).getImageY());
+                } else {
+                    ((Image)child).getDrawable().draw(batch, x + child.getX(), y + child.getY(), ((Image) child).getImageWidth(), ((Image) child).getImageHeight());
+                }
+            }
+        }
+    }
 	
 	public void addFloatingLabel(String text, float x, float y) {
 		Gdx.app.log(LOG, "Floating Label!");

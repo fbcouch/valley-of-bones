@@ -16,7 +16,7 @@ public class MainActivity extends AndroidApplication {
         super.onCreate(savedIstanceState);
 
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-        cfg.useGL20 = false;
+        cfg.useGL20 = true;
 
         initialize(new VOBGame(false), cfg);
     }

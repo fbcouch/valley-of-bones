@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones.screens;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -52,6 +53,9 @@ public class MainMenuScreen extends AbstractScreen {
 		super.resize(width, height);
 		
 		Skin skin = getSkin();
+        for (Texture t: skin.getAtlas().getTextures()) {
+            Gdx.app.log("Filter", t.getMinFilter().toString());
+        }
 		
 		TextButton btnNewGame = new TextButton("Single Player", skin);
 		btnNewGame.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);

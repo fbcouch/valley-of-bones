@@ -425,6 +425,8 @@ public class HexMap {
 	public Group getMapGroup() {
 		if (mapGroup == null) {
 			mapGroup = new Group();
+            mapGroup.setTransform(false);
+            objectGroup.setTransform(false);
 
 			mapGroup.setSize(getMapWidth(), getMapHeight());
 
