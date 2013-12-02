@@ -234,8 +234,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (healthBar != null) {
             batch.setColor(getColor());
             healthBar.setCurrent((float)curHP / maxHP);
-//            healthBar.draw(batch, offsetX + getX(), offsetY + getY() + 8, parentAlpha);
-            batch.draw(new TextureRegion(healthBar.img), offsetX + getX(), offsetY + getY() + 8, getWidth(), 8);
+            healthBar.draw(batch, offsetX + getX(), offsetY + getY() + 8, parentAlpha);
+//            batch.draw(new TextureRegion(healthBar.img), offsetX + getX(), offsetY + getY() + 8, getWidth(), 8);
         }
 //
         if (isTurn) {

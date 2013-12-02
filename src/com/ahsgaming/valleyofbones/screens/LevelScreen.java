@@ -37,20 +37,16 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -58,8 +54,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * @author jami
@@ -75,10 +69,14 @@ public class LevelScreen extends AbstractScreen {
 	private GameController gController = null;
 	
 	// input stuff
-	private Vector2 boxOrigin = null, boxFinal = null;
 	private boolean rightBtnDown = false;
 	
 	ShapeRenderer shapeRenderer;
+
+    // second spritebatch for map, that way it can be scaled without affecting the UI
+    SpriteBatch mapSpriteBatch;
+    OrthographicCamera mapCamera;
+    Vector2 mapScale;
 	
 	
 	// camera 'center' position - this will always remain within the bounds of the map
@@ -139,31 +137,9 @@ public class LevelScreen extends AbstractScreen {
 		if (posCamera.y > map.getHeight() * map.getTileHeight() * 0.75) posCamera.y = map.getHeight() * map.getTileHeight() * 0.75f;
 	}
 	
-	private void dimUnits() {
-		for (GameObject o: gController.getGameObjects()) {
-            if (o instanceof Unit) {
-                Unit u = (Unit)o;
-
-                if (u.getOwner() != null && u.getOwner().getPlayerId() == game.getPlayer().getPlayerId()) {
-                    u.setVisible(true);
-
-                } else {
-                    u.setVisible(gController.getMap().isBoardPositionVisible(u.getBoardPosition()));
-                    if (!u.isVisible() && u == gController.getSelectedObject()) gController.clearSelection();
-                }
-
-                if (u.getInvisible()) {
-                    u.setColor(u.getColor().r, u.getColor().g, u.getColor().b, 0.5f);
-                } else {
-                    u.setColor(u.getColor().r, u.getColor().g, u.getColor().b, 1f);
-                }
-            }
-        }
-	}
-	
 	private void drawUnitBoxes() {
 		if (gController.getSelectedObject() != null) {
-            shapeRenderer.setProjectionMatrix(stage.getCamera().combined); // BUGFIX: rescaling the window threw off the selection drawings
+            shapeRenderer.setProjectionMatrix(mapCamera.combined); // BUGFIX: rescaling the window threw off the selection drawings
 
             GameObject obj = gController.getSelectedObject();
 			shapeRenderer.begin(ShapeType.Line);
@@ -261,11 +237,12 @@ public class LevelScreen extends AbstractScreen {
 	}
 	
 	private void doProcessInput(float delta) {
-		Vector2 mapPos = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
+		Vector2 mapPos = screenToMapCoords(Gdx.input.getX() * mapScale.x, (Gdx.graphics.getHeight() - Gdx.input.getY()) * mapScale.y);
 		Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
-		
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+            Gdx.app.log("mapPos", mapPos.toString());
+            Gdx.app.log("boardPos", boardPos.toString());
 			if (buildMode){
                 if (isCurrentPlayer()) {
 
@@ -503,6 +480,10 @@ public class LevelScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		super.show();
+
+        mapSpriteBatch = new SpriteBatch();
+        mapCamera = new OrthographicCamera();
+
 		Gdx.app.log(VOBGame.LOG, "LevelScreen#show");
 		
 		grpLevel = gController.getGroup();
@@ -522,6 +503,9 @@ public class LevelScreen extends AbstractScreen {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+
+        mapCamera.setToOrtho(false, 800, 480);  // TODO
+        mapScale = new Vector2(800f / width, 480f / height);
 		
 //		stage.addActor(grpLevel);     // -21fps
 
@@ -544,22 +528,22 @@ public class LevelScreen extends AbstractScreen {
 		// panels
         // TODO add back upgrade panel
 //        stage.addActor(upgradePanel);
-        upgradePanel.setAnchor(0, 64);
+//        upgradePanel.setAnchor(0, 64);
 
-        stage.addActor(buildPanel);
+//        stage.addActor(buildPanel);
         buildPanel.setAnchor(0, 0);
 
-        stage.addActor(selectionPanel);
+//        stage.addActor(selectionPanel);
         selectionPanel.setAnchor(stage.getWidth() * 0.5f, 0);
 
 
-        stage.addActor(scorePanel);
+//        stage.addActor(scorePanel);
         scorePanel.setAnchor(stage.getWidth(), lblTurnTimer.getTop());
 
 
-        stage.addActor(playerScore);
+//        stage.addActor(playerScore);
 
-        stage.addActor(surrenderPanel);
+//        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
 
 
@@ -568,7 +552,7 @@ public class LevelScreen extends AbstractScreen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				
+				Gdx.app.log("x", Float.toString(x));
 				EndTurn et = new EndTurn();
 				et.owner = game.getPlayer().getPlayerId();
 				et.turn = gController.getGameTurn();
@@ -606,9 +590,11 @@ public class LevelScreen extends AbstractScreen {
         stage.act(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.getSpriteBatch().begin();
-        gController.getMap().draw(stage.getSpriteBatch(), -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
-        stage.getSpriteBatch().end();
+        mapCamera.update();
+        mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
+        mapSpriteBatch.begin();
+        gController.getMap().draw(mapSpriteBatch, -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
+        mapSpriteBatch.end();
         stage.draw();
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
@@ -641,8 +627,8 @@ public class LevelScreen extends AbstractScreen {
 		doProcessInput(delta);
 		
 		// update level position
-        if (VOBGame.DEBUG_LOCK_SCREEN)
-            posCamera.set(grpLevel.getWidth() * 0.5f, grpLevel.getHeight() * 0.5f - stage.getHeight() * 0.125f);
+//        if (VOBGame.DEBUG_LOCK_SCREEN)
+//            posCamera.set(grpLevel.getWidth() * 0.5f, grpLevel.getHeight() * 0.5f - stage.getHeight() * 0.125f);
 
             grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
