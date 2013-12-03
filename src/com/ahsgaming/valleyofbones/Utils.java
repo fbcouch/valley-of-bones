@@ -56,7 +56,7 @@ public class Utils {
     public static Array<Object> jsonAsArray(JsonValue json) {
         Array<Object> returnVal = new Array<Object>();
         for (JsonValue v: json) {
-            returnVal.add((v.isValue() ? v.asString() : jsonAsArray(v)));
+            returnVal.add((v.isValue() ? v.asString() : (v.isObject() ? v : jsonAsArray(v))));
         }
         return returnVal;
     }

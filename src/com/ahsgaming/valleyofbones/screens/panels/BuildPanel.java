@@ -4,6 +4,7 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -91,14 +92,14 @@ public class BuildPanel extends Panel {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                     super.enter(event, x, y, pointer, fromActor);
-
+                    LevelScreen.getInstance().setClickInterrupt(true);
                     entered(btn, j);
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                     super.exit(event, x, y, pointer, toActor);
-
+                    LevelScreen.getInstance().setClickInterrupt(false);
                     exited(btn, j);
                 }
             });

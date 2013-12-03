@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -79,7 +80,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	String protoId = "";
 	String type = "";
 	String sImage = "";
-	ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
+	JsonValue properties;
 	
 	ArrayList<Command> commandQueue = new ArrayList<Command>();
 	GameObject commandTarget;
@@ -108,8 +109,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.protoId = proto.id;
 		type = proto.type;
 		sImage = proto.image;
-        for (JsonValue v: proto.properties)
-            properties.put(v.name(), (v.isValue() ? v.asString() : Utils.jsonAsArray(v)));
+        properties = new JsonReader().parse(proto.properties.toString());
+        Gdx.app.log(LOG, properties.toString());
 		parseProperties();
         // TODO load from atlas
         overlay = TextureManager.getSpriteFromAtlas("assets", proto.image + "-overlay");
@@ -119,61 +120,28 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 	
 	public void parseProperties() {
-
-        if (properties.containsKey("ability"))
-            ability = properties.get("ability").toString();
-		
-		if (properties.containsKey("attackdamage"))
-			attackDamage = (int)Float.parseFloat(properties.get("attackdamage").toString());
-		
-		if (properties.containsKey("attackrange"))
-			attackRange = (int)Float.parseFloat(properties.get("attackrange").toString());
-		
-		if (properties.containsKey("attackspeed"))
-			attackSpeed = Float.parseFloat(properties.get("attackspeed").toString());
-		
-		if (properties.containsKey("armor"))
-			armor = (int)Float.parseFloat(properties.get("armor").toString());
-
-        if (properties.containsKey("bonus")) {
-            bonus.clear();
-            ObjectMap<String, Object> jb = (ObjectMap<String, Object>)properties.get("bonus");
-            for (String key: jb.keys()) {
-                bonus.put(key, Float.parseFloat(jb.get(key).toString()));
-            }
-        }
-
-        if (properties.containsKey("capturable"))
-            capturable = Boolean.parseBoolean(properties.get("capturable").toString());
-		
-		if (properties.containsKey("cost"))
-			cost = (int)Float.parseFloat(properties.get("cost").toString());
-		
-		if (properties.containsKey("curhp"))
-			curHP = (int)Float.parseFloat(properties.get("curhp").toString());
-		
-		if (properties.containsKey("food"))
-			food = (int)Float.parseFloat(properties.get("food").toString());
-		
-		if (properties.containsKey("maxhp"))
-			maxHP = (int)Float.parseFloat(properties.get("maxhp").toString());
-		
-		if (properties.containsKey("movespeed"))
-			moveSpeed = Float.parseFloat(properties.get("movespeed").toString());
-		
-		if (properties.containsKey("requires")) {
-			Array<Object> req = (Array<Object>)properties.get("requires");
-			requires.clear();
-			for (Object o: req) {
-				requires.add(o.toString());
-			}
-		}
-
-        if (properties.containsKey("subtype"))
-            subtype = properties.get("subtype").toString();
-		
-		if (properties.containsKey("upkeep"))
-			upkeep = (int)Float.parseFloat(properties.get("upkeep").toString());
+        ability = properties.getString("ability", "");
+        attackDamage = properties.getInt("attackdamage", 0);
+        attackRange = properties.getInt("attackrange", 0);
+        attackSpeed = properties.getFloat("attackspeed", 0);
+        armor = properties.getInt("armor", 0);
+        bonus.clear();
+        if (properties.get("bonus") != null)
+            for (JsonValue v: properties.get("bonus"))
+                bonus.put(v.name(), v.asFloat());
+        capturable = properties.getBoolean("capturable", false);
+        cost = properties.getInt("cost", 0);
+        curHP = properties.getInt("curhp", 0);
+        Gdx.app.log(LOG, Integer.toString(curHP));
+        food = properties.getInt("food", 0);
+        maxHP = properties.getInt("maxhp", 0);
+        moveSpeed = properties.getFloat("movespeed", 0);
+        requires.clear();
+        if (properties.get("requires") != null)
+            for (JsonValue v: properties.get("requires"))
+                requires.add(v.asString());
+        subtype = properties.getString("subtype", "");
+        upkeep = properties.getInt("upkeep", 0);
 	}
 
     @Override
@@ -257,21 +225,22 @@ public class Unit extends GameObject implements Selectable, Targetable {
     }
 
     public void updateProperties() {
-		properties.put("attackdamage", attackDamage);
-		properties.put("attackrange", attackRange);
-		properties.put("attackspeed", attackSpeed);
-		properties.put("armor", armor);
-        properties.put("bonus", bonus);
-		properties.put("cost", cost);
-        properties.put("capturable", capturable);
-		properties.put("curhp", curHP);
-		properties.put("food", food);
-		properties.put("maxhp", maxHP);
-		properties.put("movespeed", moveSpeed);
-		properties.put("requires", requires);
-        properties.put("subtype", subtype);
-		properties.put("upkeep", upkeep);
-        properties.put("ability", ability);
+        // TODO reimplement this with the new JSON API
+//		properties.put("attackdamage", attackDamage);
+//		properties.put("attackrange", attackRange);
+//		properties.put("attackspeed", attackSpeed);
+//		properties.put("armor", armor);
+//        properties.put("bonus", bonus);
+//		properties.put("cost", cost);
+//        properties.put("capturable", capturable);
+//		properties.put("curhp", curHP);
+//		properties.put("food", food);
+//		properties.put("maxhp", maxHP);
+//		properties.put("movespeed", moveSpeed);
+//		properties.put("requires", requires);
+//        properties.put("subtype", subtype);
+//		properties.put("upkeep", upkeep);
+//        properties.put("ability", ability);
 	}
 	
 	public void parseUpgrades() {
@@ -442,11 +411,11 @@ public class Unit extends GameObject implements Selectable, Targetable {
         this.upkeep = upkeep;
     }
 
-	public ObjectMap<String, Object> getProperties() {
+	public JsonValue getProperties() {
 		return properties;
 	}
 
-	public void setProperties(ObjectMap<String, Object> properties) {
+	public void setProperties(JsonValue properties) {
 		this.properties = properties;
 	}
 	

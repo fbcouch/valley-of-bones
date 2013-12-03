@@ -9,6 +9,13 @@ marine-overlay
   orig: 64, 64
   offset: 0, 0
   index: -1
+turn-indicator-base
+  rotate: false
+  xy: 700, 550
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
 saboteur
   rotate: false
   xy: 954, 2
@@ -39,7 +46,7 @@ gear-hammer
   index: -1
 walking-boot
   rotate: false
-  xy: 266, 550
+  xy: 752, 550
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -121,6 +128,13 @@ rune-sword
   orig: 32, 32
   offset: 0, 0
   index: -1
+turn-hud-bg
+  rotate: false
+  xy: 266, 550
+  size: 432, 32
+  orig: 432, 32
+  offset: 0, 0
+  index: -1
 hospital-cross
   rotate: false
   xy: 500, 2
@@ -161,6 +175,13 @@ marine
   xy: 686, 2
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+turn-indicator-overlay
+  rotate: false
+  xy: 726, 550
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 laser-red

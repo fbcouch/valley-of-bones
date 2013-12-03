@@ -95,8 +95,7 @@ public class InfoPanel extends Panel {
     @Override
     public void update(float delta) {
 
-        if (selected != lastSelected) {
-            selected = lastSelected;
+        if (selected != null && selected != lastSelected) {
             System.out.println("WHAT");
             Array<Label> labels = new Array<Label>();
 
@@ -123,17 +122,18 @@ public class InfoPanel extends Panel {
                 lbl.invalidate();
                 lbl.layout();
                 lbl.setSize(lbl.getPrefWidth(), lbl.getPrefHeight());
+                if (lbl.getRight() > getWidth()) setWidth(lbl.getRight());
             }
 
             healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
             healthBar.setCurrent((float)selected.getCurHP() / selected.getMaxHP());
-
+            lastSelected = selected;
         }
 
         dirty = true;
         super.update(delta);
 
-//        setVisible(selected != null);
+        setVisible(selected != null);
 //        if (selected != null)
 //            expand();
 //        else

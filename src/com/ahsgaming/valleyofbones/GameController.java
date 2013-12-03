@@ -371,6 +371,8 @@ public class GameController {
         } else {
 			Gdx.app.log(LOG, "Unknown command");
 		}
+
+        map.setMapDirty(true);
 	}
 	
 	public void executeAttack(Attack cmd) {

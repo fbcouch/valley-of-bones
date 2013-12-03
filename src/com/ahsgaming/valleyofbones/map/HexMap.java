@@ -78,6 +78,8 @@ public class HexMap {
     Player currentPlayer;
     final GameController parent;
 
+    boolean mapDirty = true;
+
 	public HexMap(GameController parent, int width, int height, int players, int points) {
 		this.parent = parent;
 
@@ -249,6 +251,10 @@ public class HexMap {
 
     public void update(Player player) {
         currentPlayer = player;
+
+        if (!mapDirty) return;
+
+        mapDirty = false;
 
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
@@ -450,6 +456,14 @@ public class HexMap {
             return traversible;
         }
         return false;
+    }
+
+    public boolean isMapDirty() {
+        return mapDirty;
+    }
+
+    public void setMapDirty(boolean dirty) {
+        mapDirty = dirty;
     }
 	
 	public void drawDebug(Vector2 offset) {
