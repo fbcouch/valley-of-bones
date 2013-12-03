@@ -35,9 +35,7 @@ import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -88,6 +86,8 @@ public class LevelScreen extends AbstractScreen {
 	TextButton btnTurnDone;
     float lastTurnTick = 0;
     int lastTickSecs = -1;
+
+    Texture greyBg;
 	
 	Group grpPreviews = new Group();
 	Array<Command> commandsPreviewed = new Array<Command>();
@@ -498,11 +498,20 @@ public class LevelScreen extends AbstractScreen {
         playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer(), true);
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(0.5f, 0.5f, 0.5f, 0.6f);
+        pixmap.fill();
+        greyBg = new Texture(pixmap);
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+
+        Image img = new Image(greyBg);
+        img.setScaleX(stage.getWidth() * 0.25f);
+        img.setScaleY(stage.getHeight());
+        stage.addActor(img);
 
         mapCamera.setToOrtho(false, 800, 480);  // TODO
         mapScale = new Vector2(800f / width, 480f / height);
@@ -511,10 +520,10 @@ public class LevelScreen extends AbstractScreen {
 
 		// generate the turn info
 		grpTurnPane = new Group();
-		lblTurnTimer = new Label(" ", new LabelStyle(getLargeFont(), new Color(1,1,1,1)));
+		lblTurnTimer = new Label(" ", new LabelStyle(getMedFont(), new Color(1,1,1,1)));
 
-		btnTurnDone = new TextButton("END TURN", getSkin(), "large");
-		btnTurnDone.setSize(350, 150);
+		btnTurnDone = new TextButton("END TURN", getSkin(), "medium");
+		btnTurnDone.setSize(200, 60);
 
 		lblTurnTimer.setY(btnTurnDone.getHeight());
 
@@ -530,18 +539,21 @@ public class LevelScreen extends AbstractScreen {
 //        stage.addActor(upgradePanel);
 //        upgradePanel.setAnchor(0, 64);
 
-//        stage.addActor(buildPanel);
+        stage.addActor(buildPanel);
         buildPanel.setAnchor(0, 0);
 
-//        stage.addActor(selectionPanel);
-        selectionPanel.setAnchor(stage.getWidth() * 0.5f, 0);
+        stage.addActor(selectionPanel);
+        selectionPanel.setAnchor(0, buildPanel.getTop() + selectionPanel.getHeight());
 
 
-//        stage.addActor(scorePanel);
-        scorePanel.setAnchor(stage.getWidth(), lblTurnTimer.getTop());
+        stage.addActor(scorePanel);
+        scorePanel.update(0);
+        scorePanel.setAnchor(0, stage.getHeight() - grpTurnPane.getHeight() - scorePanel.getHeight());
 
 
-//        stage.addActor(playerScore);
+        stage.addActor(playerScore);
+        playerScore.update();
+        playerScore.setPosition(0, scorePanel.getY() - playerScore.getHeight());
 
 //        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
@@ -566,7 +578,7 @@ public class LevelScreen extends AbstractScreen {
 	public void updateTurnPane() {
 
         if ((int)lastTurnTick > (int)gController.getTurnTimer()) {
-            lblTurnTimer.setText(String.format("TIME LEFT %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
+            lblTurnTimer.setText(String.format("TIMER %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
             if (gController.getTurnTimer() <= 5 && isCurrentPlayer()) {
                 lblTurnTimer.addAction(Actions.sequence(Actions.color(new Color(1.0f, 0, 0, 1.0f)), Actions.delay(0.2f), Actions.color(new Color(1.0f, 1f, 1f, 1f))));
             }
@@ -576,8 +588,9 @@ public class LevelScreen extends AbstractScreen {
             popupMessage("YOUR TURN!", "hazard-sign", 1);
         }
         lastTurnTick = gController.getTurnTimer();
-		grpTurnPane.setX(stage.getWidth() - grpTurnPane.getWidth());
-        grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getTop());
+		grpTurnPane.setX(0);
+        grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getHeight());
+        grpTurnPane.setY(stage.getHeight() - grpTurnPane.getHeight());
 
         btnTurnDone.setDisabled(!isCurrentPlayer());
         btnTurnDone.setColor((isCurrentPlayer() ? new Color(1, 1, 1, 1) : new Color(0.5f, 0.5f, 0.5f, 1)));
@@ -627,8 +640,8 @@ public class LevelScreen extends AbstractScreen {
 		doProcessInput(delta);
 		
 		// update level position
-//        if (VOBGame.DEBUG_LOCK_SCREEN)
-//            posCamera.set(grpLevel.getWidth() * 0.5f, grpLevel.getHeight() * 0.5f - stage.getHeight() * 0.125f);
+        if (VOBGame.DEBUG_LOCK_SCREEN)
+            posCamera.set(grpLevel.getWidth() * 0.5f, grpLevel.getHeight() * 0.5f - stage.getHeight() * 0.125f);
 
             grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
@@ -637,7 +650,7 @@ public class LevelScreen extends AbstractScreen {
         selectionPanel.update(delta);
         scorePanel.update(delta, gController.getCurrentPlayer());
         playerScore.update(); // -7fps
-        playerScore.setPosition(stage.getWidth() - playerScore.getWidth(), stage.getHeight() - playerScore.getHeight());
+        playerScore.setScale(stage.getWidth() * 0.25f / playerScore.getWidth());
         surrenderPanel.update(delta); // 0
 
 //		showCommandPreviews();

@@ -50,7 +50,7 @@ public class ScorePanel extends Panel {
             playerScores[i] = new PlayerScore(skin, this.players[i]);
         }
 
-        topright = true;
+        topright = false;
     }
 
     public void update(float delta, Player currentPlayer) {
@@ -69,7 +69,7 @@ public class ScorePanel extends Panel {
     public void rebuild() {
         super.rebuild();
 
-        float x = icon.getWidth() + turnIndicator.getWidth();
+        float x = turnIndicator.getWidth();
         int y = 0;
         float width = 0;
         for (int i = 0; i < playerScores.length; i++) {
@@ -79,11 +79,11 @@ public class ScorePanel extends Panel {
             if (playerScores[i].getWidth() > width) width = playerScores[i].getWidth();
         }
 
-        turnIndicator.setX(icon.getWidth());
+        turnIndicator.setX(0);
         addActor(turnIndicator);
 
         setWidth(x + width);
-        if (icon.getTop() < y) setHeight(y);
+        setHeight(y);
     }
 
     public static class PlayerScore extends Group {
@@ -127,12 +127,14 @@ public class ScorePanel extends Panel {
             foodLabel.setColor(player.getPlayerColor());
             moneyLabel.setColor(player.getPlayerColor());
 
-            addActor(nameLabel);
+
             if (showAll) {
                 addActor(foodIcon);
                 addActor(moneyIcon);
                 addActor(foodLabel);
                 addActor(moneyLabel);
+            } else {
+                addActor(nameLabel);
             }
 
             update();
@@ -165,9 +167,7 @@ public class ScorePanel extends Panel {
 
             int x = 0;
             float maxy = 0;
-            nameLabel.setX(x);
-            x += nameLabel.getPrefWidth();
-            maxy = nameLabel.getTop();
+
             if (showAll) {
                 foodIcon.setX(x);
                 x += foodIcon.getPrefWidth();
@@ -184,6 +184,10 @@ public class ScorePanel extends Panel {
                 moneyLabel.setX(x);
                 x += moneyLabel.getPrefWidth();
                 if (moneyLabel.getTop() > maxy) maxy = moneyLabel.getTop();
+            } else {
+                nameLabel.setX(x);
+                x += nameLabel.getPrefWidth();
+                maxy = nameLabel.getTop();
             }
 
             setSize(x, maxy);

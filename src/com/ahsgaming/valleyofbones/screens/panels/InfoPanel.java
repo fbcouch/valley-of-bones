@@ -75,7 +75,7 @@ public class InfoPanel extends Panel {
             }
         });
 
-        lblTitle = new Label("Nothing selected", skin, "medium");
+        lblTitle = new Label("NOTHING", skin, "medium");
         lblHealth = new Label(String.format(HEALTH, 0, 0), skin, "small");
         lblAttack = new Label(String.format(ATTACK, 0), skin, "medium");
         lblRange = new Label(String.format(RANGE, 0), skin, "medium");
@@ -131,10 +131,10 @@ public class InfoPanel extends Panel {
         dirty = true;
         super.update(delta);
 
-        if (selected != null)
-            expand();
-        else
-            contract();
+//        if (selected != null)
+//            expand();
+//        else
+//            contract();
 
     }
 
@@ -148,7 +148,6 @@ public class InfoPanel extends Panel {
     @Override
     public void rebuild() {
         super.rebuild();
-        icon.removeListener(icon.getListeners().first());
 
         int y = 0;
         float x = 0;
@@ -219,10 +218,6 @@ public class InfoPanel extends Panel {
         addActor(lblTitle);
         if (lblTitle.getRight() > x) x = lblTitle.getRight();
         y += lblTitle.getHeight();
-
-        icon.setPosition(0, y);
-        y += icon.getHeight();
-        if (icon.getRight() > x) x = icon.getRight();
 
         setSize(x, y);
         built = true;

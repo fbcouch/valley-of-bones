@@ -59,22 +59,12 @@ public class Panel extends Group {
         }
         if (!built || dirty) rebuild();
 
-        if (doexp) expand();
+//        if (doexp) expand();
     }
 
     public void rebuild() {
         this.clear();
 
-        this.addActor(icon);
-        icon.setPosition(0, 0);
-        icon.getListeners().clear();
-        this.icon.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                buttonClicked(icon, -1);
-            }
-        });
         built = true;
         dirty = false;
 
