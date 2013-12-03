@@ -33,7 +33,6 @@ import com.ahsgaming.valleyofbones.screens.panels.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -52,7 +51,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -66,10 +64,7 @@ public class LevelScreen extends AbstractScreen {
 	private Group grpLevel;
 	
 	protected GameController gController = null;
-	
-	// input stuff
-	private boolean rightBtnDown = false;
-	
+
 	ShapeRenderer shapeRenderer;
 
     // second spritebatch for map, that way it can be scaled without affecting the UI
@@ -82,31 +77,21 @@ public class LevelScreen extends AbstractScreen {
     protected Vector2 posCamera = new Vector2();
 	
 	// UX stuff
-	Group grpTurnPane = new Group();
-	Label lblTurnTimer;
 	TextButton btnTurnDone;
-    float lastTurnTick = 0;
-    int lastTickSecs = -1;
-    Vector2 mapDragOffset;
-    Vector2 mapLastCursorPos;
-    boolean mapDragged;
+    float lastTurnTick;
 
     Texture greyBg;
 	
 	Group grpPreviews = new Group();
-	Array<Command> commandsPreviewed = new Array<Command>();
 
     Panel buildPanel;
     Panel upgradePanel;
     InfoPanel selectionPanel;
-    ScorePanel scorePanel;
     ScorePanel.PlayerScore playerScore;
     SurrenderPanel surrenderPanel;
     TurnPanel turnPanel;
 
     boolean clickInterrupt = false;
-
-	private boolean vKeyDown = false, bKeyDown = false, delKeyDown = false, spaceKeyDown = false;
 
     boolean buildMode = false;
     Prototypes.JsonProto buildProto = null;
@@ -114,8 +99,6 @@ public class LevelScreen extends AbstractScreen {
 
     GameObject lastSelected = null;
 
-    Player lastCurrentPlayer = null;
-	
 	/**
 	 * @param game
 	 */
@@ -234,206 +217,26 @@ public class LevelScreen extends AbstractScreen {
             if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
         }
     }
-	
-	private void doProcessInput(float delta) {
-        Vector2 touchPos = new Vector2((Gdx.graphics.getWidth() - Gdx.input.getX()) * mapScale.x, Gdx.input.getY() * mapScale.y);
-		Vector2 mapPos = screenToMapCoords(Gdx.input.getX() * mapScale.x, (Gdx.graphics.getHeight() - Gdx.input.getY()) * mapScale.y);
-		Vector2 boardPos = gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
 
-        if (!clickInterrupt) {
-            if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-                if (mapLastCursorPos == null) {
-                    mapDragOffset = new Vector2().add(posCamera).sub(touchPos);
-                    mapLastCursorPos = new Vector2(mapPos);
-                } else {
-                    if (!mapLastCursorPos.epsilonEquals(mapPos, 1)) {
-                        Gdx.app.log(LOG, "drag!");
-                        Gdx.app.log(LOG, posCamera.toString());
-                        posCamera = new Vector2(mapDragOffset).add(touchPos);
-                        mapDragged = true;
-                        Gdx.app.log(LOG, posCamera.toString());
+    protected void attack(int unit, int target) {
+        Attack at = new Attack();
+        at.owner = game.getPlayer().getPlayerId();
+        at.turn = gController.getGameTurn();
+        at.unit = unit;
+        at.target = target;
 
-                    }
-                }
-            } else {
-                if (mapLastCursorPos != null && !mapDragged) {
-                    Gdx.app.log(LOG, "click!");
+        game.sendCommand(at);
+    }
 
-                    if (buildMode) {
-                        if (isCurrentPlayer()) {
+    protected void move(int unit, Vector2 boardPos) {
+        Move mv = new Move();
+        mv.owner = game.getPlayer().getPlayerId();
+        mv.turn = gController.getGameTurn();
+        mv.unit = unit;
+        mv.toLocation = boardPos;
 
-                            if (boardPos.x < 0 || boardPos.y < 0 || boardPos.x >= gController.getMap().getWidth() || boardPos.y >= gController.getMap().getHeight()) {
-                                unsetBuildMode();
-                            } else if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
-                                Build bld = new Build();
-                                bld.owner = game.getPlayer().getPlayerId();
-                                bld.turn = gController.getGameTurn();
-                                bld.building = buildProto.id;
-                                bld.location = boardPos;
-                                game.sendCommand(bld);
-                                if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
-                            }
-                        }
-                    } else {
-                        gController.selectObjAtBoardPos(boardPos, game.getPlayer());
-                        if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-                            Unit u = (Unit)gController.getSelectedObject();
-                            Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-                            gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
-                        }
-                    }
-                }
-                mapDragOffset = null;
-                mapLastCursorPos = null;
-                mapDragged = false;
-            }
-        }
-
-//		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-//			if (buildMode){
-//                if (isCurrentPlayer()) {
-//
-//                    if (boardPos.x < 0 || boardPos.y < 0 || boardPos.x >= gController.getMap().getWidth() || boardPos.y >= gController.getMap().getHeight()) {
-//                        unsetBuildMode();
-//                    } else if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
-//                        Build bld = new Build();
-//                        bld.owner = game.getPlayer().getPlayerId();
-//                        bld.turn = gController.getGameTurn();
-//                        bld.building = buildProto.id;
-//                        bld.location = boardPos;
-//                        game.sendCommand(bld);
-//                        if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
-//                    }
-//                }
-//
-//			} else {
-//				if (!clickInterrupt) {
-//                    gController.selectObjAtBoardPos(boardPos, game.getPlayer());
-//                    if (gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-//                        Unit u = (Unit)gController.getSelectedObject();
-//                        Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-//                        gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
-//                    }
-//                }
-//			}
-//		}
-//
-//		if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
-//			rightBtnDown = true;
-//		} else {
-//
-//            if (rightBtnDown && buildMode) {
-//                unsetBuildMode();
-//            } else if (rightBtnDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-//
-//				if (isCurrentPlayer()) {
-//                    // TODO issue context-dependent commands
-//                    Array<GameObject> objsUnderCursor = null;
-//                    GameObject target = null;
-//
-//                    Unit unit = (Unit)gController.getSelectedObject();
-//                    if (objsUnderCursor == null) {
-//                        objsUnderCursor = gController.getObjsAtPosition(screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY()));
-//
-//                        for (GameObject cur: objsUnderCursor) {
-//                            if (cur.getOwner() != game.getPlayer()) {
-//                                // TODO find the object with the highest 'threat'?
-//                                if ((cur instanceof Unit && (!((Unit)cur).getInvisible() || unit.isDetector())))
-//                                    target = cur;
-//                            }
-//                        }
-//                    }
-//
-//                    if (target != null) {
-//                        // attack this target!
-//                        Attack at = new Attack();
-//                        at.owner = game.getPlayer().getPlayerId();
-//                        at.turn = gController.getGameTurn();
-//                        at.unit = unit.getObjId();
-//                        at.target = target.getObjId();
-//
-//                        game.sendCommand(at);
-//                    } else {
-//                        // move to this location
-//
-//                        Move mv = new Move();
-//                        mv.owner = game.getPlayer().getPlayerId();
-//                        mv.turn = gController.getGameTurn();
-//                        mv.unit = unit.getObjId();
-//                        mv.toLocation = boardPos;
-//                        if (gController.validate(mv))
-//                            game.sendCommand(mv);
-//
-//                    }
-//
-//                }
-//
-//			}
-//            rightBtnDown = false;
-//		}
-//
-//		if (!Gdx.input.isButtonPressed(Buttons.RIGHT) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
-//
-//            if (Gdx.input.isKeyPressed(Keys.V)) {
-//                if (!vKeyDown) upgradePanel.toggle();
-//
-//                vKeyDown = true;
-//			} else {
-//                vKeyDown = false;
-//            }
-//
-//            if (Gdx.input.isKeyPressed(Keys.B)) {
-//                if (!bKeyDown) buildPanel.toggle();
-//
-//                bKeyDown = true;
-//            } else {
-//                bKeyDown = false;
-//            }
-//
-//            if (Gdx.input.isKeyPressed(Keys.A) && isCurrentPlayer() && game.getPlayer().canBuild("marine-base", gController)) {
-//                setBuildMode(Prototypes.getProto("marine-base"));
-//            } else if (Gdx.input.isKeyPressed(Keys.S) && isCurrentPlayer() && game.getPlayer().canBuild("saboteur-base", gController)) {
-//                setBuildMode(Prototypes.getProto("saboteur-base"));
-//            } else if (Gdx.input.isKeyPressed(Keys.D) && isCurrentPlayer() && game.getPlayer().canBuild("tank-base", gController)) {
-//                setBuildMode(Prototypes.getProto("tank-base"));
-//            } else if (Gdx.input.isKeyPressed(Keys.F) && isCurrentPlayer() && game.getPlayer().canBuild("sniper-base", gController)) {
-//                setBuildMode(Prototypes.getProto("sniper-base"));
-//            }
-//		}
-//
-//
-//		// TODO make a list of flags or something rather than creating fields for every key that might get pressed...
-//		// TODO reset keys 'n' things
-//		if (vKeyDown && !Gdx.input.isKeyPressed(Keys.V)) {
-//			vKeyDown = false;
-//		}
-//
-//        if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
-//            if (buildMode) unsetBuildMode();
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Keys.FORWARD_DEL)) {
-//            if (!delKeyDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-//                refundUnit((Unit)gController.getSelectedObject());
-//            }
-//            delKeyDown = true;
-//        } else {
-//            delKeyDown = false;
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Keys.SPACE)) {
-//            if (!spaceKeyDown && gController.getSelectedObject() != null && gController.getSelectedObject() instanceof Unit) {
-//                ActivateAbility ab = new ActivateAbility();
-//                ab.unit = gController.getSelectedObject().getObjId();
-//                ab.owner = game.getPlayer().getPlayerId();
-//                ab.turn = gController.getGameTurn();
-//                game.sendCommand(ab);
-//            }
-//            spaceKeyDown = true;
-//        } else {
-//            spaceKeyDown = false;
-//        }
-	}
+        game.sendCommand(mv);
+    }
 
     public boolean canRefund(Unit unit) {
         return gController.canPlayerRefundUnit(game.getPlayer(), unit);
@@ -461,6 +264,10 @@ public class LevelScreen extends AbstractScreen {
         }
     }
 
+    public boolean isBuildMode() {
+        return buildMode;
+    }
+
     public void unsetBuildMode() {
         buildMode = false;
         buildProto = null;
@@ -484,35 +291,6 @@ public class LevelScreen extends AbstractScreen {
 	
 	public Vector2 mapToScreenCoords(float x, float y) {
 		return new Vector2(x - (posCamera.x - stage.getWidth() * 0.625f), y - (posCamera.y - stage.getHeight() * 0.5f));
-	}
-	
-	public void showCommandPreviews() {
-		// TODO optimize this
-		grpPreviews.clear();
-		grpPreviews.remove();
-		grpLevel.addActor(grpPreviews);
-		
-		
-		for (Command c: gController.getCommandQueue()) {
-			if (c.owner == game.getPlayer().getPlayerId()) {
-				
-				if (c instanceof Build || c instanceof Move) {
-					Image img = null;
-					Vector2 pos = new Vector2();
-					if (c instanceof Build) {
-						img = new Image(TextureManager.getSpriteFromAtlas("assets", Prototypes.getProto(((Build)c).building).image));
-						pos = ((Build)c).location;
-					} else if (c instanceof Move) {
-						img = new Image(gController.getObjById(((Move)c).unit).getImage());
-						pos = ((Move)c).toLocation;
-					}
-					Vector2 sPos = gController.getMap().boardToMapCoords(pos.x, pos.y);
-					img.setPosition(sPos.x, sPos.y);
-					img.setColor(1, 1, 1, 0.5f);
-					grpPreviews.addActor(img);
-				}
-			}
-		}
 	}
 
     public boolean isCurrentPlayer() {
@@ -540,7 +318,6 @@ public class LevelScreen extends AbstractScreen {
         buildPanel = new BuildPanel(game, this, "gear-hammer", getSkin());
         upgradePanel = new Panel(game, this, "tinker", getSkin());
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
-        scorePanel = new ScorePanel(game, this, "scores", getSkin(), gController.getPlayers());
         turnPanel = new TurnPanel(gController);
 
         playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer(), true);
@@ -566,23 +343,13 @@ public class LevelScreen extends AbstractScreen {
         mapCamera.setToOrtho(false, 800, 480);  // TODO
         mapScale = new Vector2(800f / width, 480f / height);
 		
-//		stage.addActor(grpLevel);     // -21fps
+		stage.addActor(grpLevel);     // -21fps
 
 		// generate the turn info
-		grpTurnPane = new Group();
-		lblTurnTimer = new Label(" ", new LabelStyle(getMedFont(), new Color(1,1,1,1)));
-
 		btnTurnDone = new TextButton("END TURN", getSkin(), "medium");
-		btnTurnDone.setSize(200, 60);
-
-		lblTurnTimer.setY(btnTurnDone.getHeight());
-
-		grpTurnPane.addActor(btnTurnDone);
-		grpTurnPane.addActor(lblTurnTimer);
-
-		grpTurnPane.setSize(btnTurnDone.getWidth(), lblTurnTimer.getTop());
-
-		stage.addActor(grpTurnPane);  // -8fps
+		btnTurnDone.setSize(200, 40);
+        btnTurnDone.setPosition(0, stage.getHeight() - btnTurnDone.getHeight());
+		stage.addActor(btnTurnDone);  // -8fps
 
 		// panels
         // TODO add back upgrade panel
@@ -592,16 +359,11 @@ public class LevelScreen extends AbstractScreen {
         stage.addActor(buildPanel);
         buildPanel.setAnchor(0, 0);
 
-        stage.addActor(scorePanel);
-        scorePanel.update(0);
-        scorePanel.setAnchor(0, stage.getHeight() - grpTurnPane.getHeight() - scorePanel.getHeight());
-
         stage.addActor(playerScore);
         playerScore.update();
-        playerScore.setPosition(0, scorePanel.getY() - playerScore.getHeight());
+        playerScore.setPosition(0, btnTurnDone.getY() - playerScore.getHeight());
 
         stage.addActor(selectionPanel);
-        selectionPanel.setPosition(0, playerScore.getY() - selectionPanel.getHeight());
 
 //        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
@@ -625,22 +387,11 @@ public class LevelScreen extends AbstractScreen {
 		});
 	}
 
-	public void updateTurnPane() {
-
-        if ((int)lastTurnTick > (int)gController.getTurnTimer()) {
-            lblTurnTimer.setText(String.format("TIMER %02d:%02d", (int)Math.floor(gController.getTurnTimer() / 60), (int)gController.getTurnTimer() % 60));
-            if (gController.getTurnTimer() <= 5 && isCurrentPlayer()) {
-                lblTurnTimer.addAction(Actions.sequence(Actions.color(new Color(1.0f, 0, 0, 1.0f)), Actions.delay(0.2f), Actions.color(new Color(1.0f, 1f, 1f, 1f))));
-            }
-        }
-
+	public void updateEndTurnBtn() {
         if (gController.getTurnTimer() > 59 && isCurrentPlayer() && lastTurnTick < gController.getTurnTimer()) {
             popupMessage("YOUR TURN!", "hazard-sign", 1);
         }
         lastTurnTick = gController.getTurnTimer();
-		grpTurnPane.setX(0);
-        grpTurnPane.setSize(btnTurnDone.getWidth(), grpTurnPane.getHeight());
-        grpTurnPane.setY(stage.getHeight() - grpTurnPane.getHeight());
 
         btnTurnDone.setDisabled(!isCurrentPlayer());
         btnTurnDone.setColor((isCurrentPlayer() ? new Color(1, 1, 1, 1) : new Color(0.5f, 0.5f, 0.5f, 1)));
@@ -664,7 +415,7 @@ public class LevelScreen extends AbstractScreen {
         if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
 
         // clear highlighting if necessary
-        gController.getMap().clearHighlightAndDim();    // 0fps
+        gController.getMap().clearHighlightAndDim();
         if (lastSelected != gController.getSelectedObject())
             gController.getMap().setMapDirty(true);
 
@@ -676,78 +427,38 @@ public class LevelScreen extends AbstractScreen {
             selectionPanel.setSelected((Unit)lastSelected);
         }
 
-        gController.getMap().update(game.getPlayer()); // -22fps
+        gController.getMap().update(game.getPlayer());
 
 		// DRAW BOXES
 		drawUnitBoxes();
 
-		// move the camera around
-//		doCameraMovement(delta);
-		
-		// get input
-//		doProcessInput(delta);
-		
-		// update level position
-//        if (VOBGame.DEBUG_LOCK_SCREEN)
-//            posCamera.set(grpLevel.getWidth() * 0.5f, grpLevel.getHeight() * 0.5f - stage.getHeight() * 0.125f);
+        grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.625f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
-            grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
-
-		updateTurnPane();
+		updateEndTurnBtn();
         buildPanel.update(delta);
+
         selectionPanel.update(delta);
+        selectionPanel.setPosition(0, playerScore.getY() - selectionPanel.getHeight());
         if (selectionPanel.getWidth() > stage.getWidth() * 0.25f)
             selectionPanel.setScale(stage.getWidth() * 0.25f / selectionPanel.getWidth());
         else
             selectionPanel.setScale(1);
 
-        scorePanel.update(delta, gController.getCurrentPlayer());
-        playerScore.update(); // -7fps
+        playerScore.update();
         if (playerScore.getWidth() > stage.getWidth() * 0.25f)
             playerScore.setScale(stage.getWidth() * 0.25f / playerScore.getWidth());
-        surrenderPanel.update(delta); // 0
+        surrenderPanel.update(delta);
 
         turnPanel.update(isCurrentPlayer());
 
-//		showCommandPreviews();
-
         if (buildImage != null) buildImage.remove();
         if (buildMode) {
-            grpLevel.addActor(buildImage);
-
-            Vector2 loc = screenToMapCoords(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY());
-            loc = gController.getMap().mapToBoardCoords(loc.x, loc.y);
-            if (loc.x < 0) loc.x = 0; else if (loc.x >= gController.getMap().getWidth()) loc.x = gController.getMap().getWidth() - 1;
-            if (loc.y < 0) loc.y = 0; else if (loc.y >= gController.getMap().getHeight()) loc.y = gController.getMap().getHeight() - 1;
-            loc = gController.getMap().boardToMapCoords(loc.x, loc.y);
-
-            buildImage.setPosition(loc.x, loc.y);
+            // TODO build preview for PC players (though that will go in a listener now)
 
             if (!isCurrentPlayer()) unsetBuildMode();
         }
 
 	}
-
-    public void renderGroup(Group group, SpriteBatch batch, float x, float y) {
-        for (Actor child : group.getChildren()) {
-            if (child instanceof Group) {
-                renderGroup((Group)child, batch, x + child.getX(), y + child.getY());
-            } else if (child instanceof GameObject) {
-                ((GameObject)child).draw(batch, x, y, 1);
-
-            } else if (child instanceof Image) {
-//                Gdx.app.log("renderGroup", "image");
-
-                if (((Image)child).getDrawable().getClass() == TextureRegionDrawable.class) {
-//                    Gdx.app.log("renderGroup", "TextureRegionDrawable");
-                    TextureRegion region = ((TextureRegionDrawable)((Image)child).getDrawable()).getRegion();
-                    batch.draw(region, x + child.getX() + ((Image) child).getImageX(), y + child.getY() + ((Image) child).getImageY());
-                } else {
-                    ((Image)child).getDrawable().draw(batch, x + child.getX(), y + child.getY(), ((Image) child).getImageWidth(), ((Image) child).getImageHeight());
-                }
-            }
-        }
-    }
 	
 	public void addFloatingLabel(String text, float x, float y) {
 		Gdx.app.log(LOG, "Floating Label!");

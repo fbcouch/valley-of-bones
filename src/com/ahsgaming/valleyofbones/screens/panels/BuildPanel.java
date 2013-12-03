@@ -30,6 +30,8 @@ public class BuildPanel extends Panel {
 
     InfoBox tooltip;
 
+    boolean buildMode;
+
     public BuildPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
         super(game, levelScreen, icon, skin);
 
@@ -57,6 +59,12 @@ public class BuildPanel extends Panel {
             else
                 buttons.get(i).setColor(1, 1, 1, 1);
         }
+        Gdx.app.log("buildMode", Boolean.toString(buildMode));
+        if (buildMode && !levelScreen.isBuildMode()) {
+            buildMode = false;
+            tooltip.remove();
+        }
+
     }
 
     @Override
@@ -121,7 +129,9 @@ public class BuildPanel extends Panel {
 
         icon.setPosition(x, 0);
         this.setWidth(x);
-        this.setHeight(buttons.get(0).getY());
+        this.setHeight(buttons.get(0).getTop());
+
+        if (!levelScreen.isBuildMode()) tooltip.remove();
 
 //        if (expanded) setPosition(0, getY()); else setPosition(-1 * icon.getX(), getY());
     }
@@ -131,17 +141,22 @@ public class BuildPanel extends Panel {
         if (super.buttonClicked(button, i)) return true;
 
         levelScreen.setBuildMode(items.get(i));
+        tooltip.setProto(items.get(i));
+        addActor(tooltip);
+        tooltip.setPosition(0, getHeight());
+        buildMode = levelScreen.isBuildMode();
         return true;
     }
 
     public void entered(Image button, int i) {
         if (!(i >= 0 && i < items.size)) return;
+        levelScreen.setBuildMode(items.get(i));
         tooltip.setProto(items.get(i));
         addActor(tooltip);
-        tooltip.setPosition(button.getX(), button.getTop());
+        tooltip.setPosition(0, getHeight());
     }
 
     public void exited(Image button, int i) {
-        tooltip.remove();
+        if (!buildMode) tooltip.remove();
     }
 }

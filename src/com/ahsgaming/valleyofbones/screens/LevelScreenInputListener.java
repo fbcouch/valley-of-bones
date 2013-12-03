@@ -1,5 +1,6 @@
 package com.ahsgaming.valleyofbones.screens;
 
+import com.ahsgaming.valleyofbones.GameObject;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -56,14 +57,42 @@ public class LevelScreenInputListener extends ActorGestureListener {
             if (levelScreen.gController.getSelectedObject() != null && levelScreen.gController.getSelectedObject() instanceof Unit) {
                 Unit u = (Unit)levelScreen.gController.getSelectedObject();
                 Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-//                levelScreen.gController.getMap().highlightArea(u.getBoardPosition(), u.getMovesLeft(), true);
             }
         }
     }
 
     @Override
     public boolean longPress(Actor actor, float x, float y) {
-        return super.longPress(actor, x, y);    //To change body of overridden methods use File | Settings | File Templates.
+        if (mapInterrupt) return super.longPress(actor, x, y);
+
+        Vector2 mapPos = levelScreen.screenToMapCoords(x , y);
+        Vector2 boardPos = levelScreen.gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
+
+        if (levelScreen.gController.getSelectedObject() != null &&
+            levelScreen.isCurrentPlayer() &&
+            levelScreen.gController.getSelectedObject().getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId())
+        {
+            GameObject target = null;
+            Unit unit = (Unit)levelScreen.gController.getSelectedObject();
+            for (GameObject cur: levelScreen.gController.getObjsAtPosition(mapPos)) {
+                if (cur instanceof Unit && (!((Unit)cur).getInvisible() || unit.isDetector()))
+                    target = cur;
+            }
+
+            if (target != null) {
+                if (target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
+                    levelScreen.attack(unit.getObjId(), target.getObjId());
+                }
+
+            } else {
+                levelScreen.move(unit.getObjId(), boardPos);
+            }
+
+
+
+        }
+
+        return true;
     }
 
     @Override
