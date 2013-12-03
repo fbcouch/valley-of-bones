@@ -5,6 +5,7 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -62,7 +63,7 @@ public class BuildPanel extends Panel {
         super.rebuild();
 
 
-        int x = 0, i = 0;
+        int x = 0, i = 0, y = (items.size / 3);
         int spacing = 4;
         buttons.clear();
         for (Prototypes.JsonProto jp: items) {
@@ -70,7 +71,12 @@ public class BuildPanel extends Panel {
             Sprite sp = TextureManager.getSpriteFromAtlas("assets", jp.image);
             btn = new Image(sp);
             this.addActor(btn);
+            if (i > 0 && i % 3 == 0) {
+                x = 0;
+                y--;
+            }
             btn.setX(x);
+            btn.setY(y * (btn.getHeight() + spacing));
             x += btn.getWidth() + spacing;
             final int j = i;
             buttons.add(btn);
@@ -113,9 +119,10 @@ public class BuildPanel extends Panel {
         }
 
         icon.setPosition(x, 0);
-        this.setWidth(x + icon.getWidth());
+        this.setWidth(x);
+        this.setHeight(buttons.get(0).getY());
 
-        if (expanded) setPosition(0, getY()); else setPosition(-1 * icon.getX(), getY());
+//        if (expanded) setPosition(0, getY()); else setPosition(-1 * icon.getX(), getY());
     }
 
     @Override

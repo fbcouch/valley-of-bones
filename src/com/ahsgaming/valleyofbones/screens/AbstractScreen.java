@@ -57,19 +57,6 @@ public class AbstractScreen implements Screen {
 		this.game = game;
 		this.stage = new Stage(0, 0, true);
 		this.gameGroup = new Group();
-
-        if (fontSmall == null) {
-//            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("newui/fonts/Roboto-Condensed.ttf"));
-//            fontSmall = generator.generateFont(16);
-//
-//            fontMed = generator.generateFont(24);
-//            fontLarge = generator.generateFont(32);
-//            skin.getFont("default-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//            skin.getFont("small-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//            skin.getFont("medium-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-//            skin.getFont("large-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
-        }
 	}
 	
 	/**

@@ -82,37 +82,37 @@ public class InfoBox extends Group {
 
         int money = 0;
         if (this.proto.hasProperty("cost"))
-            money = (int)Float.parseFloat(this.proto.getProperty("cost").toString());
+            money = this.proto.getProperty("cost").asInt();
         lblMoney.setText(String.format(MONEY, money));
 
         int food = 0;
         if (this.proto.hasProperty("food"))
-            food = (int)Float.parseFloat(this.proto.getProperty("food").toString());
+            food = this.proto.getProperty("food").asInt();
         lblFood.setText(String.format(FOOD, food));
 
         int maxhp = 0;
         if (this.proto.hasProperty("maxhp"))
-            maxhp = (int)Float.parseFloat(this.proto.getProperty("maxhp").toString());
+            maxhp = this.proto.getProperty("maxhp").asInt();
         lblHealth.setText(String.format("%d", maxhp));
 
         int attack = 0;
         if (this.proto.hasProperty("attackdamage"))
-            attack = (int)Float.parseFloat(this.proto.getProperty("attackdamage").toString());
+            attack = this.proto.getProperty("attackdamage").asInt();
         lblAttack.setText(String.format("%d", attack));
 
         int range = 0;
         if (this.proto.hasProperty("attackrange"))
-            range = (int)Float.parseFloat(this.proto.getProperty("attackrange").toString());
+            range = this.proto.getProperty("attackrange").asInt();
         lblRange.setText(String.format("%d", range));
 
         int speed = 0;
         if (this.proto.hasProperty("movespeed"))
-            speed = (int)Float.parseFloat(this.proto.getProperty("movespeed").toString());
+            speed = this.proto.getProperty("movespeed").asInt();
         lblSpeed.setText(String.format("%d", speed));
 
         int armor = 0;
         if (this.proto.hasProperty("armor"))
-            range = (int)Float.parseFloat(this.proto.getProperty("armor").toString());
+            range = this.proto.getProperty("armor").asInt();
         lblArmor.setText(String.format("%d", range));
 
         Array<Label> labels = new Array<Label>();

@@ -37,7 +37,7 @@ public class InfoPanel extends Panel {
     Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft, lblRefund;
     Image iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund;
 
-    Unit selected;
+    Unit selected, lastSelected;
 
     ProgressBar healthBar;
 
@@ -88,14 +88,16 @@ public class InfoPanel extends Panel {
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
         expanded = true;
-
+        update(0);
 
     }
 
     @Override
     public void update(float delta) {
 
-        if (selected != null) {
+        if (selected != lastSelected) {
+            selected = lastSelected;
+            System.out.println("WHAT");
             Array<Label> labels = new Array<Label>();
 
             lblTitle.setText(selected.getTitle());
@@ -123,7 +125,7 @@ public class InfoPanel extends Panel {
                 lbl.setSize(lbl.getPrefWidth(), lbl.getPrefHeight());
             }
 
-            healthBar.setSize(lblHealth.getWidth(), 4);
+            healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
             healthBar.setCurrent((float)selected.getCurHP() / selected.getMaxHP());
 
         }
@@ -131,6 +133,7 @@ public class InfoPanel extends Panel {
         dirty = true;
         super.update(delta);
 
+//        setVisible(selected != null);
 //        if (selected != null)
 //            expand();
 //        else
@@ -162,35 +165,7 @@ public class InfoPanel extends Panel {
 
         }
 
-        iconMovesLeft.setPosition(0, y);
-        addActor(iconMovesLeft);
 
-        lblMovesLeft.setPosition(iconMovesLeft.getRight(), y);
-        addActor(lblMovesLeft);
-
-        iconAttacksLeft.setPosition(lblMovesLeft.getRight(), y);
-        addActor(iconAttacksLeft);
-
-        lblAttacksLeft.setPosition(iconAttacksLeft.getRight(), y);
-        if (lblAttacksLeft.getRight() > x) x = lblAttacksLeft.getRight();
-        y += iconAttacksLeft.getHeight();
-        addActor(lblAttacksLeft);
-
-        iconMove.setPosition(0, y);
-        addActor(iconMove);
-
-        lblMove.setPosition(iconMove.getRight(), y);
-        addActor(lblMove);
-//        if (lblMove.getRight() > x) x = lblMove.getRight();
-//        y += iconMove.getHeight();
-
-        iconArmor.setPosition(lblMove.getRight(), y);
-        addActor(iconArmor);
-
-        lblArmor.setPosition(iconArmor.getRight(), y);
-        if (lblArmor.getRight() > x) x = lblArmor.getRight();
-        y += iconArmor.getHeight();
-        addActor(lblArmor);
 
         iconAttack.setPosition(0, y);
         addActor(iconAttack);
@@ -203,21 +178,53 @@ public class InfoPanel extends Panel {
 
         lblRange.setPosition(iconRange.getRight(), y);
         addActor(lblRange);
-        if (lblRange.getRight() > x) x = lblRange.getRight();
-        y += iconRange.getHeight();
+//        if (lblRange.getRight() > x) x = lblRange.getRight();
+//        y += iconRange.getHeight();
+
+        iconMove.setPosition(lblRange.getRight(), y);
+        addActor(iconMove);
+
+        lblMove.setPosition(iconMove.getRight(), y);
+        addActor(lblMove);
+
+        iconArmor.setPosition(lblMove.getRight(), y);
+        addActor(iconArmor);
+
+        lblArmor.setPosition(iconArmor.getRight(), y);
+        if (lblArmor.getRight() > x) x = lblArmor.getRight();
+        y += iconArmor.getHeight();
+        addActor(lblArmor);
+
 
         iconHealth.setPosition(0, y);
         addActor(iconHealth);
 
         lblHealth.setPosition(iconHealth.getWidth(), y);
-        if (lblHealth.getRight() > x) x = lblHealth.getRight();
-        y += iconHealth.getHeight();
         addActor(lblHealth);
+//        if (lblHealth.getRight() > x) x = lblHealth.getRight();
+//        y += iconHealth.getHeight();
+
+
+        iconMovesLeft.setPosition(iconMove.getX(), y);
+        addActor(iconMovesLeft);
+
+        lblMovesLeft.setPosition(iconMovesLeft.getRight(), y);
+        addActor(lblMovesLeft);
+
+        iconAttacksLeft.setPosition(iconArmor.getX(), y);
+        addActor(iconAttacksLeft);
+
+        lblAttacksLeft.setPosition(iconAttacksLeft.getRight(), y);
+        if (lblAttacksLeft.getRight() > x) x = lblAttacksLeft.getRight();
+        y += iconAttacksLeft.getHeight();
+        addActor(lblAttacksLeft);
 
         lblTitle.setPosition(0, y);
         addActor(lblTitle);
         if (lblTitle.getRight() > x) x = lblTitle.getRight();
         y += lblTitle.getHeight();
+
+        healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
 
         setSize(x, y);
         built = true;
