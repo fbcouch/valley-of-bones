@@ -38,6 +38,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -95,7 +96,7 @@ public class HexMap {
         loadFromString(jsonString);
     }
 
-    public HexMap(GameController parent, Object json) {
+    public HexMap(GameController parent, JsonValue json) {
         this.parent = parent;
 
         loadFromJson(json);
@@ -179,7 +180,7 @@ public class HexMap {
 
     void loadFromFile(FileHandle jsonFile) {
         JsonReader jsonReader = new JsonReader();
-        Object json = jsonReader.parse(jsonFile);
+        JsonValue json = jsonReader.parse(jsonFile);
 
         file = jsonFile.name();
 
@@ -188,12 +189,12 @@ public class HexMap {
 
     void loadFromString(String jsonString) {
         JsonReader jsonReader = new JsonReader();
-        Object json = jsonReader.parse(jsonString);
+        JsonValue json = jsonReader.parse(jsonString);
 
         loadFromJson(json);
     }
 
-    void loadFromJson(Object json) {
+    void loadFromJson(JsonValue json) {
         tilesets = new Array<TileSet>();
         tileLayers = new Array<TileLayer>();
         objLayers = new Array<Object>();
@@ -201,71 +202,41 @@ public class HexMap {
         tileSize = new Vector2();
         properties = new ObjectMap<String, Object>();
 
-        ObjectMap<String, Object> jsonObjects = (ObjectMap<String, Object>)json;
+        bounds.x = json.getFloat("width", bounds.x);
 
-        if (jsonObjects.containsKey("width"))
-            bounds.x = (int)Float.parseFloat(jsonObjects.get("width").toString());
+        bounds.y = json.getFloat("height", bounds.y);
 
-        if (jsonObjects.containsKey("height"))
-            bounds.y = (int)Float.parseFloat(jsonObjects.get("height").toString());
+        tileSize.x = json.getFloat("tilewidth", tileSize.x);
 
-        if (jsonObjects.containsKey("tilewidth"))
-            tileSize.x = (int)Float.parseFloat(jsonObjects.get("tilewidth").toString());
+        tileSize.y = json.getFloat("tileheight", tileSize.y);
 
-        if (jsonObjects.containsKey("tileheight"))
-            tileSize.y = (int)Float.parseFloat(jsonObjects.get("tileheight").toString());
+        version = json.getString("version", version);
 
-        if (jsonObjects.containsKey("version"))
-            version = jsonObjects.get("version").toString();
+        for (JsonValue v: json.get("properties"))
+            properties.put(v.name(), v.asString());
 
-        if (jsonObjects.containsKey("properties"))
-            properties = (ObjectMap<String, Object>)jsonObjects.get("properties");
+        title = json.getString("title", "");
 
-        if (jsonObjects.containsKey("title"))
-            title = jsonObjects.get("title").toString();
+        description = json.getString("description", "");
 
-        if (jsonObjects.containsKey("description"))
-            description = jsonObjects.get("description").toString();
+        objDepth = json.getInt("objdepth", 0);
 
-        if (jsonObjects.containsKey("objdepth"))
-            objDepth = (int)Float.parseFloat(jsonObjects.get("objdepth").toString());
+        for (JsonValue v: json.get("tilesets"))
+            tilesets.add(new TileSet(v));
 
-        if (jsonObjects.containsKey("tilesets")) {
-            Array<Object> objs = (Array<Object>)jsonObjects.get("tilesets");
-            for (Object o: objs) {
-                tilesets.add(new TileSet((ObjectMap<String, Object>)o));
-            }
-        }
-
-        if (jsonObjects.containsKey("tilelayers")) {
-            Array<Object> objs = (Array<Object>)jsonObjects.get("tilelayers");
-            for (Object o: objs) {
-                tileLayers.add(new TileLayer(this, (ObjectMap<String, Object>)o));
-            }
-        }
+        for (JsonValue v: json.get("tilelayers"))
+            tileLayers.add(new TileLayer(this, v));
 
         // TODO load objects properly
         controlPoints = new ArrayList<Vector2>();
         playerSpawns = new ArrayList<Vector2>();
-        if (jsonObjects.containsKey("objects")) {
-            Array<Object> objs = (Array<Object>)jsonObjects.get("objects");
-            for (Object o: objs) {
-                ObjectMap<String, Object> om = (ObjectMap<String, Object>)o;
-                Vector2 position = new Vector2();
-                if (om.containsKey("x"))
-                    position.x = (int)Float.parseFloat(om.get("x").toString());
 
-                if (om.containsKey("y"))
-                    position.y = (int)Float.parseFloat(om.get("y").toString());
-
-                if (om.containsKey("type")) {
-                    if (om.get("type").toString().equals("spawn")) {
-                        playerSpawns.add(position);
-                    } else if (om.get("type").toString().equals("unit")) {
-                        controlPoints.add(position);
-                    }
-                }
-            }
+        for (JsonValue v: json.get("objects")) {
+            Vector2 position = new Vector2(v.getFloat("x", 0), v.getFloat("y", 0));
+            if (v.getString("type", "").equals("spawn"))
+                playerSpawns.add(position);
+            else if (v.getString("type", "").equals("unit"))
+                controlPoints.add(position);
         }
 
         hexStatus = new int[(int) (bounds.x * bounds.y)];

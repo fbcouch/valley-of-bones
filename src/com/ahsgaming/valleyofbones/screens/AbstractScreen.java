@@ -27,7 +27,9 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -55,6 +57,19 @@ public class AbstractScreen implements Screen {
 		this.game = game;
 		this.stage = new Stage(0, 0, true);
 		this.gameGroup = new Group();
+
+        if (fontSmall == null) {
+//            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("newui/fonts/Roboto-Condensed.ttf"));
+//            fontSmall = generator.generateFont(16);
+//
+//            fontMed = generator.generateFont(24);
+//            fontLarge = generator.generateFont(32);
+//            skin.getFont("default-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//            skin.getFont("small-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//            skin.getFont("medium-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//            skin.getFont("large-font").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        }
 	}
 	
 	/**

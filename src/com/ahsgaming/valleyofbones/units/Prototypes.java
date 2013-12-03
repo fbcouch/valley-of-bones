@@ -6,10 +6,7 @@ import com.ahsgaming.valleyofbones.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 
 
 public class Prototypes {
@@ -27,7 +24,7 @@ public class Prototypes {
         for (JsonProto jp: protos.values()) {
             int cost = 0;
             if (jp.hasProperty("cost"))
-                cost = (int)Float.parseFloat(jp.getProperty("cost").toString());
+                cost = jp.getProperty("cost").asInt();
             if ((jp.type.equals("building") || jp.type.equals("unit")) && cost >= 0) returnVal.add(jp);
         }
 
@@ -35,12 +32,12 @@ public class Prototypes {
             int max = i;
             int maxcost = 0;
             if (returnVal.get(max).hasProperty("cost"))
-                maxcost = (int)Float.parseFloat(returnVal.get(max).getProperty("cost").toString());
+                maxcost = returnVal.get(max).getProperty("cost").asInt();
 
             for (int j=i+1; j<returnVal.size; j++) {
                 int jcost = 0;
                 if (returnVal.get(j).hasProperty("cost"))
-                    jcost = (int)Float.parseFloat(returnVal.get(j).getProperty("cost").toString());
+                    jcost = returnVal.get(j).getProperty("cost").asInt();
 
                 if (jcost > maxcost) {
                     max = j;
@@ -66,35 +63,35 @@ public class Prototypes {
         public int cost = 0;
         public int food = 0;
 		
-		public ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
+		public JsonValue properties = new JsonValue(0);
 		
 		public JsonProto() {}
 
-		public JsonProto(ObjectMap<String, Object> json) {
+		public JsonProto(JsonValue json) {
 			
-			if (json.containsKey("id"))
-				id = json.get("id").toString();
+//			if (json.containsKey("id"))
+            id = json.get("id").asString();
 			
-			if (json.containsKey("type"))
-				type = json.get("type").toString();
+//			if (json.containsKey("type"))
+            type = json.get("type").asString();
 			
-			if (json.containsKey("image"))
-				image = json.get("image").toString();
+//			if (json.containsKey("image"))
+            image = json.get("image").asString();
 			
-			if (json.containsKey("properties"))
-				properties = (ObjectMap<String, Object>)json.get("properties");
+
+            properties = json.get("properties");
 			
-			if (json.containsKey("title"))
-				title = json.get("title").toString();
+//			if (json.containsKey("title"))
+				title = json.get("title").asString();
 			
-			if (json.containsKey("desc"))
-				desc = json.get("desc").toString();
+//			if (json.containsKey("desc"))
+				desc = json.get("desc").asString();
 
             if (hasProperty("cost"))
-                cost = (int)Float.parseFloat(getProperty("cost").toString());
+                cost = getProperty("cost").asInt();
 
             if (hasProperty("food"))
-                food = (int)Float.parseFloat(getProperty("food").toString());
+                food = getProperty("food").asInt();
 		}
 		
 		@Override
@@ -111,10 +108,10 @@ public class Prototypes {
 		}
 		
 		public boolean hasProperty(String name) {
-			return properties.containsKey(name);
+			return properties.get(name) != null;
 		}
 		
-		public Object getProperty(String name) {
+		public JsonValue getProperty(String name) {
 			return properties.get(name);
 		}
 	}
@@ -123,12 +120,12 @@ public class Prototypes {
 		if (protos == null) protos = new ObjectMap<String, JsonProto>();
 		
 		JsonReader reader = new JsonReader();
-		ObjectMap<String, Object> json = (ObjectMap<String, Object>)reader.parse(Gdx.files.internal(file));
+		JsonValue json = reader.parse(Gdx.files.internal(file));
 		
-		if (json.containsKey("entities") && json.get("entities") instanceof Array) {
-			Array<Object> jsonArray = (Array<Object>)json.get("entities");
-			for (Object o: jsonArray) {
-				JsonProto jp = new JsonProto((ObjectMap<String, Object>)o);
+		if (json.get("entities") != null) {
+			JsonValue jsonArray = json.get("entities");
+			for (JsonValue child: jsonArray) {
+				JsonProto jp = new JsonProto(child);
 				protos.put(jp.id, jp);
 			}
 		}

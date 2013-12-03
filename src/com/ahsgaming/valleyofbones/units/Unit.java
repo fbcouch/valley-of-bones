@@ -24,10 +24,7 @@ package com.ahsgaming.valleyofbones.units;
 
 import java.util.ArrayList;
 
-import com.ahsgaming.valleyofbones.GameController;
-import com.ahsgaming.valleyofbones.GameObject;
-import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
@@ -37,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -110,7 +108,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.protoId = proto.id;
 		type = proto.type;
 		sImage = proto.image;
-		properties.putAll(proto.properties);
+        for (JsonValue v: proto.properties)
+            properties.put(v.name(), (v.isValue() ? v.asString() : Utils.jsonAsArray(v)));
 		parseProperties();
         // TODO load from atlas
         overlay = TextureManager.getSpriteFromAtlas("assets", proto.image + "-overlay");

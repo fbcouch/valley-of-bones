@@ -650,7 +650,8 @@ public class LevelScreen extends AbstractScreen {
         selectionPanel.update(delta);
         scorePanel.update(delta, gController.getCurrentPlayer());
         playerScore.update(); // -7fps
-        playerScore.setScale(stage.getWidth() * 0.25f / playerScore.getWidth());
+        if (playerScore.getWidth() > stage.getWidth() * 0.25f)
+            playerScore.setScale(stage.getWidth() * 0.25f / playerScore.getWidth());
         surrenderPanel.update(delta); // 0
 
 //		showCommandPreviews();

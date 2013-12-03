@@ -23,6 +23,7 @@ import com.ahsgaming.valleyofbones.Utils;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -44,28 +45,20 @@ public class TileLayer {
     Image[] tiles;
 
 	@SuppressWarnings("unchecked")
-	public TileLayer(HexMap map, ObjectMap<String, Object> layer) {
+	public TileLayer(HexMap map, JsonValue layer) {
 		this.map = map;
 
-        if (layer.containsKey("collidable"))
-            collidable = Boolean.parseBoolean(layer.get("collidable").toString());
+        collidable = layer.getBoolean("collidable", true);
+        opacity = layer.getFloat("opacity", 1);
+        visible = layer.getBoolean("visible", true);
+        traversible = layer.getBoolean("traversible", true);
 
-        if (layer.containsKey("data")) {
-			Array<Object> arr = (Array<Object>)layer.get("data");
-			data = new int[arr.size];
-			for (int i=0; i<arr.size; i++) {
-				data[i] = (int)Float.parseFloat(arr.get(i).toString());
-			}
-		}
-		
-		if (layer.containsKey("opacity"))
-			opacity = Float.parseFloat(layer.get("opacity").toString());
-		
-		if (layer.containsKey("visible"))
-			visible = Boolean.parseBoolean(layer.get("visible").toString());
-
-        if (layer.containsKey("traversible"))
-            traversible = Boolean.parseBoolean(layer.get("traversible").toString());
+        data = new int[layer.get("data").size];
+        int i = 0;
+        for (JsonValue v: layer.get("data")) {
+            data[i] = v.asInt();
+            i++;
+        }
 
         size.set(map.getWidth(), map.getHeight());
 

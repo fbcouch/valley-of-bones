@@ -21,6 +21,7 @@ import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.Utils;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -36,27 +37,21 @@ public class TileSet {
 	Array<TextureRegion> tiles;
 	
 	public TileSet() { }
-	
-	@SuppressWarnings("unchecked")
-	public TileSet(ObjectMap<String, Object> set) {
-		if (set.containsKey("firstgid"))
-			this.firstgid = (int)Float.parseFloat(set.get("firstgid").toString());
 
-		if (set.containsKey("name"))
-			this.name = set.get("name").toString();
+	public TileSet(JsonValue json) {
 
-        if (set.containsKey("atlas"))
-            atlas = set.get("atlas").toString();
+        firstgid = json.getInt("firstgid");
 
-        if (set.containsKey("tiles")) {
-            Array<Object> objectArray = (Array<Object>)set.get("tiles");
-            images = new Array<String>();
-            tiles = new Array<TextureRegion>();
+        name = json.getString("name", "");
 
-            for (Object o: objectArray) {
-                images.add(o.toString());
-                if (!atlas.equals("")) tiles.add(TextureManager.getSpriteFromAtlas(atlas, o.toString()));
-            }
+        atlas = json.getString("atlas");
+
+        images = new Array<String>();
+        tiles = new Array<TextureRegion>();
+
+        for (JsonValue v: json.get("tiles")) {
+            images.add(v.asString());
+            tiles.add(TextureManager.getSpriteFromAtlas(atlas, v.asString()));
         }
 	}
 

@@ -31,6 +31,7 @@ import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
@@ -176,7 +177,7 @@ public class Player {
 	public boolean checkRequirements(JsonProto proto, GameController controller) {
 		// check requirements
 		if (proto.hasProperty("requires")) {
-			Array<Object> requires = (Array<Object>)proto.getProperty("requires");
+			JsonValue requires = proto.getProperty("requires");
 			for (Object o: requires) {
 				if (!hasAUnit(o.toString(), controller)) return false;
 			}

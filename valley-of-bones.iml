@@ -62,6 +62,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="gdx-freetype" level="project" />
   </component>
 </module>
 

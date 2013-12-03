@@ -20,6 +20,7 @@ package com.ahsgaming.valleyofbones;
 import java.util.Random;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -51,6 +52,14 @@ public class Utils {
 			return (key != null ? "\"" + key + "\":" : "" ) + "\""+ valueStr + "\",";
 		return (key != null ? "\"" + key + "\":" : "" ) + valueStr + ",";
 	}
+
+    public static Array<Object> jsonAsArray(JsonValue json) {
+        Array<Object> returnVal = new Array<Object>();
+        for (JsonValue v: json) {
+            returnVal.add((v.isValue() ? v.asString() : jsonAsArray(v)));
+        }
+        return returnVal;
+    }
 	
 	/**
 	 * Random id code adapted from 
