@@ -36,11 +36,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -48,9 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -78,17 +74,13 @@ public class LevelScreen extends AbstractScreen {
     protected Vector2 posCamera = new Vector2();
 	
 	// UX stuff
-	TextButton btnTurnDone;
     float lastTurnTick;
-
-    Texture greyBg;
 	
 	Group grpPreviews = new Group();
 
     BuildPanel buildPanel;
     Panel upgradePanel;
     InfoPanel selectionPanel;
-    ScorePanel.PlayerScore playerScore;
     SurrenderPanel surrenderPanel;
     TurnPanel turnPanel;
 
@@ -239,6 +231,16 @@ public class LevelScreen extends AbstractScreen {
         game.sendCommand(mv);
     }
 
+    protected void endTurn() {
+        if (!isCurrentPlayer()) return;
+
+        EndTurn et = new EndTurn();
+        et.owner = game.getPlayer().getPlayerId();
+        et.turn = gController.getGameTurn();
+
+        game.sendCommand(et);
+    }
+
     public boolean canRefund(Unit unit) {
         return gController.canPlayerRefundUnit(game.getPlayer(), unit);
     }
@@ -287,11 +289,11 @@ public class LevelScreen extends AbstractScreen {
     }
 
 	public Vector2 screenToMapCoords(float x, float y) {
-		return new Vector2(x + (posCamera.x - stage.getWidth() * 0.625f), y + (posCamera.y - stage.getHeight() * 0.5f));
+		return new Vector2(x + (posCamera.x - stage.getWidth() * 0.5f), y + (posCamera.y - stage.getHeight() * 0.5f));
 	}
 	
 	public Vector2 mapToScreenCoords(float x, float y) {
-		return new Vector2(x - (posCamera.x - stage.getWidth() * 0.625f), y - (posCamera.y - stage.getHeight() * 0.5f));
+		return new Vector2(x - (posCamera.x - stage.getWidth() * 0.5f), y - (posCamera.y - stage.getHeight() * 0.5f));
 	}
 
     public boolean isCurrentPlayer() {
@@ -319,15 +321,9 @@ public class LevelScreen extends AbstractScreen {
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         upgradePanel = new Panel(game, this, "tinker", getSkin());
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
-        turnPanel = new TurnPanel(gController);
-
-        playerScore = new ScorePanel.PlayerScore(getSkin(), game.getPlayer(), true);
+        turnPanel = new TurnPanel(gController, game.getPlayer());
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(0.5f, 0.5f, 0.5f, 0.6f);
-        pixmap.fill();
-        greyBg = new Texture(pixmap);
 	}
 	
 	@Override
@@ -336,21 +332,10 @@ public class LevelScreen extends AbstractScreen {
 
         stage.addListener(new LevelScreenInputListener(this));
 
-        Image img = new Image(greyBg);
-        img.setScaleX(stage.getWidth() * 0.25f);
-        img.setScaleY(stage.getHeight());
-        stage.addActor(img);
-
         mapCamera.setToOrtho(false, 800, 480);  // TODO
         mapScale = new Vector2(800f / width, 480f / height);
 		
 		stage.addActor(grpLevel);     // -21fps
-
-		// generate the turn info
-		btnTurnDone = new TextButton("END TURN", getSkin(), "medium");
-		btnTurnDone.setSize(200, 40);
-        btnTurnDone.setPosition(0, stage.getHeight() - btnTurnDone.getHeight());
-		stage.addActor(btnTurnDone);  // -8fps
 
 		// panels
         // TODO add back upgrade panel
@@ -360,43 +345,20 @@ public class LevelScreen extends AbstractScreen {
         stage.addActor(buildPanel);
         buildPanel.setPosition(-3, -3);
 
-        stage.addActor(playerScore);
-        playerScore.update();
-        playerScore.setPosition(0, btnTurnDone.getY() - playerScore.getHeight());
-
         stage.addActor(selectionPanel);
 
 //        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
 
-        turnPanel.setPosition(stage.getWidth() * 0.625f - turnPanel.getWidth() * 0.5f, stage.getHeight() - turnPanel.getHeight() + 3);
+        turnPanel.setPosition(stage.getWidth() * 0.5f - turnPanel.getWidth() * 0.5f, stage.getHeight() - turnPanel.getHeight() + 3);
         stage.addActor(turnPanel);
-
-		btnTurnDone.addListener(new ClickListener() {
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				Gdx.app.log("x", Float.toString(x));
-				EndTurn et = new EndTurn();
-				et.owner = game.getPlayer().getPlayerId();
-				et.turn = gController.getGameTurn();
-				
-				game.sendCommand(et);
-			}
-			
-		});
 	}
 
-	public void updateEndTurnBtn() {
+	public void yourTurnPopup() {
         if (gController.getTurnTimer() > 59 && isCurrentPlayer() && lastTurnTick < gController.getTurnTimer()) {
             popupMessage("YOUR TURN!", "hazard-sign", 1);
         }
         lastTurnTick = gController.getTurnTimer();
-
-        btnTurnDone.setDisabled(!isCurrentPlayer());
-        btnTurnDone.setColor((isCurrentPlayer() ? new Color(1, 1, 1, 1) : new Color(0.5f, 0.5f, 0.5f, 1)));
-        btnTurnDone.setText((isCurrentPlayer() ? "End Turn" : "Please Wait"));
 	}
 	
 	@Override
@@ -408,7 +370,7 @@ public class LevelScreen extends AbstractScreen {
         mapCamera.update();
         mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
         mapSpriteBatch.begin();
-        gController.getMap().draw(mapSpriteBatch, -posCamera.x + stage.getWidth() * 0.625f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
+        gController.getMap().draw(mapSpriteBatch, -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
         mapSpriteBatch.end();
         stage.draw();
 
@@ -433,21 +395,18 @@ public class LevelScreen extends AbstractScreen {
 		// DRAW BOXES
 		drawUnitBoxes();
 
-        grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.625f, -1 * posCamera.y + stage.getHeight() * 0.5f);
+        grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
-		updateEndTurnBtn();
+		yourTurnPopup();
         buildPanel.update();
 
         selectionPanel.update(delta);
-        selectionPanel.setPosition(0, playerScore.getY() - selectionPanel.getHeight());
+        selectionPanel.setPosition(0, stage.getHeight() - selectionPanel.getHeight() - 100);
         if (selectionPanel.getWidth() > stage.getWidth() * 0.25f)
             selectionPanel.setScale(stage.getWidth() * 0.25f / selectionPanel.getWidth());
         else
             selectionPanel.setScale(1);
 
-        playerScore.update();
-        if (playerScore.getWidth() > stage.getWidth() * 0.25f)
-            playerScore.setScale(stage.getWidth() * 0.25f / playerScore.getWidth());
         surrenderPanel.update(delta);
 
         turnPanel.update(isCurrentPlayer());
@@ -500,14 +459,18 @@ public class LevelScreen extends AbstractScreen {
 
         Image imgBackground, imgP1Indicator, imgP2Indicator, imgIndicatorOverlay;
         Label lblPlayer1, lblPlayer2, lblTime;
-        Player player1, player2, lastPlayer;
+        Player player1, player2, lastPlayer, thePlayer;
         Skin skin;
+
+        InfoPanel infoPanel;
+        Group endTurn;
 
         int lastTick;
 
-        public TurnPanel(GameController controller) {
+        public TurnPanel(GameController controller, Player player) {
             this.gController = controller;
             this.skin = AbstractScreen.skin;
+            this.thePlayer = player;
 
             imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-hud-bg"));
             addActor(imgBackground);
@@ -530,6 +493,36 @@ public class LevelScreen extends AbstractScreen {
 
             lblTime = new Label(String.format(TIME, 0, 0), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
             addActor(lblTime);
+
+            infoPanel = new InfoPanel(thePlayer, (thePlayer == player2));
+            addActor(infoPanel);
+            infoPanel.setZIndex(0);
+
+            endTurn = new Group();
+            addActor(endTurn);
+            endTurn.setZIndex(1);
+
+            Image bg = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-hud-bg-small"));
+            endTurn.addActor(bg);
+            endTurn.setSize(bg.getWidth(), bg.getHeight());
+
+            Label end = new Label("End Turn", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            endTurn.addActor(end);
+            if (end.getWidth() > endTurn.getWidth() - 70)
+                end.setFontScale((endTurn.getWidth() - 70) / end.getWidth());
+
+            end.setX((thePlayer != player1 ? 25 : 45) + (endTurn.getWidth() - 70 - end.getWidth() * end.getFontScaleX()) * 0.5f);
+            end.setY(endTurn.getHeight() * 0.5f - (end.getHeight() * end.getFontScaleY()) * 0.5f);
+
+            endTurn.setX(imgBackground.getWidth() * 0.5f - endTurn.getWidth() * 0.5f);
+
+            endTurn.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);
+                    LevelScreen.getInstance().endTurn();
+                }
+            });
 
             layout();
         }
@@ -572,6 +565,19 @@ public class LevelScreen extends AbstractScreen {
                     (imgBackground.getHeight() - lblPlayer2.getHeight()) * 0.5f
             );
 
+            if (thePlayer == player1) {
+                infoPanel.setPosition(
+                        -infoPanel.getWidth() + 45,
+                        imgBackground.getHeight() - infoPanel.getHeight()
+                );
+            } else {
+                infoPanel.setPosition(
+                        imgBackground.getWidth() - 45,
+                        imgBackground.getHeight() - infoPanel.getHeight()
+                );
+
+            }
+            endTurn.setY(imgBackground.getHeight() - endTurn.getHeight());
 
         }
 
@@ -597,6 +603,99 @@ public class LevelScreen extends AbstractScreen {
                     imgIndicatorOverlay.setPosition(imgP2Indicator.getX(), imgP2Indicator.getY());
                 } else {
                     imgIndicatorOverlay.remove();
+                }
+
+                if (thePlayer == player1) {
+                    if (isCurrent) {
+                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - 45, endTurn.getY(), 0.5f));
+                    } else {
+                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - endTurn.getWidth() + 10, endTurn.getY(), 0.5f));
+                    }
+
+                } else {
+                    if (isCurrent) {
+                        endTurn.addAction(Actions.moveTo(-endTurn.getWidth() + 45, endTurn.getY(), 0.5f));
+                    } else {
+                        endTurn.addAction(Actions.moveTo(-10, endTurn.getY(), 0.5f));
+                    }
+                }
+            }
+
+            infoPanel.update();
+        }
+
+        public static class InfoPanel extends Group {
+            public static String LOG = "InfoPanel";
+
+            Player player;
+            Image imgBackground, imgMoney, imgSupply;
+            Label lblMoney, lblSupply;
+
+            float lastMoney, lastCurSupply, lastMaxSupply;
+
+            boolean pullRight;
+
+            int padLeft = 25, padRight = 45;
+
+            public InfoPanel(Player player, boolean pullRight) {
+                this.player = player;
+                this.pullRight = pullRight;
+
+                if (pullRight) {
+                    padLeft += padRight;
+                    padRight = padLeft - padRight;
+                    padLeft -= padRight;
+                }
+
+                imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-hud-bg-small"));
+                addActor(imgBackground);
+
+                imgMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
+                imgMoney.setScale(20 / imgMoney.getWidth());
+                addActor(imgMoney);
+
+                imgSupply = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
+                imgSupply.setScale(20 / imgSupply.getWidth());
+                addActor(imgSupply);
+
+                lblMoney = new Label("0000", AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                addActor(lblMoney);
+
+                lblSupply = new Label("00/00", AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                addActor(lblSupply);
+
+                layout();
+            }
+
+            public void layout() {
+                imgBackground.setPosition(0, 0);
+
+                lblMoney.setText(String.format("%04d", (int)player.getBankMoney()));
+                lblSupply.setText(String.format("%02d/%02d", player.getCurFood(), player.getMaxFood()));
+
+                imgMoney.setPosition(padLeft, (imgBackground.getHeight() - imgMoney.getHeight() * imgMoney.getScaleY()) * 0.5f);
+                imgSupply.setPosition(
+                        padLeft + (imgBackground.getWidth() - padLeft - padRight) * 0.5f,
+                        (imgBackground.getHeight() - imgSupply.getHeight() * imgSupply.getScaleY()) * 0.5f
+                );
+                
+                if (lblMoney.getWidth() > imgSupply.getX() - (imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX()))
+                    lblMoney.setFontScale((imgSupply.getX() - (imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX())) / lblMoney.getWidth() );
+                lblMoney.setPosition(imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX(), imgMoney.getY());
+                
+                if (lblSupply.getWidth() > imgBackground.getWidth() - padRight - (imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX()))
+                    lblSupply.setFontScale((imgBackground.getWidth() - padRight - (imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX())) / lblSupply.getWidth() );
+                lblSupply.setPosition(imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX(), imgSupply.getY());
+                
+                setSize(imgBackground.getWidth(), imgBackground.getHeight());
+            }
+
+            public void update() {
+                if (lastMoney != player.getBankMoney() || lastCurSupply != player.getCurFood() || lastMaxSupply != player.getMaxFood()) {
+                    layout();
+                    lastMoney = player.getBankMoney();
+                    lastCurSupply = player.getCurFood();
+                    lastMaxSupply = player.getMaxFood();
                 }
             }
         }
@@ -703,6 +802,8 @@ public class LevelScreen extends AbstractScreen {
                     }
                     break;
             }
+
+            setSize(imgBackground.getRight(), Math.max(imgInfantryTab.getTop(), imgMechTab.getTop()));
         }
 
         public void update() {

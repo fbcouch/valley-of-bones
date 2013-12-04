@@ -92,9 +92,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="156.80907"
-     inkscape:cy="436.63254"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="383.08324"
+     inkscape:cy="238.64265"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -129,7 +129,7 @@
       <path
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
-         inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/turn-hud-bg.png"
+         inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/turn-hud-bg-small.png"
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
          id="rect3755-5"
@@ -1209,7 +1209,10 @@
          id="g3428-9-0">
         <g
            transform="matrix(0.0390625,0,0,0.0390625,33.651786,948.71036)"
-           id="g2998-0-0-9">
+           id="g2998-0-0-9"
+           inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/money-20.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
           <path
              d="M 0,0 H 512 V 512 H 0 z"
              id="path4-4-5-9"
@@ -1328,7 +1331,10 @@
         </g>
         <g
            transform="matrix(0.0390625,0,0,0.0390625,33.651786,968.9548)"
-           id="g2994-1-0-8">
+           id="g2994-1-0-8"
+           inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/food-20.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
           <path
              d="M 0,0 H 512 V 512 H 0 z"
              id="path4-1-1-1-8"
