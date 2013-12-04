@@ -39,7 +39,10 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TextureManager {
 	public static String LOG = "TextureManager";
 	
-	private static ObjectMap<String, TextureRegion> map = new ObjectMap<String, TextureRegion>(); 
+	private static ObjectMap<String, TextureRegion> map = new ObjectMap<String, TextureRegion>();
+
+    public static TextureFilter defaultMinFilter = TextureFilter.MipMapLinearNearest;
+    public static TextureFilter defaultMaxFilter = TextureFilter.Nearest;
 	
 	public static TextureRegion getTexture(String file) {
 		if (map.containsKey(file)) return map.get(file);
@@ -47,7 +50,7 @@ public class TextureManager {
 		if (!Gdx.files.internal(file).exists()) return null;
 
 		Texture tex = new Texture(Gdx.files.internal(file));
-		tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		tex.setFilter(defaultMinFilter, defaultMaxFilter);
 		TextureRegion reg = new TextureRegion(tex); 
 		
 		map.put(file, reg);

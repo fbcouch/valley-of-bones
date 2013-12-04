@@ -51,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -84,7 +85,7 @@ public class LevelScreen extends AbstractScreen {
 	
 	Group grpPreviews = new Group();
 
-    Panel buildPanel;
+    BuildPanel buildPanel;
     Panel upgradePanel;
     InfoPanel selectionPanel;
     ScorePanel.PlayerScore playerScore;
@@ -315,7 +316,7 @@ public class LevelScreen extends AbstractScreen {
 
 		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
 
-        buildPanel = new BuildPanel(game, this, "gear-hammer", getSkin());
+        buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         upgradePanel = new Panel(game, this, "tinker", getSkin());
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
         turnPanel = new TurnPanel(gController);
@@ -357,7 +358,7 @@ public class LevelScreen extends AbstractScreen {
 //        upgradePanel.setAnchor(0, 64);
 
         stage.addActor(buildPanel);
-        buildPanel.setAnchor(0, 0);
+        buildPanel.setPosition(-3, -3);
 
         stage.addActor(playerScore);
         playerScore.update();
@@ -435,7 +436,7 @@ public class LevelScreen extends AbstractScreen {
         grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.625f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
 		updateEndTurnBtn();
-        buildPanel.update(delta);
+        buildPanel.update();
 
         selectionPanel.update(delta);
         selectionPanel.setPosition(0, playerScore.getY() - selectionPanel.getHeight());
@@ -597,6 +598,177 @@ public class LevelScreen extends AbstractScreen {
                 } else {
                     imgIndicatorOverlay.remove();
                 }
+            }
+        }
+    }
+
+    public static class BuildPanel extends Group {
+        public static String LOG = "BuildPanel";
+
+        GameController gController;
+        LevelScreen levelScreen;
+        Player player;
+        Skin skin;
+
+        Image imgBackground, imgInfantryTab, imgMechTab;
+        Array<BuildItem> infantryItems, mechItems;
+        Array<Prototypes.JsonProto> itemProtos;
+
+        int selected;
+
+        public BuildPanel(GameController controller, Player player, LevelScreen levelScreen) {
+            this.gController = controller;
+            this.player = player;
+            this.levelScreen = levelScreen;
+            skin = AbstractScreen.skin;
+
+            imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "build-hud-bg"));
+            addActor(imgBackground);
+
+            imgInfantryTab = new Image(TextureManager.getSpriteFromAtlas("assets", "build-infantry-tab"));
+            addActor(imgInfantryTab);
+            imgInfantryTab.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
+
+                    select(0);
+                }
+            });
+
+            imgMechTab = new Image(TextureManager.getSpriteFromAtlas("assets", "build-mech-tab"));
+            addActor(imgMechTab);
+            imgMechTab.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
+
+                    select(1);
+                }
+            });
+
+            itemProtos = Prototypes.getPlayerCanBuild(player, controller);
+            infantryItems = new Array<BuildItem>();
+            mechItems = new Array<BuildItem>();
+
+            for (Prototypes.JsonProto jp: itemProtos) {
+                final BuildItem item = new BuildItem(jp);
+
+                String type = jp.getProperty("subtype").asString();
+                if (type.equals("armored")) {
+                    mechItems.add(item);
+                } else {
+                    infantryItems.add(item);
+                }
+
+                item.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
+
+                        click(item);
+                    }
+                });
+            }
+
+            layout();
+        }
+
+        public void layout() {
+            imgInfantryTab.setPosition(-15, imgBackground.getTop() - 4);
+            imgMechTab.setPosition(imgInfantryTab.getRight() - 25, imgInfantryTab.getY());
+            int y = 100;
+            switch(selected) {
+                default:
+                case 0:
+                    imgInfantryTab.setZIndex(2);
+                    imgMechTab.setZIndex(0);
+                    for (Group g: mechItems) g.remove();
+
+                    for (Group g: infantryItems) {
+                        addActor(g);
+                        g.setPosition(5, y);
+                        y -= g.getHeight();
+                    }
+                    break;
+                case 1:
+                    imgInfantryTab.setZIndex(0);
+                    imgMechTab.setZIndex(2);
+                    for (Group g: infantryItems) g.remove();
+
+                    for (Group g: mechItems) {
+                        addActor(g);
+                        g.setPosition(5, y);
+                        y -= g.getHeight();
+                    }
+                    break;
+            }
+        }
+
+        public void update() {
+            Array<BuildItem> items;
+            switch(selected) {
+                default:
+                case 0:
+                    items = infantryItems;
+                    break;
+                case 1:
+                    items = mechItems;
+                    break;
+            }
+
+            for (BuildItem item: items) {
+                if (player.canBuild(item.proto.id, gController)) {
+                    item.icon.setColor(1, 1, 1, 1);
+                } else {
+                    item.icon.setColor(0.8f, 0.4f, 0.4f, 1);
+                }
+            }
+        }
+
+        public void click(BuildItem item) {
+            levelScreen.setBuildMode(item.proto);
+        }
+
+        public void select(int sel) {
+            selected = sel;
+            layout();
+        }
+
+        public static class BuildItem extends Group {
+
+            Image icon, imgSupply, imgMoney;
+            Label lblSupply, lblMoney;
+            Prototypes.JsonProto proto;
+
+            public BuildItem(Prototypes.JsonProto proto) {
+                this.proto = proto;
+
+                icon = new Image(TextureManager.getSpriteFromAtlas("assets", proto.image));
+                icon.setScale(0.75f);
+                addActor(icon);
+
+                imgSupply = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
+                imgSupply.setScale(20 / imgSupply.getWidth());
+                imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX(), 0);
+                addActor(imgSupply);
+
+                lblSupply = new Label(Integer.toString(proto.cost), AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblSupply.setPosition(imgSupply.getRight(), imgSupply.getY());
+                addActor(lblSupply);
+
+                imgMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
+                imgMoney.setScale(20 / imgMoney.getWidth());
+                imgMoney.setPosition(imgSupply.getX(), imgSupply.getY() + imgSupply.getHeight() * imgSupply.getScaleY() + 1);
+                addActor(imgMoney);
+
+                lblMoney = new Label(Integer.toString(proto.cost), AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblMoney.setPosition(imgMoney.getRight(), imgMoney.getY());
+                addActor(lblMoney);
+
+
+
+                setSize(Math.max(lblSupply.getRight(), lblMoney.getRight()), icon.getHeight() * icon.getScaleY());
             }
         }
     }
