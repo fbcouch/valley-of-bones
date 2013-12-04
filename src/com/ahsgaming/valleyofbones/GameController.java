@@ -601,20 +601,6 @@ public class GameController {
         selectedObject = null;
     }
 	
-	public Array<GameObject> getObjsAtPosition(Vector2 mapCoords) {
-		Array<GameObject> returnVal = new Array<GameObject>();
-		
-		
-		for (GameObject obj: gameObjects) {
-			if (obj.isColliding(mapCoords)) {
-				returnVal.add(obj);
-			}
-		}
-		
-		
-		return returnVal;
-	}
-	
 	public GameObject getObjAtBoardPos(int x, int y) {
 		for (GameObject obj: gameObjects) {
 			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) return obj; 

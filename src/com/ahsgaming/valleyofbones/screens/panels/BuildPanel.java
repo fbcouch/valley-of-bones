@@ -59,7 +59,7 @@ public class BuildPanel extends Panel {
             else
                 buttons.get(i).setColor(1, 1, 1, 1);
         }
-        Gdx.app.log("buildMode", Boolean.toString(buildMode));
+
         if (buildMode && !levelScreen.isBuildMode()) {
             buildMode = false;
             tooltip.remove();
@@ -150,10 +150,12 @@ public class BuildPanel extends Panel {
 
     public void entered(Image button, int i) {
         if (!(i >= 0 && i < items.size)) return;
-        levelScreen.setBuildMode(items.get(i));
-        tooltip.setProto(items.get(i));
-        addActor(tooltip);
-        tooltip.setPosition(0, getHeight());
+
+        if (!buildMode) {
+            tooltip.setProto(items.get(i));
+            addActor(tooltip);
+            tooltip.setPosition(0, getHeight());
+        }
     }
 
     public void exited(Image button, int i) {

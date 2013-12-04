@@ -48,38 +48,38 @@ public class LevelScreenInputListener extends ActorGestureListener {
         Vector2 boardPos = levelScreen.gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
         if (mapInterrupt) return;
 
-        if (levelScreen.buildMode) {
-            Gdx.app.log(LOG, String.format("Build at %s", boardPos.toString()));
-            levelScreen.build(boardPos);
-        } else {
-            Gdx.app.log(LOG, String.format("Select obj at %s", boardPos.toString()));
-            levelScreen.gController.selectObjAtBoardPos(boardPos, levelScreen.game.getPlayer());
-            if (levelScreen.gController.getSelectedObject() != null && levelScreen.gController.getSelectedObject() instanceof Unit) {
-                Unit u = (Unit)levelScreen.gController.getSelectedObject();
-                Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
-            }
+
+        Gdx.app.log(LOG, String.format("Select obj at %s", boardPos.toString()));
+        levelScreen.gController.selectObjAtBoardPos(boardPos, levelScreen.game.getPlayer());
+        if (levelScreen.gController.getSelectedObject() != null && levelScreen.gController.getSelectedObject() instanceof Unit) {
+            Unit u = (Unit)levelScreen.gController.getSelectedObject();
+            Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
+            levelScreen.unsetBuildMode();
         }
+
     }
 
     @Override
     public boolean longPress(Actor actor, float x, float y) {
+        Gdx.input.vibrate(200);
         if (mapInterrupt) return super.longPress(actor, x, y);
 
         Vector2 mapPos = levelScreen.screenToMapCoords(x , y);
         Vector2 boardPos = levelScreen.gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
 
+        if (levelScreen.isBuildMode()) {
+            Gdx.app.log(LOG, String.format("Build at %s", boardPos.toString()));
+            levelScreen.build(boardPos);
+        }
+
         if (levelScreen.gController.getSelectedObject() != null &&
             levelScreen.isCurrentPlayer() &&
             levelScreen.gController.getSelectedObject().getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId())
         {
-            GameObject target = null;
+            GameObject target = levelScreen.gController.getObjAtBoardPos(boardPos);
             Unit unit = (Unit)levelScreen.gController.getSelectedObject();
-            for (GameObject cur: levelScreen.gController.getObjsAtPosition(mapPos)) {
-                if (cur instanceof Unit && (!((Unit)cur).getInvisible() || unit.isDetector()))
-                    target = cur;
-            }
 
-            if (target != null) {
+            if (target != null && target instanceof Unit && (!((Unit)target).getInvisible() || unit.isDetector())) {
                 if (target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
                     levelScreen.attack(unit.getObjId(), target.getObjId());
                 }
@@ -87,8 +87,6 @@ public class LevelScreenInputListener extends ActorGestureListener {
             } else {
                 levelScreen.move(unit.getObjId(), boardPos);
             }
-
-
 
         }
 

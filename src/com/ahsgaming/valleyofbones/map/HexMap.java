@@ -28,6 +28,7 @@ import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -494,7 +495,7 @@ public class HexMap {
 	}
 	
 	public Vector2 mapToBoardCoords(float x, float y) {
-		Vector2 boardCoords = new Vector2();
+        Vector2 boardCoords = new Vector2();
 		
 		float dx = x / getTileWidth();
 		float dy = y / (getTileHeight() * 0.75f);
