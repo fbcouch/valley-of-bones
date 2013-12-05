@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units;
 
 import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -27,20 +28,14 @@ public class ProgressBar {
     Color medColor = new Color(1, 1, 0, 1);
     Color lowColor = new Color(1, 0, 0, 1);
 
-    Texture img;
+    TextureRegion img;
 
     Vector2 size;
 
     public ProgressBar() {
         super();
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(1, 1, 1, 1);
-        pixmap.fill();
-        img = new Texture(1, 1, Pixmap.Format.RGBA8888);
-        img.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        img.draw(pixmap, 0, 0);
         size = new Vector2(1, 1);
-
+        img = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hud-bar");
     }
 
     public void draw(SpriteBatch batch, float x, float y, float parentAlpha) {

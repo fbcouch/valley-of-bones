@@ -60,6 +60,10 @@ public class Utils {
         }
         return returnVal;
     }
+
+    public static boolean epsilonEquals(float f1, float f2, float epsilon) {
+        return (f1 + epsilon >= f2 && f1 - epsilon <= f2);
+    }
 	
 	/**
 	 * Random id code adapted from 

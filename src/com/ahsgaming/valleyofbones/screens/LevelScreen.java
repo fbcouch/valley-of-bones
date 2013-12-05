@@ -22,11 +22,7 @@
  */
 package com.ahsgaming.valleyofbones.screens;
 
-import com.ahsgaming.valleyofbones.GameController;
-import com.ahsgaming.valleyofbones.GameObject;
-import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.TextureManager;
-import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.panels.*;
@@ -320,7 +316,7 @@ public class LevelScreen extends AbstractScreen {
 
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         upgradePanel = new Panel(game, this, "tinker", getSkin());
-        selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
+        selectionPanel = new InfoPanel(game, this, getSkin());
         turnPanel = new TurnPanel(gController, game.getPlayer(), getSkin());
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
@@ -359,6 +355,7 @@ public class LevelScreen extends AbstractScreen {
         buildPanel.setPosition(-3, -3);
 
         stage.addActor(selectionPanel);
+        selectionPanel.setPosition(stage.getWidth() * 0.5f - selectionPanel.getWidth() * 0.5f, -selectionPanel.getHeight() + 3);
 
 //        stage.addActor(surrenderPanel);
         surrenderPanel.setAnchor(0, stage.getHeight() - 64);
@@ -385,6 +382,10 @@ public class LevelScreen extends AbstractScreen {
         mapSpriteBatch.begin();
         gController.getMap().draw(mapSpriteBatch, -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
         mapSpriteBatch.end();
+
+        // DRAW BOXES
+        drawUnitBoxes();
+
         stage.draw();
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
@@ -400,25 +401,25 @@ public class LevelScreen extends AbstractScreen {
         selectionPanel.setSelected(null);
         if (lastSelected != null && lastSelected instanceof Unit) {
             gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit) lastSelected).getMovesLeft(), true);
-            selectionPanel.setSelected((Unit)lastSelected);
+
+            selectionPanel.setSelected((Unit) lastSelected);
+            if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f, 0.01f)) {
+                selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6, 0.5f));
+            }
+        } else {
+            if (Utils.epsilonEquals(selectionPanel.getY(), -3f, 0.01f)) {
+                selectionPanel.addAction(Actions.moveBy(0, -selectionPanel.getHeight() + 6, 0.5f));
+            }
         }
 
         gController.getMap().update(game.getPlayer());
-
-		// DRAW BOXES
-		drawUnitBoxes();
 
         grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
 
 		yourTurnPopup();
         buildPanel.update();
 
-        selectionPanel.update(delta);
-        selectionPanel.setPosition(0, stage.getHeight() - selectionPanel.getHeight() - 100);
-        if (selectionPanel.getWidth() > stage.getWidth() * 0.25f)
-            selectionPanel.setScale(stage.getWidth() * 0.25f / selectionPanel.getWidth());
-        else
-            selectionPanel.setScale(1);
+        selectionPanel.update();
 
         surrenderPanel.update(delta);
 
