@@ -439,8 +439,8 @@
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
     <property name="artifact.output.android" value="${basedir}/out/artifacts/android"/>
-    <property name="artifact.output.valleyofbones:jar" value="${basedir}/out/artifacts"/>
-    <property name="artifact.output.valleyofbonesserver:jar" value="${basedir}/out/artifacts"/>
+    <property name="artifact.output.valleyofbones:jar" value="${basedir}/out/artifacts/${DSTAMP}"/>
+    <property name="artifact.output.valleyofbonesserver:jar" value="${basedir}/out/artifacts/${DSTAMP}"/>
     <mkdir dir="${artifacts.temp.dir}"/>
     <property name="temp.jar.path.android.apk" value="${artifacts.temp.dir}/android.apk"/>
     <property name="temp.jar.path.ValleyOfBones.jar" value="${artifacts.temp.dir}/ValleyOfBones.jar"/>
@@ -461,7 +461,7 @@
     <mkdir dir="${artifact.temp.output.valleyofbones:jar}"/>
       <manifest file="src/META-INF/MANIFEST.MF">
           <attribute name="Created-By" value="Jami Couch"/>
-          <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.ServerMain"/>
+          <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.Main"/>
           <attribute name="Built-Date" value="${TODAY}"/>
       </manifest>
     <jar destfile="${temp.jar.path.ValleyOfBones.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
@@ -503,6 +503,28 @@
     </jar>
     <copy file="${temp.jar.path.ValleyOfBonesServer.jar}" tofile="${artifact.temp.output.valleyofbonesserver:jar}/ValleyOfBonesServer.jar"/>
   </target>
+
+  <target name="build.desktop.artifacts" depends="artifact.valleyofbones:jar, artifact.valleyofbonesserver:jar" description="Build all desktop artifacts">
+      <mkdir dir="${artifact.output.valleyofbones:jar}"/>
+      <copy todir="${artifact.output.valleyofbones:jar}">
+          <fileset dir="${artifact.temp.output.valleyofbones:jar}"/>
+      </copy>
+      <mkdir dir="${artifact.output.valleyofbonesserver:jar}"/>
+      <copy todir="${artifact.output.valleyofbonesserver:jar}">
+          <fileset dir="${artifact.temp.output.valleyofbonesserver:jar}"/>
+      </copy>
+
+      <!-- Delete temporary files -->
+      <delete dir="${artifacts.temp.dir}"/>
+  </target>
+
+    <target name="package.desktop.artifacts" depends="build.desktop.artifacts">
+
+        <zip destfile="${artifact.output.valleyofbones:jar}/ValleyOfBones-${DSTAMP}.zip">
+            <fileset dir="${artifact.output.valleyofbones:jar}" includes="*.jar"/>
+            <fileset file="${basedir}/README.md"/>
+        </zip>
+    </target>
   
   <target name="build.all.artifacts" depends="artifact.android, artifact.valleyofbones:jar, artifact.valleyofbonesserver:jar" description="Build all artifacts">
     <mkdir dir="${artifact.output.android}"/>

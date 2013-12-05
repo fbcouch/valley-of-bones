@@ -23,6 +23,13 @@ money
   orig: 32, 32
   offset: 0, 0
   index: -1
+unit-highlight
+  rotate: false
+  xy: 785, 732
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 tank-overlay
   rotate: false
   xy: 700, 250
@@ -221,7 +228,7 @@ hospital-cross
   index: -1
 walking-boot
   rotate: false
-  xy: 785, 732
+  xy: 851, 732
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

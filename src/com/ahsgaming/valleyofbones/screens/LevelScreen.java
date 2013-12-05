@@ -840,6 +840,7 @@ public class LevelScreen extends AbstractScreen {
                 } else {
                     item.icon.setColor(0.8f, 0.4f, 0.4f, 1);
                 }
+                item.setHighlight(levelScreen.buildMode && levelScreen.buildProto == item.proto);
             }
         }
 
@@ -855,13 +856,16 @@ public class LevelScreen extends AbstractScreen {
         public static class BuildItem extends Group {
 
             Skin skin;
-            Image icon, imgSupply, imgMoney;
+            Image icon, imgSupply, imgMoney, imgHiglight;
             Label lblSupply, lblMoney;
             Prototypes.JsonProto proto;
 
             public BuildItem(Prototypes.JsonProto proto, Skin skin) {
                 this.proto = proto;
                 this.skin = skin;
+
+                imgHiglight = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
+                imgHiglight.setScale(0.75f);
 
                 icon = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
                 icon.setScale(0.75f);
@@ -885,9 +889,16 @@ public class LevelScreen extends AbstractScreen {
                 lblMoney.setPosition(imgMoney.getRight(), imgMoney.getY());
                 addActor(lblMoney);
 
-
-
                 setSize(Math.max(lblSupply.getRight(), lblMoney.getRight()), icon.getHeight() * icon.getScaleY());
+            }
+
+            public void setHighlight(boolean highlight) {
+                if (highlight) {
+                    addActor(imgHiglight);
+                    imgHiglight.setZIndex(0);
+                } else {
+                    imgHiglight.remove();
+                }
             }
         }
     }
