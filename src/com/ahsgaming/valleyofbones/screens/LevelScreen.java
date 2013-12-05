@@ -324,6 +324,19 @@ public class LevelScreen extends AbstractScreen {
         turnPanel = new TurnPanel(gController, game.getPlayer());
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
+
+        ClickListener interruptListener = new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log(LOG, "interrupt");
+                setClickInterrupt(true);
+                return super.touchDown(event, x, y, pointer, button);    //To change body of overridden methods use File | Settings | File Templates.
+            }
+        };
+
+        buildPanel.addListener(interruptListener);
+        selectionPanel.addListener(interruptListener);
+        turnPanel.addListener(interruptListener);
 	}
 	
 	@Override
@@ -715,10 +728,10 @@ public class LevelScreen extends AbstractScreen {
 
         int selected;
 
-        public BuildPanel(GameController controller, Player player, LevelScreen levelScreen) {
+        public BuildPanel(GameController controller, Player player, LevelScreen lvlScreen) {
             this.gController = controller;
             this.player = player;
-            this.levelScreen = levelScreen;
+            this.levelScreen = lvlScreen;
             skin = AbstractScreen.skin;
 
             imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "build-hud-bg"));

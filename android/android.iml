@@ -14,7 +14,7 @@
     <orderEntry type="jdk" jdkName="Android 2.3.3 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="gdx-backend-android-sources" level="project" />
-    <orderEntry type="module" module-name="valley-of-bones" />
+    <orderEntry type="module" module-name="valley-of-bones" exported="" />
   </component>
 </module>
 
