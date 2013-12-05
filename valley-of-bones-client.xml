@@ -36,13 +36,13 @@
     <exclude name="**/*.rbc/**"/>
   </patternset>
   <patternset id="library.patterns">
-    <include name="*.zip"/>
-    <include name="*.apk"/>
     <include name="*.war"/>
-    <include name="*.egg"/>
     <include name="*.ear"/>
-    <include name="*.ane"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
     <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
     <include name="*.jar"/>
   </patternset>
   <patternset id="compiler.resources">
@@ -62,27 +62,52 @@
   <path id="jdk.classpath.1.7">
     <fileset dir="${jdk.home.1.7}">
       <include name="jre/lib/compilefontconfig.jar"/>
-      <include name="jre/lib/rhino.jar"/>
-      <include name="jre/lib/management-agent.jar"/>
-      <include name="jre/lib/jsse.jar"/>
-      <include name="jre/lib/jce.jar"/>
-      <include name="jre/lib/rt.jar"/>
       <include name="jre/lib/charsets.jar"/>
-      <include name="jre/lib/javazic.jar"/>
+      <include name="jre/lib/rhino.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
       <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/javazic.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
       <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/ext/java-atk-wrapper.jar"/>
       <include name="jre/lib/ext/pulse-java.jar"/>
       <include name="jre/lib/ext/dnsns.jar"/>
-      <include name="jre/lib/ext/sunpkcs11.jar"/>
-      <include name="jre/lib/ext/sunjce_provider.jar"/>
-      <include name="jre/lib/ext/java-atk-wrapper.jar"/>
       <include name="jre/lib/ext/localedata.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="jdk.bin.android_2.3.3_platform" value="${jdk.home.android_2.3.3_platform}/../../../usr/lib/jvm/java-6-openjdk-amd64/bin"/>
+  <path id="jdk.classpath.android_2.3.3_platform">
+    <fileset dir="${jdk.home.android_2.3.3_platform}">
+      <include name="platforms/android-10/android.jar"/>
+      <include name="platforms/android-10/data/res"/>
+      <include name="tools/support/annotations.jar"/>
     </fileset>
   </path>
   
   <property name="project.jdk.home" value="${jdk.home.1.7}"/>
   <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.gdx-backend-android-sources.classpath">
+    <pathelement location="${basedir}/android/libs/gdx-backend-android.jar"/>
+  </path>
+  
+  <path id="library.gdx-freetype.classpath">
+    <fileset dir="${basedir}/libs/gdx-freetype">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <!-- Global Libraries -->
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
   <path id="javac2.classpath">
@@ -118,60 +143,40 @@
   </path>
   
   <path id="valley-of-bones.module.production.classpath">
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-natives.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl.jar"/>
-    <pathelement location="${basedir}/libs/gdx-natives.jar"/>
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
     <path refid="${module.jdk.classpath.valley-of-bones}"/>
     <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
+    <path refid="library.gdx-freetype.classpath"/>
   </path>
   
   <path id="valley-of-bones.runtime.production.module.classpath">
     <pathelement location="${valley-of-bones.output.dir}"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-natives.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl.jar"/>
-    <pathelement location="${basedir}/libs/gdx-natives.jar"/>
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
     <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
+    <path refid="library.gdx-freetype.classpath"/>
   </path>
   
   <path id="valley-of-bones.module.classpath">
     <pathelement location="${valley-of-bones.output.dir}"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-natives.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl.jar"/>
-    <pathelement location="${basedir}/libs/gdx-natives.jar"/>
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
     <path refid="${module.jdk.classpath.valley-of-bones}"/>
     <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
+    <path refid="library.gdx-freetype.classpath"/>
   </path>
   
   <path id="valley-of-bones.runtime.module.classpath">
     <pathelement location="${valley-of-bones.output.dir}"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-natives.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-backend-lwjgl.jar"/>
-    <pathelement location="${basedir}/libs/gdx-natives.jar"/>
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx-openal.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
     <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
+    <path refid="library.gdx-freetype.classpath"/>
   </path>
   
   
@@ -186,7 +191,7 @@
   <path id="valley-of-bones.module.sourcepath">
     <dirset dir="${module.valley-of-bones.basedir}">
       <include name="src"/>
-
+      <include name="assets"/>
     </dirset>
   </path>
   
@@ -195,7 +200,7 @@
   
   <target name="compile.module.valley-of-bones.production" depends="register.custom.compilers" description="Compile module valley-of-bones; production classes">
     <mkdir dir="${valley-of-bones.output.dir}"/>
-    <javac2 target="1.6" source="1.6" destdir="${valley-of-bones.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.valley-of-bones}/javac">
+    <javac2 destdir="${valley-of-bones.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.valley-of-bones}/javac">
       <compilerarg line="${compiler.args.valley-of-bones}"/>
       <bootclasspath refid="valley-of-bones.module.bootclasspath"/>
       <classpath refid="valley-of-bones.module.production.classpath"/>
@@ -205,6 +210,10 @@
     
     <copy todir="${valley-of-bones.output.dir}">
       <fileset dir="${module.valley-of-bones.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.valley-of-bones.basedir}/assets">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
@@ -218,75 +227,288 @@
     <delete dir="${valley-of-bones.testoutput.dir}"/>
   </target>
   
+  
+  <!-- Module android -->
+  
+  <dirname property="module.android.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.android" value="${jdk.home.android_2.3.3_platform}"/>
+  <property name="module.jdk.bin.android" value="${jdk.bin.android_2.3.3_platform}"/>
+  <property name="module.jdk.classpath.android" value="jdk.classpath.android_2.3.3_platform"/>
+  
+  <property name="compiler.args.android" value="${compiler.args}"/>
+  
+  <property name="android.output.dir" value="${module.android.basedir}/out/production/android"/>
+  <property name="android.testoutput.dir" value="${module.android.basedir}/out/test/android"/>
+  
+  <path id="android.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="android.module.production.classpath">
+    <path refid="${module.jdk.classpath.android}"/>
+    <path refid="library.gdx-backend-android-sources.classpath"/>
+    <pathelement location="${valley-of-bones.output.dir}"/>
+    <pathelement location="${basedir}/libs/gdx-sources.jar"/>
+    <pathelement location="${basedir}/libs/gdx.jar"/>
+    <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
+  </path>
+  
+  <path id="android.runtime.production.module.classpath">
+    <pathelement location="${android.output.dir}"/>
+    <path refid="library.gdx-backend-android-sources.classpath"/>
+    <path refid="valley-of-bones.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="android.module.classpath">
+    <path refid="${module.jdk.classpath.android}"/>
+    <pathelement location="${android.output.dir}"/>
+    <path refid="library.gdx-backend-android-sources.classpath"/>
+    <pathelement location="${valley-of-bones.output.dir}"/>
+    <pathelement location="${basedir}/libs/gdx-sources.jar"/>
+    <pathelement location="${basedir}/libs/gdx.jar"/>
+    <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
+  </path>
+  
+  <path id="android.runtime.module.classpath">
+    <pathelement location="${android.testoutput.dir}"/>
+    <pathelement location="${android.output.dir}"/>
+    <path refid="library.gdx-backend-android-sources.classpath"/>
+    <path refid="valley-of-bones.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.android">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.android">
+    <patternset refid="excluded.from.module.android"/>
+  </patternset>
+  
+  <path id="android.module.sourcepath">
+    <dirset dir="${module.android.basedir}/android">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.android" depends="compile.module.android.production,compile.module.android.tests" description="Compile module android"/>
+  
+  <target name="compile.module.android.production" depends="register.custom.compilers,compile.module.valley-of-bones" description="Compile module android; production classes">
+    <mkdir dir="${android.output.dir}"/>
+    <javac2 destdir="${android.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.android}/javac">
+      <compilerarg line="${compiler.args.android}"/>
+      <bootclasspath refid="android.module.bootclasspath"/>
+      <classpath refid="android.module.production.classpath"/>
+      <src refid="android.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.android"/>
+    </javac2>
+    
+    <copy todir="${android.output.dir}">
+      <fileset dir="${module.android.basedir}/android/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.android.basedir}/android/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.android.tests" depends="register.custom.compilers,compile.module.android.production" description="compile module android; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.android" description="cleanup module">
+    <delete dir="${android.output.dir}"/>
+    <delete dir="${android.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module desktop -->
+  
+  <dirname property="module.desktop.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.desktop" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.desktop" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.desktop" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.desktop" value="${compiler.args}"/>
+  
+  <property name="desktop.output.dir" value="${module.desktop.basedir}/out/production/desktop"/>
+  <property name="desktop.testoutput.dir" value="${module.desktop.basedir}/out/test/desktop"/>
+  
+  <path id="desktop.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="desktop.module.production.classpath">
+    <path refid="${module.jdk.classpath.desktop}"/>
+    <pathelement location="${valley-of-bones.output.dir}"/>
+    <pathelement location="${basedir}/libs/gdx-sources.jar"/>
+    <pathelement location="${basedir}/libs/gdx.jar"/>
+    <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
+    <fileset dir="${basedir}/desktop/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="desktop.runtime.production.module.classpath">
+    <pathelement location="${desktop.output.dir}"/>
+    <path refid="valley-of-bones.runtime.production.module.classpath"/>
+    <fileset dir="${basedir}/desktop/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="desktop.module.classpath">
+    <path refid="${module.jdk.classpath.desktop}"/>
+    <pathelement location="${desktop.output.dir}"/>
+    <pathelement location="${valley-of-bones.output.dir}"/>
+    <pathelement location="${basedir}/libs/gdx-sources.jar"/>
+    <pathelement location="${basedir}/libs/gdx.jar"/>
+    <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
+    <fileset dir="${basedir}/desktop/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="desktop.runtime.module.classpath">
+    <pathelement location="${desktop.testoutput.dir}"/>
+    <pathelement location="${desktop.output.dir}"/>
+    <path refid="valley-of-bones.runtime.module.classpath"/>
+    <fileset dir="${basedir}/desktop/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.desktop">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.desktop">
+    <patternset refid="excluded.from.module.desktop"/>
+  </patternset>
+  
+  <path id="desktop.module.sourcepath">
+    <dirset dir="${module.desktop.basedir}/desktop">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.desktop" depends="compile.module.desktop.production,compile.module.desktop.tests" description="Compile module desktop"/>
+  
+  <target name="compile.module.desktop.production" depends="register.custom.compilers,compile.module.valley-of-bones" description="Compile module desktop; production classes">
+    <mkdir dir="${desktop.output.dir}"/>
+    <javac2 destdir="${desktop.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.desktop}/javac">
+      <compilerarg line="${compiler.args.desktop}"/>
+      <bootclasspath refid="desktop.module.bootclasspath"/>
+      <classpath refid="desktop.module.production.classpath"/>
+      <src refid="desktop.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.desktop"/>
+    </javac2>
+    
+    <copy todir="${desktop.output.dir}">
+      <fileset dir="${module.desktop.basedir}/desktop/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.desktop.tests" depends="register.custom.compilers,compile.module.desktop.production" description="compile module desktop; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.desktop" description="cleanup module">
+    <delete dir="${desktop.output.dir}"/>
+    <delete dir="${desktop.testoutput.dir}"/>
+  </target>
+  
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.valley-of-bones" description="cleanup all"/>
+  <target name="clean" depends="clean.module.valley-of-bones, clean.module.android, clean.module.desktop" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.valley-of-bones" description="build all modules"/>
-
-  <tstamp />
-
+  <target name="build.modules" depends="init, clean, compile.module.valley-of-bones, compile.module.android, compile.module.desktop" description="build all modules"/>
+    <tstamp/>
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
-    <property name="artifact.output.valleyofbones:jar" value="${basedir}/out/artifacts/${DSTAMP}"/>
-    <property name="artifact.output.valleyofbonesserver:jar" value="${basedir}/out/artifacts/${DSTAMP}"/>
+    <property name="artifact.output.android" value="${basedir}/out/artifacts/android"/>
+    <property name="artifact.output.valleyofbones:jar" value="${basedir}/out/artifacts"/>
+    <property name="artifact.output.valleyofbonesserver:jar" value="${basedir}/out/artifacts"/>
     <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.android.apk" value="${artifacts.temp.dir}/android.apk"/>
     <property name="temp.jar.path.ValleyOfBones.jar" value="${artifacts.temp.dir}/ValleyOfBones.jar"/>
     <property name="temp.jar.path.ValleyOfBonesServer.jar" value="${artifacts.temp.dir}/ValleyOfBonesServer.jar"/>
   </target>
-
-  <target name="artifact.valleyofbones:jar" depends="init.artifacts, compile.module.valley-of-bones" description="Build &#39;ValleyOfBones:jar&#39; artifact">
+  
+  <target name="artifact.android" depends="init.artifacts, compile.module.android" description="Build &#39;android&#39; artifact">
+    <property name="artifact.temp.output.android" value="${artifacts.temp.dir}/android"/>
+    <mkdir dir="${artifact.temp.output.android}"/>
+    <zip destfile="${temp.jar.path.android.apk}">
+      <zipfileset src="/home/jami/Projects/java/valley-of-bones/out/production/android/android.afp.apk!/"/>
+    </zip>
+    <copy file="${temp.jar.path.android.apk}" tofile="${artifact.temp.output.android}/android.apk"/>
+  </target>
+  
+  <target name="artifact.valleyofbones:jar" depends="init.artifacts, compile.module.valley-of-bones, compile.module.desktop" description="Build &#39;ValleyOfBones:jar&#39; artifact">
     <property name="artifact.temp.output.valleyofbones:jar" value="${artifacts.temp.dir}/ValleyOfBones_jar"/>
     <mkdir dir="${artifact.temp.output.valleyofbones:jar}"/>
-    <manifest file="src/META-INF/MANIFEST.MF">
-      <attribute name="Built-By" value="Jami Couch"/>
-      <attribute name="Created-By" value="Jami Couch"/>
-      <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.VOBGame"/>
-      <attribute name="Built-Date" value="${TODAY}"/>
-    </manifest>
-
-    <jar destfile="${temp.jar.path.ValleyOfBones.jar}" duplicate="preserve" manifest="src/META-INF/MANIFEST.MF" filesetmanifest="mergewithoutmain">
+      <manifest file="src/META-INF/MANIFEST.MF">
+          <attribute name="Created-By" value="Jami Couch"/>
+          <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.ServerMain"/>
+          <attribute name="Built-Date" value="${TODAY}"/>
+      </manifest>
+    <jar destfile="${temp.jar.path.ValleyOfBones.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${valley-of-bones.output.dir}"/>
       <zipfileset src="${basedir}/libs/gdx-sources.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-openal-sources.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-openal-sources.jar"/>
       <zipfileset src="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-natives.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-natives.jar"/>
       <zipfileset src="${basedir}/libs/gdx.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-openal.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-backend-lwjgl.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-backend-lwjgl-sources.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-backend-lwjgl-natives.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-openal.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-backend-lwjgl.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-backend-lwjgl-sources.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-backend-lwjgl-natives.jar"/>
+      <zipfileset dir="${desktop.output.dir}"/>
     </jar>
     <copy file="${temp.jar.path.ValleyOfBones.jar}" tofile="${artifact.temp.output.valleyofbones:jar}/ValleyOfBones.jar"/>
   </target>
   
-  <target name="artifact.valleyofbonesserver:jar" depends="init.artifacts, compile.module.valley-of-bones" description="Build &#39;ValleyOfBonesServer:jar&#39; artifact">
+  <target name="artifact.valleyofbonesserver:jar" depends="init.artifacts, compile.module.valley-of-bones, compile.module.desktop" description="Build &#39;ValleyOfBonesServer:jar&#39; artifact">
     <property name="artifact.temp.output.valleyofbonesserver:jar" value="${artifacts.temp.dir}/ValleyOfBonesServer_jar"/>
     <mkdir dir="${artifact.temp.output.valleyofbonesserver:jar}"/>
-    <manifest file="src/META-INF/MANIFEST.MF">
-      <attribute name="Built-By" value="Jami Couch"/>
-      <attribute name="Created-By" value="Jami Couch"/>
-      <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.ServerMain"/>
-      <attribute name="Built-Date" value="${TODAY}"/>
-    </manifest>
-    <jar destfile="${temp.jar.path.ValleyOfBonesServer.jar}" duplicate="preserve" manifest="src/META-INF/MANIFEST.MF" filesetmanifest="mergewithoutmain">
+      <manifest file="src/META-INF/MANIFEST.MF">
+          <attribute name="Created-By" value="Jami Couch"/>
+          <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.ServerMain"/>
+          <attribute name="Built-Date" value="${TODAY}"/>
+      </manifest>
+      <jar destfile="${temp.jar.path.ValleyOfBonesServer.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${valley-of-bones.output.dir}"/>
       <zipfileset src="${basedir}/libs/gdx-sources.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-openal-sources.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-openal-sources.jar"/>
       <zipfileset src="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-natives.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-natives.jar"/>
       <zipfileset src="${basedir}/libs/gdx.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-openal.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-backend-lwjgl.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-backend-lwjgl-sources.jar"/>
-      <zipfileset src="${basedir}/libs/gdx-backend-lwjgl-natives.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-openal.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-backend-lwjgl.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-backend-lwjgl-sources.jar"/>
+      <zipfileset src="${basedir}/desktop/libs/gdx-backend-lwjgl-natives.jar"/>
+      <zipfileset dir="${desktop.output.dir}"/>
     </jar>
     <copy file="${temp.jar.path.ValleyOfBonesServer.jar}" tofile="${artifact.temp.output.valleyofbonesserver:jar}/ValleyOfBonesServer.jar"/>
   </target>
   
-  <target name="build.all.artifacts" depends="artifact.valleyofbones:jar, artifact.valleyofbonesserver:jar" description="Build all artifacts">
+  <target name="build.all.artifacts" depends="artifact.android, artifact.valleyofbones:jar, artifact.valleyofbonesserver:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.android}"/>
+    <copy todir="${artifact.output.android}">
+      <fileset dir="${artifact.temp.output.android}"/>
+    </copy>
     <mkdir dir="${artifact.output.valleyofbones:jar}"/>
     <copy todir="${artifact.output.valleyofbones:jar}">
       <fileset dir="${artifact.temp.output.valleyofbones:jar}"/>
@@ -295,26 +517,10 @@
     <copy todir="${artifact.output.valleyofbonesserver:jar}">
       <fileset dir="${artifact.temp.output.valleyofbonesserver:jar}"/>
     </copy>
-
-   <copy todir="${artifact.output.valleyofbones:jar}">
-      <fileset dir="${basedir}" includes="assets/**" />
-   </copy>
     
     <!-- Delete temporary files -->
     <delete dir="${artifacts.temp.dir}"/>
   </target>
-
-  <target name="package.artifacts" depends="build.all.artifacts" description="Package into zip file">
-      <zip destfile="${artifacts.temp.dir}/ValleyOfBones-${DSTAMP}.zip">
-          <fileset dir="${artifact.output.valleyofbones:jar}" includes="*.jar" />
-          <fileset file="${basedir}/README.md" />
-          <fileset dir="${basedir}" includes="assets/**" />
-      </zip>
-      <copy todir="${artifact.output.valleyofbones:jar}">
-          <fileset file="${artifacts.temp.dir}/ValleyOfBones-${DSTAMP}.zip"/>
-      </copy>
-      <delete dir="${artifacts.temp.dir}"/>
-  </target>
   
-  <target name="all" depends="build.modules, build.all.artifacts, package.artifacts" description="build all"/>
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>

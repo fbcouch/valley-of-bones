@@ -12,6 +12,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/desktop/libs/gdx-backend-lwjgl.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/desktop/libs/gdx-backend-lwjgl-sources.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/desktop/libs/gdx-backend-lwjgl-natives.jar" path-in-jar="/" />
+      <element id="module-output" name="desktop" />
     </root>
   </artifact>
 </component>
