@@ -29,6 +29,13 @@ public class LevelScreenInputListener extends ActorGestureListener {
     @Override
     public void tap(InputEvent event, float x, float y, int count, int button) {
         super.tap(event, x, y, count, button);    //To change body of overridden methods use File | Settings | File Templates.
+
+        // Allow desktop players to right click
+        if (button == Input.Buttons.RIGHT) {
+            longPress(null, x, y);
+            return;
+        }
+
         Vector2 mapPos = levelScreen.screenToMapCoords(x , y);
         Vector2 boardPos = levelScreen.gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
         if (levelScreen.getClickInterrupt()) {

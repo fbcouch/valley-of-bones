@@ -87,6 +87,10 @@ Several icons used were licensed from game-icons.net:
 
 - "Skull Crossed Bones Icon" by Lorc, CC-BY
 
+- "Sparta Icon" by Lorc, CC-BY
+
+- "Tank Icon" by Lorc, CC-BY
+
 - "Tinker Icon" by Lorc, CC-BY
 
 - "Tread Icon" by Lorc, CC-BY
