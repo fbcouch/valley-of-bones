@@ -103,7 +103,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	
 	public Unit(int id, Player owner, JsonProto proto) {
 		// TODO load from atlas
-		super(id, owner, TextureManager.getSpriteFromAtlas("assets", proto.image));
+		super(id, owner, VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
 		
 		this.proto = proto;
 		this.protoId = proto.id;
@@ -113,7 +113,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         Gdx.app.log(LOG, properties.toString());
 		parseProperties();
         // TODO load from atlas
-        overlay = TextureManager.getSpriteFromAtlas("assets", proto.image + "-overlay");
+        overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image + "-overlay");
 
         healthBar = new ProgressBar();
         healthBar.setSize(getWidth(), 4f);
@@ -168,14 +168,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
             int x = 0;
             batch.setColor(getColor());
             if (getMovesLeft() > 0) {
-                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "walking-boot");
+                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot");
 
                 batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;
             }
 
             if (getAttacksLeft() > 0) {
-                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "rune-sword");
+                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword");
 
                 batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;
@@ -209,14 +209,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
             int x = 0;
             batch.setColor(getColor());
             if (getMovesLeft() > 0) {
-                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "walking-boot");
+                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot");
 
                 batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;
             }
 
             if (getAttacksLeft() > 0) {
-                TextureRegion tex = TextureManager.getSpriteFromAtlas("assets", "rune-sword");
+                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword");
 
                 batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
                 x += tex.getRegionWidth() * 0.5f;

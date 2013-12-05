@@ -43,7 +43,7 @@ public class AbstractScreen implements Screen {
 
 	protected final VOBGame game;
 	protected Stage stage;
-	public static Skin skin;
+	protected Skin skin;
 	protected BitmapFont fontSmall;
 	protected BitmapFont fontMed;
 	protected BitmapFont fontLarge;
@@ -104,10 +104,10 @@ public class AbstractScreen implements Screen {
 	@Override
 	public void dispose() {
 		stage.dispose();
-//		if (fontSmall != null) fontSmall.dispose();
-//		if (fontMed != null) fontMed.dispose();
-//		if (fontLarge != null) fontLarge.dispose();
-//		if (skin != null) skin.dispose();
+		if (fontSmall != null) fontSmall.dispose();
+		if (fontMed != null) fontMed.dispose();
+		if (fontLarge != null) fontLarge.dispose();
+		if (skin != null) skin.dispose();
 	}
 
 	@Override

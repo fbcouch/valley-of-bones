@@ -19,6 +19,7 @@ package com.ahsgaming.valleyofbones.map;
 
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.Utils;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
@@ -51,7 +52,7 @@ public class TileSet {
 
         for (JsonValue v: json.get("tiles")) {
             images.add(v.asString());
-            tiles.add(TextureManager.getSpriteFromAtlas(atlas, v.asString()));
+            tiles.add(VOBGame.instance.getTextureManager().getSpriteFromAtlas(atlas, v.asString()));
         }
 	}
 

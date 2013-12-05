@@ -46,14 +46,14 @@ public class InfoPanel extends Panel {
         this.skin = skin;
         this.horizontal = false;
 
-        iconHealth = new Image(TextureManager.getSpriteFromAtlas("assets", "hospital-cross"));
-        iconAttack = new Image(TextureManager.getSpriteFromAtlas("assets", "crossed-swords"));
-        iconRange = new Image(TextureManager.getSpriteFromAtlas("assets", "archery-target"));
-        iconArmor = new Image(TextureManager.getSpriteFromAtlas("assets", "checked-shield"));
-        iconMove = new Image(TextureManager.getSpriteFromAtlas("assets", "radial-balance"));
-        iconMovesLeft = new Image(TextureManager.getSpriteFromAtlas("assets", "walking-boot"));
-        iconAttacksLeft = new Image(TextureManager.getSpriteFromAtlas("assets", "rune-sword"));
-        iconRefund = new Image(TextureManager.getSpriteFromAtlas("assets", "skull-crossed-bones"));
+        iconHealth = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hospital-cross"));
+        iconAttack = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "crossed-swords"));
+        iconRange = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "archery-target"));
+        iconArmor = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "checked-shield"));
+        iconMove = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "radial-balance"));
+        iconMovesLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot"));
+        iconAttacksLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword"));
+        iconRefund = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "skull-crossed-bones"));
 
         iconRefund.addListener(new ClickListener() {
             @Override

@@ -72,9 +72,9 @@ public class GameOverScreen extends AbstractScreen {
 
         table.add("Name", "small-font", "white").pad(4).minWidth(250);
 
-        table.add(new Image(TextureManager.getSpriteFromAtlas("assets", "supply"))).pad(4).height(32);
+        table.add(new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"))).pad(4).height(32);
 
-        table.add(new Image(TextureManager.getSpriteFromAtlas("assets", "money"))).pad(4).height(32);
+        table.add(new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"))).pad(4).height(32);
 
         table.row();
 

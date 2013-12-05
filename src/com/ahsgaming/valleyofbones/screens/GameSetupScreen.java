@@ -214,7 +214,7 @@ public class GameSetupScreen extends AbstractScreen {
 	}
 	
 	private Image getRemovePlayerButton(final Player p) {
-		Image remove = new Image(TextureManager.getSpriteFromAtlas("assets", "walking-boot"));
+		Image remove = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot"));
 		remove.addListener(new ClickListener() {
 
 			/* (non-Javadoc)

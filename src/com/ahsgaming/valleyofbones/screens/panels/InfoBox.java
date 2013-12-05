@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.screens.panels;
 
 import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -38,13 +39,13 @@ public class InfoBox extends Group {
     public InfoBox(Prototypes.JsonProto proto, Skin skin) {
         super();
 
-        iconFood = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
-        iconMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
-        iconHealth = new Image(TextureManager.getSpriteFromAtlas("assets", "hospital-cross"));
-        iconAttack = new Image(TextureManager.getSpriteFromAtlas("assets", "crossed-swords"));
-        iconRange = new Image(TextureManager.getSpriteFromAtlas("assets", "archery-target"));
-        iconSpeed = new Image(TextureManager.getSpriteFromAtlas("assets", "radial-balance"));
-        iconArmor = new Image(TextureManager.getSpriteFromAtlas("assets", "checked-shield"));
+        iconFood = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"));
+        iconMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"));
+        iconHealth = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hospital-cross"));
+        iconAttack = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "crossed-swords"));
+        iconRange = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "archery-target"));
+        iconSpeed = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "radial-balance"));
+        iconArmor = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "checked-shield"));
         lblTitle = new Label(" ", skin, "medium");
         lblFood = new Label(String.format(FOOD, 0), skin, "medium");
         lblMoney = new Label(String.format(MONEY, 0), skin, "medium");

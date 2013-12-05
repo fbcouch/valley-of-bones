@@ -23,6 +23,9 @@ public class VOBGame extends Game {
 	private float keyScrollSpeed = 500;
 	private float mouseScrollSpeed = 500;
 	private float mouseScrollSize = 15;
+
+    public static VOBGame instance;
+    protected TextureManager textureManager;
 	
 
 	NetController netController;
@@ -44,8 +47,7 @@ public class VOBGame extends Game {
 	
 	public VOBGame(boolean isServer) {
 		this.isServer = isServer;
-
-
+        VOBGame.instance = this;
 	}
 	
 	/*
@@ -118,6 +120,7 @@ public class VOBGame extends Game {
 	
 	@Override
 	public void create() {
+        textureManager = new TextureManager();
 		if (isServer) {
 			setScreen(getServerScreen());
 			
@@ -143,8 +146,8 @@ public class VOBGame extends Game {
 		super.dispose();
 
         Gdx.app.log(LOG, "dispose");
-        if (AbstractScreen.skin != null) AbstractScreen.skin.dispose();
-        TextureManager.dispose();
+//        if (AbstractScreen.skin != null) AbstractScreen.skin.dispose();
+        textureManager.dispose();
 
 		closeGame();
 	}
@@ -349,5 +352,9 @@ public class VOBGame extends Game {
 	public void setGameResult(GameResult gameResult) {
 		this.gameResult = gameResult;
 	}
+
+    public TextureManager getTextureManager() {
+        return textureManager;
+    }
 
 }

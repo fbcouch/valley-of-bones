@@ -262,7 +262,7 @@ public class LevelScreen extends AbstractScreen {
         if (isCurrentPlayer() && game.getPlayer().canBuild(proto.id, gController)) {
             buildMode = true;
             buildProto = proto;
-            buildImage = new Image(TextureManager.getSpriteFromAtlas("assets", proto.image));
+            buildImage = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
             buildImage.setColor(1, 1, 1, 0.5f);
         }
     }
@@ -321,7 +321,7 @@ public class LevelScreen extends AbstractScreen {
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         upgradePanel = new Panel(game, this, "tinker", getSkin());
         selectionPanel = new InfoPanel(game, this, "invisible", getSkin());
-        turnPanel = new TurnPanel(gController, game.getPlayer());
+        turnPanel = new TurnPanel(gController, game.getPlayer(), getSkin());
 
         surrenderPanel = new SurrenderPanel(game, this, getSkin());
 
@@ -445,7 +445,7 @@ public class LevelScreen extends AbstractScreen {
         Gdx.app.log(LOG, "Popup message!");
         Group popup = new Group();
         Label lbl = new Label(text, getSkin(), "medium");
-        Image img = new Image(TextureManager.getSpriteFromAtlas("assets", icon));
+        Image img = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", icon));
         popup.addActor(img);
         popup.addActor(lbl);
         lbl.setPosition(img.getRight(), (img.getHeight() - lbl.getHeight()) * 0.5f);
@@ -480,21 +480,21 @@ public class LevelScreen extends AbstractScreen {
 
         int lastTick;
 
-        public TurnPanel(GameController controller, Player player) {
+        public TurnPanel(GameController controller, Player player, Skin skin) {
             this.gController = controller;
-            this.skin = AbstractScreen.skin;
+            this.skin = skin;
             this.thePlayer = player;
 
-            imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-hud-bg"));
+            imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg"));
             addActor(imgBackground);
 
-            imgP1Indicator = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-indicator-base"));
+            imgP1Indicator = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-indicator-base"));
             addActor(imgP1Indicator);
 
-            imgP2Indicator = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-indicator-base"));
+            imgP2Indicator = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-indicator-base"));
             addActor(imgP2Indicator);
 
-            imgIndicatorOverlay = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-indicator-overlay"));
+            imgIndicatorOverlay = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-indicator-overlay"));
 
             player1 = gController.getPlayers().get(0);
             lblPlayer1 = new Label(player1.getPlayerName(), skin, "small-font", player1.getPlayerColor());
@@ -507,7 +507,7 @@ public class LevelScreen extends AbstractScreen {
             lblTime = new Label(String.format(TIME, 0, 0), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
             addActor(lblTime);
 
-            infoPanel = new InfoPanel(thePlayer, (thePlayer == player2));
+            infoPanel = new InfoPanel(thePlayer, (thePlayer == player2), skin);
             addActor(infoPanel);
             infoPanel.setZIndex(0);
 
@@ -515,7 +515,7 @@ public class LevelScreen extends AbstractScreen {
             addActor(endTurn);
             endTurn.setZIndex(1);
 
-            Image bg = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-hud-bg-small"));
+            Image bg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg-small"));
             endTurn.addActor(bg);
             endTurn.setSize(bg.getWidth(), bg.getHeight());
 
@@ -641,6 +641,7 @@ public class LevelScreen extends AbstractScreen {
             public static String LOG = "InfoPanel";
 
             Player player;
+            Skin skin;
             Image imgBackground, imgMoney, imgSupply;
             Label lblMoney, lblSupply;
 
@@ -650,9 +651,10 @@ public class LevelScreen extends AbstractScreen {
 
             int padLeft = 25, padRight = 45;
 
-            public InfoPanel(Player player, boolean pullRight) {
+            public InfoPanel(Player player, boolean pullRight, Skin skin) {
                 this.player = player;
                 this.pullRight = pullRight;
+                this.skin = skin;
 
                 if (pullRight) {
                     padLeft += padRight;
@@ -660,21 +662,21 @@ public class LevelScreen extends AbstractScreen {
                     padLeft -= padRight;
                 }
 
-                imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "turn-hud-bg-small"));
+                imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg-small"));
                 addActor(imgBackground);
 
-                imgMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
+                imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"));
                 imgMoney.setScale(20 / imgMoney.getWidth());
                 addActor(imgMoney);
 
-                imgSupply = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
+                imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"));
                 imgSupply.setScale(20 / imgSupply.getWidth());
                 addActor(imgSupply);
 
-                lblMoney = new Label("0000", AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblMoney = new Label("0000", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
                 addActor(lblMoney);
 
-                lblSupply = new Label("00/00", AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblSupply = new Label("00/00", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
                 addActor(lblSupply);
 
                 layout();
@@ -732,12 +734,12 @@ public class LevelScreen extends AbstractScreen {
             this.gController = controller;
             this.player = player;
             this.levelScreen = lvlScreen;
-            skin = AbstractScreen.skin;
+            skin = levelScreen.getSkin();
 
-            imgBackground = new Image(TextureManager.getSpriteFromAtlas("assets", "build-hud-bg"));
+            imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-hud-bg"));
             addActor(imgBackground);
 
-            imgInfantryTab = new Image(TextureManager.getSpriteFromAtlas("assets", "build-infantry-tab"));
+            imgInfantryTab = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-infantry-tab"));
             addActor(imgInfantryTab);
             imgInfantryTab.addListener(new ClickListener() {
                 @Override
@@ -748,7 +750,7 @@ public class LevelScreen extends AbstractScreen {
                 }
             });
 
-            imgMechTab = new Image(TextureManager.getSpriteFromAtlas("assets", "build-mech-tab"));
+            imgMechTab = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-mech-tab"));
             addActor(imgMechTab);
             imgMechTab.addListener(new ClickListener(){
                 @Override
@@ -764,7 +766,7 @@ public class LevelScreen extends AbstractScreen {
             mechItems = new Array<BuildItem>();
 
             for (Prototypes.JsonProto jp: itemProtos) {
-                final BuildItem item = new BuildItem(jp);
+                final BuildItem item = new BuildItem(jp, skin);
 
                 String type = jp.getProperty("subtype").asString();
                 if (type.equals("armored")) {
@@ -851,32 +853,34 @@ public class LevelScreen extends AbstractScreen {
 
         public static class BuildItem extends Group {
 
+            Skin skin;
             Image icon, imgSupply, imgMoney;
             Label lblSupply, lblMoney;
             Prototypes.JsonProto proto;
 
-            public BuildItem(Prototypes.JsonProto proto) {
+            public BuildItem(Prototypes.JsonProto proto, Skin skin) {
                 this.proto = proto;
+                this.skin = skin;
 
-                icon = new Image(TextureManager.getSpriteFromAtlas("assets", proto.image));
+                icon = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
                 icon.setScale(0.75f);
                 addActor(icon);
 
-                imgSupply = new Image(TextureManager.getSpriteFromAtlas("assets", "supply"));
+                imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"));
                 imgSupply.setScale(20 / imgSupply.getWidth());
                 imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX(), 0);
                 addActor(imgSupply);
 
-                lblSupply = new Label(Integer.toString(proto.cost), AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblSupply = new Label(Integer.toString(proto.cost), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
                 lblSupply.setPosition(imgSupply.getRight(), imgSupply.getY());
                 addActor(lblSupply);
 
-                imgMoney = new Image(TextureManager.getSpriteFromAtlas("assets", "money"));
+                imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"));
                 imgMoney.setScale(20 / imgMoney.getWidth());
                 imgMoney.setPosition(imgSupply.getX(), imgSupply.getY() + imgSupply.getHeight() * imgSupply.getScaleY() + 1);
                 addActor(imgMoney);
 
-                lblMoney = new Label(Integer.toString(proto.cost), AbstractScreen.skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblMoney = new Label(Integer.toString(proto.cost), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
                 lblMoney.setPosition(imgMoney.getRight(), imgMoney.getY());
                 addActor(lblMoney);
 

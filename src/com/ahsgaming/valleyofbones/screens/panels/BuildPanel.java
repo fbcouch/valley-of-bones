@@ -77,7 +77,7 @@ public class BuildPanel extends Panel {
         buttons.clear();
         for (Prototypes.JsonProto jp: items) {
             final Image btn;
-            Sprite sp = TextureManager.getSpriteFromAtlas("assets", jp.image);
+            Sprite sp = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", jp.image);
             btn = new Image(sp);
             this.addActor(btn);
             if (i > 0 && i % 3 == 0) {

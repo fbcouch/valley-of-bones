@@ -39,18 +39,18 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TextureManager {
 	public static String LOG = "TextureManager";
 	
-	private static ObjectMap<String, TextureRegion> map = new ObjectMap<String, TextureRegion>();
+	private ObjectMap<String, TextureRegion> map = new ObjectMap<String, TextureRegion>();
 
     public static TextureFilter defaultMinFilter = TextureFilter.MipMapLinearNearest;
     public static TextureFilter defaultMaxFilter = TextureFilter.Nearest;
 
-    public static void clear() {
+    public void clear() {
         dispose();
         map.clear();
         atlases.clear();
     }
 
-    public static void dispose() {
+    public void dispose() {
         for (String k: map.keys()) {
             map.get(k).getTexture().dispose();
         }
@@ -59,7 +59,7 @@ public class TextureManager {
         }
     }
 	
-	public static TextureRegion getTexture(String file) {
+	public TextureRegion getTexture(String file) {
 		if (map.containsKey(file)) return map.get(file);
 
 		if (!Gdx.files.internal(file).exists()) return null;
@@ -72,17 +72,17 @@ public class TextureManager {
 		return reg;
 	}
 	
-	public static void loadTexture(String file) {
+	public void loadTexture(String file) {
 		getTexture(file);
 	}
 	
-	public static TextureRegion loadTextureRegion(String file, int x, int y, int w, int h) {
+	public TextureRegion loadTextureRegion(String file, int x, int y, int w, int h) {
 		return new TextureRegion(getTexture(file), x, y, w, h);
 	}
 	
-	private static ObjectMap<String, TextureAtlas> atlases = new ObjectMap<String, TextureAtlas>();
+	private ObjectMap<String, TextureAtlas> atlases = new ObjectMap<String, TextureAtlas>();
 	
-	public static Sprite getSpriteFromAtlas(String atlas, String name, int id) {
+	public Sprite getSpriteFromAtlas(String atlas, String name, int id) {
         if (!atlases.containsKey(atlas)) {
             atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
@@ -96,11 +96,11 @@ public class TextureManager {
 		return atlases.get(atlas).createSprite(name, id);
 	}
 
-    public static Sprite getSpriteFromAtlas(String atlas, String name) {
+    public Sprite getSpriteFromAtlas(String atlas, String name) {
         return getSpriteFromAtlas(atlas, name, -1);
     }
 
-    public static Array<Sprite> getSpritesFromAtlas(String atlas, String name) {
+    public Array<Sprite> getSpritesFromAtlas(String atlas, String name) {
 		if (!atlases.containsKey(atlas)) {
 			atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
@@ -111,7 +111,7 @@ public class TextureManager {
 		return atlases.get(atlas).createSprites(name);
 	}
 
-    public static TextureAtlas getTextureAtlas(String atlas) {
+    public TextureAtlas getTextureAtlas(String atlas) {
         if (!atlases.containsKey(atlas)) {
             atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
@@ -121,7 +121,7 @@ public class TextureManager {
         return atlases.get(atlas);
     }
 	
-	public static void loadTexturePackage(String name) {
+	public void loadTexturePackage(String name) {
 		map.clear();
 		JsonReader jsonReader = new JsonReader();
 		Object rObj = jsonReader.parse(Gdx.files.internal(name + "/package.json"));
