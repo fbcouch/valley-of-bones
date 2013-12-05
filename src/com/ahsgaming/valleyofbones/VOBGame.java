@@ -1,16 +1,8 @@
 package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.network.*;
-import com.ahsgaming.valleyofbones.screens.GameJoinScreen;
-import com.ahsgaming.valleyofbones.screens.GameLoadingScreen;
-import com.ahsgaming.valleyofbones.screens.GameOverScreen;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
+import com.ahsgaming.valleyofbones.screens.*;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
-import com.ahsgaming.valleyofbones.screens.LevelScreen;
-import com.ahsgaming.valleyofbones.screens.MainMenuScreen;
-import com.ahsgaming.valleyofbones.screens.OptionsScreen;
-import com.ahsgaming.valleyofbones.screens.ServerScreen;
-import com.ahsgaming.valleyofbones.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -125,8 +117,7 @@ public class VOBGame extends Game {
 	 */
 	
 	@Override
-	public void create() {		
-		
+	public void create() {
 		if (isServer) {
 			setScreen(getServerScreen());
 			
@@ -150,7 +141,11 @@ public class VOBGame extends Game {
 	@Override
 	public void dispose() {
 		super.dispose();
-		
+
+        Gdx.app.log(LOG, "dispose");
+        if (AbstractScreen.skin != null) AbstractScreen.skin.dispose();
+        TextureManager.dispose();
+
 		closeGame();
 	}
 
@@ -198,16 +193,22 @@ public class VOBGame extends Game {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+        Gdx.app.log(LOG, "resize");
 	}
 
 	@Override
 	public void pause() {
 		super.pause();
+        Gdx.app.log(LOG, "pause");
 	}
 
 	@Override
 	public void resume() {
 		super.resume();
+        Gdx.app.log(LOG, "resume");
+
+//        AbstractScreen.skin = null;
+//        TextureManager.clear();
 	}
 	
 	/**

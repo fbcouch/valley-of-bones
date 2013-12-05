@@ -43,7 +43,7 @@ public class AbstractScreen implements Screen {
 
 	protected final VOBGame game;
 	protected Stage stage;
-	protected static final Skin skin = new Skin(Gdx.files.internal("newui/uiskin.json"));
+	public static Skin skin;
 	protected BitmapFont fontSmall;
 	protected BitmapFont fontMed;
 	protected BitmapFont fontLarge;
@@ -57,6 +57,7 @@ public class AbstractScreen implements Screen {
 		this.game = game;
 		this.stage = new Stage(0, 0, true);
 		this.gameGroup = new Group();
+        getSkin();
 	}
 	
 	/**
@@ -69,10 +70,6 @@ public class AbstractScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 		
 		// TODO load things here
-		getSmallFont();
-		getMedFont();
-		getLargeFont();
-		getSkin();
 	}
 
 	@Override
@@ -150,6 +147,12 @@ public class AbstractScreen implements Screen {
 	}
 	
 	public Skin getSkin() {
+        if (skin == null) {
+            skin = new Skin(Gdx.files.internal("newui/uiskin.json"));
+            fontSmall = skin.getFont("small-font");
+            fontMed = skin.getFont("medium-font");
+            fontLarge = skin.getFont("large-font");
+        }
 		return skin;
 	}
 	

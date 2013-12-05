@@ -43,6 +43,21 @@ public class TextureManager {
 
     public static TextureFilter defaultMinFilter = TextureFilter.MipMapLinearNearest;
     public static TextureFilter defaultMaxFilter = TextureFilter.Nearest;
+
+    public static void clear() {
+        dispose();
+        map.clear();
+        atlases.clear();
+    }
+
+    public static void dispose() {
+        for (String k: map.keys()) {
+            map.get(k).getTexture().dispose();
+        }
+        for (String k: atlases.keys()) {
+            atlases.get(k).dispose();
+        }
+    }
 	
 	public static TextureRegion getTexture(String file) {
 		if (map.containsKey(file)) return map.get(file);
