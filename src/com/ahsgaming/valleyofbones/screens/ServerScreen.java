@@ -40,18 +40,12 @@ public class ServerScreen extends AbstractScreen {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ahsgaming.spacetactics.screens.AbstractScreen#show()
-	 */
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
 		super.show();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ahsgaming.spacetactics.screens.AbstractScreen#resize(int, int)
-	 */
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub

@@ -23,14 +23,9 @@
 package com.ahsgaming.valleyofbones.network;
 
 import java.io.IOException;
+import java.util.HashMap;
 
-import com.ahsgaming.valleyofbones.AIPlayer;
-import com.ahsgaming.valleyofbones.GameController;
-import com.ahsgaming.valleyofbones.GameResult;
-import com.ahsgaming.valleyofbones.GameStates;
-import com.ahsgaming.valleyofbones.NetPlayer;
-import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
@@ -38,9 +33,13 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.net.HttpParametersUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -52,6 +51,8 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer implements NetController {
 	public String LOG = "GameServer";
+    public static final boolean DEBUG = false;
+    String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
 
     final VOBGame game;
 
@@ -70,6 +71,8 @@ public class GameServer implements NetController {
 	boolean gameStarted = false;
 
     boolean endTurnRecd;
+
+    int publicServerId = -1;
 	
 	/**
 	 * 
@@ -97,7 +100,7 @@ public class GameServer implements NetController {
 		
 		
 		server.addListener(new Listener() {
-			
+
 			public void received(Connection c, Object obj) {
 				
 				if (obj instanceof RegisterPlayer) {
@@ -236,7 +239,48 @@ public class GameServer implements NetController {
                 if (controller == null || controller.getGameResult() == null) sendPlayerList();
 			}
 		});
-		
+
+        Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.POST);
+        httpGet.setUrl(String.format("%s/server", globalServerUrl));
+
+        HashMap parameters = new HashMap();
+        parameters.put("name", "MyServer");
+//        parameters.put("ip", Utils.getIPAddress(true));
+
+        httpGet.setContent(HttpParametersUtils.convertHttpParameters(parameters));
+
+        Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String response = httpResponse.getResultAsString();
+                switch(httpResponse.getStatus().getStatusCode()) {
+                    case 400:
+                    case 404:
+                        Gdx.app.log(LOG, "Failed to register with global server");
+                        Gdx.app.log(LOG, response);
+                        break;
+                    case 200:
+                        Gdx.app.log(LOG, "Registered with global server");
+                        Gdx.app.log(LOG, response);
+                        JsonReader reader = new JsonReader();
+                        JsonValue result = reader.parse(response);
+                        if (result != null)
+                            publicServerId = result.getInt("id", -1);
+                        Gdx.app.log(LOG, Integer.toString(publicServerId));
+                        break;
+                    default:
+                        Gdx.app.log(LOG, String.format("Unknown HTTP Status Code: %d", httpResponse.getStatus().getStatusCode()));
+                        Gdx.app.log(LOG, response);
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.log(LOG, "Failed to register with global server");
+                t.printStackTrace();
+            }
+        });
+
 	}
 	
 	public void startGame() {
@@ -267,6 +311,22 @@ public class GameServer implements NetController {
 
 	public void stop() {
 		server.close();
+
+        if (publicServerId >= 0) {
+            Net.HttpRequest httpDelete = new Net.HttpRequest(Net.HttpMethods.DELETE);
+            httpDelete.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
+            Gdx.net.sendHttpRequest(httpDelete, new Net.HttpResponseListener() {
+                @Override
+                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                    Gdx.app.log(LOG, httpResponse.getResultAsString());
+                }
+
+                @Override
+                public void failed(Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
 	}
 
 	public boolean update(float delta) {
