@@ -60,7 +60,7 @@ public class ServerScreen extends AbstractScreen {
 		Table table = new Table(getSkin());
 		table.setFillParent(true);
 		
-		table.add("Space Tactics Game");
+		table.add("Valley of Bones");
 		table.row();
 		table.add("Standalone server");
 		table.row();

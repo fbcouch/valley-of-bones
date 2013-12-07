@@ -16,6 +16,7 @@
             android:name="com.ahsgaming.valleyofbones.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
+            android:launchMode="singleTask"
             android:configChanges="keyboard|keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

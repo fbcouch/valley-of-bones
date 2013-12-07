@@ -464,7 +464,7 @@
           <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.Main"/>
           <attribute name="Built-Date" value="${TODAY}"/>
       </manifest>
-    <jar destfile="${temp.jar.path.ValleyOfBones.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+    <jar destfile="${temp.jar.path.ValleyOfBones.jar}" duplicate="preserve" manifest="${basedir}/src/META-INF/MANIFEST.MF" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${valley-of-bones.output.dir}"/>
       <zipfileset src="${basedir}/libs/gdx-sources.jar"/>
       <zipfileset src="${basedir}/desktop/libs/gdx-openal-sources.jar"/>
@@ -488,7 +488,7 @@
           <attribute name="Main-Class" value="com.ahsgaming.valleyofbones.ServerMain"/>
           <attribute name="Built-Date" value="${TODAY}"/>
       </manifest>
-      <jar destfile="${temp.jar.path.ValleyOfBonesServer.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <jar destfile="${temp.jar.path.ValleyOfBonesServer.jar}" duplicate="preserve" manifest="${basedir}/src/META-INF/MANIFEST.MF" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${valley-of-bones.output.dir}"/>
       <zipfileset src="${basedir}/libs/gdx-sources.jar"/>
       <zipfileset src="${basedir}/desktop/libs/gdx-openal-sources.jar"/>

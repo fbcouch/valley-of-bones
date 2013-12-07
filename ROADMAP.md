@@ -30,19 +30,32 @@
         - control resets when "destroyed"
         - spawns "destroyed" (uncontrolled)
 
-### Chapter 3: (June?)
+### Chapter 3: Mech (December)
 
-- Another race
-    - set up tension between human/alien races
-    - biological race that 'evolves' similarly to zerg?
+- UI Improvements
+    + updated look/feel
+    - Finish unimplemented features:
+        - Pause menu (Surrender goes here)
+        - Refund
+        - Activate/deactivate cloak
+        - Zoom
+        - Better unit boxes
+- Android version
 - Central server
     - Keeps a master server list, updates when users start 'public' servers
     - also allow configurable port
-- Attachments for base
-    - "Defense platform" --> grants extra attack/damage
-    - "Research facility" --> allows upgrades
-- Rewards for kills --> also allows less income from base
+    - game reports
+- Gameplay changes
+    - Attachments for base
+        - "Defense platform" --> grants extra attack/damage
+        - "Research facility" --> allows upgrades
+    - Rewards for kills --> also allows less income from base
+    - Saboteur --> heavy infantry (bazooka/missile launcher)
+    - Add 2 new mech units
+    - Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
 - Basic sounds
-- Package system, move game assets to local rather than internal to jar
-    + game assets now local
-    - packaging system
+
+### Later
+- Another race
+    - set up tension between human/alien races
+    - biological race that 'evolves' similarly to zerg?

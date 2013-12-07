@@ -25,17 +25,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets.png" afterPath="$PROJECT_DIR$/assets/assets.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/assets.tps" afterPath="$PROJECT_DIR$/art/exported/assets.tps" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android/AndroidManifest.xml" afterPath="$PROJECT_DIR$/android/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets.atlas" afterPath="$PROJECT_DIR$/assets/assets.atlas" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/ui-drawing.svg" afterPath="$PROJECT_DIR$/art/ui-drawing.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android/src/com/ahsgaming/valleyofbones/MainActivity.java" afterPath="$PROJECT_DIR$/android/src/com/ahsgaming/valleyofbones/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ROADMAP.md" afterPath="$PROJECT_DIR$/ROADMAP.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/ServerScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/ServerScreen.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/profile" afterPath="$PROJECT_DIR$/profile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/valley-of-bones-client.xml" afterPath="$PROJECT_DIR$/valley-of-bones-client.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386284718857" ignored="false" />
+    <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386441495615" ignored="false" />
     <file path="/fragment.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386029032786" ignored="false" />
     <file path="/KryoCommon.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368067837" ignored="false" />
     <file path="/GameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367105013238" ignored="false" />
@@ -44,7 +46,7 @@
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
     <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386161843042" ignored="false" />
     <file path="/EndTurn.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367090717362" ignored="false" />
-    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386285274741" ignored="false" />
+    <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386447291899" ignored="false" />
     <file path="/MainMenuScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386077042249" ignored="false" />
     <file path="/AbstractScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386256616575" ignored="false" />
     <file path="/GameSetupScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386257393615" ignored="false" />
@@ -66,7 +68,7 @@
     <file path="/ProgressBar.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386276672133" ignored="false" />
     <file path="/Utils.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386280452755" ignored="false" />
     <file path="/OptionsScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367693847828" ignored="false" />
-    <file path="/valley-of-bones-client.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386286511605" ignored="false" />
+    <file path="/valley-of-bones-client.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386303577028" ignored="false" />
     <file path="/AIPlayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368160998281" ignored="false" />
     <file path="/units.json" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368220725574" ignored="false" />
     <file path="/Refund.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1368507907164" ignored="false" />
@@ -77,7 +79,7 @@
     <file path="/SurrenderPanel.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368052731" ignored="false" />
     <file path="/Surrender.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368028926" ignored="false" />
     <file path="/SplashScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1385748668662" ignored="false" />
-    <file path="/ROADMAP.md" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1370206572403" ignored="false" />
+    <file path="/ROADMAP.md" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386334274444" ignored="false" />
     <file path="$PROJECT_DIR$/../super-rummy/src/com/ahsgaming/superrummy/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1374026589748" ignored="false" />
     <file path="$PROJECT_DIR$/../super-rummy/src/com/ahsgaming/superrummy/RummyGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1374026905402" ignored="false" />
     <file path="$PROJECT_DIR$/../super-rummy/src/com/ahsgaming/superrummy/screens/AbstractScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1374026981674" ignored="false" />
@@ -88,8 +90,8 @@
     <file path="$PROJECT_DIR$/../super-rummy/.idea/ant.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1374026039389" ignored="false" />
     <file path="$PROJECT_DIR$/../super-rummy/.idea/modules.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1374026039389" ignored="false" />
     <file path="$PROJECT_DIR$/../super-rummy/src/com/ahsgaming/superrummy/GameObject.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1374026537849" ignored="false" />
-    <file path="/MainActivity.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1385914451981" ignored="false" />
-    <file path="/AndroidManifest.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386161590336" ignored="false" />
+    <file path="/MainActivity.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386435801054" ignored="false" />
+    <file path="/AndroidManifest.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386435678810" ignored="false" />
     <file path="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main/java.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1385738711286" ignored="false" />
     <file path="$PROJECT_DIR$/../android-benchmark/android-benchmark/src/com/ahsgaming/benchmark/Scene2dScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1385846260393" ignored="false" />
     <file path="/Scene2dScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1385770748098" ignored="false" />
@@ -105,11 +107,16 @@
     <file path="$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/graphics/Texture.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386030764377" ignored="false" />
     <file path="$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/graphics/Pixmap.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386030764377" ignored="false" />
     <file path="$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/utils/ClickListener.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386030764377" ignored="false" />
-    <file path="/LevelScreenInputListener.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386272793564" ignored="false" />
+    <file path="/LevelScreenInputListener.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386334642582" ignored="false" />
     <file path="/strings.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386126422314" ignored="false" />
     <file path="/Main.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386168411589" ignored="false" />
     <file path="/ant.properties" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386252232952" ignored="false" />
     <file path="/README.md" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386275070395" ignored="false" />
+    <file path="/api-1" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386431366381" ignored="false" />
+    <file path="/package.json" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386434537259" ignored="false" />
+    <file path="/app.coffee" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386434641687" ignored="false" />
+    <file path="/Procfile" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386434697510" ignored="false" />
+    <file path="$PROJECT_DIR$/../../coffee/valley-of-bones-master-server/app.coffee" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386441512277" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,19 +199,64 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="LevelScreen.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="788" column="23" selection-start="31842" selection-end="31842" vertical-scroll-proportion="0.0">
+            <state line="906" column="65" selection-start="36387" selection-end="36387" vertical-scroll-proportion="0.33208954">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="valley-of-bones-client.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/android/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="42" selection-start="1010" selection-end="1010" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/android/src/com/ahsgaming/valleyofbones/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="43" selection-start="810" selection-end="810" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ServerScreen.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/ServerScreen.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="66" column="58" selection-start="1722" selection-end="1722" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="valley-of-bones-client.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/valley-of-bones-client.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="443" column="102" selection-start="18608" selection-end="18608" vertical-scroll-proportion="0.39795917">
+            <state line="540" column="11" selection-start="24561" selection-end="24561" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LevelScreenInputListener.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="82" column="39" selection-start="3393" selection-end="3393" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AbstractScreen.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="78" column="22" selection-start="2156" selection-end="2156" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -213,7 +265,7 @@
       <file leaf-file-name="InfoPanel.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="226" column="0" selection-start="9146" selection-end="9146" vertical-scroll-proportion="0.0">
+            <state line="219" column="0" selection-start="8868" selection-end="8868" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -237,22 +289,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameOverScreen.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileSet.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoBox.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/ProgressBar.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/Utils.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
         <option value="$PROJECT_DIR$/valley-of-bones-client.xml" />
+        <option value="$PROJECT_DIR$/ROADMAP.md" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java" />
+        <option value="$PROJECT_DIR$/master-server/api-1" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/ServerScreen.java" />
+        <option value="$PROJECT_DIR$/master-server/package.json" />
+        <option value="$PROJECT_DIR$/master-server/app.coffee" />
+        <option value="$PROJECT_DIR$/master-server/Procfile" />
+        <option value="$PROJECT_DIR$/android/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/android/src/com/ahsgaming/valleyofbones/MainActivity.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
       </list>
     </option>
   </component>
@@ -261,10 +313,9 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
     <option name="y" value="27" />
-    <option name="width" value="1922" />
-    <option name="height" value="1054" />
+    <option name="width" value="1914" />
+    <option name="height" value="1053" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -308,10 +359,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Tests" />
-      </pane>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -446,6 +493,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="desktop" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="art" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -482,8 +543,34 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valleyofbones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope">
+        <subPane subId="Tests" />
+      </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -496,13 +583,13 @@
     <property name="recentsLimit" value="5" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/libs/gdx-freetype/sources/gdx-freetype-sources.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../coffee/valley-of-bones-master-server" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="valley-of-bones-client" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="android_dev" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="android_2.3" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="options.splitter.details.proportions" value="0.2" />
@@ -511,7 +598,7 @@
     <property name="AndroidLayoutSelectedEditor" value="text-editor" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="A000003104BD33" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="false" />
@@ -820,28 +907,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="27" width="1922" height="1054" extended-state="6" />
-    <editor active="false" />
+    <frame x="0" y="27" width="1914" height="1053" extended-state="4" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24732333" sideWeight="0.7022222" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24732333" sideWeight="0.7022222" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3911111" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.7" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29777777" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29752955" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24946466" sideWeight="0.6972789" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922912" sideWeight="0.7022222" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23875803" sideWeight="0.7022222" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29555556" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23817204" sideWeight="0.7063404" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29365963" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -945,105 +1032,108 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="70" selection-start="3768" selection-end="3768" vertical-scroll-proportion="0.0">
+        <state line="78" column="22" selection-start="2156" selection-end="2156" vertical-scroll-proportion="0.0">
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/input/GestureDetector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="11" selection-start="3242" selection-end="3242" vertical-scroll-proportion="-5.925532" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/utils/ActorGestureListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="35" selection-start="2008" selection-end="2008" vertical-scroll-proportion="0.19757366" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="558" column="20" selection-start="18055" selection-end="18055" vertical-scroll-proportion="0.9009346">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="99" column="6" selection-start="2416" selection-end="2416" vertical-scroll-proportion="0.7294333" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="54" selection-start="1409" selection-end="1409" vertical-scroll-proportion="0.72443676">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="159" column="0" selection-start="5031" selection-end="5031" vertical-scroll-proportion="0.03150912">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMapTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="13" selection-start="968" selection-end="968" vertical-scroll-proportion="-2.0288136">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/utils/Drawable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="17" selection-start="1676" selection-end="1676" vertical-scroll-proportion="0.94527364" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/ui/Widget.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="16" selection-start="3651" selection-end="3651" vertical-scroll-proportion="3.074627" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/ui/Image.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="31" selection-start="1659" selection-end="1659" vertical-scroll-proportion="-1.5887231">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="17" selection-start="1710" selection-end="1710" vertical-scroll-proportion="0.8822554">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/ProgressBar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="25" selection-start="836" selection-end="836" vertical-scroll-proportion="-0.13930348" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="226" column="0" selection-start="9146" selection-end="9146" vertical-scroll-proportion="0.0">
+        <state line="219" column="0" selection-start="8868" selection-end="8868" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/InputAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="788" column="23" selection-start="31842" selection-end="31842" vertical-scroll-proportion="0.0">
+        <state line="21" column="13" selection-start="945" selection-end="945" vertical-scroll-proportion="0.2366548" />
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/input/GestureDetector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="232" column="47" selection-start="7862" selection-end="7864" vertical-scroll-proportion="0.33457944" />
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/scenes/scene2d/utils/ActorGestureListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="121" selection-start="2094" selection-end="2094" vertical-scroll-proportion="0.6032028" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ROADMAP.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="17" selection-start="1167" selection-end="1167" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/valley-of-bones-client.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="443" column="102" selection-start="18608" selection-end="18608" vertical-scroll-proportion="0.39795917">
+        <state line="540" column="11" selection-start="24561" selection-end="24561" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="22" selection-start="2156" selection-end="2156" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="82" column="39" selection-start="3393" selection-end="3393" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="219" column="0" selection-start="8868" selection-end="8868" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.003468208">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/KryoCommon.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="28" selection-start="1156" selection-end="1156" vertical-scroll-proportion="0.19362187">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/android/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="42" selection-start="1010" selection-end="1010" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/android/src/com/ahsgaming/valleyofbones/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="43" selection-start="810" selection-end="810" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/ServerScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="66" column="58" selection-start="1722" selection-end="1722" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="906" column="65" selection-start="36387" selection-end="36387" vertical-scroll-proportion="0.33208954">
           <folding />
         </state>
       </provider>

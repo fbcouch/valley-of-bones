@@ -78,7 +78,7 @@ public class LevelScreenInputListener extends ActorGestureListener {
             Unit unit = (Unit)levelScreen.gController.getSelectedObject();
 
             if (target != null && target instanceof Unit && (!((Unit)target).getInvisible() || unit.isDetector())) {
-                if (target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
+                if (target.getOwner() == null || target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
                     levelScreen.attack(unit.getObjId(), target.getObjId());
                 }
 
@@ -106,4 +106,6 @@ public class LevelScreenInputListener extends ActorGestureListener {
         super.touchUp(event, x, y, pointer, button);    //To change body of overridden methods use File | Settings | File Templates.
         levelScreen.setClickInterrupt(false);
     }
+
+
 }

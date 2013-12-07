@@ -37,6 +37,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -63,7 +64,7 @@ public class LevelScreen extends AbstractScreen {
     // second spritebatch for map, that way it can be scaled without affecting the UI
     SpriteBatch mapSpriteBatch;
     OrthographicCamera mapCamera;
-    Vector2 mapScale;
+    Vector2 mapScale = new Vector2(1, 1);
 	
 	
 	// camera 'center' position - this will always remain within the bounds of the map
@@ -120,7 +121,7 @@ public class LevelScreen extends AbstractScreen {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
 			Vector2 start = gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
-			start = mapToScreenCoords(start.x, start.y);
+			start.sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
 
 			Vector2 base = new Vector2(start.x, start.y);
 			shapeRenderer.line(base.x + gController.getMap().getTileWidth() * 0.5f, base.y, base.x, base.y + gController.getMap().getTileHeight() * 0.25f);
@@ -285,11 +286,18 @@ public class LevelScreen extends AbstractScreen {
     }
 
 	public Vector2 screenToMapCoords(float x, float y) {
-		return new Vector2(x + (posCamera.x - stage.getWidth() * 0.5f), y + (posCamera.y - stage.getHeight() * 0.5f));
+        x *= mapScale.x;
+        y *= mapScale.y;
+		return new Vector2(x + (posCamera.x - mapCamera.viewportWidth * 0.5f), y + (posCamera.y - mapCamera.viewportHeight * 0.5f));
 	}
 	
 	public Vector2 mapToScreenCoords(float x, float y) {
-		return new Vector2(x - (posCamera.x - stage.getWidth() * 0.5f), y - (posCamera.y - stage.getHeight() * 0.5f));
+        x -= (posCamera.x - mapCamera.viewportWidth * 0.5f);
+        x /= mapScale.x;
+
+        y -= (posCamera.y - mapCamera.viewportHeight * 0.5f);
+        y /= mapScale.y;
+		return new Vector2(x, y);
 	}
 
     public boolean isCurrentPlayer() {
@@ -334,6 +342,17 @@ public class LevelScreen extends AbstractScreen {
         selectionPanel.addListener(interruptListener);
         turnPanel.addListener(interruptListener);
 	}
+
+    public void zoom(float amount) {
+        mapScale.set(mapScale.x * amount, mapScale.y * amount);
+        mapCamera.setToOrtho(false, stage.getCamera().viewportWidth * mapScale.x, stage.getCamera().viewportHeight * mapScale.y);
+
+        Vector2 map = screenToMapCoords(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f);
+        Vector2 screen = mapToScreenCoords(map.x, map.y);
+        Gdx.app.log(LOG, "" + new Vector2(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f));
+        Gdx.app.log(LOG, "" + map);
+        Gdx.app.log(LOG, "" + screen);
+    }
 	
 	@Override
 	public void resize(int width, int height) {
@@ -341,8 +360,17 @@ public class LevelScreen extends AbstractScreen {
 
         stage.addListener(new LevelScreenInputListener(this));
 
-        mapCamera.setToOrtho(false, 800, 480);  // TODO
-        mapScale = new Vector2(800f / width, 480f / height);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+                zoom((amount > 0 ? 0.9f : 1.1f));
+
+                return super.scrolled(event, x, y, amount);    //To change body of overridden methods use File | Settings | File Templates.
+            }
+        });
+
+        mapCamera.setToOrtho(false, stage.getCamera().viewportWidth * mapScale.x, stage.getCamera().viewportHeight * mapScale.y);  // TODO
+//        mapScale = new Vector2(800f / width, 480f / height);
 		
 		stage.addActor(grpLevel);     // -21fps
 
@@ -380,7 +408,7 @@ public class LevelScreen extends AbstractScreen {
         mapCamera.update();
         mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
         mapSpriteBatch.begin();
-        gController.getMap().draw(mapSpriteBatch, -posCamera.x + stage.getWidth() * 0.5f, -posCamera.y + stage.getHeight() * 0.5f, 1, gController.getUnits());
+        gController.getMap().draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits());
         mapSpriteBatch.end();
 
         // DRAW BOXES
@@ -876,7 +904,7 @@ public class LevelScreen extends AbstractScreen {
                 imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX(), 0);
                 addActor(imgSupply);
 
-                lblSupply = new Label(Integer.toString(proto.cost), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+                lblSupply = new Label(Integer.toString(proto.food), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
                 lblSupply.setPosition(imgSupply.getRight(), imgSupply.getY());
                 addActor(lblSupply);
 

@@ -2,6 +2,7 @@ package com.ahsgaming.valleyofbones;
 
 import android.os.Bundle;
 import android.os.Debug;
+import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -18,6 +19,8 @@ public class MainActivity extends AndroidApplication {
 
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         initialize(new VOBGame(false), cfg);
 //        Debug.startMethodTracing("all");
