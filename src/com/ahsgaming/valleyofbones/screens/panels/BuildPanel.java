@@ -1,164 +1,209 @@
 package com.ahsgaming.valleyofbones.screens.panels;
 
-import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.GameController;
+import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 
 /**
- * Created with IntelliJ IDEA.
+ * valley-of-bones
+ * (c) 2013 Jami Couch
  * User: jami
- * Date: 4/29/13
- * Time: 10:25 AM
- * To change this template use File | Settings | File Templates.
+ * Date: 12/9/13
+ * Time: 5:33 PM
  */
-public class BuildPanel extends Panel {
-    public static final String LOG = "BuildPanel";
+public class BuildPanel extends Group {
+    public static String LOG = "BuildPanel";
 
-    InfoBox tooltip;
+    GameController gController;
+    LevelScreen levelScreen;
+    Player player;
+    Skin skin;
 
-    boolean buildMode;
+    Image imgBackground, imgInfantryTab, imgMechTab;
+    Array<BuildItem> infantryItems, mechItems;
+    Array<Prototypes.JsonProto> itemProtos;
 
-    public BuildPanel(VOBGame game, LevelScreen levelScreen, String icon, Skin skin) {
-        super(game, levelScreen, icon, skin);
+    int selected;
 
-        tooltip = new InfoBox(null, skin);
-        items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
-    }
+    public BuildPanel(GameController controller, Player player, LevelScreen lvlScreen) {
+        this.gController = controller;
+        this.player = player;
+        this.levelScreen = lvlScreen;
+        skin = levelScreen.getSkin();
 
-    @Override
-    public void update(float delta) {
-        super.update(delta);
+        imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-hud-bg"));
+        addActor(imgBackground);
 
-        // need to get all the buildings this guy can build
-        // TODO future optimization - make proto lookups efficient so that this can actually be done
-//        Array<Prototypes.JsonProto> items = Prototypes.getPlayerCanBuild(game.getPlayer(), game.getNetController().getGameController());
-//        if (!items.equals(this.items)) {
-//            this.items = items;
-//            dirty = true;
-//        }
+        imgInfantryTab = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-infantry-tab"));
+        addActor(imgInfantryTab);
+        imgInfantryTab.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
 
-        // moved this here so that it updates every time without rebuilding
-        for (int i = 0; i < buttons.size; i++) {
-            Prototypes.JsonProto jp = items.get(i);
-            if (jp != null && !game.getPlayer().canBuild(jp.id, game.getNetController().getGameController()))
-                buttons.get(i).setColor(0.8f, 0.4f, 0.4f, 1.0f);
-            else
-                buttons.get(i).setColor(1, 1, 1, 1);
-        }
-
-        if (buildMode && !levelScreen.isBuildMode()) {
-            buildMode = false;
-            tooltip.remove();
-        }
-
-    }
-
-    @Override
-    public void rebuild() {
-        super.rebuild();
-
-
-        int x = 0, i = 0, y = (items.size / 3);
-        int spacing = 4;
-        buttons.clear();
-        for (Prototypes.JsonProto jp: items) {
-            final Image btn;
-            Sprite sp = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", jp.image);
-            btn = new Image(sp);
-            this.addActor(btn);
-            if (i > 0 && i % 3 == 0) {
-                x = 0;
-                y--;
+                select(0);
             }
-            btn.setX(x);
-            btn.setY(y * (btn.getHeight() + spacing));
-            x += btn.getWidth() + spacing;
-            final int j = i;
-            buttons.add(btn);
-            btn.addListener(new ClickListener() {
+        });
+
+        imgMechTab = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-mech-tab"));
+        addActor(imgMechTab);
+        imgMechTab.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
+
+                select(1);
+            }
+        });
+
+        itemProtos = Prototypes.getPlayerCanBuild(player, controller);
+        infantryItems = new Array<BuildItem>();
+        mechItems = new Array<BuildItem>();
+
+        for (Prototypes.JsonProto jp: itemProtos) {
+            final BuildItem item = new BuildItem(jp, skin);
+
+            String type = jp.getProperty("subtype").asString();
+            if (type.equals("armored")) {
+                mechItems.add(item);
+            } else {
+                infantryItems.add(item);
+            }
+
+            item.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    super.clicked(event, x, y);
+                    super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
 
-                    buttonClicked(btn, j);
-                }
-
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    super.enter(event, x, y, pointer, fromActor);
-                    LevelScreen.getInstance().setClickInterrupt(true);
-                    entered(btn, j);
-                }
-
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    super.exit(event, x, y, pointer, toActor);
-                    LevelScreen.getInstance().setClickInterrupt(false);
-                    exited(btn, j);
+                    click(item);
                 }
             });
-
-            Label hotkey = new Label(" ", skin, "small");
-            hotkey.setPosition(btn.getX(), btn.getY());
-            addActor(hotkey);
-            if (jp.id.equals("marine-base"))
-                hotkey.setText("A");
-            else if (jp.id.equals("saboteur-base"))
-                hotkey.setText("S");
-            else if (jp.id.equals("tank-base"))
-                hotkey.setText("D");
-            else if (jp.id.equals("sniper-base"))
-                hotkey.setText("F");
-
-            i++;
         }
 
-        icon.setPosition(x, 0);
-        this.setWidth(x);
-        this.setHeight(buttons.get(0).getTop());
-
-        if (!levelScreen.isBuildMode()) tooltip.remove();
-
-//        if (expanded) setPosition(0, getY()); else setPosition(-1 * icon.getX(), getY());
+        layout();
     }
 
-    @Override
-    public boolean buttonClicked(Image button, int i) {
-        if (super.buttonClicked(button, i)) return true;
+    public void layout() {
+        imgInfantryTab.setPosition(-15, imgBackground.getTop() - 4);
+        imgMechTab.setPosition(imgInfantryTab.getRight() - 25, imgInfantryTab.getY());
+        int y = 100;
+        switch(selected) {
+            default:
+            case 0:
+                imgInfantryTab.setZIndex(2);
+                imgMechTab.setZIndex(0);
+                for (Group g: mechItems) g.remove();
 
-        levelScreen.setBuildMode(items.get(i));
-        tooltip.setProto(items.get(i));
-        addActor(tooltip);
-        tooltip.setPosition(0, getHeight());
-        buildMode = levelScreen.isBuildMode();
-        return true;
+                for (Group g: infantryItems) {
+                    addActor(g);
+                    g.setPosition(5, y);
+                    y -= g.getHeight();
+                }
+                break;
+            case 1:
+                imgInfantryTab.setZIndex(0);
+                imgMechTab.setZIndex(2);
+                for (Group g: infantryItems) g.remove();
+
+                for (Group g: mechItems) {
+                    addActor(g);
+                    g.setPosition(5, y);
+                    y -= g.getHeight();
+                }
+                break;
+        }
+
+        setSize(imgBackground.getRight(), Math.max(imgInfantryTab.getTop(), imgMechTab.getTop()));
     }
 
-    public void entered(Image button, int i) {
-        if (!(i >= 0 && i < items.size)) return;
+    public void update() {
+        Array<BuildItem> items;
+        switch(selected) {
+            default:
+            case 0:
+                items = infantryItems;
+                break;
+            case 1:
+                items = mechItems;
+                break;
+        }
 
-        if (!buildMode) {
-            tooltip.setProto(items.get(i));
-            addActor(tooltip);
-            tooltip.setPosition(0, getHeight());
+        for (BuildItem item: items) {
+            if (player.canBuild(item.proto.id, gController)) {
+                item.icon.setColor(1, 1, 1, 1);
+            } else {
+                item.icon.setColor(0.8f, 0.4f, 0.4f, 1);
+            }
+            item.setHighlight(levelScreen.isBuildMode() && levelScreen.getBuildProto() == item.proto);
         }
     }
 
-    public void exited(Image button, int i) {
-        if (!buildMode) tooltip.remove();
+    public void click(BuildItem item) {
+        levelScreen.setBuildMode(item.proto);
+    }
+
+    public void select(int sel) {
+        selected = sel;
+        layout();
+    }
+
+    public static class BuildItem extends Group {
+
+        Skin skin;
+        Image icon, imgSupply, imgMoney, imgHiglight;
+        Label lblSupply, lblMoney;
+        Prototypes.JsonProto proto;
+
+        public BuildItem(Prototypes.JsonProto proto, Skin skin) {
+            this.proto = proto;
+            this.skin = skin;
+
+            imgHiglight = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
+            imgHiglight.setScale(0.75f);
+
+            icon = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
+            icon.setScale(0.75f);
+            addActor(icon);
+
+            imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"));
+            imgSupply.setScale(20 / imgSupply.getWidth());
+            imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX(), 0);
+            addActor(imgSupply);
+
+            lblSupply = new Label(Integer.toString(proto.food), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            lblSupply.setPosition(imgSupply.getRight(), imgSupply.getY());
+            addActor(lblSupply);
+
+            imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"));
+            imgMoney.setScale(20 / imgMoney.getWidth());
+            imgMoney.setPosition(imgSupply.getX(), imgSupply.getY() + imgSupply.getHeight() * imgSupply.getScaleY() + 1);
+            addActor(imgMoney);
+
+            lblMoney = new Label(Integer.toString(proto.cost), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            lblMoney.setPosition(imgMoney.getRight(), imgMoney.getY());
+            addActor(lblMoney);
+
+            setSize(Math.max(lblSupply.getRight(), lblMoney.getRight()), icon.getHeight() * icon.getScaleY());
+        }
+
+        public void setHighlight(boolean highlight) {
+            if (highlight) {
+                addActor(imgHiglight);
+                imgHiglight.setZIndex(0);
+            } else {
+                imgHiglight.remove();
+            }
+        }
     }
 }
+

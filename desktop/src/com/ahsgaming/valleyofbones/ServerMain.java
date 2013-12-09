@@ -16,8 +16,8 @@ public class ServerMain {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Valley of Bones SERVER";
 		cfg.useGL20 = false;
-		cfg.width = 400;
-		cfg.height = 300;
+		cfg.width = 1280;
+		cfg.height = 768;
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 		

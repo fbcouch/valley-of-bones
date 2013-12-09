@@ -42,8 +42,8 @@
         - Better unit boxes
 - Android version
 - Central server
-    - Keeps a master server list, updates when users start 'public' servers
-    - also allow configurable port
+    + Keeps a master server list, updates when users start 'public' servers
+    + also allow configurable port
     - game reports
 - Gameplay changes
     - Attachments for base
