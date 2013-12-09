@@ -71,6 +71,7 @@ public class LevelScreenInputListener extends ActorGestureListener {
         }
 
         if (levelScreen.gController.getSelectedObject() != null &&
+            levelScreen.gController.getSelectedObject().getOwner() != null &&
             levelScreen.isCurrentPlayer() &&
             levelScreen.gController.getSelectedObject().getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId())
         {

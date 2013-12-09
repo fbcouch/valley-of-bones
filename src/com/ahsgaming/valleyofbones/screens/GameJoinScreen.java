@@ -23,18 +23,22 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.esotericsoftware.kryonet.Client;
 
 /**
@@ -45,8 +49,11 @@ import com.esotericsoftware.kryonet.Client;
  */
 public class GameJoinScreen extends AbstractScreen {
 	public String LOG = "GameJoinScreen";
-	
-	Label lblNickname;
+    public static final boolean DEBUG = false;
+    String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
+
+
+    Label lblNickname;
 	TextField txtNickname;
 	
 	Label lblJoinHostname;
@@ -58,6 +65,8 @@ public class GameJoinScreen extends AbstractScreen {
 	Label lblStatus;
 	
 	GameSetupScreen gsScreen = null;
+    Array<ServerObj> servers;
+    List lstServers;
 	
 	/**
 	 * @param game
@@ -79,8 +88,21 @@ public class GameJoinScreen extends AbstractScreen {
 		table.add(txtNickname).pad(4).left();
 		
 		table.row();
-		
-		table.row();
+
+        lstServers = new List(new Object[]{}, getSkin());
+        table.add(lstServers).colspan(2);
+
+        lstServers.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.log(LOG, "" + lstServers.getSelectedIndex());
+                ServerObj server = servers.get(lstServers.getSelectedIndex());
+                txtJoinHostname.setText(String.format("%s:%d", server.ipAddr, server.port));
+            }
+        });
+
+        table.row();
 		
 		lblJoinHostname = new Label("Join Server:", getSkin());
 		table.add(lblJoinHostname).pad(4).left();
@@ -117,26 +139,66 @@ public class GameJoinScreen extends AbstractScreen {
 		
 		btnConnect.addListener(new ClickListener() {
 
-			/* (non-Javadoc)
-			 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
-			 */
-			@Override
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
-				super.touchUp(event, x, y, pointer, button);
-				Gdx.app.log(LOG, "btnConnect touched");
-				GameSetupConfig cfg = new GameSetupConfig();
-				cfg.hostName = txtJoinHostname.getText();
-				cfg.isHost = false;
-				cfg.isMulti = true;
-				cfg.playerName = txtNickname.getText();
-				gsScreen = game.getGameSetupScreenMP(cfg);
-				lblStatus.setText(String.format("Connecting to host %s", cfg.hostName));
-				Gdx.app.log(LOG, String.format("Attempting connection to host %s", cfg.hostName));
-			}
-			
-		});
-		
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                Gdx.app.log(LOG, "btnConnect touched");
+                String host = txtJoinHostname.getText();
+                if (host.equals("")) {
+                    host = String.format("%s:%d", servers.get(lstServers.getSelectedIndex()).ipAddr, servers.get(lstServers.getSelectedIndex()).port);
+                }
+                GameSetupConfig cfg = new GameSetupConfig();
+                cfg.hostName = host.split(":")[0];
+                cfg.isHost = false;
+                cfg.isMulti = true;
+                cfg.hostPort = (host.indexOf(':') > -1 ? Integer.parseInt(host.split(":")[1]) : KryoCommon.tcpPort);
+                cfg.playerName = txtNickname.getText();
+                gsScreen = game.getGameSetupScreenMP(cfg);
+                lblStatus.setText(String.format("Connecting to host %s", cfg.hostName));
+                Gdx.app.log(LOG, String.format("Attempting connection to host %s", cfg.hostName));
+            }
+        });
+
+        servers = new Array<ServerObj>();
+
+        Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
+        httpGet.setUrl(globalServerUrl);
+
+        Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String response = httpResponse.getResultAsString();
+                int code = httpResponse.getStatus().getStatusCode();
+                switch(code) {
+                    case 400:
+                    case 404:
+                        Gdx.app.log(LOG, "Server retrieval failed");
+                        Gdx.app.log(LOG, response);
+                        break;
+                    case 200:
+                        Gdx.app.log(LOG, "Got server list");
+                        JsonReader reader = new JsonReader();
+                        JsonValue result = reader.parse(response);
+                        for (JsonValue server: result) {
+                            servers.add(new ServerObj(server));
+                        }
+                        break;
+                    default:
+                        Gdx.app.log(LOG, String.format("Unknown response code: %d", code));
+                        Gdx.app.log(LOG, response);
+                }
+                updateServerList();
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.log(LOG, "GET server request failed");
+                t.printStackTrace();
+            }
+        });
+
+
 		// discover host
 		new Thread() {
 			public void run() {
@@ -148,7 +210,9 @@ public class GameJoinScreen extends AbstractScreen {
 				
 				InetAddress iAddress = c.discoverHost(KryoCommon.udpPort, 5000);
 				if (iAddress != null && txtJoinHostname.getText().equals("")) {
-					txtJoinHostname.setText(iAddress.getHostAddress());
+//					txtJoinHostname.setText(iAddress.getHostAddress());
+                    servers.add(new ServerObj(-1, iAddress.getHostAddress(), KryoCommon.tcpPort, "LAN Server"));
+                    updateServerList();
 				}
 			}
 		}.start();
@@ -157,7 +221,9 @@ public class GameJoinScreen extends AbstractScreen {
 	}
 	
 	
-	
+	public void updateServerList() {
+        lstServers.setItems(servers.toArray());
+    }
 
 	/* (non-Javadoc)
 	 * @see com.ahsgaming.spacetactics.screens.AbstractScreen#show()
@@ -203,6 +269,31 @@ public class GameJoinScreen extends AbstractScreen {
 		}
 	}
 	
-	
+	public static class ServerObj {
+        int id;
+        String ipAddr;
+        int port;
+        String name;
+
+        public ServerObj() {}
+
+        public ServerObj(int id, String ipAddr, int port, String name) {
+            this.id = id;
+            this.ipAddr = ipAddr;
+            this.port = port;
+            this.name = name;
+        }
+
+        public ServerObj(JsonValue json) {
+            this.id = json.getInt("id");
+            this.ipAddr = json.getString("ip");
+            this.port = json.getInt("port");
+            this.name = json.getString("name");
+        }
+
+        public String toString() {
+            return String.format("%s (%s:%d)", name, ipAddr, port);
+        }
+    }
 
 }

@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones.screens;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -271,7 +272,8 @@ public class GameSetupScreen extends AbstractScreen {
 		public boolean isMulti = false;
 		public boolean isHost = true;
 		public String hostName = "localhost";
-		public String playerName = "New Player";
+		public int hostPort = KryoCommon.tcpPort;
+        public String playerName = "New Player";
 	}
 
 

@@ -177,7 +177,7 @@ public class MPGameClient implements NetController {
 			public void run() {
 				try {
 					
-					client.connect(5000, host, KryoCommon.tcpPort);
+					client.connect(5000, host, cfg.hostPort);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
