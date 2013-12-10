@@ -21,7 +21,7 @@ public class ServerMain {
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 		
-		new LwjglApplication(new VOBGame(true), cfg);
+		new LwjglApplication(new VOBServer(), cfg);
 	}
 
 }

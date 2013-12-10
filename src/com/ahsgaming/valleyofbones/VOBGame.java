@@ -18,7 +18,7 @@ public class VOBGame extends Game {
 
     FPSLogger fpsLogger = new FPSLogger();
 	
-	private GameController gController = null;
+	protected GameController gController = null;
 	
 	private float keyScrollSpeed = 500;
 	private float mouseScrollSpeed = 500;
@@ -33,7 +33,7 @@ public class VOBGame extends Game {
 	
 	boolean started = false;
 	
-	boolean isServer = false;
+//	boolean isServer = false;
 
 	boolean loadGame = false;
 	
@@ -45,8 +45,8 @@ public class VOBGame extends Game {
 	 * Constructors
 	 */
 	
-	public VOBGame(boolean isServer) {
-		this.isServer = isServer;
+	public VOBGame() {
+//		this.isServer = isServer;
         VOBGame.instance = this;
 	}
 	
@@ -67,16 +67,12 @@ public class VOBGame extends Game {
     }
 	
 	public void createGame(GameSetupConfig cfg) {
-        if (isServer) {
-			netController = new GameServer(this, cfg);
-		} else {
-			if (cfg.isMulti) { 
-				netController = new MPGameClient(this, cfg);
-			} else {
-				// TODO load settings from somewhere?
-                netController = new SPGameClient(this, cfg);
-			}
-		}
+        if (cfg.isMulti) {
+            netController = new MPGameClient(this, cfg);
+        } else {
+            // TODO load settings from somewhere?
+            netController = new SPGameClient(this, cfg);
+        }
 	}
 	
 	public void closeGame() {
@@ -89,8 +85,7 @@ public class VOBGame extends Game {
 		if (netController != null) {
             netController.startGame();
             gController = netController.getGameController();
-            if (!isServer)
-                setScreen(getLevelScreen());
+            setScreen(getLevelScreen());
         }
 	}
 	
@@ -121,24 +116,15 @@ public class VOBGame extends Game {
 	@Override
 	public void create() {
         textureManager = new TextureManager();
-		if (isServer) {
-			setScreen(getServerScreen());
-			
-			GameSetupConfig cfg = new GameSetupConfig();
-			cfg.isMulti = true;
-			createGame(cfg);
-			
-		} else {
-            Gdx.app.log(LOG, String.format("Valley of Bones Client Version %d", VERSION));
-			if (!loadProfile()) {
-                Gdx.files.local("profile").writeString(playerName, false);
-                setScreen(getOptionsScreen());
-            } else {
 
-                setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
-            }
-		}
-		
+        Gdx.app.log(LOG, String.format("Valley of Bones Client Version %d", VERSION));
+        if (!loadProfile()) {
+            Gdx.files.local("profile").writeString(playerName, false);
+            setScreen(getOptionsScreen());
+        } else {
+
+            setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
+        }
 	}
 
 	@Override
@@ -155,7 +141,7 @@ public class VOBGame extends Game {
 	@Override
 	public void render() {	
 		super.render();
-		if (DEBUG && !isServer) fpsLogger.log();
+		if (DEBUG) fpsLogger.log();
 
 		if (loadGame) {
 			startGame();
@@ -163,31 +149,19 @@ public class VOBGame extends Game {
 		}
 		
 		if (netController != null) {
-            if (isServer) {
-                if (loadGame && !started)
-                    startGame();
 
-                if (gameResult != null) {
-                    gameResult = null;
-                    loadGame = false;
-                    started = false;
-                    gController = null;
-                    netController = null;
-                    create();
-                }
-            } else {
-                if (netController.isConnected() && loadGame && !started)
-                    startGame();
+            if (netController.isConnected() && loadGame && !started)
+                startGame();
 
 
-                if (gameResult != null) {
+            if (gameResult != null) {
 
-                    this.setScreen(this.getGameOverScreen(gameResult));
-                    gameResult = null;
-                    netController = null;
-                    gController = null;
-                }
+                this.setScreen(this.getGameOverScreen(gameResult));
+                gameResult = null;
+                netController = null;
+                gController = null;
             }
+
 
             if (netController != null) netController.update(Gdx.graphics.getDeltaTime());
         }

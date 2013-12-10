@@ -25,16 +25,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/TurnPanel.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoBox.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/Panel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/ScorePanel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/SurrenderPanel.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ROADMAP.md" afterPath="$PROJECT_DIR$/ROADMAP.md" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBServer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java" afterPath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java" afterPath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="valley-of-bones.iws" />
@@ -43,7 +37,7 @@
     <file path="/fragment.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386632548451" ignored="false" />
     <file path="/KryoCommon.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1369368067837" ignored="false" />
     <file path="/GameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367105013238" ignored="false" />
-    <file path="/VOBGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386518830721" ignored="false" />
+    <file path="/VOBGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386634176582" ignored="false" />
     <file path="/GameServer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386630997318" ignored="false" />
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367104835122" ignored="false" />
     <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386161843042" ignored="false" />
@@ -119,8 +113,8 @@
     <file path="/app.coffee" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386451846281" ignored="false" />
     <file path="/Procfile" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386434697510" ignored="false" />
     <file path="$PROJECT_DIR$/../../coffee/valley-of-bones-master-server/app.coffee" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386451977714" ignored="false" />
-    <file path="/VOBServer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386632636832" ignored="false" />
-    <file path="/ServerMain.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386632854412" ignored="false" />
+    <file path="/VOBServer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386634444439" ignored="false" />
+    <file path="/ServerMain.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386634534247" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,39 +180,67 @@
     <favorites_list name="valley-of-bones" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="LevelScreen.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="269" column="47" selection-start="10765" selection-end="10765" vertical-scroll-proportion="0.2886248">
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="VOBGame.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="68" column="16" selection-start="1649" selection-end="1649" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TurnPanel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/TurnPanel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="92" column="44" selection-start="3670" selection-end="3670" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="279" column="48" selection-start="10975" selection-end="10975" vertical-scroll-proportion="0.0">
+                  <folding>
+                    <element signature="n#!!doc" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="TurnPanel.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/TurnPanel.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="92" column="44" selection-start="3670" selection-end="3670" vertical-scroll-proportion="0.0">
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="VOBServer.java" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBServer.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="32" column="0" selection-start="896" selection-end="896" vertical-scroll-proportion="0.8327703">
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="GameSetupScreen.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameSetupScreen.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="56" column="13" selection-start="1742" selection-end="1742" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="VOBGame.java" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="144" column="17" selection-start="3410" selection-end="3410" vertical-scroll-proportion="0.46915585">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -236,10 +258,8 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameJoinScreen.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameSetupScreen.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/MPGameClient.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/GameServer.java" />
         <option value="$PROJECT_DIR$/ROADMAP.md" />
@@ -251,7 +271,9 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java" />
         <option value="$PROJECT_DIR$/src/VOBServer.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBServer.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
         <option value="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java" />
+        <option value="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java" />
       </list>
     </option>
   </component>
@@ -421,6 +443,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valleyofbones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="network" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="desktop" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -575,7 +619,7 @@
       <recent name="$PROJECT_DIR$/desktop/libs" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.VOBServer">
+  <component name="RunManager" selected="Application.VOBGame">
     <configuration default="false" name="HexMapTests" type="JUnit" factoryName="JUnit" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="valley-of-bones" />
@@ -863,7 +907,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32150537" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32150537" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24679486" sideWeight="0.70752686" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39043382" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -878,8 +922,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24946466" sideWeight="0.6972789" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922912" sideWeight="0.7022222" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2366453" sideWeight="0.67849463" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2924731" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2366453" sideWeight="0.70752686" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2924731" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -982,36 +1026,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="11" selection-start="1183" selection-end="1183" vertical-scroll-proportion="0.3327674">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="234" column="55" selection-start="7507" selection-end="7507" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/InfoPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="13" selection-start="974" selection-end="974" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/panels/BuildPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="146" column="69" selection-start="5030" selection-end="5030" vertical-scroll-proportion="2.8693643">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/GameServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="53" column="45" selection-start="1942" selection-end="1942" vertical-scroll-proportion="0.3158784">
@@ -1019,23 +1033,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/MPGameClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="181" column="59" selection-start="5602" selection-end="5602" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/TextureManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="44" column="72" selection-start="1519" selection-end="1526" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="13" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1061,16 +1061,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/KryoCommon.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="1" selection-start="615" selection-end="615" vertical-scroll-proportion="0.63497454">
+        <state line="93" column="24" selection-start="2700" selection-end="2700" vertical-scroll-proportion="0.33222592">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/MPGameClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="16" selection-start="1649" selection-end="1649" vertical-scroll-proportion="0.0">
+        <state line="204" column="30" selection-start="6198" selection-end="6198" vertical-scroll-proportion="0.76245844">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameSetupScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="13" selection-start="1742" selection-end="1742" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="279" column="48" selection-start="10975" selection-end="10975" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/GameJoinScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="156" column="44" selection-start="5140" selection-end="5140" vertical-scroll-proportion="-2.372093">
           <folding />
         </state>
       </provider>
@@ -1084,12 +1107,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
+    <entry file="jar://$PROJECT_DIR$/libs/gdx-sources.jar!/com/badlogic/gdx/Game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="269" column="47" selection-start="10765" selection-end="10765" vertical-scroll-proportion="0.2886248">
+        <state line="44" column="16" selection-start="1441" selection-end="1441" vertical-scroll-proportion="0.33279222">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="0" selection-start="896" selection-end="896" vertical-scroll-proportion="0.8327703">
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="17" selection-start="691" selection-end="691" vertical-scroll-proportion="0.38636363">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="44" selection-start="610" selection-end="610" vertical-scroll-proportion="0.58116883">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="144" column="17" selection-start="3410" selection-end="3410" vertical-scroll-proportion="0.46915585">
+          <folding />
         </state>
       </provider>
     </entry>
