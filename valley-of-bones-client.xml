@@ -59,6 +59,8 @@
   <!-- JDK definitions -->
   
   <property name="jdk.bin.1.7" value="${jdk.home.1.7}/bin"/>
+  <property name="ant.build.javac.target" value="1.6"/>
+  <property name="ant.build.javac.source" value="1.6"/>
   <path id="jdk.classpath.1.7">
     <fileset dir="${jdk.home.1.7}">
       <include name="jre/lib/compilefontconfig.jar"/>

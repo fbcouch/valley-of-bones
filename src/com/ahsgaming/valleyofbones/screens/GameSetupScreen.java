@@ -271,6 +271,7 @@ public class GameSetupScreen extends AbstractScreen {
 		public String mapName = "blank.tmx";
 		public boolean isMulti = false;
 		public boolean isHost = true;
+        public boolean isPublic = false;
 		public String hostName = "localhost";
 		public int hostPort = KryoCommon.tcpPort;
         public String playerName = "New Player";

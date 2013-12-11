@@ -232,10 +232,6 @@ public class VOBGame extends Game {
 		return new GameLoadingScreen(this);
 	}
 	
-	public ServerScreen getServerScreen() {
-		return new ServerScreen(this);
-	}
-	
 	public LevelScreen getLevelScreen() {
 		return new LevelScreen(this, netController.getGameController());
 	}

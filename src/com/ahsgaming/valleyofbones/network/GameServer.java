@@ -65,10 +65,14 @@ public class GameServer implements NetController {
 	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 	int nextPlayerId = 0;
 	Connection host = null;
+
+    boolean loadGame = false;
 	
 	boolean stopServer = false;
 	
 	boolean gameStarted = false;
+
+    GameResult gameResult;
 
     boolean endTurnRecd;
 
@@ -80,6 +84,28 @@ public class GameServer implements NetController {
 	public GameServer(final VOBGame game, GameSetupConfig cfg) {
 		this.game = game;
 		gameConfig = cfg;
+
+        init();
+    }
+
+    public void reset() {
+        if (server != null) server.close();
+        if (broadcastServer != null) broadcastServer.close();
+        controller = null;
+        loadGame = false;
+        gameStarted = false;
+        nextPlayerId = 0;
+        players = new Array<Player>();
+        connMap = new ObjectMap<Connection, NetPlayer>();
+        host = null;
+        stopServer = false;
+        gameResult = null;
+        removePublicServer();
+
+        init();
+    }
+
+    public void init() {
 		// setup the KryoNet server
 		server = new Server();
 		KryoCommon.register(server);
@@ -87,15 +113,21 @@ public class GameServer implements NetController {
 		broadcastServer = new Server();
 		
 		try {
-			server.bind(KryoCommon.tcpPort);
+			server.bind(gameConfig.hostPort);
 			server.start();
-			
-			broadcastServer.bind(0, KryoCommon.udpPort);
-			broadcastServer.start();
-		} catch (IOException ex) {
-			Gdx.app.log(VOBGame.LOG + ":GameServer", ex.getMessage());
-			Gdx.app.exit();
+		} catch (Exception ex) {
+            Gdx.app.log(LOG, "Server failed to start");
+			Gdx.app.log(LOG, ex.getMessage());
+			stopServer = true;
+            return;
 		}
+
+        try {
+            broadcastServer.bind(0, KryoCommon.udpPort);
+            broadcastServer.start();
+        } catch (IOException ex) {
+            Gdx.app.log(LOG, ex.getMessage());
+        }
 		
 		
 		
@@ -203,7 +235,7 @@ public class GameServer implements NetController {
 					}
 				} else {
                     if (obj instanceof StartGame) {
-                        if (c == host) game.setLoadGame();
+                        if (c == host) loadGame = true;
                     }
                 }
 			}
@@ -240,47 +272,9 @@ public class GameServer implements NetController {
 			}
 		});
 
-        Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.POST);
-        httpGet.setUrl(String.format("%s/server", globalServerUrl));
-
-        HashMap parameters = new HashMap();
-        parameters.put("name", "MyServer");
-//        parameters.put("ip", Utils.getIPAddress(true));
-
-        httpGet.setContent(HttpParametersUtils.convertHttpParameters(parameters));
-
-        Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
-            @Override
-            public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                String response = httpResponse.getResultAsString();
-                switch(httpResponse.getStatus().getStatusCode()) {
-                    case 400:
-                    case 404:
-                        Gdx.app.log(LOG, "Failed to register with global server");
-                        Gdx.app.log(LOG, response);
-                        break;
-                    case 200:
-                        Gdx.app.log(LOG, "Registered with global server");
-                        Gdx.app.log(LOG, response);
-                        JsonReader reader = new JsonReader();
-                        JsonValue result = reader.parse(response);
-                        if (result != null)
-                            publicServerId = result.getInt("id", -1);
-                        Gdx.app.log(LOG, Integer.toString(publicServerId));
-                        break;
-                    default:
-                        Gdx.app.log(LOG, String.format("Unknown HTTP Status Code: %d", httpResponse.getStatus().getStatusCode()));
-                        Gdx.app.log(LOG, response);
-                }
-            }
-
-            @Override
-            public void failed(Throwable t) {
-                Gdx.app.log(LOG, "Failed to register with global server");
-                t.printStackTrace();
-            }
-        });
-
+        if (gameConfig.isPublic) {
+            registerPublicServer();
+        }
 	}
 	
 	public void startGame() {
@@ -301,7 +295,8 @@ public class GameServer implements NetController {
 		// the controller has a game result --> broadcast it to everybody and close the server
 		GameResult result = controller.getGameResult();
 		controller.setState(GameStates.GAMEOVER);
-        game.setGameResult(result);
+//        game.setGameResult(result);
+        gameResult = result;
 
 		Gdx.app.log(LOG, String.format("GameResult: winner: %d; Losers: (%d)", result.winner, result.losers.length));
 		
@@ -312,21 +307,7 @@ public class GameServer implements NetController {
 	public void stop() {
 		server.close();
 
-        if (publicServerId >= 0) {
-            Net.HttpRequest httpDelete = new Net.HttpRequest(Net.HttpMethods.DELETE);
-            httpDelete.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
-            Gdx.net.sendHttpRequest(httpDelete, new Net.HttpResponseListener() {
-                @Override
-                public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                    Gdx.app.log(LOG, httpResponse.getResultAsString());
-                }
-
-                @Override
-                public void failed(Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-        }
+        removePublicServer();
 	}
 
 	public boolean update(float delta) {
@@ -481,4 +462,92 @@ public class GameServer implements NetController {
 	public boolean isConnecting() {
 		return false;
 	}
+
+    public boolean isLoadGame() {
+        return loadGame;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public boolean isStopServer() {
+        return stopServer;
+    }
+
+    public void setStopServer(boolean stop) {
+        stopServer = stop;
+    }
+
+    public GameResult getGameResult() {
+        return gameResult;
+    }
+
+    public GameSetupConfig getGameConfig() {
+        return gameConfig;
+    }
+
+    public void registerPublicServer() {
+        Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.POST);
+        httpGet.setUrl(String.format("%s/server", globalServerUrl));
+
+        HashMap parameters = new HashMap();
+        parameters.put("name", gameConfig.hostName);
+        parameters.put("port", Integer.toString(gameConfig.hostPort));
+//        parameters.put("ip", Utils.getIPAddress(true));
+
+        httpGet.setContent(HttpParametersUtils.convertHttpParameters(parameters));
+
+        Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String response = httpResponse.getResultAsString();
+                switch(httpResponse.getStatus().getStatusCode()) {
+                    case 400:
+                    case 404:
+                        Gdx.app.log(LOG, "Failed to register with global server");
+                        Gdx.app.log(LOG, response);
+                        break;
+                    case 200:
+                        Gdx.app.log(LOG, "Registered with global server");
+                        Gdx.app.log(LOG, response);
+                        JsonReader reader = new JsonReader();
+                        JsonValue result = reader.parse(response);
+                        if (result != null)
+                            publicServerId = result.getInt("id", -1);
+                        Gdx.app.log(LOG, Integer.toString(publicServerId));
+                        break;
+                    default:
+                        Gdx.app.log(LOG, String.format("Unknown HTTP Status Code: %d", httpResponse.getStatus().getStatusCode()));
+                        Gdx.app.log(LOG, response);
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.log(LOG, "Failed to register with global server");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void removePublicServer() {
+        if (publicServerId >= 0) {
+            Net.HttpRequest httpDelete = new Net.HttpRequest(Net.HttpMethods.DELETE);
+            httpDelete.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
+            Gdx.net.sendHttpRequest(httpDelete, new Net.HttpResponseListener() {
+                @Override
+                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                    Gdx.app.log(LOG, httpResponse.getResultAsString());
+                }
+
+                @Override
+                public void failed(Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+
+        publicServerId = -1;
+    }
 }

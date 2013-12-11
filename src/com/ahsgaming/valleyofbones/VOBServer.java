@@ -3,6 +3,7 @@ package com.ahsgaming.valleyofbones;
 import com.ahsgaming.valleyofbones.network.GameServer;
 import com.ahsgaming.valleyofbones.network.NetController;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
+import com.ahsgaming.valleyofbones.screens.ServerScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
@@ -16,21 +17,16 @@ import com.badlogic.gdx.utils.Array;
 public class VOBServer extends VOBGame {
     public static final String LOG = "VOBServer";
 
-    Array<GameController> gameControllers;
-    Array<NetController> netControllers;
+    Array<GameServer> gameServers;
 
-    @Override
-    public void createGame(GameSetupScreen.GameSetupConfig cfg) {
-        netController = new GameServer(this, cfg);
+    public VOBServer() {
+        super();
+        gameServers = new Array<GameServer>();
     }
 
     @Override
-    public void startGame() {
-        started = true;
-        if (netController != null) {
-            netController.startGame();
-            gController = netController.getGameController();
-        }
+    public void createGame(GameSetupScreen.GameSetupConfig cfg) {
+        gameServers.add(new GameServer(this, cfg));
     }
 
     @Override
@@ -39,14 +35,18 @@ public class VOBServer extends VOBGame {
 
         setScreen(getServerScreen());
 
-        GameSetupScreen.GameSetupConfig cfg = new GameSetupScreen.GameSetupConfig();
-        cfg.isMulti = true;
-        createGame(cfg);
+//        GameSetupScreen.GameSetupConfig cfg = new GameSetupScreen.GameSetupConfig();
+//        cfg.isMulti = true;
+//        createGame(cfg);
     }
 
     @Override
     public void dispose() {
         super.dispose();    //To change body of overridden methods use File | Settings | File Templates.
+
+        for (GameServer server: gameServers) {
+            server.stop();
+        }
 
         try {
             Thread.sleep(25); // wait 25 ms to make sure the server can send an http request
@@ -59,6 +59,25 @@ public class VOBServer extends VOBGame {
     @Override
     public void render() {
         if (this.getScreen() != null) this.getScreen().render(Gdx.graphics.getDeltaTime());
+
+        Array<GameServer> remove = new Array<GameServer>();
+        for (GameServer server: gameServers) {
+            if (server.isLoadGame() && !server.isGameStarted()) {
+                server.startGame();
+            }
+
+            if (server.getGameResult() != null) {
+                server.reset();
+            }
+
+            server.update(Gdx.graphics.getDeltaTime());
+
+            if (server.isStopServer()) {
+                server.stop();
+                remove.add(server);
+            }
+        }
+        gameServers.removeAll(remove, true);
 
         if (loadGame) {
             startGame();
@@ -95,5 +114,13 @@ public class VOBServer extends VOBGame {
     @Override
     public void resume() {
         super.resume();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public ServerScreen getServerScreen() {
+        return new ServerScreen(this);
+    }
+
+    public Array<GameServer> getGameServers() {
+        return gameServers;
     }
 }
