@@ -143,6 +143,28 @@ entities: [
             subtype: "armored",
         }
     },
+
+    {
+        id: "light-mech",
+        type: "unit",
+        image: "light-mech",
+        title: "Light Mech",
+        desc: "Mech walker",
+        properties:
+        {
+            curhp: 30,
+            maxhp: 30,
+            armor: 1,
+            food: 3,
+            requires: [ "castle-base" ],
+            attackdamage: 10,
+            attackspeed: 1,
+            attackrange: 3,
+            movespeed: 2,
+            cost: 125,
+            subtype: "armored",
+        }
+    },
     
     {
         id: "attack-upgrade-1",

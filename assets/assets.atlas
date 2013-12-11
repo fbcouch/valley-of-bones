@@ -4,35 +4,35 @@ filter: Linear,Linear
 repeat: none
 marine-overlay
   rotate: false
-  xy: 946, 2
+  xy: 68, 160
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 turn-indicator-overlay
   rotate: false
-  xy: 759, 732
+  xy: 825, 732
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 money
   rotate: false
-  xy: 90, 160
+  xy: 222, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 unit-highlight
   rotate: false
-  xy: 785, 732
+  xy: 851, 732
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 tank-overlay
   rotate: false
-  xy: 700, 250
+  xy: 766, 250
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -46,14 +46,14 @@ build-infantry-tab
   index: -1
 skull-crossed-bones
   rotate: false
-  xy: 735, 160
+  xy: 867, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sniper
   rotate: false
-  xy: 835, 160
+  xy: 2, 250
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -74,14 +74,14 @@ build-hud-bg
   index: -1
 money-
   rotate: false
-  xy: 68, 160
+  xy: 200, 160
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 20
 tower
   rotate: false
-  xy: 2, 732
+  xy: 68, 732
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -95,7 +95,7 @@ flying-flag
   index: -1
 splash
   rotate: false
-  xy: 2, 250
+  xy: 68, 250
   size: 640, 480
   orig: 640, 480
   offset: 0, 0
@@ -109,7 +109,7 @@ hud-bar
   index: -1
 supply
   rotate: false
-  xy: 666, 250
+  xy: 732, 250
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -123,7 +123,7 @@ build-mech-tab
   index: -1
 turn-hud-bg
   rotate: false
-  xy: 299, 732
+  xy: 365, 732
   size: 432, 32
   orig: 432, 32
   offset: 0, 0
@@ -137,7 +137,7 @@ gear-hammer
   index: -1
 scores
   rotate: false
-  xy: 358, 160
+  xy: 490, 160
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -149,9 +149,16 @@ castle-overlay
   orig: 64, 64
   offset: 0, 0
   index: -1
+light-mech-overlay
+  rotate: false
+  xy: 946, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 sniper-overlay
   rotate: false
-  xy: 769, 160
+  xy: 901, 160
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -172,7 +179,7 @@ archery-target
   index: -1
 radial-balance
   rotate: false
-  xy: 124, 160
+  xy: 256, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -186,14 +193,14 @@ invisible
   index: -1
 tank
   rotate: false
-  xy: 766, 250
+  xy: 832, 250
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 rune-sword
   rotate: false
-  xy: 192, 160
+  xy: 324, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -205,16 +212,23 @@ checked-shield
   orig: 32, 32
   offset: 0, 0
   index: -1
+light-mech
+  rotate: false
+  xy: 2, 160
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 turn-hud-bg-small
   rotate: false
-  xy: 68, 732
+  xy: 134, 732
   size: 229, 28
   orig: 229, 28
   offset: 0, 0
   index: -1
 marine
   rotate: false
-  xy: 2, 160
+  xy: 134, 160
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -228,35 +242,35 @@ hospital-cross
   index: -1
 walking-boot
   rotate: false
-  xy: 851, 732
+  xy: 917, 732
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 saboteur
   rotate: false
-  xy: 292, 160
+  xy: 424, 160
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 supply-
   rotate: false
-  xy: 644, 250
+  xy: 710, 250
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 20
 turn-indicator-base
   rotate: false
-  xy: 733, 732
+  xy: 799, 732
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 reticule
   rotate: false
-  xy: 158, 160
+  xy: 290, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -268,16 +282,16 @@ castle
   orig: 64, 64
   offset: 0, 0
   index: -1
-tower-overlay
+saboteur-overlay
   rotate: false
-  xy: 898, 250
+  xy: 358, 160
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-saboteur-overlay
+tower-overlay
   rotate: false
-  xy: 226, 160
+  xy: 2, 732
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -298,14 +312,14 @@ dirt-hex
   index: -1
 tinker
   rotate: false
-  xy: 832, 250
+  xy: 898, 250
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 selection-hud-bg
   rotate: false
-  xy: 424, 160
+  xy: 556, 160
   size: 309, 88
   orig: 309, 88
   offset: 0, 0

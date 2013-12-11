@@ -94,7 +94,7 @@ public class GameController {
 		this.loadMapObjects();
 		
 //		grpRoot.addActor(map.getMapGroup());
-        grpRoot.setTransform(false);
+//        grpRoot.setTransform(false);
 
 		grpRoot.setSize(map.getMapWidth(), map.getMapHeight());
 		

@@ -362,7 +362,7 @@ public class LevelScreen extends AbstractScreen {
         stage.addListener(new InputListener() {
             @Override
             public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                zoom((amount > 0 ? 0.9f : 1.1f));
+                zoom((amount > 0 ? 1.1f : 1/1.1f));
 
                 return super.scrolled(event, x, y, amount);    //To change body of overridden methods use File | Settings | File Templates.
             }
@@ -438,7 +438,8 @@ public class LevelScreen extends AbstractScreen {
 
         gController.getMap().update(game.getPlayer());
 
-        grpLevel.setPosition(-1 * posCamera.x + stage.getWidth() * 0.5f, -1 * posCamera.y + stage.getHeight() * 0.5f);
+        grpLevel.setScale(1 / mapScale.x, 1 / mapScale.y);
+        grpLevel.setPosition(-1 * posCamera.x + mapCamera.viewportWidth * 0.5f, -1 * posCamera.y + mapCamera.viewportHeight * 0.5f);
 
 		yourTurnPopup();
         buildPanel.update();

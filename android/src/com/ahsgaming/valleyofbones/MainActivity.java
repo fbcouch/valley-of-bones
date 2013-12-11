@@ -22,7 +22,7 @@ public class MainActivity extends AndroidApplication {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        initialize(new VOBGame(false), cfg);
+        initialize(new VOBGame(), cfg);
 //        Debug.startMethodTracing("all");
     }
 

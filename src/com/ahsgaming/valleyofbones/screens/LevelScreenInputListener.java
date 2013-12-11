@@ -21,6 +21,8 @@ public class LevelScreenInputListener extends ActorGestureListener {
     public static String LOG = "LevelScreenInputListener";
 
     LevelScreen levelScreen;
+    float zoomStart;
+    float zoomEnd;
 
     public LevelScreenInputListener(LevelScreen levelScreen) {
         this.levelScreen = levelScreen;
@@ -103,9 +105,24 @@ public class LevelScreenInputListener extends ActorGestureListener {
     }
 
     @Override
+    public void zoom(InputEvent event, float initialDistance, float distance) {
+        super.zoom(event, initialDistance, distance);
+
+        zoomStart = initialDistance;
+        zoomEnd = distance;
+    }
+
+    @Override
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
         super.touchUp(event, x, y, pointer, button);    //To change body of overridden methods use File | Settings | File Templates.
         levelScreen.setClickInterrupt(false);
+
+        if (!levelScreen.getClickInterrupt()) {
+            if (zoomStart > 0 || zoomEnd > 0) {
+                levelScreen.zoom(zoomStart / zoomEnd);
+                zoomStart = zoomEnd = 0;
+            }
+        }
     }
 
 
