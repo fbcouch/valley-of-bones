@@ -13,4 +13,14 @@ public class Refund extends Command {
 		}
 		return false;
 	}
+
+    @Override
+    public String toJson() {
+        return "{ \"type\": \"Refund\", " + getJsonItems() + "}";
+    }
+
+    @Override
+    protected String getJsonItems() {
+        return super.getJsonItems() + String.format(", \"unit\": \"%d\"", unit);
+    }
 }

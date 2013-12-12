@@ -15,4 +15,14 @@ public class Move extends Command {
 		}
 		return false;
 	}
+
+    @Override
+    public String toJson() {
+        return "{ \"type\": \"Move\", " + getJsonItems() + "}";
+    }
+
+    @Override
+    protected String getJsonItems() {
+        return super.getJsonItems() + String.format(", \"unit\": \"%d\", \"toLocation\": \"%s\"", unit, toLocation.toString());
+    }
 }

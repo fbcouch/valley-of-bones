@@ -49,7 +49,7 @@ import com.esotericsoftware.kryonet.Client;
  */
 public class GameJoinScreen extends AbstractScreen {
 	public String LOG = "GameJoinScreen";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
 
 

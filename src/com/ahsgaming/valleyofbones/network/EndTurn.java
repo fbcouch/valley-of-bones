@@ -20,4 +20,9 @@ public class EndTurn extends Command {
 	public boolean equals(Object o) {
 		return o instanceof EndTurn && super.equals(o);
 	}
+
+    @Override
+    public String toJson() {
+        return "{ \"type\": \"EndTurn\", " + getJsonItems() + "}";
+    }
 }

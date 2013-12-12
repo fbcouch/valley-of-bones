@@ -13,4 +13,12 @@ public class Command {
 		}
 		return false;
 	}
+
+    public String toJson() {
+        return "{" + getJsonItems() + "}";
+    }
+
+    protected String getJsonItems() {
+        return String.format("\"owner\": %d, \"turn\": %d, \"isAdd\": %b", owner, turn, isAdd);
+    }
 }

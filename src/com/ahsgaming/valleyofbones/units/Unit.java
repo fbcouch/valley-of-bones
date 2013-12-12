@@ -110,7 +110,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		type = proto.type;
 		sImage = proto.image;
         properties = new JsonReader().parse(proto.properties.toString());
-        Gdx.app.log(LOG, properties.toString());
+//        Gdx.app.log(LOG, properties.toString());
 		parseProperties();
         // TODO load from atlas
         overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image + "-overlay");

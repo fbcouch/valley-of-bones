@@ -6,4 +6,9 @@ public class Surrender extends Command {
 	public boolean equals(Object o) {
 		return o instanceof Surrender && super.equals(o);
 	}
+
+    @Override
+    public String toJson() {
+        return "{ \"type\": \"Surrender\", " + getJsonItems() + "}";
+    }
 }

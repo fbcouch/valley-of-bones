@@ -37,10 +37,8 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.net.HttpParametersUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -51,7 +49,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer implements NetController {
 	public String LOG = "GameServer";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
 
     final VOBGame game;
@@ -60,7 +58,7 @@ public class GameServer implements NetController {
 	GameController controller;
 	
 	GameSetupConfig gameConfig;
-	
+
 	Array<Player> players = new Array<Player>();
 	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 	int nextPlayerId = 0;
@@ -284,6 +282,7 @@ public class GameServer implements NetController {
 
         // TODO allow configuration of who goes first?
         controller.setCurrentPlayer(players.get((MathUtils.random(players.size - 1))));
+        loadGame = false;
 
 		// don't need to broadcast on UDP anymore - thats just confusing
 		broadcastServer.close();
@@ -302,6 +301,10 @@ public class GameServer implements NetController {
 		
 		server.sendToAllTCP(result);
 		server.close();
+
+        if (gameConfig.isPublic) {
+            sendPublicServerResult();
+        }
 	}
 
 	public void stop() {
@@ -411,7 +414,6 @@ public class GameServer implements NetController {
 	public void sendStartGame() {
 		StartGame startGame = new StartGame();
         startGame.currentPlayer = controller.getCurrentPlayer().getPlayerId();
-
         server.sendToAllTCP(startGame);
 	}
 
@@ -549,5 +551,59 @@ public class GameServer implements NetController {
         }
 
         publicServerId = -1;
+    }
+
+    public void sendPublicServerResult() {
+        if (publicServerId >= 0) {
+            Net.HttpRequest httpPost = new Net.HttpRequest(Net.HttpMethods.POST);
+//            httpPost.setHeader("Content-Type", "application/json");
+            httpPost.setUrl(String.format("%s/game", globalServerUrl));
+            HashMap parameters = new HashMap();
+
+//            parameters.put("players",
+//                    String.format("{ %d: \"%s\", %d: \"%s\" }",
+//                            controller.getPlayers().get(0).getPlayerId(),
+//                            controller.getPlayers().get(0).getPlayerName(),
+//                            controller.getPlayers().get(1).getPlayerId(),
+//                            controller.getPlayers().get(1).getPlayerName()));
+            String historyString = "[";
+            for (Command command: controller.getCommandHistory()) {
+                historyString += command.toJson() + ",";
+            }
+            historyString += "]";
+            parameters.put("history", historyString);
+            parameters.put("result", String.format("%d", gameResult.winner));
+
+            httpPost.setContent(HttpParametersUtils.convertHttpParameters(parameters));
+
+            Gdx.net.sendHttpRequest(httpPost, new Net.HttpResponseListener() {
+                @Override
+                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                    String response = httpResponse.getResultAsString();
+
+                    switch(httpResponse.getStatus().getStatusCode()) {
+                        case 400:
+                        case 404:
+                            Gdx.app.log(LOG, "Failed to upload game result");
+                            Gdx.app.log(LOG, response);
+                            break;
+                        case 200:
+                            Gdx.app.log(LOG, "Uploaded game result");
+                            Gdx.app.log(LOG, response);
+                            break;
+                        default:
+                            Gdx.app.log(LOG, "Unknown response code " + httpResponse.getStatus().getStatusCode());
+                            Gdx.app.log(LOG, response);
+                    }
+                }
+
+                @Override
+                public void failed(Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
+            Gdx.app.log(LOG, httpPost.getContent());
+        }
     }
 }

@@ -269,7 +269,7 @@ public class GameController {
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
 					executeCommand(command);
 				}
-				commandHistory.add(command);
+
 			} else {
 				// future commands are left alone
 
@@ -357,6 +357,7 @@ public class GameController {
 			Gdx.app.log(LOG, "Unknown command");
 		}
 
+        commandHistory.add(cmd);
         map.setMapDirty(true);
 	}
 	
@@ -399,6 +400,7 @@ public class GameController {
 		addGameUnitNow(unit);
 		owner.setBankMoney(owner.getBankMoney() - unit.getCost());
 		owner.updateFood(this);
+        cmd.unitId = unit.getObjId();
 	
 		
 	}
