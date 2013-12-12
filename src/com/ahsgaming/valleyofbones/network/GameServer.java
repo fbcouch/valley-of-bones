@@ -49,7 +49,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer implements NetController {
 	public String LOG = "GameServer";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
 
     final VOBGame game;
@@ -571,8 +571,9 @@ public class GameServer implements NetController {
                 historyString += command.toJson() + ",";
             }
             historyString += "]";
-            parameters.put("history", historyString);
-            parameters.put("result", String.format("%d", gameResult.winner));
+            parameters.put("game", "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + "}");
+            parameters.put("version", Integer.toString(VOBGame.VERSION));
+//            parameters.put("result", String.format("%d", gameResult.winner));
 
             httpPost.setContent(HttpParametersUtils.convertHttpParameters(parameters));
 
