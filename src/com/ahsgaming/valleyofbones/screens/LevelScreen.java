@@ -315,12 +315,12 @@ public class LevelScreen extends AbstractScreen {
 	public void show() {
 		super.show();
 
+        grpLevel = new Group();
+
         mapSpriteBatch = new SpriteBatch();
         mapCamera = new OrthographicCamera();
 
 		Gdx.app.log(VOBGame.LOG, "LevelScreen#show");
-		
-		grpLevel = gController.getGroup();
 
 		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
 
@@ -370,8 +370,9 @@ public class LevelScreen extends AbstractScreen {
 
         mapCamera.setToOrtho(false, stage.getCamera().viewportWidth * mapScale.x, stage.getCamera().viewportHeight * mapScale.y);  // TODO
 //        mapScale = new Vector2(800f / width, 480f / height);
-		
-		stage.addActor(grpLevel);     // -21fps
+
+        grpLevel.setBounds(0, 0, stage.getWidth(), stage.getHeight());
+		stage.addActor(grpLevel);
 
 		// panels
         // TODO add back upgrade panel
@@ -438,8 +439,8 @@ public class LevelScreen extends AbstractScreen {
 
         gController.getMap().update(game.getPlayer());
 
-        grpLevel.setScale(1 / mapScale.x, 1 / mapScale.y);
-        grpLevel.setPosition(-1 * posCamera.x + mapCamera.viewportWidth * 0.5f, -1 * posCamera.y + mapCamera.viewportHeight * 0.5f);
+//        grpLevel.setScale(1 / mapScale.x, 1 / mapScale.y);
+//        grpLevel.setPosition(-1 * posCamera.x + mapCamera.viewportWidth * 0.5f, -1 * posCamera.y + mapCamera.viewportHeight * 0.5f);
 
 		yourTurnPopup();
         buildPanel.update();
@@ -458,9 +459,11 @@ public class LevelScreen extends AbstractScreen {
 	}
 	
 	public void addFloatingLabel(String text, float x, float y) {
+        Vector2 screenPos = mapToScreenCoords(x, y);
+
 		Gdx.app.log(LOG, "Floating Label!");
 		Label lbl = new Label(text, new LabelStyle(getSmallFont(), new Color(1,1,1,1)));
-		lbl.setPosition(x - lbl.getWidth() * 0.5f, y - lbl.getHeight() * 0.5f);
+		lbl.setPosition(screenPos.x - lbl.getWidth() * 0.5f, screenPos.y - lbl.getHeight() * 0.5f);
 		lbl.addAction(Actions.parallel(Actions.fadeOut(1f), Actions.moveBy(0, 64f, 1f)));
 		grpLevel.addActor(lbl);
 	}

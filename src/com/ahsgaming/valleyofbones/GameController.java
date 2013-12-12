@@ -44,8 +44,7 @@ public class GameController {
 	
 	Array<GameObject> gameObjects, objsToAdd, objsToRemove;
 	GameObject selectedObject;
-	Group grpRoot, grpUnits;
-	
+
 	Array<Player> players;
 	
 	String mapName;
@@ -75,10 +74,7 @@ public class GameController {
 	public GameController(String mapName, Array<Player> players) {
 		// TODO load map
 		this.mapName = mapName;
-		grpRoot = new Group();
-		grpUnits = new Group();
-		
-		
+
 		gameObjects = new Array<GameObject>();
 		selectedObject = null;
 		objsToAdd = new Array<GameObject>();
@@ -92,12 +88,7 @@ public class GameController {
 		
 		this.loadMap();
 		this.loadMapObjects();
-		
-//		grpRoot.addActor(map.getMapGroup());
-//        grpRoot.setTransform(false);
 
-		grpRoot.setSize(map.getMapWidth(), map.getMapHeight());
-		
 		// TODO start paused
 		state = GameStates.RUNNING;
 	}
@@ -115,7 +106,7 @@ public class GameController {
 		return map;
 	}
 	
-	private Group loadMapObjects() {
+	private void loadMapObjects() {
 		int player = 0;
 //        grpUnits = map.getObjectGroup();
 		for (Vector2 spawn : map.getPlayerSpawns()) {
@@ -162,8 +153,6 @@ public class GameController {
             unit.setPosition(getMap().boardToMapCoords(10, 0));
             addGameUnit(unit);
         }
-		
-		return grpUnits;
 	}
 	
 	public void update(float delta) {
@@ -201,10 +190,6 @@ public class GameController {
         }
 
         gameObjects.removeAll(objsToRemove, true);
-        for (GameObject obj: objsToRemove) {
-            grpUnits.removeActor(obj);
-        }
-        objsToRemove.clear();
 
         for (GameObject obj: objsToAdd) {
             addGameUnitNow(obj);
@@ -410,7 +395,6 @@ public class GameController {
 		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
 		unit.setPosition(levelPos);
 		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
-        unit.setVisible(false); // BUGFIX: prevent players from seeing invisible units momentarily
 		
 		addGameUnitNow(unit);
 		owner.setBankMoney(owner.getBankMoney() - unit.getCost());
@@ -479,11 +463,7 @@ public class GameController {
 	/**
 	 * Getters/Setters
 	 */
-	
-	public Group getGroup() {
-		return grpRoot;
-	}
-	
+
 	public Array<Player> getPlayers() {
 		return players;
 	}
@@ -496,11 +476,7 @@ public class GameController {
 	}
 	
 	private void addGameUnitNow(GameObject obj) {
-		
 		if (!gameObjects.contains(obj, true)) gameObjects.add(obj);
-		
-		
-		if (!obj.hasParent() || !obj.getParent().equals(grpUnits)) grpUnits.addActor(obj);
 	}
 	
 	public void addGameUnit(GameObject obj) {
@@ -509,8 +485,6 @@ public class GameController {
 	
 	public void removeGameUnit(GameObject obj) {
 		gameObjects.removeValue(obj, true);
-		
-		grpUnits.removeActor(obj);
 	}
 
     public Array<Unit> getUnits() {

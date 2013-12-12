@@ -36,7 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * @author jami
  *
  */
-public class GameObject extends Actor {
+public class GameObject {
 	
 	protected TextureRegion image;
 	
@@ -50,6 +50,10 @@ public class GameObject extends Actor {
 	protected float localRotation = 0;
 	
 	protected Vector2 boardPos = new Vector2(0, 0);
+    protected Vector2 position = new Vector2();
+    protected Vector2 size = new Vector2();
+    protected Color color = new Color(1, 1, 1, 1);
+    protected float rotation = 0;
 	
 	/**
 	 * Constructors
@@ -79,7 +83,6 @@ public class GameObject extends Actor {
 	
 	/**
 	 * Use this for game loop updates so that it can be easily controlled (unlike act, which will be called regardless of gamestate)
-	 * @param delta
 	 */
 	public void update(GameController controller) {
 		// TODO implement this
@@ -117,8 +120,7 @@ public class GameObject extends Actor {
 	/**
 	 * Implemented methods
 	 */
-	
-	@Override
+
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		
 		if (image != null) {
@@ -138,11 +140,6 @@ public class GameObject extends Actor {
         }
     }
 	
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-	}
-	
 	/**
 	 * Getters & Setters
 	 */
@@ -150,7 +147,60 @@ public class GameObject extends Actor {
 	public Vector2 getPosition() {
 		return new Vector2(getX(), getY());
 	}
-	
+
+    public void setPosition(float x, float y) {
+        position.set(x, y);
+    }
+
+    public float getX() {
+        return position.x;
+    }
+
+    public void setX(float x) {
+        position.set(x, position.y);
+    }
+
+    public float getY() {
+        return position.y;
+    }
+
+    public void setY(float y) {
+        position.set(position.x, y);
+    }
+
+    public Vector2 getSize() {
+        return new Vector2(size);
+    }
+
+    public void setSize(float width, float height) {
+        size.set(width, height);
+    }
+
+    public void setBounds(float x, float y, float width, float height) {
+        setPosition(x, y);
+        setSize(width, height);
+    }
+
+    public float getWidth() {
+        return size.x;
+    }
+
+    public void setWidth(float width) {
+        size.set(width, size.y);
+    }
+
+    public float getHeight() {
+        return size.y;
+    }
+
+    public void setHeight(float height) {
+        size.set(size.x, height);
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
 	/**
 	 * 
 	 * @param loc bottom-left, bottom-center, bottom-right, middle-left, center, middle-right, top-left, top-center, top-right
@@ -183,6 +233,14 @@ public class GameObject extends Actor {
 		setX(position.x);
 		setY(position.y);
 	}
+
+    public Color getColor() {
+        return new Color(color);
+    }
+
+    public void setColor(Color c) {
+        color.set(c);
+    }
 	
 	/**
 	 * 
@@ -287,7 +345,7 @@ public class GameObject extends Actor {
 	}
 
 	/**
-	 * @param ownerId the ownerId to set
+	 * @param owner the owner to set
 	 */
 	public void setOwner(Player owner) {
 		this.owner = owner;
