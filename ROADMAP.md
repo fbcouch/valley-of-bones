@@ -32,19 +32,19 @@
 
 ### Chapter 3: Mech (December)
 
++ Central server
+    + Keeps a master server list, updates when users start 'public' servers
+    + also allow configurable port
+    + game reports
 - UI Improvements
     + updated look/feel
     - Finish unimplemented features:
         - Pause menu (Surrender goes here)
         - Refund
         - Activate/deactivate cloak
-        - Zoom
+        + Zoom
         - Better unit boxes
 - Android version
-- Central server
-    + Keeps a master server list, updates when users start 'public' servers
-    + also allow configurable port
-    - game reports
 - Gameplay changes
     - Attachments for base
         - "Defense platform" --> grants extra attack/damage
@@ -52,8 +52,11 @@
     - Rewards for kills --> also allows less income from base
     - Saboteur --> heavy infantry (bazooka/missile launcher)
     - Add 2 new mech units
+        + light mech
+        - artillery (+ splash damage?)
     - Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
 - Basic sounds
+- Basic animations
 
 ### Later
 - Another race

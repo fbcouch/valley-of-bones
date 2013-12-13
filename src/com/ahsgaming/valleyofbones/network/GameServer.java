@@ -75,6 +75,9 @@ public class GameServer implements NetController {
     boolean endTurnRecd;
 
     int publicServerId = -1;
+
+    float serverPing = 1800;
+    float serverPingTimeout = 0;
 	
 	/**
 	 * 
@@ -137,6 +140,8 @@ public class GameServer implements NetController {
 					RegisterPlayer rp = (RegisterPlayer)obj;
 
                     if (rp.version != VOBGame.VERSION) {
+                        Gdx.app.log("version", "" + VOBGame.VERSION);
+                        Gdx.app.log("rp.version", "" + rp.version);
                         // wrong version!
                         server.sendToTCP(c.getID(), new KryoCommon.VersionError());
                         return;
@@ -272,6 +277,7 @@ public class GameServer implements NetController {
 
         if (gameConfig.isPublic) {
             registerPublicServer();
+            serverPingTimeout = serverPing;
         }
 	}
 	
@@ -315,6 +321,25 @@ public class GameServer implements NetController {
 
 	public boolean update(float delta) {
 
+        if (!gameStarted && gameConfig.isPublic) {
+            serverPingTimeout -= delta;
+            if (serverPingTimeout <= 0) {
+                serverPingTimeout = serverPing;
+                Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.GET);
+                req.setUrl(globalServerUrl);
+                Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                        Gdx.app.log(LOG, "Ping success");
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        Gdx.app.log(LOG, "Ping failed");
+                    }
+                });
+            }
+        }
 		
 		if ((controller == null)) return true;
 		

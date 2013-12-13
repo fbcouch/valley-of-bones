@@ -520,7 +520,7 @@
       <delete dir="${artifacts.temp.dir}"/>
   </target>
 
-    <target name="package.desktop.artifacts" depends="build.desktop.artifacts">
+    <target name="package.desktop.artifacts" depends="clean, build.desktop.artifacts">
 
         <zip destfile="${artifact.output.valleyofbones:jar}/ValleyOfBones-${DSTAMP}.zip">
             <fileset dir="${artifact.output.valleyofbones:jar}" includes="*.jar"/>
