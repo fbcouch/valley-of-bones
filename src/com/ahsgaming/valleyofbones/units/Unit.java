@@ -51,7 +51,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	float attackSpeed = 0;
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	float moveSpeed = 0;
-	int upkeep = 0;
+	int upkeep = 0, buildTime = 0;
 
     String subtype = "";
     ObjectMap<String, Float> bonus = new ObjectMap<String, Float>();
@@ -65,6 +65,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
     boolean capturable = false;
     Player uncontested = null;
     int capUnitCount = 0;
+    boolean building = true;
+    int buildTimeLeft = 0;
 	
 	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
 	float upgradeAttackSpeed = 0;
@@ -108,12 +110,19 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.proto = proto;
 		this.protoId = proto.id;
 		type = proto.type;
-		sImage = proto.image;
+        sImage = proto.image;
         properties = new JsonReader().parse(proto.properties.toString());
-//        Gdx.app.log(LOG, properties.toString());
 		parseProperties();
-        // TODO load from atlas
-        overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image + "-overlay");
+
+        if (getBuildTime() > 0) {
+            building = true;
+            buildTimeLeft = getBuildTime();
+            image = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-builder");
+            overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-builder-overlay");
+        } else {
+            overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image + "-overlay");
+            building = false;
+        }
 
         healthBar = new ProgressBar();
         healthBar.setSize(getWidth(), 4f);
@@ -129,6 +138,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (properties.get("bonus") != null)
             for (JsonValue v: properties.get("bonus"))
                 bonus.put(v.name(), v.asFloat());
+        buildTime = properties.getInt("buildtime", 0);
         capturable = properties.getBoolean("capturable", false);
         cost = properties.getInt("cost", 0);
         curHP = properties.getInt("curhp", 0);
@@ -330,6 +340,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
         this.bonus.put(subtype, bonus);
     }
 
+    public int getBuildTime() {
+        return buildTime;
+    }
+
+    public void setBuildTime(int buildTime) {
+        this.buildTime = buildTime;
+    }
+
     public int getCost() {
 		return cost;
 	}
@@ -494,7 +512,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         Player p = null;
         capUnitCount = 0;
         for (Unit unit: controller.getUnitsInArea(boardPos, 1)) {
-            if (unit != this && unit.getOwner() != null) {
+            if (unit != this && unit.getOwner() != null && !unit.isBuilding()) {
                 if (p == null) {
                     p = unit.getOwner();
                     capUnitCount ++;
@@ -535,11 +553,25 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	}
 
     public void startTurn() {
-        movesLeft = (movesLeft % 1) + (getMoveSpeed() * (stealthActive ? 0.5f : 1f));
-        attacksLeft = (attacksLeft % 1) + getAttackSpeed();
+        if (!building) {
+            movesLeft = (movesLeft % 1) + (getMoveSpeed() * (stealthActive ? 0.5f : 1f));
+            attacksLeft = (attacksLeft % 1) + getAttackSpeed();
+        }
 
         if (capturable && uncontested == getOwner()) {
             setCurHP(getCurHP() + 5 * capUnitCount);
+        }
+    }
+
+    public void endTurn() {
+        if (building) {
+            buildTimeLeft -= 1;
+
+            if (buildTimeLeft <= 0) {
+                building = false;
+                image = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image);
+                overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image + "-overlay");
+            }
         }
     }
 
@@ -613,6 +645,15 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     public boolean isDetector() {
         return ability.equals("detect");
+    }
+
+    public boolean isBuilding() {
+        return building;
+    }
+
+    public void setBuilding(boolean building) {
+        this.building = building;
+        if (building) this.buildTimeLeft = getBuildTime();
     }
 	
 	//-------------------------------------------------------------------------

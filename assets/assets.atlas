@@ -25,7 +25,7 @@ money
   index: -1
 unit-highlight
   rotate: false
-  xy: 851, 732
+  xy: 2, 798
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -156,6 +156,13 @@ light-mech-overlay
   orig: 64, 64
   offset: 0, 0
   index: -1
+unit-builder
+  rotate: false
+  xy: 917, 732
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 sniper-overlay
   rotate: false
   xy: 901, 160
@@ -242,7 +249,7 @@ hospital-cross
   index: -1
 walking-boot
   rotate: false
-  xy: 917, 732
+  xy: 68, 798
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -322,5 +329,12 @@ selection-hud-bg
   xy: 556, 160
   size: 309, 88
   orig: 309, 88
+  offset: 0, 0
+  index: -1
+unit-builder-overlay
+  rotate: false
+  xy: 851, 732
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1

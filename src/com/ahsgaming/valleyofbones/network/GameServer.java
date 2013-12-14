@@ -374,6 +374,7 @@ public class GameServer implements NetController {
                 endTurn.turn = controller.getGameTurn();
                 endTurn.owner = controller.getCurrentPlayer().getPlayerId();
                 server.sendToAllTCP(endTurn);
+                controller.setNextTurn(true);
                 controller.doTurn();
                 endTurnRecd = false;
             }

@@ -239,6 +239,7 @@ public class MPGameClient implements NetController {
         controller.update(delta);
 
         if (recdEndTurn) {
+            controller.setNextTurn(true);
             controller.doTurn();
             recdEndTurn = false;
         }

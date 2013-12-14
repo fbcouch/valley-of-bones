@@ -65,6 +65,7 @@ entities: [
             cost: 45,
             subtype: "light",
             ability: "detect",
+            buildtime: 1
         }
     },
     
@@ -92,6 +93,7 @@ entities: [
                 light: 4,
             },
             ability: "stealth",
+            buildtime: 1
         }
     },
     
@@ -119,6 +121,7 @@ entities: [
                 armored: 4,
                 building: 4,
             },
+            buildtime: 1
         }
     },
     
@@ -141,6 +144,7 @@ entities: [
             movespeed: 1,
             cost: 150,
             subtype: "armored",
+            buildtime: 1
         }
     },
 
@@ -163,6 +167,7 @@ entities: [
             movespeed: 2,
             cost: 125,
             subtype: "armored",
+            buildtime: 1
         }
     },
     

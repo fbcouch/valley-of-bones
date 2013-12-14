@@ -114,9 +114,11 @@ public class GameController {
 			Unit unit;
 			if (player >= 0 && player < players.size) {
 				unit = new Unit(getNextObjectId(), players.get(player), Prototypes.getProto("castle-base"));
+                unit.setBuilding(false);
 				players.get(player).setBaseUnit(unit);
 			} else {
 				unit = new Unit(getNextObjectId(), null, Prototypes.getProto("castle-base"));
+                unit.setBuilding(false);
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
 			Gdx.app.log(LOG, spawn.toString());
@@ -199,6 +201,12 @@ public class GameController {
 	
 	public void doTurn() {
 		Gdx.app.log(LOG, "doTurn");
+
+        if (nextTurn) {
+            for (Unit unit: getUnitsByPlayerId(currentPlayer.getPlayerId())) {
+                unit.endTurn();
+            }
+        }
 
 		gameTurn += 1;
         turnTimer = turnLength;

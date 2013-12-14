@@ -56,7 +56,7 @@
     - Add 2 new mech units
         + light mech
         - artillery (+ splash damage?)
-    - Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
+    + Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
 - Basic sounds
 - Basic animations
 

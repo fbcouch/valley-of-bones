@@ -6,6 +6,7 @@ import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.ProgressBar;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -138,7 +139,7 @@ public class InfoPanel extends Group {
             }
 
             healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
-            healthBar.setCurrent((float)selected.getCurHP() / selected.getMaxHP());
+            healthBar.setCurrent((float)selected.getCurHP() / (float)selected.getMaxHP());
             lastSelected = selected;
 
             layout();
@@ -146,10 +147,9 @@ public class InfoPanel extends Group {
     }
 
     @Override
-    public void draw(SpriteBatch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-
-        healthBar.draw(batch, getX() + lblHealth.getX(), getY() + iconHealth.getY() + iconHealth.getHeight() * iconHealth.getScaleY() - healthBar.getHeight(), parentAlpha);
+        healthBar.draw((SpriteBatch)batch, getX() + lblHealth.getX(), getY() + iconHealth.getY() + iconHealth.getHeight() * iconHealth.getScaleY() - healthBar.getHeight(), parentAlpha);
     }
 
     public void layout() {

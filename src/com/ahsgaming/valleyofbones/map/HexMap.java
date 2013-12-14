@@ -263,6 +263,12 @@ public class HexMap {
             hexStatus[i] = FOG;
 
         }
+        for (int i = 0; i < units.size; i++) {
+            if (units.get(i).isBuilding()) {
+                units.removeIndex(i);
+                i--;
+            }
+        }
 
         int[] unitpositions = new int[units.size];
         int[] radii = new int[units.size];
