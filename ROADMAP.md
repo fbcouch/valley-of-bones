@@ -43,8 +43,8 @@
         - Refund
         - Activate/deactivate cloak
         + Zoom
-        - Better unit boxes
-- AI
+        + Better unit boxes
++ AI
 - Android version
 
 - Gameplay changes

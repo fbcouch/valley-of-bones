@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -51,13 +52,15 @@ import com.badlogic.gdx.utils.Array;
 public class LevelScreen extends AbstractScreen {
 	public String LOG = "LevelScreen";
 
+    static float SELECT_BOX_LINE_WIDTH = 2;
+
     protected static LevelScreen instance;
 
 	private Group grpLevel;
 	
 	protected GameController gController = null;
 
-	ShapeRenderer shapeRenderer;
+	UnitBoxRenderer unitBoxRenderer;
 
     // second spritebatch for map, that way it can be scaled without affecting the UI
     SpriteBatch mapSpriteBatch;
@@ -96,7 +99,7 @@ public class LevelScreen extends AbstractScreen {
 	public LevelScreen(VOBGame game, GameController gController) {
 		super(game);
 		this.gController = gController;
-		shapeRenderer = new ShapeRenderer();
+		unitBoxRenderer = new UnitBoxRenderer(SELECT_BOX_LINE_WIDTH);
         instance = this;
 	}
 	
@@ -116,80 +119,11 @@ public class LevelScreen extends AbstractScreen {
 	
 	private void drawUnitBoxes() {
 		if (gController.getSelectedObject() != null) {
-            shapeRenderer.setProjectionMatrix(mapCamera.combined); // BUGFIX: rescaling the window threw off the selection drawings
-
             GameObject obj = gController.getSelectedObject();
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-			Vector2 start = gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y);
-			start.sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
 
-			Vector2 base = new Vector2(start.x, start.y);
-			shapeRenderer.line(base.x + gController.getMap().getTileWidth() * 0.5f, base.y, base.x, base.y + gController.getMap().getTileHeight() * 0.25f);
-			shapeRenderer.line(base.x, base.y + gController.getMap().getTileHeight() * 0.25f, base.x, base.y + gController.getMap().getTileHeight() * 0.75f);
-			shapeRenderer.line(base.x, base.y + gController.getMap().getTileHeight() * 0.75f, base.x + gController.getMap().getTileWidth() * 0.5f, base.y + gController.getMap().getTileHeight());
-			shapeRenderer.line(base.x + gController.getMap().getTileWidth() * 0.5f, base.y + gController.getMap().getTileHeight(), base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.75f);
-			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.75f, base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f);
-			shapeRenderer.line(base.x + gController.getMap().getTileWidth(), base.y + gController.getMap().getTileHeight() * 0.25f, base.x + gController.getMap().getTileWidth() * 0.5f, base.y);
-			shapeRenderer.end();
-
-            if (obj instanceof Unit && ((Unit)obj).getAttackRange() > 0) {
-                shapeRenderer.begin(ShapeType.Line);
-                Color color = new Color((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
-                color.mul(0.5f);
-                shapeRenderer.setColor(color);
-
-                int r = ((Unit)obj).getAttackRange(); // todo set this to attack range
-                int segments = 6 + 12 * r;
-                int segperside = segments / 6;
-                Vector2 tileSize = new Vector2(gController.getMap().getTileWidth(), gController.getMap().getTileHeight());
-                Vector2 origin = new Vector2(start.x - (r - 1) * tileSize.x * 0.5f,
-                        start.y - r * tileSize.y * 0.75f);
-                Vector2 cur = new Vector2(origin);
-                Vector2 next = new Vector2();
-
-                Vector2 slope = new Vector2(-1, 1);
-                for (int side = 0; side < 6; side ++) {
-                    for (int seg = 0; seg < segperside; seg++) {
+            unitBoxRenderer.draw(mapCamera.combined, obj, gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y), new Vector2((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f)), new Vector2(gController.getMap().getTileWidth(), gController.getMap().getTileHeight()));
 
 
-                        if ((seg % 2 == 0 && slope.x == -1 * (slope.y != 0 ? slope.y : 1)) || (seg % 2 == 1 && slope.x == (slope.y != 0 ? slope.y : 1))) {
-                            if (slope.y != 0) {
-                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
-                                next.y = cur.y + (0.25f * tileSize.y * slope.y);
-                            } else {
-                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
-                                next.y = cur.y - (0.25f * tileSize.y);
-                            }
-                        } else {
-                            if (slope.y != 0) {
-                                next.x = cur.x;
-                                next.y = cur.y + (0.5f * tileSize.y * slope.y);
-                            } else {
-                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
-                                next.y = cur.y + (0.25f * tileSize.y);
-                            }
-
-                        }
-                        shapeRenderer.line(cur.x, cur.y, next.x, next.y);
-                        cur.set(next);
-                    }
-
-                    if (slope.x == -1 && slope.y == 1)
-                        slope.set(1, 1);
-                    else if (slope.x == 1 && slope.y == 1)
-                        slope.set(1, 0);
-                    else if (slope.x == 1 && slope.y == 0)
-                        slope.set(1, -1);
-                    else if (slope.x == 1 && slope.y == -1)
-                        slope.set(-1, -1);
-                    else if (slope.x == -1 && slope.y == -1)
-                        slope.set(-1, 0);
-                }
-
-
-                shapeRenderer.end();
-            }
 		}
 	}
 
@@ -532,6 +466,89 @@ public class LevelScreen extends AbstractScreen {
 
     public static LevelScreen getInstance() {
         return instance;
+    }
+
+    public static class UnitBoxRenderer {
+        ShapeRenderer shapeRenderer;
+        float lineWidth;
+
+        public UnitBoxRenderer(float lineWidth) {
+            this.lineWidth = lineWidth;
+            shapeRenderer = new ShapeRenderer();
+        }
+
+        public void draw(Matrix4 projectionMatrix, GameObject obj, Vector2 start, Vector2 offset, Vector2 tileSize) {
+            shapeRenderer.setProjectionMatrix(projectionMatrix);
+            shapeRenderer.begin(ShapeType.Filled);
+            shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+            start.sub(offset);
+
+            Vector2 base = new Vector2(start.x, start.y);
+            shapeRenderer.rectLine(base.x + tileSize.x * 0.5f, base.y, base.x, base.y + tileSize.y * 0.25f, lineWidth);
+            shapeRenderer.rectLine(base.x, base.y + tileSize.y * 0.25f, base.x, base.y + tileSize.y * 0.75f, lineWidth);
+            shapeRenderer.rectLine(base.x, base.y + tileSize.y * 0.75f, base.x + tileSize.x * 0.5f, base.y + tileSize.y, lineWidth);
+            shapeRenderer.rectLine(base.x + tileSize.x * 0.5f, base.y + tileSize.y, base.x + tileSize.x, base.y + tileSize.y * 0.75f, lineWidth);
+            shapeRenderer.rectLine(base.x + tileSize.x, base.y + tileSize.y * 0.75f, base.x + tileSize.x, base.y + tileSize.y * 0.25f, lineWidth);
+            shapeRenderer.rectLine(base.x + tileSize.x, base.y + tileSize.y * 0.25f, base.x + tileSize.x * 0.5f, base.y, lineWidth);
+            shapeRenderer.end();
+
+            if (obj instanceof Unit && ((Unit)obj).getAttackRange() > 0) {
+                shapeRenderer.begin(ShapeType.Filled);
+                Color color = new Color((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+                color.mul(0.5f);
+                shapeRenderer.setColor(color);
+
+                int r = ((Unit)obj).getAttackRange();
+                int segments = 6 + 12 * r;
+                int segperside = segments / 6;
+                Vector2 origin = new Vector2(start.x - (r - 1) * tileSize.x * 0.5f,
+                        start.y - r * tileSize.y * 0.75f);
+                Vector2 cur = new Vector2(origin);
+                Vector2 next = new Vector2();
+
+                Vector2 slope = new Vector2(-1, 1);
+                for (int side = 0; side < 6; side ++) {
+                    for (int seg = 0; seg < segperside; seg++) {
+
+
+                        if ((seg % 2 == 0 && slope.x == -1 * (slope.y != 0 ? slope.y : 1)) || (seg % 2 == 1 && slope.x == (slope.y != 0 ? slope.y : 1))) {
+                            if (slope.y != 0) {
+                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
+                                next.y = cur.y + (0.25f * tileSize.y * slope.y);
+                            } else {
+                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
+                                next.y = cur.y - (0.25f * tileSize.y);
+                            }
+                        } else {
+                            if (slope.y != 0) {
+                                next.x = cur.x;
+                                next.y = cur.y + (0.5f * tileSize.y * slope.y);
+                            } else {
+                                next.x = cur.x + (tileSize.x * 0.5f * slope.x);
+                                next.y = cur.y + (0.25f * tileSize.y);
+                            }
+
+                        }
+                        shapeRenderer.rectLine(cur.x, cur.y, next.x, next.y, SELECT_BOX_LINE_WIDTH);
+                        cur.set(next);
+                    }
+
+                    if (slope.x == -1 && slope.y == 1)
+                        slope.set(1, 1);
+                    else if (slope.x == 1 && slope.y == 1)
+                        slope.set(1, 0);
+                    else if (slope.x == 1 && slope.y == 0)
+                        slope.set(1, -1);
+                    else if (slope.x == 1 && slope.y == -1)
+                        slope.set(-1, -1);
+                    else if (slope.x == -1 && slope.y == -1)
+                        slope.set(-1, 0);
+                }
+
+
+                shapeRenderer.end();
+            }
+        }
     }
 
     public static class MenuPanel extends Group {
