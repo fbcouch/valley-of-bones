@@ -13,6 +13,7 @@ public class VOBGame extends Game {
     public static final boolean DEBUG_ATTACK = false;
     public static final boolean DEBUG_LOCK_SCREEN = true;
     public static final boolean DEBUG_GLOBAL_SERVER = false;
+    public static final boolean DEBUG_AI = false;
 	public static final String LOG = "VOBGame";
 
     public static final int VERSION = 12;
@@ -47,7 +48,6 @@ public class VOBGame extends Game {
 	 */
 	
 	public VOBGame() {
-//		this.isServer = isServer;
         VOBGame.instance = this;
 	}
 	
@@ -123,7 +123,18 @@ public class VOBGame extends Game {
             Gdx.files.local("profile").writeString(playerName, false);
             setScreen(getOptionsScreen());
         } else {
-
+            if (DEBUG_AI) {
+                GameSetupConfig cfg = new GameSetupConfig();
+                cfg.isHost = true;
+                cfg.isMulti = false;
+                cfg.playerName = playerName;
+                createGame(cfg);
+                addAIPlayer(1);
+                sendStartGame();
+//                setScreen(getGameSetupScreen());
+//                addAIPlayer(1);
+                return;
+            }
             setScreen((DEBUG ? getMainMenuScreen() : getSplashScreen()));
         }
 	}
@@ -142,7 +153,7 @@ public class VOBGame extends Game {
 	@Override
 	public void render() {	
 		super.render();
-		if (DEBUG) fpsLogger.log();
+		if (DEBUG && !DEBUG_AI) fpsLogger.log();
 
 		if (loadGame) {
 			startGame();

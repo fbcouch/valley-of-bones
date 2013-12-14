@@ -22,9 +22,19 @@
  */
 package com.ahsgaming.valleyofbones;
 
+import com.ahsgaming.valleyofbones.map.HexMap;
+import com.ahsgaming.valleyofbones.network.Attack;
+import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.EndTurn;
+import com.ahsgaming.valleyofbones.network.Move;
+import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+
+import java.text.DecimalFormat;
 
 /**
  * @author jami
@@ -33,8 +43,11 @@ import com.badlogic.gdx.graphics.Color;
 public class AIPlayer extends Player {
 	public String LOG = "AIPlayer";
 
-    float countdown = 5;
-    float timer = 5;
+    float countdown = 1;
+    float timer = 1;
+
+    float[] goalMatrix, unitMatrix;
+    boolean[] visibilityMatrix;
 
 	/**
 	 * @param id
@@ -62,17 +75,213 @@ public class AIPlayer extends Player {
 	@Override
 	public void update(GameController controller) {
 		super.update(controller);
-		//Gdx.app.log(LOG, "Update");
+        // only create goalMatrix once (based on knowledge of the map)
+        if (goalMatrix == null)  {
+            goalMatrix = createGoalMatrix(controller.getMap(), controller.getUnits());
+        }
+
         if (controller.getCurrentPlayer().getPlayerId() == getPlayerId()) {
             timer -= Gdx.graphics.getDeltaTime();
             if (timer < 0) {
                 timer = countdown;
+                // first, create the visibility matrix
+                if (visibilityMatrix == null) {
+                    visibilityMatrix = createVisibilityMatrix(controller.getMap(), controller.getUnitsByPlayerId(getPlayerId()));
+                    return;
+                }
+
+                // next, create the unit matrix
+                if (unitMatrix == null) {
+                    Array<Unit> visibleUnits = new Array<Unit>();
+                    for (Unit unit: controller.getUnits()) {
+                        if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) {
+                            visibleUnits.add(unit);
+                        }
+                    }
+                    unitMatrix = createUnitMatrix(controller.getMap(), visibleUnits);
+                    if (VOBGame.DEBUG_AI) {
+                        DecimalFormat formatter = new DecimalFormat("00.0");
+                        for (int y = 0; y < controller.getMap().getHeight(); y++) {
+                            if (y % 2 == 1) {
+                                System.out.print("   ");
+                            }
+                            for (int x = 0; x < controller.getMap().getWidth(); x++) {
+                                int i = y * controller.getMap().getWidth() + x;
+                                float sum = (visibilityMatrix[i] ? goalMatrix[i] + unitMatrix[i] : 0);
+                                System.out.print((sum >= 0 ? " " : "") + formatter.format(sum) + " ");
+                            }
+                            System.out.println("\n");
+                        }
+                    }
+                    return;
+                }
+
+                // move units
+                for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
+                    if (unit.getMovesLeft() < 1) continue;
+                    Vector2[] adjacent = controller.getMap().getAdjacent((int)unit.getBoardPosition().x, (int)unit.getBoardPosition().y);
+                    Vector2 finalPos = new Vector2(unit.getBoardPosition());
+                    float finalSum = goalMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x]
+                            + unitMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x];
+                    for (Vector2 v: adjacent) {
+                        float curSum = goalMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x]
+                                + unitMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x];
+                        if (curSum > finalSum && controller.isBoardPosEmpty(v)) {
+                            finalPos.set(v);
+                            finalSum = curSum;
+                        }
+                    }
+                    if (finalPos.x != unit.getBoardPosition().x || finalPos.y != unit.getBoardPosition().y) {
+                        // move!
+                        Move mv = new Move();
+                        mv.owner = getPlayerId();
+                        mv.turn = controller.getGameTurn();
+                        mv.unit = unit.getObjId();
+                        mv.toLocation = finalPos;
+                        controller.queueCommand(mv);
+                        unitMatrix = null;
+                        return;
+                    }
+                }
+
+                // attack
+                Array<Unit> visibleUnits = new Array<Unit>();
+                for (Unit unit: controller.getUnits()) {
+                    if (unit.getOwner() == this || unit.getOwner() == null) continue;
+                    if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) {
+                        visibleUnits.add(unit);
+                    }
+                }
+                for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
+                    if (unit.getAttacksLeft() < 1) continue;
+                    Unit toAttack = null;
+                    for (Unit o: visibleUnits) {
+                        if (unit.canAttack(o, controller) && (toAttack == null || o.getMaxHP() > toAttack.getMaxHP())) {
+                            toAttack = o;
+                        }
+                    }
+                    if (toAttack != null) {
+                        Attack at = new Attack();
+                        at.owner = getPlayerId();
+                        at.turn = controller.getGameTurn();
+                        at.unit = unit.getObjId();
+                        at.target = toAttack.getObjId();
+                        controller.queueCommand(at);
+                        unitMatrix = null;
+                        return;
+                    }
+                }
+
+                // build units
+                Prototypes.JsonProto unitToBuild = null;
+                for (Prototypes.JsonProto proto: Prototypes.getPlayerCanBuild()) {
+                    if ((proto.cost <= getBankMoney() && proto.food <= getMaxFood() - getCurFood()) && (unitToBuild == null || proto.cost > unitToBuild.cost)) {
+                        unitToBuild = proto;
+                    }
+                }
+                int positionToBuild = -1;
+                if (unitToBuild != null) {
+                    for (int i = 0; i < unitMatrix.length; i ++) {
+                        if (visibilityMatrix[i]) {
+                            float sum = unitMatrix[i] + goalMatrix[i];
+
+                            if ((positionToBuild == -1 || unitMatrix[positionToBuild] + goalMatrix[positionToBuild] < sum)
+                                    /*&& controller.isBoardPosEmpty(
+                                            positionToBuild % controller.getMap().getWidth(),
+                                            positionToBuild / controller.getMap().getWidth())
+                                    */) {
+                                Gdx.app.log(LOG, i + ":" + controller.isBoardPosEmpty(
+                                        i % controller.getMap().getWidth(),
+                                        i / controller.getMap().getWidth()));
+                                if (controller.isBoardPosEmpty(i % controller.getMap().getWidth(), i / controller.getMap().getWidth())) {
+                                    positionToBuild = i;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (positionToBuild >= 0) {
+                    Build build = new Build();
+                    build.owner = getPlayerId();
+                    build.turn = controller.getGameTurn();
+                    build.building = unitToBuild.id;
+                    build.location = new Vector2(positionToBuild % controller.getMap().getWidth(), positionToBuild / controller.getMap().getWidth());
+                    controller.queueCommand(build);
+                    unitMatrix = null;
+                    return;
+                }
+
                 EndTurn et = new EndTurn();
                 et.owner = getPlayerId();
                 et.turn = controller.getGameTurn();
                 controller.queueCommand(et);
             }
+        } else {
+            visibilityMatrix = null;
+            unitMatrix = null;
         }
 
 	}
+
+    public float[] createGoalMatrix(HexMap map, Array<Unit> units) {
+        int mapWidth = map.getWidth(), mapHeight = map.getHeight();
+        float[] goalMatrix = new float[mapWidth * mapHeight];
+
+        for (int y = 0; y < mapHeight; y++) {
+            for (int x = 0; x < mapWidth; x++) {
+                goalMatrix[y * mapWidth + x] = (map.isBoardPositionTraversible(x, y) ? calcGoalMatrix(x, y, map, units) : -1);
+            }
+        }
+
+        return goalMatrix;
+    }
+
+    public float calcGoalMatrix(int x, int y, HexMap map, Array<Unit> units) {
+        float total = 0;
+        for (Unit unit: units) {
+            if (unit.getBoardPosition().x == x && unit.getBoardPosition().y == y)
+                total += unit.getMaxHP();
+            else
+                total += unit.getMaxHP() / Math.pow(map.getMapDist(new Vector2(x, y), unit.getBoardPosition()), 2);
+        }
+        return total;
+    }
+
+    public boolean[] createVisibilityMatrix(HexMap map, Array<Unit> units) {
+        boolean[] matrix = new boolean[map.getWidth() * map.getHeight()];
+        for (Unit unit: units) {
+            int range = unit.getAttackRange();
+            for (int x = (int)Math.max(unit.getBoardPosition().x - range - 1, 0); x < Math.min(unit.getBoardPosition().x + range + 1, map.getWidth()); x++) {
+                for (int y = (int)Math.max(unit.getBoardPosition().y - range - 1, 0); y < Math.min(unit.getBoardPosition().y + range + 1, map.getHeight()); y++) {
+                    if (map.getMapDist(new Vector2(x, y), unit.getBoardPosition()) <= range)
+                        matrix[y * map.getWidth() + x] = true;
+                }
+            }
+        }
+        return matrix;
+    }
+
+    public float[] createUnitMatrix(HexMap map, Array<Unit> units) {
+        float[] unitMatrix = new float[map.getWidth() * map.getHeight()];
+        for (int y = 0; y < map.getHeight(); y++) {
+            for (int x = 0; x < map.getWidth(); x++) {
+                unitMatrix[y * map.getWidth() + x] = calcUnitMatrix(x, y, map, units);
+            }
+        }
+        return unitMatrix;
+    }
+
+    public float calcUnitMatrix(int x, int y, HexMap map, Array<Unit> units) {
+        float total = 0;
+        for (Unit unit: units) {
+            int mul = (unit.getOwner() == this ? -1 : 1);
+            if (x == unit.getBoardPosition().x && y == unit.getBoardPosition().y) {
+                total += (unit.getMaxHP() * mul);
+                return -1 * unit.getMaxHP();
+            } else {
+                total += (mul * unit.getMaxHP() / map.getMapDist(new Vector2(x, y), unit.getBoardPosition()));
+            }
+        }
+        return total;
+    }
 }
