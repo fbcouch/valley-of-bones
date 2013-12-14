@@ -271,6 +271,10 @@ public class MPGameClient implements NetController {
         cmd.turn = controller.getGameTurn();
 		client.sendTCP(cmd);
 	}
+
+    public void sendAICommand(Command cmd) {
+        sendCommand(cmd);
+    }
 	
 	public Array<Player> getPlayers() {
 		return players;

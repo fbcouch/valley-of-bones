@@ -23,10 +23,7 @@
 package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.map.HexMap;
-import com.ahsgaming.valleyofbones.network.Attack;
-import com.ahsgaming.valleyofbones.network.Build;
-import com.ahsgaming.valleyofbones.network.EndTurn;
-import com.ahsgaming.valleyofbones.network.Move;
+import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -49,27 +46,30 @@ public class AIPlayer extends Player {
     float[] goalMatrix, unitMatrix;
     boolean[] visibilityMatrix;
 
+    NetController netController;
+
 	/**
 	 * @param id
 	 * @param name
 	 * @param color
 	 */
-	public AIPlayer(int id, String name, Color color) {
+	public AIPlayer(NetController netController, int id, String name, Color color) {
 		super(id, name, color);
-		// TODO Auto-generated constructor stub
+        this.netController = netController;
 	}
 
 	/**
 	 * @param id
 	 * @param color
 	 */
-	public AIPlayer(int id, Color color) {
+	public AIPlayer(NetController netController, int id, Color color) {
 		super(id, color);
-		// TODO Auto-generated constructor stub
+        this.netController = netController;
 	}
 	
-	public AIPlayer(int id, String name, Color color, int team) {
+	public AIPlayer(NetController netController, int id, String name, Color color, int team) {
 		super(id, name, color, team);
+        this.netController = netController;
 	}
 	
 	@Override
@@ -124,6 +124,7 @@ public class AIPlayer extends Player {
                     float finalSum = goalMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x]
                             + unitMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x];
                     for (Vector2 v: adjacent) {
+                        if (v.x < 0 || v.x >= controller.getMap().getWidth() || v.y < 0 || v.y >= controller.getMap().getHeight()) continue;
                         float curSum = goalMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x]
                                 + unitMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x];
                         if (curSum > finalSum && controller.isBoardPosEmpty(v)) {
@@ -138,7 +139,7 @@ public class AIPlayer extends Player {
                         mv.turn = controller.getGameTurn();
                         mv.unit = unit.getObjId();
                         mv.toLocation = finalPos;
-                        controller.queueCommand(mv);
+                        netController.sendAICommand(mv);
                         unitMatrix = null;
                         return;
                     }
@@ -166,7 +167,7 @@ public class AIPlayer extends Player {
                         at.turn = controller.getGameTurn();
                         at.unit = unit.getObjId();
                         at.target = toAttack.getObjId();
-                        controller.queueCommand(at);
+                        netController.sendAICommand(at);
                         unitMatrix = null;
                         return;
                     }
@@ -206,7 +207,7 @@ public class AIPlayer extends Player {
                     build.turn = controller.getGameTurn();
                     build.building = unitToBuild.id;
                     build.location = new Vector2(positionToBuild % controller.getMap().getWidth(), positionToBuild / controller.getMap().getWidth());
-                    controller.queueCommand(build);
+                    netController.sendAICommand(build);
                     unitMatrix = null;
                     return;
                 }
@@ -214,7 +215,7 @@ public class AIPlayer extends Player {
                 EndTurn et = new EndTurn();
                 et.owner = getPlayerId();
                 et.turn = controller.getGameTurn();
-                controller.queueCommand(et);
+                netController.sendAICommand(et);
             }
         } else {
             visibilityMatrix = null;

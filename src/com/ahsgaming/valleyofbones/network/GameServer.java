@@ -420,7 +420,7 @@ public class GameServer implements NetController {
             if (controller.getTurnTimer() <= 0) return true;
         }
 
-        return (endTurnRecd || controller.getCurrentPlayer() instanceof AIPlayer);
+        return endTurnRecd;
     }
 
 	@Override
@@ -448,7 +448,7 @@ public class GameServer implements NetController {
 			int id = getNextPlayerId();
 			Color use = Player.getUnusedColor(players);
 			
-			players.add(new AIPlayer(id, "AI Player", use, team));
+			players.add(new AIPlayer(this, id, "AI Player", use, team));
 		}
 	}
 
@@ -479,6 +479,18 @@ public class GameServer implements NetController {
 	public void sendCommand(Command cmd) {
 		server.sendToAllTCP(cmd);
 	}
+
+    @Override
+    public void sendAICommand(Command cmd) {
+        if (!controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
+            if (cmd instanceof EndTurn) {
+                endTurnRecd = true;
+            } else {
+                controller.queueCommand(cmd);
+                server.sendToAllTCP(cmd);
+            }
+        }
+    }
 
 	@Override
 	public boolean isConnected() {

@@ -105,7 +105,7 @@ public class SPGameClient implements NetController {
 	
 	public void addAIPlayer(int team) {
 		if (players.size < 4)
-            players.add(new AIPlayer(getNextPlayerId(), "AI Player", Player.getUnusedColor(players), team));
+            players.add(new AIPlayer(this, getNextPlayerId(), "AI Player", Player.getUnusedColor(players), team));
 	}
 	
 	public void removePlayer(int playerId) {
@@ -128,6 +128,10 @@ public class SPGameClient implements NetController {
         cmd.turn = controller.getGameTurn();
 		if (cmd.owner == controller.getCurrentPlayer().getPlayerId()) controller.queueCommand(cmd);
 	}
+
+    public void sendAICommand(Command cmd) {
+        sendCommand(cmd);
+    }
 	
 	public Array<Player> getPlayers() {
 		return players;

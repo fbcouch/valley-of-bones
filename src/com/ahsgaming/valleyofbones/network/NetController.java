@@ -19,10 +19,12 @@ public interface NetController {
 	
 	public void addAIPlayer(int team);
 	public void removePlayer(int playerId);
+
 	public Array<Player> getPlayers();
     public Player getPlayer();
 	
 	public void sendCommand(Command cmd);
+    public void sendAICommand(Command cmd);
 	
 	public boolean isConnected();
 	public boolean isConnecting();
