@@ -74,7 +74,8 @@ public class MPGameClient implements NetController {
     boolean sentEndTurn = false;
     boolean recdEndTurn = false;
 
-    KryoCommon.VersionError versionError;
+
+    KryoCommon.Error error;
 	
 	/**
 	 * 
@@ -99,7 +100,14 @@ public class MPGameClient implements NetController {
 			public void received (Connection c, Object obj) {
                 if (obj instanceof KryoCommon.VersionError) {
                     Gdx.app.log(LOG, "VersionError");
-                    versionError = (KryoCommon.VersionError)obj;
+                    error = (KryoCommon.VersionError)obj;
+                    isConnecting = false;
+                    c.close();
+                }
+
+                if (obj instanceof KryoCommon.GameFullError) {
+                    Gdx.app.log(LOG, "GameFullError");
+                    error = (KryoCommon.GameFullError)obj;
                     isConnecting = false;
                     c.close();
                 }
@@ -282,8 +290,8 @@ public class MPGameClient implements NetController {
 		return isConnecting;
 	}
 
-    public KryoCommon.VersionError getVersionError() {
-        return versionError;
+    public KryoCommon.Error getError() {
+        return error;
     }
 
 	@Override

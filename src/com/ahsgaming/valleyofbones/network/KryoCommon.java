@@ -36,10 +36,7 @@ import com.esotericsoftware.kryonet.EndPoint;
  */
 public class KryoCommon {
 	public static final int tcpPort = 54556;
-	public static final int udpPort = 54557;
-	
-	public static final int NET_TICK_LENGTH = 100; // ms
-	public static final int GAME_TICK_LENGTH = 20; // ms
+	public static final int udpPort = 54549;
 	
 	public static void register (EndPoint endPoint) {
 		Kryo kryo = endPoint.getKryo();
@@ -68,6 +65,7 @@ public class KryoCommon {
 		kryo.register(int[].class);
 		kryo.register(GameResult.class);
         kryo.register(VersionError.class);
+        kryo.register(GameFullError.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -99,7 +97,11 @@ public class KryoCommon {
 		public String mapName = "blank.tmx";
 	}
 
-    public static class VersionError {
+    public static interface Error {}
+
+    public static class VersionError implements Error {
         public int version = VOBGame.VERSION;
     }
+
+    public static class GameFullError implements Error {}
 }

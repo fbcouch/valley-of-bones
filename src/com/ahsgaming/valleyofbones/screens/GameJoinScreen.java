@@ -23,7 +23,6 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import java.net.InetAddress;
-import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
@@ -50,7 +49,7 @@ import com.esotericsoftware.kryonet.Client;
 public class GameJoinScreen extends AbstractScreen {
 	public String LOG = "GameJoinScreen";
     public static final boolean DEBUG = false;
-    String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
+    String globalServerUrl = (VOBGame.DEBUG_GLOBAL_SERVER ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
 
     Label lblNickname;
 	TextField txtNickname;
@@ -253,10 +252,18 @@ public class GameJoinScreen extends AbstractScreen {
 			if (game.isConnected()) {
 				game.setScreen(gsScreen);
 			} else if (!game.isConnecting()) {
-				if (game.getNetController() instanceof MPGameClient && ((MPGameClient)game.getNetController()).getVersionError() != null) {
-                    this.lblStatus.setText(String.format("Server version (%d) is different from client (%d)",
-                                                         ((MPGameClient)game.getNetController()).getVersionError().version,
-                                                         VOBGame.VERSION));
+				if (game.getNetController() instanceof MPGameClient && ((MPGameClient)game.getNetController()).getError() != null) {
+                    KryoCommon.Error error = ((MPGameClient)game.getNetController()).getError();
+
+                    String statusText = "An unknown error occured";
+
+                    if (error instanceof KryoCommon.VersionError) {
+                        statusText = String.format("Server version (%d) is different from client (%d)", ((KryoCommon.VersionError)error).version, VOBGame.VERSION);
+                    } else if (error instanceof KryoCommon.GameFullError) {
+                        statusText = "Game is full";
+                    }
+
+                    this.lblStatus.setText(statusText);
                 } else {
                     this.lblStatus.setText(String.format("Failed to connect to host (%s)",
                             gsScreen.config.hostName));

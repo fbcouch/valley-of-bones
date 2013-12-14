@@ -49,8 +49,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer implements NetController {
 	public String LOG = "GameServer";
-    public static final boolean DEBUG = false;
-    String globalServerUrl = (DEBUG ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
+    String globalServerUrl = (VOBGame.DEBUG_GLOBAL_SERVER ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
 
     final VOBGame game;
 
@@ -147,7 +146,10 @@ public class GameServer implements NetController {
                         return;
                     }
 					
-					if (players.size >= Player.AUTOCOLORS.length) return; // TODO should join as spectator? 
+					if (players.size >= Player.AUTOCOLORS.length) {
+                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
+                        return; // TODO should join as spectator?
+                    }
 					
 					// is that player already registered?
 					for (Player p: players) {
@@ -259,7 +261,16 @@ public class GameServer implements NetController {
 				if (host == c && !gameStarted) {
 				    // find a new host
                     if (players.size > 0) {
-                        p = players.get(0);
+                        int i = 0;
+                        p = null;
+                        while (i < players.size && (p == null || p instanceof AIPlayer)) {
+                            p = players.get(i);
+                            i++;
+                        }
+                        if (p instanceof AIPlayer) {
+                            reset();
+                            return;
+                        }
                         host = connMap.findKey(p, true);
                         RegisteredPlayer reg = new RegisteredPlayer();
                         reg.id = p.getPlayerId();
@@ -325,19 +336,7 @@ public class GameServer implements NetController {
             serverPingTimeout -= delta;
             if (serverPingTimeout <= 0) {
                 serverPingTimeout = serverPing;
-                Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.GET);
-                req.setUrl(globalServerUrl);
-                Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
-                    @Override
-                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                        Gdx.app.log(LOG, "Ping success");
-                    }
-
-                    @Override
-                    public void failed(Throwable t) {
-                        Gdx.app.log(LOG, "Ping failed");
-                    }
-                });
+                sendPublicServerUpdate();
             }
         }
 		
@@ -399,7 +398,7 @@ public class GameServer implements NetController {
 			rp.team = pl.getTeam();
 			list[p] = rp;
 		}
-		
+		if (gameConfig.isPublic) sendPublicServerUpdate();
 		server.sendToAllTCP(list);
 	}
 	
@@ -439,12 +438,13 @@ public class GameServer implements NetController {
 	public void sendStartGame() {
 		StartGame startGame = new StartGame();
         startGame.currentPlayer = controller.getCurrentPlayer().getPlayerId();
+        if (gameConfig.isPublic) sendPublicServerUpdate();
         server.sendToAllTCP(startGame);
 	}
 
 	@Override
 	public void addAIPlayer(int team) {
-		if (players.size < 4) {
+		if (players.size < Player.AUTOCOLORS.length) {
 			int id = getNextPlayerId();
 			Color use = Player.getUnusedColor(players);
 			
@@ -631,5 +631,27 @@ public class GameServer implements NetController {
 
             Gdx.app.log(LOG, httpPost.getContent());
         }
+    }
+
+    public void sendPublicServerUpdate() {
+        Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.POST);
+        req.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
+        HashMap parameters = new HashMap();
+        parameters.put("players", "" + players.size);
+        parameters.put("status", "" + (gameStarted ? 1 : 0));
+        req.setContent(HttpParametersUtils.convertHttpParameters(parameters));
+        Gdx.app.log("LOG", req.getContent());
+        Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                Gdx.app.log(LOG, "Update success");
+                Gdx.app.log(LOG, httpResponse.getResultAsString());
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.log(LOG, "Update failed");
+            }
+        });
     }
 }
