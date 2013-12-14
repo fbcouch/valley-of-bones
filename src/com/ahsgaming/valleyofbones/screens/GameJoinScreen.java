@@ -64,7 +64,7 @@ public class GameJoinScreen extends AbstractScreen {
 	
 	GameSetupScreen gsScreen = null;
     Array<ServerObj> servers;
-    List lstServers;
+    List listNames, listServers, listPlayers, listStatus;
 	
 	/**
 	 * @param game
@@ -87,18 +87,35 @@ public class GameJoinScreen extends AbstractScreen {
 		
 		table.row();
 
-        lstServers = new List(new Object[]{}, getSkin());
-        table.add(lstServers).colspan(2);
+        listNames = new List(new Object[]{}, getSkin());
+        listServers = new List(new Object[]{}, getSkin());
+        listPlayers = new List(new Object[]{}, getSkin());
+        listStatus = new List(new Object[]{}, getSkin());
 
-        lstServers.addListener(new ChangeListener() {
+        table.add(listNames).pad(5);
+        table.add(listServers).pad(5);
+        table.add(listPlayers).pad(5);
+        table.add(listStatus).pad(5);
 
+        ChangeListener changeAll = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log(LOG, "" + lstServers.getSelectedIndex());
-                ServerObj server = servers.get(lstServers.getSelectedIndex());
+                int index = ((List)actor).getSelectedIndex();
+
+                listNames.setSelectedIndex(index);
+                listServers.setSelectedIndex(index);
+                listPlayers.setSelectedIndex(index);
+                listStatus.setSelectedIndex(index);
+
+                ServerObj server = servers.get(index);
                 txtJoinHostname.setText(String.format("%s:%d", server.ipAddr, server.port));
             }
-        });
+        };
+
+        listNames.addListener(changeAll);
+        listServers.addListener(changeAll);
+        listPlayers.addListener(changeAll);
+        listStatus.addListener(changeAll);
 
         table.row();
 		
@@ -144,7 +161,7 @@ public class GameJoinScreen extends AbstractScreen {
                 Gdx.app.log(LOG, "btnConnect touched");
                 String host = txtJoinHostname.getText();
                 if (host.equals("")) {
-                    host = String.format("%s:%d", servers.get(lstServers.getSelectedIndex()).ipAddr, servers.get(lstServers.getSelectedIndex()).port);
+                    host = String.format("%s:%d", servers.get(listServers.getSelectedIndex()).ipAddr, servers.get(listServers.getSelectedIndex()).port);
                 }
                 GameSetupConfig cfg = new GameSetupConfig();
                 cfg.hostName = host.split(":")[0];
@@ -220,7 +237,21 @@ public class GameJoinScreen extends AbstractScreen {
 	
 	
 	public void updateServerList() {
-        lstServers.setItems(servers.toArray());
+
+        String[] names = new String[servers.size], hosts = new String[servers.size],
+                players = new String[servers.size], statuses = new String[servers.size];
+        int i = 0;
+        for (ServerObj server: servers) {
+            names[i] = server.name;
+            hosts[i] = String.format("%s:%d", server.ipAddr, server.port);
+            players[i] = String.format("%d/%d", server.players, 2);
+            statuses[i] = (server.status == 1 ? "Playing" : "Waiting");
+            i++;
+        }
+        listNames.setItems(names);
+        listServers.setItems(hosts);
+        listPlayers.setItems(players);
+        listStatus.setItems(statuses);
     }
 
 	/* (non-Javadoc)
@@ -280,6 +311,8 @@ public class GameJoinScreen extends AbstractScreen {
         String ipAddr;
         int port;
         String name;
+        int players = 0;
+        int status = 0;
 
         public ServerObj() {}
 
@@ -294,7 +327,9 @@ public class GameJoinScreen extends AbstractScreen {
             this.id = json.getInt("id");
             this.ipAddr = json.getString("ip");
             this.port = json.getInt("port");
-            this.name = json.getString("name");
+            this.name = json.getString("name", "null?");
+            this.players = json.getInt("players", 0);
+            this.status = json.getInt("status", 0);
         }
 
         public String toString() {

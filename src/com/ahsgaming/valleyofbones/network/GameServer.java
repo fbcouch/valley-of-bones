@@ -361,6 +361,7 @@ public class GameServer implements NetController {
 				controller.queueCommand(up);
 				gameStarted = true;
                 endTurnRecd = false;
+                if (gameConfig.isPublic) sendPublicServerUpdate();
 			}
 		}
 
@@ -438,7 +439,6 @@ public class GameServer implements NetController {
 	public void sendStartGame() {
 		StartGame startGame = new StartGame();
         startGame.currentPlayer = controller.getCurrentPlayer().getPlayerId();
-        if (gameConfig.isPublic) sendPublicServerUpdate();
         server.sendToAllTCP(startGame);
 	}
 
@@ -638,6 +638,7 @@ public class GameServer implements NetController {
         req.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
         HashMap parameters = new HashMap();
         parameters.put("players", "" + players.size);
+        Gdx.app.log("GameStarted", "" + gameStarted);
         parameters.put("status", "" + (gameStarted ? 1 : 0));
         req.setContent(HttpParametersUtils.convertHttpParameters(parameters));
         Gdx.app.log("LOG", req.getContent());
