@@ -39,12 +39,14 @@
 - UI Improvements
     + updated look/feel
     - Finish unimplemented features:
-        - Pause menu (Surrender goes here)
+        + In game menu (Surrender goes here)
         - Refund
         - Activate/deactivate cloak
         + Zoom
         - Better unit boxes
+- AI
 - Android version
+
 - Gameplay changes
     - Attachments for base
         - "Defense platform" --> grants extra attack/damage

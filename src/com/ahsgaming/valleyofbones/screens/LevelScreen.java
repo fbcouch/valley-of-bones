@@ -39,10 +39,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -78,6 +76,11 @@ public class LevelScreen extends AbstractScreen {
     BuildPanel buildPanel;
     InfoPanel selectionPanel;
     TurnPanel turnPanel;
+
+    MenuPanel menuPanel;
+
+    boolean menuMode = false;
+    TextButton menuButton;
 
     boolean clickInterrupt = false;
 
@@ -236,6 +239,14 @@ public class LevelScreen extends AbstractScreen {
         game.sendCommand(et);
     }
 
+    public void surrender() {
+        Surrender s = new Surrender();
+        s.owner = game.getPlayer().getPlayerId();
+        s.turn = gController.getGameTurn();
+
+        game.sendCommand(s);
+    }
+
     public boolean canRefund(Unit unit) {
         return gController.canPlayerRefundUnit(game.getPlayer(), unit);
     }
@@ -278,13 +289,26 @@ public class LevelScreen extends AbstractScreen {
             buildImage = null;
         }
     }
+
+    public void zoom(float amount) {
+        if (menuMode) return;
+
+        mapScale.set(mapScale.x * amount, mapScale.y * amount);
+        mapCamera.setToOrtho(false, stage.getCamera().viewportWidth * mapScale.x, stage.getCamera().viewportHeight * mapScale.y);
+
+        Vector2 map = screenToMapCoords(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f);
+        Vector2 screen = mapToScreenCoords(map.x, map.y);
+        Gdx.app.log(LOG, "" + new Vector2(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f));
+        Gdx.app.log(LOG, "" + map);
+        Gdx.app.log(LOG, "" + screen);
+    }
 	
 	public boolean getClickInterrupt() {
         return clickInterrupt;
     }
 
     public void setClickInterrupt(boolean interrupt) {
-        clickInterrupt = interrupt;
+        if (!menuMode) clickInterrupt = interrupt;
     }
 
 	public Vector2 screenToMapCoords(float x, float y) {
@@ -304,6 +328,19 @@ public class LevelScreen extends AbstractScreen {
 
     public boolean isCurrentPlayer() {
         return gController.getCurrentPlayer() == game.getPlayer();
+    }
+
+    public void toggleMenu() {
+        if (menuMode) {
+            menuMode = false;
+            menuPanel.remove();
+            clickInterrupt = false;
+        } else {
+            menuMode = true;
+            stage.addActor(menuPanel);
+            menuPanel.setZIndex(turnPanel.getZIndex());
+            clickInterrupt = true;
+        }
     }
 
 	
@@ -327,6 +364,8 @@ public class LevelScreen extends AbstractScreen {
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         selectionPanel = new InfoPanel(game, this, getSkin());
         turnPanel = new TurnPanel(gController, game.getPlayer(), getSkin());
+        menuButton = new TextButton("Menu", getSkin(), "small");
+        menuPanel = new MenuPanel(this);
 
         ClickListener interruptListener = new ClickListener() {
             @Override
@@ -340,18 +379,16 @@ public class LevelScreen extends AbstractScreen {
         buildPanel.addListener(interruptListener);
         selectionPanel.addListener(interruptListener);
         turnPanel.addListener(interruptListener);
+        menuButton.addListener(interruptListener);
+
+        menuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                toggleMenu();
+            }
+        });
 	}
-
-    public void zoom(float amount) {
-        mapScale.set(mapScale.x * amount, mapScale.y * amount);
-        mapCamera.setToOrtho(false, stage.getCamera().viewportWidth * mapScale.x, stage.getCamera().viewportHeight * mapScale.y);
-
-        Vector2 map = screenToMapCoords(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f);
-        Vector2 screen = mapToScreenCoords(map.x, map.y);
-        Gdx.app.log(LOG, "" + new Vector2(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f));
-        Gdx.app.log(LOG, "" + map);
-        Gdx.app.log(LOG, "" + screen);
-    }
 	
 	@Override
 	public void resize(int width, int height) {
@@ -387,6 +424,11 @@ public class LevelScreen extends AbstractScreen {
 
         turnPanel.setPosition(stage.getWidth() * 0.5f - turnPanel.getWidth() * 0.5f, stage.getHeight() - turnPanel.getHeight() + 3);
         stage.addActor(turnPanel);
+
+        stage.addActor(menuButton);
+        menuButton.setPosition(stage.getWidth() - menuButton.getWidth(), 0);
+
+        menuPanel.resize(stage.getWidth(), stage.getHeight());
 	}
 
 	public void yourTurnPopup() {
@@ -480,7 +522,7 @@ public class LevelScreen extends AbstractScreen {
         popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, (stage.getHeight() - popup.getHeight()) * 0.5f);
         popup.setColor(popup.getColor().r, popup.getColor().g, popup.getColor().b, 0);
         stage.addActor(popup);
-        popup.addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(duration), Actions.fadeOut(0.5f)));
+        popup.addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(duration), Actions.fadeOut(0.5f), Actions.removeActor()));
         return popup;
     }
 
@@ -490,5 +532,206 @@ public class LevelScreen extends AbstractScreen {
 
     public static LevelScreen getInstance() {
         return instance;
+    }
+
+    public static class MenuPanel extends Group {
+        Image imgBackground;
+
+        LevelScreen levelScreen;
+
+        SubPanel subPanel;
+
+        public MenuPanel(LevelScreen levelScreen) {
+            super();
+            this.levelScreen = levelScreen;
+            imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hud-bar"));
+            imgBackground.setColor(0.2f, 0.2f, 0.2f, 1.0f);
+            addActor(imgBackground);
+
+            show(new GameMenu(levelScreen));
+        }
+
+        public void update(float delta) {
+            if (subPanel != null) subPanel.update(delta);
+        }
+
+        public void resize(float width, float height) {
+            setSize(width, height);
+            imgBackground.setSize(width, height);
+            if (subPanel != null) subPanel.resize(width, height);
+        }
+
+        public void showUnitList() {
+            show(new UnitList(levelScreen));
+        }
+
+        public void showMenu() {
+            show(new GameMenu(levelScreen));
+        }
+
+        public void show(SubPanel subPanel) {
+            if (this.subPanel != null) this.subPanel.remove();
+            this.subPanel = subPanel;
+            addActor(subPanel);
+            subPanel.show();
+            subPanel.resize(getWidth(), getHeight());
+        }
+
+        public static abstract class SubPanel extends Group {
+            public SubPanel() {
+                super();
+            }
+
+            public abstract void resize(float width, float height);
+            public abstract void show();
+            public abstract void update(float delta);
+        }
+
+        public static class GameMenu extends SubPanel {
+            TextButton btnSurrender, btnUnitList, btnReturnToGame;
+
+            LevelScreen levelScreen;
+
+            public GameMenu(LevelScreen levelScreen) {
+                super();
+                this.levelScreen = levelScreen;
+            }
+
+            @Override
+            public void resize(float width, float height) {
+                setSize(width, height);
+            }
+
+            @Override
+            public void show() {
+                Table table = new Table(levelScreen.getSkin());
+                table.setFillParent(true);
+                addActor(table);
+
+                btnSurrender = new TextButton("Surrender", levelScreen.getSkin());
+                table.add(btnSurrender).size(MainMenuScreen.BUTTON_WIDTH, MainMenuScreen.BUTTON_HEIGHT).pad(MainMenuScreen.BUTTON_SPACING);
+                table.row();
+
+                btnUnitList = new TextButton("Unit List", levelScreen.getSkin());
+                table.add(btnUnitList).size(MainMenuScreen.BUTTON_WIDTH, MainMenuScreen.BUTTON_HEIGHT).pad(MainMenuScreen.BUTTON_SPACING);
+                table.row();
+
+                btnReturnToGame = new TextButton("Return to Game", levelScreen.getSkin());
+                table.add(btnReturnToGame).size(MainMenuScreen.BUTTON_WIDTH, MainMenuScreen.BUTTON_HEIGHT).pad(MainMenuScreen.BUTTON_SPACING);
+                table.row();
+
+                btnSurrender.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+                        levelScreen.surrender();
+                    }
+                });
+
+                btnUnitList.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+                        ((MenuPanel)getParent()).showUnitList();
+                    }
+                });
+
+                btnReturnToGame.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+                        levelScreen.toggleMenu();
+                    }
+                });
+
+            }
+
+            @Override
+            public void update(float delta) {
+            }
+
+
+        }
+
+        public static class UnitList extends SubPanel {
+            LevelScreen levelScreen;
+            Array<Prototypes.JsonProto> itemProtos;
+
+            TextButton btnBack;
+            TextureManager textureManager;
+
+            public UnitList(LevelScreen levelScreen) {
+                super();
+                this.levelScreen = levelScreen;
+
+                itemProtos = Prototypes.getPlayerCanBuild();
+
+                textureManager = VOBGame.instance.getTextureManager();
+            }
+
+            @Override
+            public void resize(float width, float height) {
+                setSize(width, height * 0.9f);
+            }
+
+            @Override
+            public void show() {
+                Table table = new Table(levelScreen.getSkin());
+                table.setFillParent(true);
+                ScrollPane scrollPane = new ScrollPane(table, levelScreen.getSkin());
+                scrollPane.setFillParent(true);
+
+                addActor(scrollPane);
+
+                for (Prototypes.JsonProto proto: itemProtos) {
+
+                    table.add(proto.title);
+                    table.add(new Image(textureManager.getSpriteFromAtlas("assets", "money")));
+                    table.add("" + proto.cost);
+                    table.add(new Image(textureManager.getSpriteFromAtlas("assets", "supply")));
+                    table.add("" + proto.food);
+                    table.row();
+
+                    table.add(new Image(textureManager.getSpriteFromAtlas("assets", proto.image)));
+
+                    Table subTable = new Table(levelScreen.getSkin());
+                    table.add(subTable).colspan(8);
+                    table.row().pad(5);
+
+                    subTable.add(new Image(textureManager.getSpriteFromAtlas("assets", "hospital-cross")));
+                    subTable.add("" + proto.getProperty("maxhp").asInt());
+                    subTable.add(new Image(textureManager.getSpriteFromAtlas("assets", "radial-balance")));
+                    subTable.add("" + proto.getProperty("movespeed").asInt());
+                    subTable.add(new Image(textureManager.getSpriteFromAtlas("assets", "checked-shield")));
+                    subTable.add("" + proto.getProperty("armor").asInt());
+                    subTable.row();
+
+                    subTable.add(new Image(textureManager.getSpriteFromAtlas("assets", "crossed-swords")));
+                    subTable.add("" + proto.getProperty("attackdamage").asInt());
+                    subTable.add(new Image(textureManager.getSpriteFromAtlas("assets", "archery-target")));
+                    subTable.add("" + proto.getProperty("attackrange").asInt());
+                    subTable.add(new Image(textureManager.getSpriteFromAtlas("assets", "rune-sword")));
+                    subTable.add("" + proto.getProperty("attackspeed").asInt());
+
+
+                }
+
+                btnBack = new TextButton("Back", levelScreen.getSkin(), "small");
+                addActor(btnBack);
+
+                btnBack.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+
+                        ((MenuPanel)getParent()).showMenu();
+                    }
+                });
+            }
+
+            @Override
+            public void update(float delta) {
+            }
+        }
     }
 }

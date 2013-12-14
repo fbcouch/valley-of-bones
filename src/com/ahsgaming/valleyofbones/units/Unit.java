@@ -477,6 +477,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			if (capturable) {
                 setCurHP(0);
                 setOwner(uncontested);
+                attacksLeft = 0; // hopefully this fixes the bug where capturing a tower that had an attack allows you to attack with it
+                movesLeft = 0;
             } else {
                 // remove self
                 remove = true;

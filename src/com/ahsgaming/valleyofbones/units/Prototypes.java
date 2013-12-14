@@ -19,7 +19,7 @@ public class Prototypes {
 		return protos.get(id);
 	}
 
-    public static Array<JsonProto> getPlayerCanBuild(Player p, GameController gc) {
+    public static Array<JsonProto> getPlayerCanBuild() {
         Array<JsonProto> returnVal = new Array<JsonProto>();
         for (JsonProto jp: protos.values()) {
             int cost = 0;
