@@ -223,6 +223,8 @@ public class GameController {
         for (GameObject obj: gameObjects)
             if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == currentPlayer.getPlayerId())
                 ((Unit) obj).startTurn();
+
+        map.setMapDirty(true);
 	}
 	
 	public void checkResult() {

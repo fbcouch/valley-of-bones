@@ -494,6 +494,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (getCurHP() <= 0) {
 			if (capturable) {
                 setCurHP(0);
+                if (owner != uncontested)
+                    controller.getMap().setMapDirty(true);
                 setOwner(uncontested);
                 attacksLeft = 0; // hopefully this fixes the bug where capturing a tower that had an attack allows you to attack with it
                 movesLeft = 0;
