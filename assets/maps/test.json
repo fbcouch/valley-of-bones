@@ -120,14 +120,14 @@
             proto: "tower-base",
             player: -1,
             x: 9,
-            y: 4,
+            y: 2,
         },
         {
             type: "unit",
             proto: "tower-base",
             player: -1,
             x: 9,
-            y: 8,
+            y: 10,
         },
     ],
 }

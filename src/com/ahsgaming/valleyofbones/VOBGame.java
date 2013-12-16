@@ -16,7 +16,7 @@ public class VOBGame extends Game {
     public static final boolean DEBUG_AI = false;
 	public static final String LOG = "VOBGame";
 
-    public static final String VERSION = "0.0.14";
+    public static final String VERSION = "0.0.15";
 
     FPSLogger fpsLogger = new FPSLogger();
 	
