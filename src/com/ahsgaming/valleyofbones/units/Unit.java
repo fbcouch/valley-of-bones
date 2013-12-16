@@ -47,7 +47,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
 	boolean selectable = true, targetable = true;
 	
-	int attackDamage = 0, attackRange = 0;
+	int attackDamage = 0, attackRange = 0, sightRange = 0;
 	float attackSpeed = 0;
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	float moveSpeed = 0;
@@ -150,6 +150,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (properties.get("requires") != null)
             for (JsonValue v: properties.get("requires"))
                 requires.add(v.asString());
+        sightRange = properties.getInt("sightrange", attackRange); // sight range defaults to attack range
         subtype = properties.getString("subtype", "");
         upkeep = properties.getInt("upkeep", 0);
 	}
@@ -397,6 +398,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.requires = requires;
 	}
 
+    public int getSightRange() {
+        return sightRange;
+    }
+
+    public void setSightRange(int sightRange) {
+        this.sightRange = sightRange;
+    }
+
     public String getSubtype() {
         return subtype;
     }
@@ -600,7 +609,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
     }
 
     public boolean canAttack(Unit other, GameController controller) {
-        return (attacksLeft >= 1 && controller.getMap().getMapDist(getBoardPosition(), other.getBoardPosition()) <= getAttackRange());
+        return (attacksLeft >= 1
+                && controller.getMap().getMapDist(getBoardPosition(), other.getBoardPosition()) <= getAttackRange()
+                && controller.getMap().isBoardPositionVisible(other.getBoardPosition()));
     }
 
     public void attack(Unit other, GameController controller) {

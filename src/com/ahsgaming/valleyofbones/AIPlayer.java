@@ -251,7 +251,7 @@ public class AIPlayer extends Player {
     public boolean[] createVisibilityMatrix(HexMap map, Array<Unit> units) {
         boolean[] matrix = new boolean[map.getWidth() * map.getHeight()];
         for (Unit unit: units) {
-            int range = unit.getAttackRange();
+            int range = unit.getSightRange();
             for (int x = (int)Math.max(unit.getBoardPosition().x - range - 1, 0); x < Math.min(unit.getBoardPosition().x + range + 1, map.getWidth()); x++) {
                 for (int y = (int)Math.max(unit.getBoardPosition().y - range - 1, 0); y < Math.min(unit.getBoardPosition().y + range + 1, map.getHeight()); y++) {
                     if (map.getMapDist(new Vector2(x, y), unit.getBoardPosition()) <= range)

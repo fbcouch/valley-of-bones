@@ -275,7 +275,7 @@ public class HexMap {
         for (int u=0;u<units.size;u++) {
             Unit unit = units.get(u);
             unitpositions[u] = (int)(unit.getBoardPosition().y * bounds.x + unit.getBoardPosition().x);
-            radii[u] = unit.getAttackRange();
+            radii[u] = unit.getSightRange();
         }
 
         boolean[] notavailable = new boolean[hexStatus.length];

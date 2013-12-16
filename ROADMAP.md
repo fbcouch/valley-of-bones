@@ -53,9 +53,10 @@
         - "Research facility" --> allows upgrades
     - Rewards for kills --> also allows less income from base
     - Saboteur --> heavy infantry (bazooka/missile launcher)
-    - Add 2 new mech units
+    + Add 2 new mech units
         + light mech
-        - artillery (+ splash damage?)
+        + artillery
+            (+ splash damage?)
     + Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
 - Basic sounds
 - Basic animations
