@@ -38,7 +38,7 @@ public class InfoPanel extends Group {
     final String REFUND = "$%d";
 
     Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft, lblRefund;
-    Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit;
+    Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit, iconAbility;
     Skin skin;
     VOBGame game;
     LevelScreen levelScreen;
@@ -132,6 +132,28 @@ public class InfoPanel extends Group {
             lblRefund.setText(String.format(REFUND, selected.getRefund()));
             labels.add(lblRefund);
 
+            if (iconAbility != null) removeActor(iconAbility);
+
+            if (selected.getAbility().length() > 0) {
+                Gdx.app.log(LOG, selected.getAbility());
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getAbility()));
+                if (selected.isAbilityActive()) {
+                    iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
+                }
+                addActor(iconAbility);
+
+                iconAbility.addListener(new ClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+
+                        levelScreen.activateAbility(selected.getObjId());
+                    }
+                });
+            } else {
+                iconAbility = null;
+            }
+
             for (Label lbl: labels) {
                 lbl.invalidate();
                 lbl.layout();
@@ -221,6 +243,10 @@ public class InfoPanel extends Group {
 
         lblTitle.setPosition(x, y);
         y += lblTitle.getHeight();
+
+        if (iconAbility != null) {
+            iconAbility.setPosition(lblAttacksLeft.getX() + lblAttacksLeft.getWidth() + 5, lblAttacksLeft.getTop() - iconAbility.getHeight());
+        }
 
         healthBar.setSize(iconMovesLeft.getX() - (iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX()), 4);
     }

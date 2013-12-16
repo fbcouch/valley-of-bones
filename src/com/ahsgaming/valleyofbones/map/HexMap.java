@@ -328,10 +328,10 @@ public class HexMap {
             curY += tileSize.y * 0.75;
         }
 
-
         // TODO put this at the proper depth
         for (Unit u: units) {
-            if (hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG)
+            if (hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG
+                    && (!u.getInvisible() || currentPlayer == u.getOwner() || detectorCanSee(currentPlayer, units, u.getBoardPosition())))
                 u.draw(batch, x, y, alpha);
         }
 
@@ -461,6 +461,14 @@ public class HexMap {
                 }
             }
             return traversible;
+        }
+        return false;
+    }
+
+    public boolean detectorCanSee(Player player, Array<Unit> units, Vector2 boardPosition) {
+        for (int u = 0; u < units.size; u++) {
+            Unit unit = units.get(u);
+            if (unit.getOwner() == player && unit.isDetector() && getMapDist(unit.getBoardPosition(), boardPosition) <= unit.getSightRange()) return true;
         }
         return false;
     }

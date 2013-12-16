@@ -443,6 +443,8 @@ public class GameController {
 	}
 
     public boolean validateMove(Move m) {
+        if (m.toLocation.x < 0 || m.toLocation.x >= map.getWidth() || m.toLocation.y < 0 || m.toLocation.y >= map.getHeight()) return false;
+
         GameObject o = getObjById(m.unit);
         if (!(o instanceof Unit)) return false;
         Unit u = (Unit)o;

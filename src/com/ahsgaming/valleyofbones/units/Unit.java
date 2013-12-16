@@ -159,12 +159,12 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     @Override
     public void draw(SpriteBatch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+        super.draw(batch, parentAlpha * (getInvisible() ? 0.5f : 1));
 
         if (overlay != null) {
             Color color = getColor();
             if (owner != null)
-                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a);
+                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a * (getInvisible() ? 0.5f : 1));
             else
                 batch.setColor(color);
 
@@ -198,13 +198,13 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     @Override
     public void draw(SpriteBatch batch, float offsetX, float offsetY, float parentAlpha) {
-        super.draw(batch, offsetX, offsetY, parentAlpha);
+        super.draw(batch, offsetX, offsetY, parentAlpha * (getInvisible() ? 0.5f : 1));
 
 
         if (overlay != null) {
             Color color = getColor();
             if (owner != null)
-                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a);
+                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a * (getInvisible() ? 0.5f : 1));
             else
                 batch.setColor(color);
 
@@ -300,8 +300,16 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		// TODO add a hit effect
 		return 0;
 	}
-	
-	public int getAttackDamage() {
+
+    public String getAbility() {
+        return ability;
+    }
+
+    public void setAbility(String ability) {
+        this.ability = ability;
+    }
+
+    public int getAttackDamage() {
 		return attackDamage + upgradeAttackDamage;
 	}
 
@@ -626,6 +634,16 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 movesLeft = (int)(getMoveSpeed() - usedMoves);
             }
         }
+    }
+
+    public boolean isAbilityActive() {
+        if (ability.equals("stealth") && stealthActive) {
+            return true;
+        }
+
+        if (ability.equals("detect")) return true;
+
+        return false;
     }
 
     public boolean getInvisible() {

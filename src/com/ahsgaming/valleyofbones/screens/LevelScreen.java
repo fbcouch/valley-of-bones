@@ -143,6 +143,15 @@ public class LevelScreen extends AbstractScreen {
         }
     }
 
+    public void activateAbility(int unit) {
+        ActivateAbility aa = new ActivateAbility();
+        aa.owner = game.getPlayer().getPlayerId();
+        aa.turn = gController.getGameTurn();
+        aa.unit = unit;
+
+        game.sendCommand(aa);
+    }
+
     protected void attack(int unit, int target) {
         Attack at = new Attack();
         at.owner = game.getPlayer().getPlayerId();
