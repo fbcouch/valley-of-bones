@@ -383,6 +383,14 @@ public class GameController {
 		} else {
 			if (obj instanceof Unit && tar instanceof Unit && (!((Unit) tar).getInvisible() || ((Unit)obj).isDetector())) {
                 ((Unit)obj).attack((Unit)tar, this);
+                if (((Unit)obj).getSplashDamage() > 0) {
+                    for (Vector2 pos: map.getAdjacent((int)tar.getBoardPosition().x, (int)tar.getBoardPosition().y)) {
+                        GameObject o = getObjAtBoardPos(pos);
+                        if (o != null && o instanceof Unit) {
+                            o.takeDamage(((Unit)obj).getAttackDamage() * ((Unit)obj).getSplashDamage() * ((Unit)obj).getBonus(((Unit)o).getSubtype()));
+                        }
+                    }
+                }
 			} else {
 				if (!(obj instanceof Unit)) {
 					Gdx.app.log(LOG, "Error: unit is not a Unit");

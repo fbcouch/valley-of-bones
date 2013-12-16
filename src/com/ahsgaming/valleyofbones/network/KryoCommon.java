@@ -70,7 +70,7 @@ public class KryoCommon {
 	
 	public static class RegisterPlayer {
 		public String name;
-        public int version = VOBGame.VERSION;
+        public String version = VOBGame.VERSION;
 	}
 	
 	public static class RegisteredPlayer {
@@ -100,7 +100,7 @@ public class KryoCommon {
     public static interface Error {}
 
     public static class VersionError implements Error {
-        public int version = VOBGame.VERSION;
+        public String version = VOBGame.VERSION;
     }
 
     public static class GameFullError implements Error {}

@@ -289,7 +289,7 @@ public class GameJoinScreen extends AbstractScreen {
                     String statusText = "An unknown error occured";
 
                     if (error instanceof KryoCommon.VersionError) {
-                        statusText = String.format("Server version (%d) is different from client (%d)", ((KryoCommon.VersionError)error).version, VOBGame.VERSION);
+                        statusText = String.format("Server version (%s) is different from client (%s)", ((KryoCommon.VersionError)error).version, VOBGame.VERSION);
                     } else if (error instanceof KryoCommon.GameFullError) {
                         statusText = "Game is full";
                     }

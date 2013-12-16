@@ -52,6 +52,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
 	float moveSpeed = 0;
 	int upkeep = 0, buildTime = 0;
+    float splashDamage = 0;
 
     String subtype = "";
     ObjectMap<String, Float> bonus = new ObjectMap<String, Float>();
@@ -151,6 +152,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
             for (JsonValue v: properties.get("requires"))
                 requires.add(v.asString());
         sightRange = properties.getInt("sightrange", attackRange); // sight range defaults to attack range
+        splashDamage = properties.getFloat("splashdamage", 0);
         subtype = properties.getString("subtype", "");
         upkeep = properties.getInt("upkeep", 0);
 	}
@@ -406,6 +408,14 @@ public class Unit extends GameObject implements Selectable, Targetable {
         this.sightRange = sightRange;
     }
 
+    public float getSplashDamage() {
+        return splashDamage;
+    }
+
+    public void setSplashDamage(float splashDamage) {
+        this.splashDamage = splashDamage;
+    }
+
     public String getSubtype() {
         return subtype;
     }
@@ -458,38 +468,6 @@ public class Unit extends GameObject implements Selectable, Targetable {
 			if (up.id.equals(upgradeId)) return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Determines if the target is in range of any weapons
-	 * @param target
-	 * @return
-	 */
-	public boolean isInRange(GameObject target) {
-		// TODO implement this
-		return false;
-	}
-	
-	/**
-	 * Finds the nearest Unit not owned by the same player
-	 * @param controller
-	 * @return
-	 */
-	public Unit findTarget(GameController controller) {
-		
-		Array<Unit> targets = new Array<Unit>();
-		for (GameObject go: controller.getGameObjects()) {
-			if (go instanceof Unit) {
-				Unit other = (Unit)go;
-				if (other.getOwner().getPlayerId() == getOwner().getPlayerId()) continue;
-				if (controller.getMap().getMapDist(this.getBoardPosition(), other.getBoardPosition()) <= getAttackRange())
-					targets.add(other);
-			}
-		}
-		
-		// TODO prioritize
-		
-		return (targets.size > 0 ? targets.get(0) : null);
 	}
 
 	/* (non-Javadoc)

@@ -181,7 +181,9 @@
                 "movespeed": 1,
                 "cost": 175,
                 "subtype": "armored",
-                "buildtime": 1
+                "buildtime": 1,
+                "splashdistance": 1,
+                "splashdamage": 0.3
             }
         },
 
