@@ -592,14 +592,16 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 && controller.getMap().isBoardPositionVisible(other.getBoardPosition()));
     }
 
-    public void attack(Unit other, GameController controller) {
+    public boolean attack(Unit other, GameController controller) {
         if (canAttack(other, controller)) {
             attacksLeft--;
             Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
 
             if (stealthActive) activateAbility(controller);
+            return true;
         }
+        return false;
     }
 
     public int getRefund() {

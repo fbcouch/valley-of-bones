@@ -118,7 +118,7 @@ public class VOBGame extends Game {
 	public void create() {
         textureManager = new TextureManager();
 
-        Gdx.app.log(LOG, String.format("Valley of Bones Client Version %d", VERSION));
+        Gdx.app.log(LOG, String.format("Valley of Bones Client Version %s", VERSION));
         if (!loadProfile()) {
             Gdx.files.local("profile").writeString(playerName, false);
             setScreen(getOptionsScreen());

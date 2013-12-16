@@ -56,7 +56,7 @@
     + Add 2 new mech units
         + light mech
         + artillery
-            (+ splash damage?)
+            + splash damage
     + Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
 - Basic sounds
 - Basic animations
@@ -65,3 +65,16 @@
 - Another race
     - set up tension between human/alien races
     - biological race that 'evolves' similarly to zerg?
+
+
+### BUGS
+info panel doesn't update
+
+### ideas
+
+ - saboteur has 'spy' ability - can infiltrate a tower and take without a battle (sacrifice the sabo?)
+ - bazooka trooper
+ - towers farther apart
+ - get cloak working
+ - get refund working
+ - slow regen?

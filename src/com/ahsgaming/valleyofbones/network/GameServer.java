@@ -138,9 +138,7 @@ public class GameServer implements NetController {
 				if (obj instanceof RegisterPlayer) {
 					RegisterPlayer rp = (RegisterPlayer)obj;
 
-                    if (rp.version != VOBGame.VERSION) {
-                        Gdx.app.log("version", "" + VOBGame.VERSION);
-                        Gdx.app.log("rp.version", "" + rp.version);
+                    if (!rp.version.equals(VOBGame.VERSION)) {
                         // wrong version!
                         server.sendToTCP(c.getID(), new KryoCommon.VersionError());
                         return;
@@ -610,7 +608,7 @@ public class GameServer implements NetController {
             }
             historyString += "]";
             parameters.put("game", "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + "}");
-            parameters.put("version", Integer.toString(VOBGame.VERSION));
+            parameters.put("version", VOBGame.VERSION);
 //            parameters.put("result", String.format("%d", gameResult.winner));
 
             httpPost.setContent(HttpParametersUtils.convertHttpParameters(parameters));

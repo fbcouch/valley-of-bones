@@ -382,8 +382,7 @@ public class GameController {
 			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
 		} else {
 			if (obj instanceof Unit && tar instanceof Unit && (!((Unit) tar).getInvisible() || ((Unit)obj).isDetector())) {
-                ((Unit)obj).attack((Unit)tar, this);
-                if (((Unit)obj).getSplashDamage() > 0) {
+                if (((Unit)obj).attack((Unit)tar, this) && ((Unit)obj).getSplashDamage() > 0) {
                     for (Vector2 pos: map.getAdjacent((int)tar.getBoardPosition().x, (int)tar.getBoardPosition().y)) {
                         GameObject o = getObjAtBoardPos(pos);
                         if (o != null && o instanceof Unit) {
