@@ -383,20 +383,6 @@ public class LevelScreen extends AbstractScreen {
 	
 	@Override
 	public void render(float delta) {
-//        super.render(delta);
-        stage.act(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        mapCamera.update();
-        mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
-        mapSpriteBatch.begin();
-        gController.getMap().draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits());
-        mapSpriteBatch.end();
-
-        // DRAW BOXES
-        drawUnitBoxes();
-
-        stage.draw();
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
         if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
@@ -424,9 +410,6 @@ public class LevelScreen extends AbstractScreen {
 
         gController.getMap().update(game.getPlayer());
 
-//        grpLevel.setScale(1 / mapScale.x, 1 / mapScale.y);
-//        grpLevel.setPosition(-1 * posCamera.x + mapCamera.viewportWidth * 0.5f, -1 * posCamera.y + mapCamera.viewportHeight * 0.5f);
-
 		yourTurnPopup();
         buildPanel.update();
 
@@ -441,6 +424,19 @@ public class LevelScreen extends AbstractScreen {
             if (!isCurrentPlayer()) unsetBuildMode();
         }
 
+        stage.act(delta);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        mapCamera.update();
+        mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
+        mapSpriteBatch.begin();
+        gController.getMap().draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits());
+        mapSpriteBatch.end();
+
+        // DRAW BOXES
+        drawUnitBoxes();
+
+        stage.draw();
 	}
 	
 	public void addFloatingLabel(String text, float x, float y) {

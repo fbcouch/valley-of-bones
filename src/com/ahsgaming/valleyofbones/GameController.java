@@ -89,8 +89,7 @@ public class GameController {
 		this.loadMap();
 		this.loadMapObjects();
 
-		// TODO start paused
-		state = GameStates.RUNNING;
+		state = GameStates.PAUSED;
 	}
 	
 	/**
@@ -125,7 +124,7 @@ public class GameController {
 			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
 			unit.setPosition(pos.x, pos.y);
 			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
-			addGameUnit(unit);
+			addGameUnitNow(unit);
 			
 			if (player >= 0 && player < players.size) {
 				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
@@ -141,7 +140,7 @@ public class GameController {
             Gdx.app.log(LOG, point.toString());
             unit.setPosition(pos.x, pos.y);
             unit.setBoardPosition(point);
-            addGameUnit(unit);
+            addGameUnitNow(unit);
         }
 
         if (VOBGame.DEBUG_ATTACK) {
@@ -159,25 +158,37 @@ public class GameController {
 	
 	public void update(float delta) {
 		
-		if (state == GameStates.RUNNING) {
+		switch(state) {
+            case RUNNING:
 
-            doCommands();
+                doCommands();
 
-            updateObjects();
+                updateObjects();
 
-            for (Player p: players) {
-                p.update(this);
-            }
+                for (int p = 0; p < players.size; p++) {
+                    players.get(p).update(this);
+                }
 
-			turnTimer -= delta;
+                turnTimer -= delta;
 
-            checkResult();
+                checkResult();
 
-            if (gameResult != null) {
-                this.state = GameStates.GAMEOVER;
-            }
+                if (gameResult != null) {
+                    this.state = GameStates.GAMEOVER;
+                }
 
-		}
+                break;
+            case PAUSED:
+                for (Command c: cmdsToAdd) {
+                    if (c instanceof Unpause) {
+                        executeCommand(c);
+                        map.setMapDirty(true);
+                    } else {
+                        commandQueue.add(c);
+                    }
+                }
+                break;
+        }
 
 	}
 
@@ -258,6 +269,20 @@ public class GameController {
 		}
 	}
 
+    public void declareWinner(Player p) {
+        GameResult result = new GameResult();
+        result.winner = p.getPlayerId();
+        result.losers = new int[players.size - 1];
+        int i = 0;
+        for (Player player: players) {
+            if (player != p) {
+                result.losers[i] = player.getPlayerId();
+                i++;
+            }
+        }
+        this.gameResult = result;
+    }
+
 	public void doCommands() {
 		// process commands
 
@@ -270,12 +295,13 @@ public class GameController {
 		while (commandQueue.size > 0) {
             command = commandQueue.pop();
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
+            if (command instanceof Unpause) Gdx.app.log(LOG, "UNPAUSE");
+            if (command instanceof Pause) Gdx.app.log(LOG, "PAUSE");
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
 
 			} else if (command.turn == gameTurn) {
 				// execute current commands and remove
-
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
 					executeCommand(command);
 				}
@@ -291,7 +317,7 @@ public class GameController {
 	}
 	
 	public boolean validate(Command cmd) {
-		if (cmd.owner != currentPlayer.getPlayerId() && ! (cmd instanceof Surrender)) return false;
+		if (cmd.owner != currentPlayer.getPlayerId() && !(cmd instanceof Surrender) && !(cmd instanceof Pause) && !(cmd instanceof Unpause)) return false;
 
 		if (cmd instanceof Attack) {
             Unit u = ((Unit)getObjById(((Attack)cmd).unit));

@@ -61,7 +61,8 @@ public class VOBServer extends VOBGame {
         if (this.getScreen() != null) this.getScreen().render(Gdx.graphics.getDeltaTime());
 
         Array<GameServer> remove = new Array<GameServer>();
-        for (GameServer server: gameServers) {
+        for (int s = 0; s < gameServers.size; s++) {
+            GameServer server = gameServers.get(s);
             if (server.isLoadGame() && !server.isGameStarted()) {
                 server.startGame();
             }

@@ -77,6 +77,10 @@ public class GameServer implements NetController {
 
     float serverPing = 1800;
     float serverPingTimeout = 0;
+
+    float awaitReconnectCountdown = 0;
+    float awaitReconnectTime = 5;
+    boolean awaitReconnect = false;
 	
 	/**
 	 * 
@@ -134,7 +138,6 @@ public class GameServer implements NetController {
 		server.addListener(new Listener() {
 
 			public void received(Connection c, Object obj) {
-				
 				if (obj instanceof RegisterPlayer) {
 					RegisterPlayer rp = (RegisterPlayer)obj;
 
@@ -143,8 +146,25 @@ public class GameServer implements NetController {
                         server.sendToTCP(c.getID(), new KryoCommon.VersionError());
                         return;
                     }
-					
-					if (players.size >= Player.AUTOCOLORS.length) {
+
+                    if (gameStarted) {
+                        for (Player p: players) {
+                            Gdx.app.log(LOG, p.getPlayerName() + ": " + connMap.findKey(p, true).isConnected());
+                            if (p instanceof NetPlayer && p.getPlayerName().equals(rp.name) && !connMap.findKey(p, true).isConnected()) {
+                                connMap.remove(connMap.findKey(p, true));
+                                connMap.put(c, (NetPlayer)p);
+                                Unpause up = new Unpause();
+                                up.owner = -1;
+                                up.turn = controller.getGameTurn();
+                                Gdx.app.log(LOG, "Queuing unpause");
+                                controller.queueCommand(up);
+                                sendCommand(up);
+                            }
+                        }
+                        return;
+                    }
+
+                    if (players.size >= Player.AUTOCOLORS.length) {
                         server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
                         return; // TODO should join as spectator?
                     }
@@ -245,42 +265,53 @@ public class GameServer implements NetController {
 			
 			public void connected (Connection c) {
 				if (host == null || !host.isConnected()) host = c;
-				
-				if (gameStarted) c.close();
 			}
 			
 			public void disconnected (Connection c) {
-				Player p = connMap.get(c);
-				if (players.contains(p, true)) {
-                    players.removeValue(p, true);
-                    connMap.remove(c);
-                }
+                if (gameStarted) {
+                    // wait for reconnect
+                    Pause p = new Pause();
+                    p.isAuto = true;
+                    p.owner = -1;
+                    p.turn = controller.getGameTurn();
+                    controller.queueCommand(p);
+                    sendCommand(p);
+                    awaitReconnectCountdown = awaitReconnectTime;
+                    awaitReconnect = true;
+                } else {
 
-				if (host == c && !gameStarted) {
-				    // find a new host
-                    if (players.size > 0) {
-                        int i = 0;
-                        p = null;
-                        while (i < players.size && (p == null || p instanceof AIPlayer)) {
-                            p = players.get(i);
-                            i++;
-                        }
-                        if (p instanceof AIPlayer) {
-                            reset();
-                            return;
-                        }
-                        host = connMap.findKey(p, true);
-                        RegisteredPlayer reg = new RegisteredPlayer();
-                        reg.id = p.getPlayerId();
-                        reg.name = p.getPlayerName();
-                        reg.color = p.getPlayerColor();
-                        reg.team = p.getTeam();
-                        reg.host = true;
-                        server.sendToTCP(host.getID(), reg);
+                    Player p = connMap.get(c);
+                    if (players.contains(p, true)) {
+                        players.removeValue(p, true);
+                        connMap.remove(c);
                     }
-				}
 
-                if (controller == null || controller.getGameResult() == null) sendPlayerList();
+                    if (host == c && !gameStarted) {
+                        // find a new host
+                        if (players.size > 0) {
+                            int i = 0;
+                            p = null;
+                            while (i < players.size && (p == null || p instanceof AIPlayer)) {
+                                p = players.get(i);
+                                i++;
+                            }
+                            if (p instanceof AIPlayer) {
+                                reset();
+                                return;
+                            }
+                            host = connMap.findKey(p, true);
+                            RegisteredPlayer reg = new RegisteredPlayer();
+                            reg.id = p.getPlayerId();
+                            reg.name = p.getPlayerName();
+                            reg.color = p.getPlayerColor();
+                            reg.team = p.getTeam();
+                            reg.host = true;
+                            server.sendToTCP(host.getID(), reg);
+                        }
+                    }
+
+                    if (controller == null || controller.getGameResult() == null) sendPlayerList();
+                }
 			}
 		});
 
@@ -365,6 +396,18 @@ public class GameServer implements NetController {
 
 		if (gameStarted) {
 			controller.update(delta);
+
+            if (awaitReconnect) {
+                awaitReconnectCountdown -= delta;
+                if (awaitReconnectCountdown < 0) {
+                    for (int p = 0; p < players.size; p++) {
+                        if (players.get(p) instanceof NetPlayer && connMap.findKey(players.get(p), true).isConnected()) {
+                            controller.declareWinner(players.get(p));
+                            awaitReconnect = false;
+                        }
+                    }
+                }
+            }
 
             if (isEndTurn())
             {

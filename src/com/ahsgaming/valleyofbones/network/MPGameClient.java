@@ -74,6 +74,7 @@ public class MPGameClient implements NetController {
     boolean sentEndTurn = false;
     boolean recdEndTurn = false;
 
+    boolean isReconnect = false;
 
     KryoCommon.Error error;
 	
@@ -92,9 +93,9 @@ public class MPGameClient implements NetController {
 		client.addListener(new Listener() {
 			
 			public void connected (Connection c) {
-				RegisterPlayer rp = new RegisterPlayer();
-				rp.name = cfg.playerName;
-				client.sendTCP(rp);
+                RegisterPlayer rp = new RegisterPlayer();
+                rp.name = cfg.playerName;
+                client.sendTCP(rp);
 			}
 			
 			public void received (Connection c, Object obj) {
@@ -118,6 +119,7 @@ public class MPGameClient implements NetController {
                     gameConfig.isHost = reg.host;
                     Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
                     recdRegisterPlayer = true;
+                    isConnecting = false;
                 }
 
                 if (obj instanceof RegisteredPlayer[]) {
@@ -147,6 +149,7 @@ public class MPGameClient implements NetController {
 					if (obj instanceof Command) {
 						Command cmd = (Command)obj;
 						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
+						if (cmd instanceof Pause) System.out.println("Pause " + Integer.toString(cmd.turn));
 						if (!(obj instanceof StartTurn || obj instanceof EndTurn)) {
 							controller.queueCommand(cmd);
 						}
@@ -175,28 +178,59 @@ public class MPGameClient implements NetController {
 			}
 			
 			public void disconnected (Connection c) {
-				
+                if (gameResult != null) {
+                    isReconnect = true;
+                    Pause p = new Pause();
+                    p.isAuto = true;
+                    p.owner = -1;
+                    p.turn = controller.getGameTurn();
+                    controller.queueCommand(p);
+                }
 			}
 		});
-		
-		isConnecting = true;
-		host = cfg.hostName;
-		new Thread() {
-			public void run() {
-				try {
-					
-					client.connect(5000, host, cfg.hostPort);
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
-					e.printStackTrace();
-                    isConnecting = false;
-				} 
-
-			}
-		}.start();
+        connect();
 	}
+
+    public void connect() {
+        isConnecting = true;
+        host = gameConfig.hostName;
+        new Thread() {
+            public void run() {
+                try {
+                    Gdx.app.log(LOG, "Connecting to " + host + ":" + gameConfig.hostPort);
+                    client.connect(5000, host, gameConfig.hostPort);
+
+                } catch (IOException e) {
+                    Gdx.app.log(LOG, "Client connection failed: " + e.getMessage());
+                    e.printStackTrace();
+                    isConnecting = false;
+                }
+
+            }
+        }.start();
+    }
+
+    public void reconnect() {
+        isConnecting = true;
+        new Thread() {
+            public void run() {
+                try {
+                    Gdx.app.log(LOG, "Attempting to reconnect");
+                    client.reconnect(5000);
+                } catch (IOException e) {
+                    Gdx.app.log(LOG, "Reconnect failed: " + e.getMessage());
+                    e.printStackTrace();
+                    isConnecting = false;
+                    gameResult = new GameResult();
+                    gameResult.losers = new int[]{playerId};
+                    int i = players.indexOf(player, true);
+                    gameResult.winner = (i == 0 ? players.get(1).getPlayerId() : players.get(0).getPlayerId());
+                }
+                isReconnect = false;
+                isConnecting = false;
+            }
+        }.start();
+    }
 	
 	public void startGame() {
 		// OK, this should be called within an opengl context, so we can create everything
@@ -237,6 +271,11 @@ public class MPGameClient implements NetController {
 		if (controller == null) return true;
 
         controller.update(delta);
+
+        if (isReconnect && !isConnecting) {
+            Gdx.app.log(LOG, "" + isReconnect);
+            reconnect();
+        }
 
         if (recdEndTurn) {
             controller.setNextTurn(true);
