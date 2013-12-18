@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.TextureManager;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -305,11 +306,12 @@ public class HexMap {
 
     public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units) {
         float curX = x;
-        float curY = y;
+        float curY = y + tileSize.y * 0.75f * (bounds.y - 1);
         Color save = batch.getColor();
         int prev = -1;
         boolean odd = false;
-        for (int j = 0; j < bounds.y; j++) {
+        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "dirt-depth");
+        for (int j = (int)bounds.y - 1; j >= 0; j--) {
             curX = x + (odd ? tileSize.x * 0.5f : 0);
             odd = !odd;
             for (int i = 0; i < bounds.x; i++) {
@@ -317,15 +319,21 @@ public class HexMap {
                     prev = hexStatus[i + j * (int)bounds.x];
                     batch.setColor(HEX_COLOR[prev]);
                 }
+                boolean drewTile = false;
                 for (TileLayer l: tileLayers) {
                     int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
-                    if (gid != 0)
+                    if (gid != 0) {
                         batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
+                        drewTile = true;
+                    }
+                }
+                if (drewTile) {
+                    batch.draw(depth, curX, curY - 32);
                 }
 
                 curX += tileSize.x;
             }
-            curY += tileSize.y * 0.75;
+            curY -= tileSize.y * 0.75;
         }
 
         // TODO put this at the proper depth
