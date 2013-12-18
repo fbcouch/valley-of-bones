@@ -576,6 +576,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
         return (int)movesLeft;
     }
 
+    public void setMovesLeft(float moves) {
+        movesLeft = moves;
+    }
+
     public boolean canMove(Vector2 location, GameController controller) {
         return (controller.getMap().getMapDist(getBoardPosition(), location) <= movesLeft);
     }
@@ -594,6 +598,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
         return (int)attacksLeft;
     }
 
+    public void setAttacksLeft(float attacks) {
+        attacksLeft = attacks;
+    }
+
     public boolean canAttack(Unit other, GameController controller) {
         return (attacksLeft >= 1
                 && controller.getMap().getMapDist(getBoardPosition(), other.getBoardPosition()) <= getAttackRange()
@@ -602,6 +610,21 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     public boolean attack(Unit other, GameController controller) {
         if (canAttack(other, controller)) {
+            if (ability.equals("sabotage")) {
+                Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Sabotaging (%d)", other.getObjId()));
+                if (other.capturable) {
+                    other.setOwner(getOwner());
+                    other.setAttacksLeft(0);
+                    other.setMovesLeft(0);
+                } else {
+                    if (other.getType().equals("castle-base")) return false; // can't sabotage home bases
+
+                    other.takeDamage(other.getCurHP() + other.getArmor() - 1);
+                }
+                takeDamage(curHP);
+
+                return true;
+            }
             attacksLeft--;
             Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
@@ -641,13 +664,13 @@ public class Unit extends GameObject implements Selectable, Targetable {
             return true;
         }
 
-        if (ability.equals("detect")) return true;
+        if (ability.equals("detect") || ability.equals("sabotage")) return true;
 
         return false;
     }
 
     public boolean getInvisible() {
-        return stealthActive;
+        return stealthActive || ability.equals("sabotage");
     }
 
     public void setInvisible(boolean invisible) {

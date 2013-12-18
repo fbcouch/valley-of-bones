@@ -119,6 +119,29 @@
         },
 
         {
+            "id": "saboteur",
+            "type": "unit",
+            "image": "saboteur",
+            "title": "Saboteur",
+            "desc": "Uses high explosives",
+            "properties": {
+                "curhp": 5,
+                "maxhp": 5,
+                "armor": 0,
+                "food": 2,
+                "requires": [ "castle-base" ],
+                "attackdamage": 0,
+                "attackspeed": 1,
+                "attackrange": 1,
+                "movespeed": 4,
+                "cost": 90,
+                "subtype": "light",
+                "buildtime": 1,
+                "ability": "sabotage"
+            }
+        },
+
+        {
             "id": "tank-base",
             "type": "unit",
             "image": "tank",

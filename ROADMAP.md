@@ -52,7 +52,8 @@
         - "Defense platform" --> grants extra attack/damage
         - "Research facility" --> allows upgrades
     - Rewards for kills --> also allows less income from base
-    - Saboteur --> heavy infantry (bazooka/missile launcher)
+    + heavy infantry (bazooka/missile launcher)
+    + Sabotuer --> 'spy'
     + Add 2 new mech units
         + light mech
         + artillery
@@ -72,8 +73,8 @@ info panel doesn't update
 
 ### ideas
 
- - saboteur has 'spy' ability - can infiltrate a tower and take without a battle (sacrifice the sabo?)
- - bazooka trooper
+ + saboteur has 'sabotage' ability - can infiltrate a tower and take without a battle (sacrifice the sabo?)
+ + bazooka trooper
  + towers farther apart
  + get cloak working
  - get refund working

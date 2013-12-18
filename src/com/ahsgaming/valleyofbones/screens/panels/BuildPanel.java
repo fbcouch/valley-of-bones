@@ -96,7 +96,7 @@ public class BuildPanel extends Group {
     public void layout() {
         imgInfantryTab.setPosition(-15, imgBackground.getTop() - 4);
         imgMechTab.setPosition(imgInfantryTab.getRight() - 25, imgInfantryTab.getY());
-        int y = 100;
+        int y = 150;
         switch(selected) {
             default:
             case 0:
