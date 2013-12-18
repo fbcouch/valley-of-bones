@@ -93,26 +93,26 @@
         },
 
         {
-            "id": "saboteur-base",
+            "id": "bazooka",
             "type": "unit",
-            "image": "saboteur",
-            "title": "Saboteur",
+            "image": "bazooka",
+            "title": "Bazooka Guy",
             "desc": "Uses high explosives",
             "properties": {
-                "curhp": 20,
-                "maxhp": 20,
+                "curhp": 25,
+                "maxhp": 25,
                 "armor": 0,
                 "food": 2,
                 "requires": [ "castle-base" ],
-                "attackdamage": 5,
+                "attackdamage": 10,
                 "attackspeed": 1,
-                "attackrange": 1,
-                "movespeed": 4,
+                "attackrange": 3,
+                "movespeed": 2,
                 "cost": 75,
                 "subtype": "light",
                 "bonus": {
-                    "armored": 4,
-                    "building": 4
+                    "armored": 2,
+                    "building": 2
                 },
                 "buildtime": 1
             }
