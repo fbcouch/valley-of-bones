@@ -70,6 +70,9 @@ public class SPGameClient implements NetController {
 		controller = new GameController(gameConfig.mapName, players);
 		controller.LOG = controller.LOG + "#SPClient";
         controller.setCurrentPlayer(player); // in SP, player always goes first
+        Unpause up = new Unpause();
+        up.owner = -1;
+        controller.queueCommand(up);
 	}
 	
 	public void sendStartGame() {

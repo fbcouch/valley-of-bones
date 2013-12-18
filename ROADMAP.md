@@ -41,7 +41,7 @@
     - Finish unimplemented features:
         + In game menu (Surrender goes here)
         - Refund
-        - Activate/deactivate cloak
+        + Activate/deactivate cloak
         + Zoom
         + Better unit boxes
 + AI
@@ -74,7 +74,7 @@ info panel doesn't update
 
  - saboteur has 'spy' ability - can infiltrate a tower and take without a battle (sacrifice the sabo?)
  - bazooka trooper
- - towers farther apart
- - get cloak working
+ + towers farther apart
+ + get cloak working
  - get refund working
  - slow regen?
