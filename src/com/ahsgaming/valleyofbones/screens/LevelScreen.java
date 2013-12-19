@@ -302,7 +302,11 @@ public class LevelScreen extends AbstractScreen {
 
 		Gdx.app.log(VOBGame.LOG, "LevelScreen#show");
 
-		posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
+        if (game.getPlayer() != null) {
+		    posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
+        } else {
+            posCamera.set(gController.getMap().getWidth(), gController.getMap().getHeight());
+        }
 
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         selectionPanel = new InfoPanel(game, this, getSkin());

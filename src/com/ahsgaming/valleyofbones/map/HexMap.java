@@ -259,7 +259,13 @@ public class HexMap {
         mapDirty = false;
 
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
-        Array<Unit> units = parent.getUnitsByPlayerId(player.getPlayerId());
+        Array<Unit> units;
+        if (player == null) {
+            units = parent.getUnits();
+        } else {
+            units = parent.getUnitsByPlayerId(player.getPlayerId());
+        }
+
         for (int i=0; i< hexStatus.length; i++) {
             hexStatus[i] = FOG;
 

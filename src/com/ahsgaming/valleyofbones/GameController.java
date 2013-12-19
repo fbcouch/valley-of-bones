@@ -160,7 +160,6 @@ public class GameController {
 		
 		switch(state) {
             case RUNNING:
-
                 doCommands();
 
                 updateObjects();
@@ -297,6 +296,7 @@ public class GameController {
 			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
             if (command instanceof Unpause) Gdx.app.log(LOG, "UNPAUSE");
             if (command instanceof Pause) Gdx.app.log(LOG, "PAUSE");
+            Gdx.app.log(LOG, "Current turn: " + gameTurn);
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
 

@@ -139,7 +139,7 @@ public class BuildPanel extends Group {
         }
 
         for (BuildItem item: items) {
-            if (player.canBuild(item.proto.id, gController)) {
+            if (player == null || player.canBuild(item.proto.id, gController)) {
                 item.icon.setColor(1, 1, 1, 1);
             } else {
                 item.icon.setColor(0.8f, 0.4f, 0.4f, 1);

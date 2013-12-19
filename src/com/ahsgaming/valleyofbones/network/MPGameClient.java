@@ -50,7 +50,6 @@ public class MPGameClient implements NetController {
 	
 	Client client;
 	String host;
-	Connection clientConn;
 
 	int playerId = -1;
 	Player player = null;
@@ -99,62 +98,66 @@ public class MPGameClient implements NetController {
 			}
 			
 			public void received (Connection c, Object obj) {
-                if (obj instanceof KryoCommon.VersionError) {
-                    Gdx.app.log(LOG, "VersionError");
-                    error = (KryoCommon.VersionError)obj;
+
+                if (isConnecting) {
+                    if (obj instanceof KryoCommon.VersionError) {
+                        Gdx.app.log(LOG, "VersionError");
+                        error = (KryoCommon.VersionError)obj;
+                        c.close();
+                    }
+
+                    if (obj instanceof KryoCommon.GameFullError) {
+                        Gdx.app.log(LOG, "GameFullError");
+                        error = (KryoCommon.GameFullError)obj;
+                        c.close();
+                    }
+
+                    if (obj instanceof RegisteredPlayer) {
+                        RegisteredPlayer reg = (RegisteredPlayer)obj;
+                        playerId = reg.id;
+                        gameConfig.isHost = reg.host;
+                        Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
+                        recdRegisterPlayer = true;
+                    }
                     isConnecting = false;
-                    c.close();
+                    return;
                 }
 
-                if (obj instanceof KryoCommon.GameFullError) {
-                    Gdx.app.log(LOG, "GameFullError");
-                    error = (KryoCommon.GameFullError)obj;
-                    isConnecting = false;
-                    c.close();
+                if (controller == null) {
+                    if (obj instanceof RegisteredPlayer[]) {
+                        Gdx.app.log(LOG, "Playerlist rec'd");
+                        RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
+                        players.clear();
+                        for (int p=0;p<plist.length;p++) {
+                            Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
+                            players.add(pl);
+                            if (pl.getPlayerId() == playerId) player = pl;
+                        }
+                    }
+
+                    if (obj instanceof KryoCommon.GameDetails) {
+
+                        gameConfig.mapName = ((KryoCommon.GameDetails) obj).mapName;
+
+                    }
+
+                    if (obj instanceof StartGame) {
+                        // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
+                        game.setLoadGame();
+                        firstTurnPid = ((StartGame)obj).currentPlayer;
+                    }
+                    return;
                 }
 
-                if (obj instanceof RegisteredPlayer) {
-                    RegisteredPlayer reg = (RegisteredPlayer)obj;
-                    playerId = reg.id;
-                    gameConfig.isHost = reg.host;
-                    Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
-                    recdRegisterPlayer = true;
-                    isConnecting = false;
-                }
 
-                if (obj instanceof RegisteredPlayer[]) {
-                    Gdx.app.log(LOG, "Playerlist rec'd");
-                    RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
-                    players.clear();
-                    for (int p=0;p<plist.length;p++) {
-                        Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
-                        players.add(pl);
-                        if (pl.getPlayerId() == playerId) player = pl;
+                if (obj instanceof Command) {
+                    Command cmd = (Command)obj;
+                    if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
+                    if (cmd instanceof Pause) System.out.println("Pause " + Integer.toString(cmd.turn));
+                    if (!(obj instanceof StartTurn || obj instanceof EndTurn)) {
+                        controller.queueCommand(cmd);
                     }
                 }
-
-                if (obj instanceof KryoCommon.GameDetails) {
-
-                    gameConfig.mapName = ((KryoCommon.GameDetails) obj).mapName;
-
-                }
-
-                if (obj instanceof StartGame) {
-                    // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
-                    game.setLoadGame();
-                    firstTurnPid = ((StartGame)obj).currentPlayer;
-                }
-
-                if (controller != null) {
-					if (obj instanceof Command) {
-						Command cmd = (Command)obj;
-						if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
-						if (cmd instanceof Pause) System.out.println("Pause " + Integer.toString(cmd.turn));
-						if (!(obj instanceof StartTurn || obj instanceof EndTurn)) {
-							controller.queueCommand(cmd);
-						}
-					}
-				}
 
 				if (obj instanceof GameResult) {
 					Gdx.app.log(LOG, "GameResult rec'd");
@@ -175,6 +178,7 @@ public class MPGameClient implements NetController {
                         recdEndTurn = true;
                     }
 				}
+
 			}
 			
 			public void disconnected (Connection c) {

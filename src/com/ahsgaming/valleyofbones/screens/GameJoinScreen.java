@@ -59,6 +59,7 @@ public class GameJoinScreen extends AbstractScreen {
 	
 	TextButton btnConnect;
 	TextButton btnCancel;
+    TextButton btnSpectate;
 	
 	Label lblStatus;
 	
@@ -130,8 +131,11 @@ public class GameJoinScreen extends AbstractScreen {
 		btnCancel = new TextButton("Cancel", getSkin(), "cancel");
 		table.add(btnCancel).size(150, 50).pad(4);
 		
-		btnConnect = new TextButton("Connect", getSkin());
+		btnConnect = new TextButton("Join", getSkin());
 		table.add(btnConnect).size(150, 50).pad(4);
+
+        btnSpectate = new TextButton("Spectate", getSkin());
+        table.add(btnSpectate).size(150, 50).pad(4);
 		
 		table.row();
 
@@ -167,6 +171,29 @@ public class GameJoinScreen extends AbstractScreen {
                 cfg.hostName = host.split(":")[0];
                 cfg.isHost = false;
                 cfg.isMulti = true;
+                cfg.hostPort = (host.indexOf(':') > -1 ? Integer.parseInt(host.split(":")[1]) : KryoCommon.tcpPort);
+                cfg.playerName = txtNickname.getText();
+                gsScreen = game.getGameSetupScreenMP(cfg);
+                lblStatus.setText(String.format("Connecting to host %s", cfg.hostName));
+                Gdx.app.log(LOG, String.format("Attempting connection to host %s", cfg.hostName));
+            }
+        });
+
+        btnSpectate.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                Gdx.app.log(LOG, "btnSpectate touched");
+                String host = txtJoinHostname.getText();
+                if (host.equals("")) {
+                    host = String.format("%s:%d", servers.get(listServers.getSelectedIndex()).ipAddr, servers.get(listServers.getSelectedIndex()).port);
+                }
+                GameSetupConfig cfg = new GameSetupConfig();
+                cfg.hostName = host.split(":")[0];
+                cfg.isHost = false;
+                cfg.isMulti = true;
+                cfg.isSpectator = true;
                 cfg.hostPort = (host.indexOf(':') > -1 ? Integer.parseInt(host.split(":")[1]) : KryoCommon.tcpPort);
                 cfg.playerName = txtNickname.getText();
                 gsScreen = game.getGameSetupScreenMP(cfg);

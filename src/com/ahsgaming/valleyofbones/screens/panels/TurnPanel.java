@@ -31,7 +31,7 @@ public class TurnPanel extends Group {
     Player player1, player2, lastPlayer, thePlayer;
     Skin skin;
 
-    InfoPanel infoPanel;
+    InfoPanel infoPanel, infoPanel2;
     Group endTurn;
 
     int lastTick;
@@ -63,35 +63,44 @@ public class TurnPanel extends Group {
         lblTime = new Label(String.format(TIME, 0, 0), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
         addActor(lblTime);
 
-        infoPanel = new InfoPanel(thePlayer, (thePlayer == player2), skin);
-        addActor(infoPanel);
-        infoPanel.setZIndex(0);
+        if (thePlayer == null) {
+            infoPanel = new InfoPanel(player1, false, skin);
+            addActor(infoPanel);
+            infoPanel.setZIndex(0);
+            infoPanel2 = new InfoPanel(player2, true, skin);
+            addActor(infoPanel2);
+            infoPanel2.setZIndex(0);
+        } else {
+            infoPanel = new InfoPanel(thePlayer, (thePlayer == player2), skin);
+            addActor(infoPanel);
+            infoPanel.setZIndex(0);
 
-        endTurn = new Group();
-        addActor(endTurn);
-        endTurn.setZIndex(1);
+            endTurn = new Group();
+            addActor(endTurn);
+            endTurn.setZIndex(1);
 
-        Image bg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg-small"));
-        endTurn.addActor(bg);
-        endTurn.setSize(bg.getWidth(), bg.getHeight());
+            Image bg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg-small"));
+            endTurn.addActor(bg);
+            endTurn.setSize(bg.getWidth(), bg.getHeight());
 
-        Label end = new Label("End Turn", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
-        endTurn.addActor(end);
-        if (end.getWidth() > endTurn.getWidth() - 70)
-            end.setFontScale((endTurn.getWidth() - 70) / end.getWidth());
+            Label end = new Label("End Turn", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            endTurn.addActor(end);
+            if (end.getWidth() > endTurn.getWidth() - 70)
+                end.setFontScale((endTurn.getWidth() - 70) / end.getWidth());
 
-        end.setX((thePlayer != player1 ? 25 : 45) + (endTurn.getWidth() - 70 - end.getWidth() * end.getFontScaleX()) * 0.5f);
-        end.setY(endTurn.getHeight() * 0.5f - (end.getHeight() * end.getFontScaleY()) * 0.5f);
+            end.setX((thePlayer != player1 ? 25 : 45) + (endTurn.getWidth() - 70 - end.getWidth() * end.getFontScaleX()) * 0.5f);
+            end.setY(endTurn.getHeight() * 0.5f - (end.getHeight() * end.getFontScaleY()) * 0.5f);
 
-        endTurn.setX(imgBackground.getWidth() * 0.5f - endTurn.getWidth() * 0.5f);
+            endTurn.setX(imgBackground.getWidth() * 0.5f - endTurn.getWidth() * 0.5f);
 
-        endTurn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                LevelScreen.getInstance().endTurn();
-            }
-        });
+            endTurn.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);
+                    LevelScreen.getInstance().endTurn();
+                }
+            });
+        }
 
         layout();
     }
@@ -134,20 +143,30 @@ public class TurnPanel extends Group {
                 (imgBackground.getHeight() - lblPlayer2.getHeight()) * 0.5f
         );
 
-        if (thePlayer == player1) {
+        if (thePlayer == null) {
             infoPanel.setPosition(
                     -infoPanel.getWidth() + 45,
                     imgBackground.getHeight() - infoPanel.getHeight()
             );
-        } else {
-            infoPanel.setPosition(
+            infoPanel2.setPosition(
                     imgBackground.getWidth() - 45,
-                    imgBackground.getHeight() - infoPanel.getHeight()
+                    imgBackground.getHeight() - infoPanel2.getHeight()
             );
+        } else {
+            if (thePlayer == player1) {
+                infoPanel.setPosition(
+                        -infoPanel.getWidth() + 45,
+                        imgBackground.getHeight() - infoPanel.getHeight()
+                );
+            } else {
+                infoPanel.setPosition(
+                        imgBackground.getWidth() - 45,
+                        imgBackground.getHeight() - infoPanel.getHeight()
+                );
 
+            }
+            endTurn.setY(imgBackground.getHeight() - endTurn.getHeight());
         }
-        endTurn.setY(imgBackground.getHeight() - endTurn.getHeight());
-
     }
 
     public void update(boolean isCurrent) {
@@ -173,24 +192,26 @@ public class TurnPanel extends Group {
             } else {
                 imgIndicatorOverlay.remove();
             }
+            if (thePlayer != null) {
+                if (thePlayer == player1) {
+                    if (isCurrent) {
+                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - 45, endTurn.getY(), 0.5f));
+                    } else {
+                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - endTurn.getWidth() + 10, endTurn.getY(), 0.5f));
+                    }
 
-            if (thePlayer == player1) {
-                if (isCurrent) {
-                    endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - 45, endTurn.getY(), 0.5f));
                 } else {
-                    endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - endTurn.getWidth() + 10, endTurn.getY(), 0.5f));
-                }
-
-            } else {
-                if (isCurrent) {
-                    endTurn.addAction(Actions.moveTo(-endTurn.getWidth() + 45, endTurn.getY(), 0.5f));
-                } else {
-                    endTurn.addAction(Actions.moveTo(-10, endTurn.getY(), 0.5f));
+                    if (isCurrent) {
+                        endTurn.addAction(Actions.moveTo(-endTurn.getWidth() + 45, endTurn.getY(), 0.5f));
+                    } else {
+                        endTurn.addAction(Actions.moveTo(-10, endTurn.getY(), 0.5f));
+                    }
                 }
             }
         }
 
         infoPanel.update();
+        if (infoPanel2 != null) infoPanel2.update();
     }
 
     public static class InfoPanel extends Group {

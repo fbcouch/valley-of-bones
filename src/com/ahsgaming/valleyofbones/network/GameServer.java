@@ -59,6 +59,7 @@ public class GameServer implements NetController {
 	GameSetupConfig gameConfig;
 
 	Array<Player> players = new Array<Player>();
+    Array<KryoCommon.Spectator> spectators = new Array<KryoCommon.Spectator>();
 	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 	int nextPlayerId = 0;
 	Connection host = null;
@@ -100,6 +101,7 @@ public class GameServer implements NetController {
         gameStarted = false;
         nextPlayerId = 0;
         players = new Array<Player>();
+        spectators = new Array<KryoCommon.Spectator>();
         connMap = new ObjectMap<Connection, NetPlayer>();
         host = null;
         stopServer = false;
@@ -163,6 +165,7 @@ public class GameServer implements NetController {
                                 Gdx.app.log(LOG, "Queuing unpause");
                                 controller.queueCommand(up);
                                 sendCommand(up);
+                                awaitReconnect = false;
                             }
                         }
                         return;
@@ -212,6 +215,36 @@ public class GameServer implements NetController {
 					sendPlayerList();
 					sendSetupInfo();
 				}
+
+                if (obj instanceof KryoCommon.Spectator) {
+                    Gdx.app.log(LOG, "Spectator rec'd");
+                    KryoCommon.Spectator sp = (KryoCommon.Spectator)obj;
+
+                    if (!sp.version.equals(VOBGame.VERSION)) {
+                        server.sendToTCP(c.getID(), new KryoCommon.VersionError());
+                        return;
+                    }
+
+                    if (!gameStarted) {
+                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
+                        c.close();
+                        return;
+                    }
+
+                    for (KryoCommon.Spectator spectator: spectators) {
+                        if (spectator.name.equals(sp.name)) return;
+                    }
+
+                    Gdx.app.log(LOG, "Spectator joined");
+                    spectators.add(sp);
+                    server.sendToTCP(c.getID(), sp);
+                    sendPlayerList();
+                    sendSetupInfo();
+                    server.sendToTCP(c.getID(), new StartGame());
+                    Command[] cmds = new Command[controller.getCommandHistory().size];
+                    for (int i = 0; i < cmds.length; i++) cmds[i] = controller.getCommandHistory().get(i);
+                    server.sendToTCP(c.getID(), cmds);
+                }
 				
 				if (obj instanceof AddAIPlayer) {
 					// TODO implement teams/player limits more robustly
@@ -273,6 +306,8 @@ public class GameServer implements NetController {
 			
 			public void disconnected (Connection c) {
                 if (gameStarted) {
+                    Player player = connMap.get(c);
+                    if (player == null) return;
                     // wait for reconnect
                     Pause p = new Pause();
                     p.isAuto = true;
@@ -405,7 +440,7 @@ public class GameServer implements NetController {
                 awaitReconnectCountdown -= delta;
                 if (awaitReconnectCountdown < 0) {
                     for (int p = 0; p < players.size; p++) {
-                        if (players.get(p) instanceof NetPlayer && connMap.findKey(players.get(p), true).isConnected()) {
+                        if ((players.get(p) instanceof NetPlayer && connMap.findKey(players.get(p), true).isConnected()) || players.get(p) instanceof AIPlayer) {
                             controller.declareWinner(players.get(p));
                             awaitReconnect = false;
                         }

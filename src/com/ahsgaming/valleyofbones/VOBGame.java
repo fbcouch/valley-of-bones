@@ -69,7 +69,11 @@ public class VOBGame extends Game {
 	
 	public void createGame(GameSetupConfig cfg) {
         if (cfg.isMulti) {
-            netController = new MPGameClient(this, cfg);
+            if (cfg.isSpectator) {
+                netController = new SpectatorClient(this, cfg);
+            } else {
+                netController = new MPGameClient(this, cfg);
+            }
         } else {
             // TODO load settings from somewhere?
             netController = new SPGameClient(this, cfg);
