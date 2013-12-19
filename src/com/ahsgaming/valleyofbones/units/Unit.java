@@ -617,7 +617,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
                     other.setAttacksLeft(0);
                     other.setMovesLeft(0);
                 } else {
-                    if (other.getType().equals("castle-base")) return false; // can't sabotage home bases
+                    if (other.getProtoId().equals("castle-base")) return false; // can't sabotage home bases
 
                     other.takeDamage(other.getCurHP() + other.getArmor() - 1);
                 }

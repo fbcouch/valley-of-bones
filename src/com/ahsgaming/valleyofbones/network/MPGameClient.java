@@ -270,6 +270,11 @@ public class MPGameClient implements NetController {
 
 		if (controller == null) return true;
 
+        if (gameResult != null) {
+            endGame();
+            return false;
+        }
+
         controller.update(delta);
 
         if (isReconnect && !isConnecting) {
@@ -285,11 +290,6 @@ public class MPGameClient implements NetController {
 
         if (controller.isNextTurn() || controller.getTurnTimer() <= 0) {
             sendEndTurn();
-        }
-
-        if (gameResult != null) {
-            endGame();
-            return false;
         }
 
 		return true;

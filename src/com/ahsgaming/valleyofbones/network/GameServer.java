@@ -104,6 +104,10 @@ public class GameServer implements NetController {
         host = null;
         stopServer = false;
         gameResult = null;
+        awaitReconnectCountdown = 0;
+        awaitReconnectTime = 0;
+        awaitReconnect = false;
+
         removePublicServer();
 
         init();
