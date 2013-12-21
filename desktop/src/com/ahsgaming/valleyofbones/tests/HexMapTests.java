@@ -20,14 +20,15 @@
  * Licensed under Apache License, Version 2.0 (see above).
  * 
  */
-package com.ahsgaming.valleyofbones.map;
+package com.ahsgaming.valleyofbones.tests;
 
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import com.ahsgaming.valleyofbones.map.HexMap;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author jami
@@ -116,9 +117,9 @@ public class HexMapTests {
 		cases.add(new DistTestCase(4, 4, 0, 1, 5));
 		
 		for (DistTestCase dtc: cases) {
-			assertEquals(String.format("getMapDist (%d, %d) ---> (%d, %d)", dtc.x1, dtc.y1, dtc.x2, dtc.y2),
-						 dtc.d,
-						 map.getMapDist(new Vector2(dtc.x1, dtc.y1), new Vector2(dtc.x2, dtc.y2)));
+			Assert.assertEquals(String.format("getMapDist (%d, %d) ---> (%d, %d)", dtc.x1, dtc.y1, dtc.x2, dtc.y2),
+                    dtc.d,
+                    map.getMapDist(new Vector2(dtc.x1, dtc.y1), new Vector2(dtc.x2, dtc.y2)));
 		}
 		
 	}
@@ -129,21 +130,21 @@ public class HexMapTests {
 
         Vector2[] adjacent = map.getAdjacent(0, 0);
 
-        assertEquals(adjacent[0], new Vector2(1, 0));
-        assertEquals(adjacent[1], new Vector2(-1, 0));
-        assertEquals(adjacent[2], new Vector2(0, -1));
-        assertEquals(adjacent[3], new Vector2(0, 1));
-        assertEquals(adjacent[4], new Vector2(-1, -1));
-        assertEquals(adjacent[5], new Vector2(-1, 1));
+        Assert.assertEquals(adjacent[0], new Vector2(1, 0));
+        Assert.assertEquals(adjacent[1], new Vector2(-1, 0));
+        Assert.assertEquals(adjacent[2], new Vector2(0, -1));
+        Assert.assertEquals(adjacent[3], new Vector2(0, 1));
+        Assert.assertEquals(adjacent[4], new Vector2(-1, -1));
+        Assert.assertEquals(adjacent[5], new Vector2(-1, 1));
 
         adjacent = map.getAdjacent(0, 1);
 
-        assertEquals(adjacent[0], new Vector2(1, 1));
-        assertEquals(adjacent[1], new Vector2(-1, 1));
-        assertEquals(adjacent[2], new Vector2(1, 0));
-        assertEquals(adjacent[3], new Vector2(1, 2));
-        assertEquals(adjacent[4], new Vector2(0, 0));
-        assertEquals(adjacent[5], new Vector2(0, 2));
+        Assert.assertEquals(adjacent[0], new Vector2(1, 1));
+        Assert.assertEquals(adjacent[1], new Vector2(-1, 1));
+        Assert.assertEquals(adjacent[2], new Vector2(1, 0));
+        Assert.assertEquals(adjacent[3], new Vector2(1, 2));
+        Assert.assertEquals(adjacent[4], new Vector2(0, 0));
+        Assert.assertEquals(adjacent[5], new Vector2(0, 2));
     }
 
 }

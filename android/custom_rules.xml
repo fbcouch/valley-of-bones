@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="valley-of-bones">
+    <target name="-pre-build">
+        <copy todir="libs">
+            <fileset dir="../libs/" includes="gdx.jar"/>
+            <fileset dir="../libs/" includes="kryonet*.jar"/>
+        </copy>
+    </target>
+    <target name="-post-build">
+        <delete>
+            <fileset dir="libs" includes="gdx.jar,kryonet*.jar"/>
+        </delete>
+    </target>
+</project>

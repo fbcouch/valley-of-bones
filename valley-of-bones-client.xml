@@ -82,7 +82,7 @@
     </fileset>
   </path>
   
-  <property name="jdk.bin.android_2.3.3_platform" value="${jdk.home.android_2.3.3_platform}/../../../usr/lib/jvm/java-6-openjdk-amd64/bin"/>
+  <property name="jdk.bin.android_2.3.3_platform" value="/usr/lib/jvm/java-6-openjdk-amd64/bin"/>
   <path id="jdk.classpath.android_2.3.3_platform">
     <fileset dir="${jdk.home.android_2.3.3_platform}">
       <include name="platforms/android-10/android.jar"/>
@@ -149,7 +149,6 @@
     <pathelement location="${basedir}/libs/gdx.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
     <path refid="${module.jdk.classpath.valley-of-bones}"/>
-    <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <path refid="library.gdx-freetype.classpath"/>
   </path>
   
@@ -158,7 +157,6 @@
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
-    <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <path refid="library.gdx-freetype.classpath"/>
   </path>
   
@@ -168,7 +166,6 @@
     <pathelement location="${basedir}/libs/gdx.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
     <path refid="${module.jdk.classpath.valley-of-bones}"/>
-    <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <path refid="library.gdx-freetype.classpath"/>
   </path>
   
@@ -177,7 +174,6 @@
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
-    <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <path refid="library.gdx-freetype.classpath"/>
   </path>
   
@@ -231,104 +227,15 @@
   
   
   <!-- Module android -->
-  
-  <dirname property="module.android.basedir" file="${ant.file}"/>
-  
-  
-  <property name="module.jdk.home.android" value="${jdk.home.android_2.3.3_platform}"/>
-  <property name="module.jdk.bin.android" value="${jdk.bin.android_2.3.3_platform}"/>
-  <property name="module.jdk.classpath.android" value="jdk.classpath.android_2.3.3_platform"/>
-  
-  <property name="compiler.args.android" value="${compiler.args}"/>
-  
-  <property name="android.output.dir" value="${module.android.basedir}/out/production/android"/>
-  <property name="android.testoutput.dir" value="${module.android.basedir}/out/test/android"/>
-  
-  <path id="android.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="android.module.production.classpath">
-    <path refid="${module.jdk.classpath.android}"/>
-    <path refid="library.gdx-backend-android-sources.classpath"/>
-    <pathelement location="${valley-of-bones.output.dir}"/>
-    <pathelement location="${basedir}/libs/gdx-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx.jar"/>
-    <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
-  </path>
-  
-  <path id="android.runtime.production.module.classpath">
-    <pathelement location="${android.output.dir}"/>
-    <path refid="library.gdx-backend-android-sources.classpath"/>
-    <path refid="valley-of-bones.runtime.production.module.classpath"/>
-  </path>
-  
-  <path id="android.module.classpath">
-    <path refid="${module.jdk.classpath.android}"/>
-    <pathelement location="${android.output.dir}"/>
-    <path refid="library.gdx-backend-android-sources.classpath"/>
-    <pathelement location="${valley-of-bones.output.dir}"/>
-    <pathelement location="${basedir}/libs/gdx-sources.jar"/>
-    <pathelement location="${basedir}/libs/gdx.jar"/>
-    <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
-  </path>
-  
-  <path id="android.runtime.module.classpath">
-    <pathelement location="${android.testoutput.dir}"/>
-    <pathelement location="${android.output.dir}"/>
-    <path refid="library.gdx-backend-android-sources.classpath"/>
-    <path refid="valley-of-bones.runtime.module.classpath"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.android">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.android">
-    <patternset refid="excluded.from.module.android"/>
-  </patternset>
-  
-  <path id="android.module.sourcepath">
-    <dirset dir="${module.android.basedir}/android">
-      <include name="src"/>
-      <include name="gen"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.android" depends="compile.module.android.production,compile.module.android.tests" description="Compile module android"/>
-  
-  <target name="compile.module.android.production" depends="register.custom.compilers,compile.module.valley-of-bones" description="Compile module android; production classes">
-    <mkdir dir="${android.output.dir}"/>
-    <javac2 destdir="${android.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.android}/javac">
-      <compilerarg line="${compiler.args.android}"/>
-      <bootclasspath refid="android.module.bootclasspath"/>
-      <classpath refid="android.module.production.classpath"/>
-      <src refid="android.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.android"/>
-    </javac2>
-    
-    <copy todir="${android.output.dir}">
-      <fileset dir="${module.android.basedir}/android/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.android.basedir}/android/gen">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
+
+  <target name="compile.module.android">
+      <ant antfile="build.xml" target="debug" dir="./android" />
   </target>
-  
-  <target name="compile.module.android.tests" depends="register.custom.compilers,compile.module.android.production" description="compile module android; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.android" description="cleanup module">
-    <delete dir="${android.output.dir}"/>
-    <delete dir="${android.testoutput.dir}"/>
+
+  <target name="clean.module.android">
+    <ant antfile="build.xml" target="clean" dir="./android"  />
   </target>
-  
-  
+
   <!-- Module desktop -->
   
   <dirname property="module.desktop.basedir" file="${ant.file}"/>
@@ -353,6 +260,7 @@
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
+      <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <fileset dir="${basedir}/desktop/libs">
       <patternset refid="library.patterns"/>
     </fileset>
@@ -360,6 +268,7 @@
   
   <path id="desktop.runtime.production.module.classpath">
     <pathelement location="${desktop.output.dir}"/>
+      <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <path refid="valley-of-bones.runtime.production.module.classpath"/>
     <fileset dir="${basedir}/desktop/libs">
       <patternset refid="library.patterns"/>
@@ -373,6 +282,7 @@
     <pathelement location="${basedir}/libs/gdx-sources.jar"/>
     <pathelement location="${basedir}/libs/gdx.jar"/>
     <pathelement location="${basedir}/libs/kryonet-debug-2.18-all.jar"/>
+      <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <fileset dir="${basedir}/desktop/libs">
       <patternset refid="library.patterns"/>
     </fileset>
@@ -381,6 +291,7 @@
   <path id="desktop.runtime.module.classpath">
     <pathelement location="${desktop.testoutput.dir}"/>
     <pathelement location="${desktop.output.dir}"/>
+      <pathelement location="${idea.home}/lib/junit-4.10.jar"/>
     <path refid="valley-of-bones.runtime.module.classpath"/>
     <fileset dir="${basedir}/desktop/libs">
       <patternset refid="library.patterns"/>
@@ -440,11 +351,11 @@
     <tstamp/>
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
-    <property name="artifact.output.android" value="${basedir}/out/artifacts/android"/>
+    <property name="artifact.output.android" value="${basedir}/out/artifacts/${DSTAMP}"/>
     <property name="artifact.output.valleyofbones:jar" value="${basedir}/out/artifacts/${DSTAMP}"/>
     <property name="artifact.output.valleyofbonesserver:jar" value="${basedir}/out/artifacts/${DSTAMP}"/>
     <mkdir dir="${artifacts.temp.dir}"/>
-    <property name="temp.jar.path.android.apk" value="${artifacts.temp.dir}/android.apk"/>
+    <property name="temp.jar.path.android.apk" value="./android/bin/valley-of-bones-debug.apk"/>
     <property name="temp.jar.path.ValleyOfBones.jar" value="${artifacts.temp.dir}/ValleyOfBones.jar"/>
     <property name="temp.jar.path.ValleyOfBonesServer.jar" value="${artifacts.temp.dir}/ValleyOfBonesServer.jar"/>
   </target>
@@ -452,10 +363,7 @@
   <target name="artifact.android" depends="init.artifacts, compile.module.android" description="Build &#39;android&#39; artifact">
     <property name="artifact.temp.output.android" value="${artifacts.temp.dir}/android"/>
     <mkdir dir="${artifact.temp.output.android}"/>
-    <zip destfile="${temp.jar.path.android.apk}">
-      <zipfileset src="/home/jami/Projects/java/valley-of-bones/out/production/android/android.afp.apk!/"/>
-    </zip>
-    <copy file="${temp.jar.path.android.apk}" tofile="${artifact.temp.output.android}/android.apk"/>
+    <copy file="${temp.jar.path.android.apk}" tofile="${artifact.temp.output.android}/valley-of-bones-debug-${DSTAMP}.apk"/>
   </target>
   
   <target name="artifact.valleyofbones:jar" depends="init.artifacts, compile.module.valley-of-bones, compile.module.desktop" description="Build &#39;ValleyOfBones:jar&#39; artifact">
@@ -526,6 +434,21 @@
             <fileset dir="${artifact.output.valleyofbones:jar}" includes="*.jar"/>
             <fileset file="${basedir}/README.md"/>
         </zip>
+    </target>
+
+    <target name="build.android.artifact" depends="artifact.android">
+        <mkdir dir="${artifact.output.android}"/>
+        <copy todir="${artifact.output.android}">
+            <fileset dir="${artifact.temp.output.android}"/>
+        </copy>
+    </target>
+
+    <target name="package.android.artifact" depends="clean, build.android.artifact">
+
+    </target>
+
+    <target name="package.all.artifacts" depends="package.desktop.artifacts, package.android.artifact">
+
     </target>
   
   <target name="build.all.artifacts" depends="artifact.android, artifact.valleyofbones:jar, artifact.valleyofbonesserver:jar" description="Build all artifacts">
