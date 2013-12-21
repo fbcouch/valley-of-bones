@@ -46,12 +46,10 @@
         + Better unit boxes
 + AI
 - Android version
-
-- Gameplay changes
-    - Attachments for base
-        - "Defense platform" --> grants extra attack/damage
-        - "Research facility" --> allows upgrades
-    - Rewards for kills --> also allows less income from base
+    - logo
+    - description
+    - single page website (at least unit descriptions)
++ Gameplay changes
     + heavy infantry (bazooka/missile launcher)
     + Sabotuer --> 'spy'
     + Add 2 new mech units
@@ -63,19 +61,24 @@
 - Basic animations
 
 ### Later
+
 - Another race
     - set up tension between human/alien races
     - biological race that 'evolves' similarly to zerg?
+- Gameplay changes
+    - Attachments for base
+        - "Defense platform" --> grants extra attack/damage
+        - "Research facility" --> allows upgrades
+    - Rewards for kills --> also allows less income from base
 
 
 ### BUGS
-info panel doesn't update
+
+- info panel doesn't update
++ server should re-register on 404 reply from ping
+- possible rangefinding error
 
 ### ideas
 
- + saboteur has 'sabotage' ability - can infiltrate a tower and take without a battle (sacrifice the sabo?)
- + bazooka trooper
- + towers farther apart
- + get cloak working
  - get refund working
  - slow regen?

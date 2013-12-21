@@ -738,7 +738,16 @@ public class GameServer implements NetController {
         Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                Gdx.app.log(LOG, "Update success");
+                switch(httpResponse.getStatus().getStatusCode()) {
+                    default:
+                    case 404:
+                        registerPublicServer();
+                        serverPingTimeout = 60;
+                        break;
+                    case 200:
+                        Gdx.app.log(LOG, "Update success");
+                        break;
+                }
                 Gdx.app.log(LOG, httpResponse.getResultAsString());
             }
 
