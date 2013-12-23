@@ -1,5 +1,6 @@
 package com.ahsgaming.valleyofbones;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,6 +26,10 @@ public class Main {
         cfg.height = 768;
         cfg.fullscreen = false;
         cfg.resizable = true;
+        cfg.addIcon("icon_128.png", Files.FileType.Internal);
+        cfg.addIcon("icon_64.png", Files.FileType.Internal);
+        cfg.addIcon("icon_32.png", Files.FileType.Internal);
+        cfg.addIcon("icon_16.png", Files.FileType.Internal);
 
         new LwjglApplication(new VOBGame(), cfg);
     }
