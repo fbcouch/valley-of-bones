@@ -1,13 +1,10 @@
 package com.ahsgaming.valleyofbones;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class ServerMain {
-
-	public ServerMain() {
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
 	 * @param args
@@ -20,6 +17,11 @@ public class ServerMain {
 		cfg.height = 768;
 		cfg.fullscreen = false;
 		cfg.resizable = false;
+
+        cfg.addIcon("icon_128.png", Files.FileType.Internal);
+        cfg.addIcon("icon_64.png", Files.FileType.Internal);
+        cfg.addIcon("icon_32.png", Files.FileType.Internal);
+        cfg.addIcon("icon_16.png", Files.FileType.Internal);
 		
 		new LwjglApplication(new VOBServer(), cfg);
 	}

@@ -311,41 +311,93 @@ public class HexMap {
     }
 
     public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units) {
+        Color save = batch.getColor();
+        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "dirt-depth");
+
+        // draw un-fogged hexes
         float curX = x;
         float curY = y + tileSize.y * 0.75f * (bounds.y - 1);
-        Color save = batch.getColor();
         int prev = -1;
         boolean odd = false;
-        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "dirt-depth");
+
         for (int j = (int)bounds.y - 1; j >= 0; j--) {
             curX = x + (odd ? tileSize.x * 0.5f : 0);
             odd = !odd;
             for (int i = 0; i < bounds.x; i++) {
-                if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
-                    prev = hexStatus[i + j * (int)bounds.x];
-                    batch.setColor(HEX_COLOR[prev]);
-                }
                 boolean drewTile = false;
-                for (TileLayer l: tileLayers) {
-                    int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
-                    if (gid != 0) {
-                        batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
-                        drewTile = true;
+                if (hexStatus[i + j * (int)bounds.x] != FOG) {
+                    if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
+                        prev = hexStatus[i + j * (int)bounds.x];
+                        batch.setColor(HEX_COLOR[prev]);
+                    }
+
+                    for (TileLayer l: tileLayers) {
+                        int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
+                        if (gid != 0) {
+                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
+                            drewTile = true;
+                        }
+                    }
+
+                } else {
+                    for (TileLayer l: tileLayers) {
+                        if (l.data[i + j * (int)bounds.x] != 0)
+                            drewTile = true;
                     }
                 }
+
                 if (drewTile) {
+                    if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
+                        prev = hexStatus[i + j * (int)bounds.x];
+                        batch.setColor(HEX_COLOR[prev]);
+                    }
                     batch.draw(depth, curX, curY - 32);
                 }
-
                 curX += tileSize.x;
             }
             curY -= tileSize.y * 0.75;
         }
 
-        // TODO put this at the proper depth
+        // draw enemy units
         for (Unit u: units) {
-            if (hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG
-                    && (!u.getInvisible() || currentPlayer == u.getOwner() || detectorCanSee(currentPlayer, units, u.getBoardPosition())))
+            if (currentPlayer != u.getOwner()){
+                if ((hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG || (u.hasActions() && !u.isBuilding()))
+                        && (!u.getInvisible() || detectorCanSee(currentPlayer, units, u.getBoardPosition())))
+                    u.draw(batch, x, y, alpha);
+            }
+        }
+
+        // draw fogged hexes
+        curX = x;
+        curY = y + tileSize.y * 0.75f * (bounds.y - 1);
+        prev = -1;
+        odd = false;
+
+        for (int j = (int)bounds.y - 1; j >= 0; j--) {
+            curX = x + (odd ? tileSize.x * 0.5f : 0);
+            odd = !odd;
+            for (int i = 0; i < bounds.x; i++) {
+                if (hexStatus[i + j * (int)bounds.x] == FOG) {
+                    if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
+                        prev = hexStatus[i + j * (int)bounds.x];
+                        batch.setColor(HEX_COLOR[prev]);
+                    }
+
+                    for (TileLayer l: tileLayers) {
+                        int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
+                        if (gid != 0) {
+                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
+                        }
+                    }
+                }
+                curX += tileSize.x;
+            }
+            curY -= tileSize.y * 0.75;
+        }
+
+        // draw friendly units
+        for (Unit u: units) {
+            if (currentPlayer == u.getOwner())
                 u.draw(batch, x, y, alpha);
         }
 

@@ -162,7 +162,7 @@ public class GameController {
             case RUNNING:
                 doCommands();
 
-                updateObjects();
+                updateObjects(delta);
 
                 for (int p = 0; p < players.size; p++) {
                     players.get(p).update(this);
@@ -191,14 +191,14 @@ public class GameController {
 
 	}
 
-    public void updateObjects() {
+    public void updateObjects(float delta) {
         GameObject o;
 
         for (int i=0;i<gameObjects.size;i++) {
             o = gameObjects.get(i);
-            o.update(this);
+            o.update(this, delta);
 
-            if (o.isRemove()) objsToRemove.add(o);
+            if (o.isRemove() && !o.hasActions()) objsToRemove.add(o);
         }
 
         gameObjects.removeAll(objsToRemove, true);
@@ -437,8 +437,9 @@ public class GameController {
 		// TODO place builder
 		// for now, just add the unit
 		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
-		unit.setPosition(levelPos);
+		unit.setPosition(levelPos.x - 300, levelPos.y + 600);
 		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
+        unit.addAction(GameObject.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
 		
 		addGameUnitNow(unit);
 		owner.setBankMoney(owner.getBankMoney() - unit.getCost());

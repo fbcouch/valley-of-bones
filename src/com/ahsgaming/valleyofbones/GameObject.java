@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jami
@@ -54,6 +56,8 @@ public class GameObject {
     protected Vector2 size = new Vector2();
     protected Color color = new Color(1, 1, 1, 1);
     protected float rotation = 0;
+
+    Array<Action> actions;
 	
 	/**
 	 * Constructors
@@ -65,6 +69,7 @@ public class GameObject {
 		this.owner = owner;
 		image = null;
 		path = new ArrayList<Vector2>();
+        actions = new Array<Action>();
 	}
 	
 	public GameObject(int id, Player owner, Texture texture) {
@@ -84,38 +89,28 @@ public class GameObject {
 	/**
 	 * Use this for game loop updates so that it can be easily controlled (unlike act, which will be called regardless of gamestate)
 	 */
-	public void update(GameController controller) {
-		// TODO implement this
-		return;
-	}
-	
-	public boolean canCollide(GameObject obj) {
-		return true;
-	}
-	
-	public void collide(GameObject obj) {
-		
-	}
-	
-	public boolean isColliding(Rectangle box) {
-		Rectangle thisBox = new Rectangle(this.getX(), this.getY(), getWidth(), getHeight());
-		return thisBox.overlaps(box);
-	}
-	
-	public boolean isColliding(Vector2 mapCoords) {
-		Vector2 local = new Vector2(mapCoords);
-		local.set(local.x - getX(), local.y - getY());
-		return new Rectangle(0, 0, getWidth(), getHeight()).contains(local.x, local.y);
-	}
-	
-	public void moveTo(Vector2 location, boolean add) {
-		if (!add) {
-			path.clear();
-		}
-		path.add(location);
+	public void update(GameController controller, float delta) {
+		if (actions.size > 0) {
+            actions.get(0).update(this, delta);
+            if (actions.get(0).isDone()) {
+                actions.removeIndex(0);
+            }
+        }
 	}
 	
 	public float takeDamage(float amount) { return 0; }
+
+    public void addAction(Action action) {
+        actions.add(action);
+    }
+
+    public void removeAction(Action action) {
+        actions.removeValue(action, true);
+    }
+
+    public boolean hasActions() {
+        return actions.size > 0;
+    }
 	
 	/**
 	 * Implemented methods
@@ -362,4 +357,130 @@ public class GameObject {
 				+ Math.pow((obj1.getY() + obj1.getHeight() * 0.5f)
 						- (obj2.getY() + obj2.getHeight() * 0.5f), 2));
 	}
+
+    public static class Actions {
+        public static Action delay(float delay) {
+            DelayAction da = new DelayAction();
+            da.duration = delay;
+            return da;
+        }
+
+        public static Action moveTo(float x, float y, float duration) {
+            MoveAction ma = new MoveAction();
+            ma.end = new Vector2(x, y);
+            ma.duration = duration;
+            return ma;
+        }
+
+        public static Action colorTo(Color c, float duration) {
+            ColorAction ca = new ColorAction();
+            ca.end = new Color(c);
+            ca.duration = duration;
+            return ca;
+        }
+
+        public static Action sequence(Action... actions) {
+            SequenceAction sa = new SequenceAction();
+            for (Action a: actions) {
+                sa.actions.add(a);
+            }
+            return sa;
+        }
+    }
+
+    public static class Action {
+        float duration = 0;
+        float total = 0;
+
+        public void update(GameObject obj, float delta) {
+
+        }
+
+        public boolean isDone() {
+            return (duration <= 0 || total >= duration);
+        }
+    }
+
+    public static class DelayAction extends Action {
+        @Override
+        public void update(GameObject obj, float delta) {
+            total += delta;
+        }
+    }
+
+    public static class MoveAction extends Action {
+        Vector2 start, end;
+
+        @Override
+        public void update(GameObject obj, float delta) {
+            if (duration == 0) return;
+
+            if (start == null) {
+                start = new Vector2(obj.getPosition());
+            }
+
+            if (end == null) {
+                end = new Vector2(start);
+            }
+
+            total += delta;
+
+            if (total >= duration) {
+                obj.setPosition(end.x, end.y);
+            } else {
+                obj.setPosition(
+                        start.x + (end.x - start.x) * total / duration,
+                        start.y + (end.y - start.y) * total / duration
+                );
+            }
+        }
+    }
+
+    public static class ColorAction extends Action {
+        Color start, end;
+
+        @Override
+        public void update(GameObject obj, float delta) {
+            if (duration == 0) return;
+
+            if (start == null) {
+                start = new Color(obj.getColor());
+            }
+
+            if (end == null) {
+                end = new Color(start);
+            }
+
+            total += delta;
+
+            if (total >= duration) {
+                obj.setColor(end);
+            } else {
+                float pct = total / duration;
+                obj.setColor(new Color(
+                        start.r + (end.r - start.r) * pct,
+                        start.g + (end.g - start.g) * pct,
+                        start.b + (end.b - start.b) * pct,
+                        start.a + (end.a - start.a) * pct
+                ));
+            }
+        }
+    }
+
+    public static class SequenceAction extends Action {
+        Array<Action> actions = new Array<Action>();
+
+        @Override
+        public void update(GameObject obj, float delta) {
+            if (actions.size == 0) return;
+
+            actions.get(0).update(obj, delta);
+            if (actions.get(0).isDone()) actions.removeIndex(0);
+        }
+
+        @Override
+        public boolean isDone() {
+            return actions.size == 0;
+        }
+    }
 }

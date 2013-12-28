@@ -46,7 +46,7 @@
         + Better unit boxes
 + AI
 - Android version
-    - logo
+    + logo
     - description
     - single page website (at least unit descriptions)
 + Gameplay changes
@@ -58,7 +58,7 @@
             + splash damage
     + Units built don't grant visibility until end of turn (to prevent 'walking' along the map)
 - Basic sounds
-- Basic animations
++ Basic animations
 
 ### Later
 

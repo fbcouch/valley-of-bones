@@ -295,6 +295,13 @@ public class Unit extends GameObject implements Selectable, Targetable {
             if (LevelScreen.getInstance() != null)
                 LevelScreen.getInstance().addFloatingLabel(String.format("-%d", (int)damage), getX() + getWidth() * 0.5f, getY() + getHeight() * 0.5f);
 
+            addAction(Actions.sequence(
+                    Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
+                    Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f),
+                    Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
+                    Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f)
+            ));
+
 			return damage;
 		}
 		// TODO add a hit effect
@@ -482,7 +489,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 	 * @see com.ahsgaming.spacetactics.GameObject#update(com.ahsgaming.spacetactics.GameController, float)
 	 */
 	@Override
-	public void update(GameController controller) {
+	public void update(GameController controller, float delta) {
+        super.update(controller, delta);
+
 		if (capturable)
             findNewOwner(controller);
 
@@ -590,7 +599,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
             movesLeft -= dist;
 
             setBoardPosition(location);
-            setPosition(controller.getMap().boardToMapCoords(location.x, location.y));
+//            setPosition(controller.getMap().boardToMapCoords(location.x, location.y));
+            Vector2 pos = controller.getMap().boardToMapCoords(location.x, location.y);
+            addAction(Actions.moveTo(pos.x, pos.y, 1));
         }
     }
 
@@ -630,6 +641,13 @@ public class Unit extends GameObject implements Selectable, Targetable {
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
 
             if (stealthActive) activateAbility(controller);
+
+            addAction(Actions.sequence(
+                    Actions.colorTo(new Color(1, 1, 0.5f, 1), 0.1f),
+                    Actions.delay(0.2f),
+                    Actions.colorTo(new Color(1, 1, 1, 1), 0.1f)
+            ));
+
             return true;
         }
         return false;
