@@ -29,6 +29,7 @@ import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -94,6 +95,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     TextureRegion overlay;
 
+    Sound attackSound;
+
     boolean isTurn = false;
 	
 	/**
@@ -127,6 +130,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
         healthBar = new ProgressBar();
         healthBar.setSize(getWidth(), 4f);
+
+        if (this.proto.attackSound != null)
+            attackSound = VOBGame.instance.getSoundManager().getSound(this.proto.attackSound);
 	}
 	
 	public void parseProperties() {
@@ -621,6 +627,9 @@ public class Unit extends GameObject implements Selectable, Targetable {
 
     public boolean attack(Unit other, GameController controller) {
         if (canAttack(other, controller)) {
+            if (attackSound != null)
+                attackSound.play(VOBGame.instance.getSoundManager().getVolume());
+
             if (ability.equals("sabotage")) {
                 Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Sabotaging (%d)", other.getObjId()));
                 if (other.capturable) {

@@ -59,6 +59,7 @@ public class Prototypes {
 		public String image = "";
 		public String title = "";
 		public String desc = "";
+        public String attackSound = "";
 
         public int cost = 0;
         public int food = 0;
@@ -92,6 +93,8 @@ public class Prototypes {
 
             if (hasProperty("food"))
                 food = getProperty("food").asInt();
+
+            attackSound = json.getString("attacksound", null);
 		}
 		
 		@Override

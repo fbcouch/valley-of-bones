@@ -4,3 +4,5 @@ out/artifacts
 out/production
 android/local.properties
 temp
+
+__*

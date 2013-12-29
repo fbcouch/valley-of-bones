@@ -28,7 +28,7 @@ public class VOBGame extends Game {
 
     public static VOBGame instance;
     protected TextureManager textureManager;
-	
+	protected SoundManager soundManager;
 
 	NetController netController;
 	Player player;
@@ -121,6 +121,7 @@ public class VOBGame extends Game {
 	@Override
 	public void create() {
         textureManager = new TextureManager();
+        soundManager = new SoundManager();
 
         Gdx.app.log(LOG, String.format("Valley of Bones Client Version %s", VERSION));
         if (!loadProfile()) {
@@ -150,6 +151,7 @@ public class VOBGame extends Game {
         Gdx.app.log(LOG, "dispose");
 //        if (AbstractScreen.skin != null) AbstractScreen.skin.dispose();
         textureManager.dispose();
+        soundManager.dispose();
 
 		closeGame();
 	}
@@ -341,6 +343,10 @@ public class VOBGame extends Game {
 
     public TextureManager getTextureManager() {
         return textureManager;
+    }
+
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 
 }

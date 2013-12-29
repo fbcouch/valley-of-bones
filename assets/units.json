@@ -6,6 +6,7 @@
             "image": "castle",
             "title": "Castle",
             "desc": "This is your home base.",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 100,
                 "maxhp": 100,
@@ -27,6 +28,7 @@
             "image": "tower",
             "title": "Tower",
             "desc": "Capture these to gain extra income and supply",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 0,
                 "maxhp": 30,
@@ -49,6 +51,7 @@
             "image": "marine",
             "title": "Space Marine",
             "desc": "Basic attacking unit",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 15,
                 "maxhp": 15,
@@ -72,6 +75,7 @@
             "image": "sniper",
             "title": "Sniper",
             "desc": "Light unit with long range",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 15,
                 "maxhp": 15,
@@ -98,6 +102,7 @@
             "image": "bazooka",
             "title": "Bazooka Guy",
             "desc": "Uses high explosives",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 25,
                 "maxhp": 25,
@@ -124,6 +129,7 @@
             "image": "saboteur",
             "title": "Saboteur",
             "desc": "Uses high explosives",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 5,
                 "maxhp": 5,
@@ -147,6 +153,7 @@
             "image": "tank",
             "title": "Light Tank",
             "desc": "Tank with light armor",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 45,
                 "maxhp": 45,
@@ -169,6 +176,7 @@
             "image": "light-mech",
             "title": "Light Mech",
             "desc": "Mech walker",
+            "attacksound": "laser_shot",
             "properties": {
                 "curhp": 30,
                 "maxhp": 30,
@@ -191,6 +199,7 @@
             "image": "artillery",
             "title": "Artillery",
             "desc": "Artillery",
+            "attacksound": "cannon_fire",
             "properties": {
                 "curhp": 15,
                 "maxhp": 15,
