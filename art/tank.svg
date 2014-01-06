@@ -13,9 +13,9 @@
    height="64"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.3.1 r9886"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="tank.svg"
-   inkscape:export-filename="/home/jami/workspace/valley-of-bones/art/tank-overlay.png"
+   inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/tank-overlay.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -34,7 +34,7 @@
      inkscape:current-layer="g3757"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1052"
+     inkscape:window-height="1051"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -71,20 +71,20 @@
      style="display:inline">
     <path
        style="color:#000000;fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-miterlimit:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 7.7574183,1028.0439 34.8629967,-30.86304 12.087931,14.08794 c -1.144262,2.8785 -0.728002,6.2251 -4.357875,8.3579 -0.403481,2.202 -2.020932,3.5369 -4.357874,4.3579 0.162064,2.8654 -2.448829,3.3046 -4.357875,4.3578 -0.241156,2.6641 -2.563679,3.2469 -4.357874,4.3579 -0.325421,2.5798 -2.431984,3.3785 -4.357875,4.3579 -0.699516,2.2057 -2.277605,3.5329 -4.357875,4.3579 -1.132283,2.2534 -2.675529,3.4795 -4.357874,4.3578 l -4.357875,0.3579 -5.021983,-1.522 -3.021982,-5.522 -3.021983,-5.5219 z"
+       d="m 9.3050373,1026.8534 34.8629967,-30.86302 12.087931,14.08792 c -1.144262,2.8785 -0.728002,6.2251 -4.357875,8.3579 -0.403481,2.202 -2.020932,3.5369 -4.357874,4.3579 0.162064,2.8654 -2.448829,3.3046 -4.357875,4.3578 -0.241156,2.6641 -2.563679,3.2469 -4.357874,4.3579 -0.325421,2.5798 -2.431984,3.3785 -4.357875,4.3579 -0.699516,2.2057 -2.277605,3.5329 -4.357875,4.3579 -1.132283,2.2534 -2.675529,3.4795 -4.357874,4.3578 l -4.357875,0.3579 -5.021983,-1.522 -3.021982,-5.522 -3.021983,-5.5219 z"
        id="rect2993-7"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccccccccccc" />
     <path
        style="color:#000000;fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-miterlimit:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 7.7574183,1028.0439 34.8629967,-30.86304 12.087931,14.08794 -34.862997,34.863 z"
+       d="m 9.3050373,1026.8534 34.8629967,-30.86302 12.087931,14.08792 -34.862997,34.863 z"
        id="rect2993"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
     <g
        id="g3790"
        inkscape:transform-center-x="-1.8284636"
-       transform="matrix(0.41613455,-0.90930305,0.90930305,0.41613455,-11.864073,1035.3853)"
+       transform="matrix(0.41613455,-0.90930305,0.90930305,0.41613455,-10.316454,1034.1948)"
        inkscape:transform-center-y="-5.5519233">
       <path
          sodipodi:nodetypes="sccss"
@@ -112,18 +112,18 @@
      style="display:inline">
     <path
        style="fill:#ffffff;stroke:none"
-       d="M 16.547619,34.952381 C 11.194908,47.572624 14.56024,51.775445 27.619048,46.619048"
+       d="M 18.095238,33.761905 C 12.742527,46.382148 16.107859,50.584969 29.166667,45.428572"
        id="path3843"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:#ffffff;stroke:none"
-       d="m 51.904762,22.690476 -6.071429,5.714286 -3.571428,-4.642857"
+       d="m 53.452381,21.5 -6.071429,5.714286 -3.571428,-4.642857"
        id="path3845"
        inkscape:connector-curvature="0" />
     <path
        style="fill:#ffffff;stroke:none"
-       d="m 42.15625,12.09375 -3.099702,2.30506 2.5,1.15625 z"
+       d="m 43.703869,10.903274 -3.099702,2.30506 2.5,1.15625 z"
        id="path3847"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />

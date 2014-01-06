@@ -217,28 +217,32 @@ public class Unit extends GameObject implements Selectable, Targetable {
             batch.draw(overlay, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
         }
 
-        if (healthBar != null) {
-            batch.setColor(getColor());
-            healthBar.setCurrent((float)curHP / maxHP);
-            healthBar.draw(batch, offsetX + getX(), offsetY + getY() + 8, parentAlpha);
-//            batch.draw(new TextureRegion(healthBar.img), offsetX + getX(), offsetY + getY() + 8, getWidth(), 8);
-        }
-//
-        if (isTurn) {
-            int x = 0;
-            batch.setColor(getColor());
-            if (getMovesLeft() > 0) {
-                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot");
+        if (!hasActions() || !(getCurAction() instanceof MoveAction)) {
+//            Gdx.app.log("Unit", getCurAction().toString());
 
-                batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
-                x += tex.getRegionWidth() * 0.5f;
+            if (healthBar != null) {
+                batch.setColor(getColor());
+                healthBar.setCurrent((float)curHP / maxHP);
+                healthBar.draw(batch, offsetX + getX(), offsetY + getY() + 8, parentAlpha);
+    //            batch.draw(new TextureRegion(healthBar.img), offsetX + getX(), offsetY + getY() + 8, getWidth(), 8);
             }
+    //
+            if (isTurn) {
+                int x = 0;
+                batch.setColor(getColor());
+                if (getMovesLeft() > 0) {
+                    TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot");
 
-            if (getAttacksLeft() > 0) {
-                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword");
+                    batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                    x += tex.getRegionWidth() * 0.5f;
+                }
 
-                batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
-                x += tex.getRegionWidth() * 0.5f;
+                if (getAttacksLeft() > 0) {
+                    TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword");
+
+                    batch.draw(tex, offsetX + getX() + x, offsetY + getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
+                    x += tex.getRegionWidth() * 0.5f;
+                }
             }
         }
     }
@@ -605,9 +609,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
             movesLeft -= dist;
 
             setBoardPosition(location);
-//            setPosition(controller.getMap().boardToMapCoords(location.x, location.y));
             Vector2 pos = controller.getMap().boardToMapCoords(location.x, location.y);
-            addAction(Actions.moveTo(pos.x, pos.y, 1));
+            addAction(Actions.moveTo(pos.x, pos.y, 1f / dist));
         }
     }
 

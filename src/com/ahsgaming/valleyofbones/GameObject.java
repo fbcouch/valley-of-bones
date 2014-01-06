@@ -111,6 +111,10 @@ public class GameObject {
     public boolean hasActions() {
         return actions.size > 0;
     }
+
+    public Action getCurAction() {
+        return (actions.size > 0 ? actions.first() : null);
+    }
 	
 	/**
 	 * Implemented methods
