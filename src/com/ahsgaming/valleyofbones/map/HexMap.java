@@ -312,7 +312,7 @@ public class HexMap {
 
     public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units) {
         Color save = batch.getColor();
-        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "dirt-depth");
+        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "dirt-hex-depth");
 
         // draw un-fogged hexes
         float curX = x;
@@ -334,7 +334,7 @@ public class HexMap {
                     for (TileLayer l: tileLayers) {
                         int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
                         if (gid != 0) {
-                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
+                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY, tileSize.x, tileSize.y);
                             drewTile = true;
                         }
                     }

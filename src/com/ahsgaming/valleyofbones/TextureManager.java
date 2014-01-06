@@ -41,8 +41,10 @@ public class TextureManager {
 	
 	private ObjectMap<String, TextureRegion> map = new ObjectMap<String, TextureRegion>();
 
-    public static TextureFilter defaultMinFilter = TextureFilter.MipMapLinearNearest;
+    public static TextureFilter defaultMinFilter = TextureFilter.Nearest;
     public static TextureFilter defaultMaxFilter = TextureFilter.Nearest;
+
+    String size = "mdpi";
 
     public void clear() {
         dispose();
@@ -84,9 +86,9 @@ public class TextureManager {
 	
 	public Sprite getSpriteFromAtlas(String atlas, String name, int id) {
         if (!atlases.containsKey(atlas)) {
-            atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + ".atlas")));
+            atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + "-" + size + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
-                t.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+                t.setFilter(defaultMinFilter, defaultMaxFilter);
             }
         }
 
@@ -102,9 +104,9 @@ public class TextureManager {
 
     public Array<Sprite> getSpritesFromAtlas(String atlas, String name) {
 		if (!atlases.containsKey(atlas)) {
-			atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + ".atlas")));
+			atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + "-" + size + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
-                t.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+                t.setFilter(defaultMinFilter, defaultMaxFilter);
             }
         }
 			
@@ -113,9 +115,9 @@ public class TextureManager {
 
     public TextureAtlas getTextureAtlas(String atlas) {
         if (!atlases.containsKey(atlas)) {
-            atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + ".atlas")));
+            atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + "-" + size + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
-                t.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+                t.setFilter(defaultMinFilter, defaultMaxFilter);
             }
         }
         return atlases.get(atlas);

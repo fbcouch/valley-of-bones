@@ -24,7 +24,7 @@ public class ProgressBar {
     public static final String LOG = "ProgressBar";
 
     float current = 1;
-    Color highColor = new Color(0, 1, 0, 1);
+    Color highColor = new Color(0, 0.6f, 0, 1);
     Color medColor = new Color(1, 1, 0, 1);
     Color lowColor = new Color(1, 0, 0, 1);
 
@@ -40,8 +40,8 @@ public class ProgressBar {
 
     public void draw(SpriteBatch batch, float x, float y, float parentAlpha) {
         Color color = lowColor;
-        if (current >= 0.66f) color = highColor;
-        else if (current >= 0.33f) color = medColor;
+        if (current > 0.67f) color = highColor;
+        else if (current > 0.34f) color = medColor;
 
         batch.setColor(batch.getColor().mul(color));
         batch.getColor().a *= parentAlpha;

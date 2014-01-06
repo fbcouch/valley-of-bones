@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="77.0625"
+   height="38.78125"
+   id="svg3862"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 23">
+  <defs
+     id="defs3864" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-135.03296"
+     inkscape:cy="101.85622"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="473"
+     inkscape:window-height="402"
+     inkscape:window-x="0"
+     inkscape:window-y="29"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3867">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-510.03296,-595.43715)">
+    <g
+       id="g4180-1"
+       transform="translate(528.65796,-267.06285)"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/build-mech-tab.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g4285">
+        <path
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/turn-hud-bg.png"
+           sodipodi:nodetypes="cccc"
+           inkscape:connector-curvature="0"
+           id="rect3755-5-8-0"
+           d="m 57.12796,900.56789 -20,-36.57143 -34.4289762,0 -19.9999998,36.57143"
+           style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+        <g
+           transform="matrix(0.0625,0,0,0.0625,3.913472,866.28218)"
+           id="g3011">
+          <path
+             d="M 0,0 H 512 V 512 H 0 z"
+             id="path4-0"
+             inkscape:connector-curvature="0" />
+          <g
+             transform="matrix(18.68858,0,0,18.68858,-11808.333,-40153.21)"
+             id="g6-3">
+            <path
+               d="m 65.1229,2249.0833 h 12.6792 v 2.4887 H 65.1229 z"
+               transform="matrix(0.96593,-0.25882,0.25882,0.96593,0,0)"
+               id="path8-3"
+               inkscape:connector-curvature="0"
+               style="fill:#ffffff;stroke:#000000" />
+            <path
+               d="m 634.1573,2161.5659 4.1932,-1.9822 h 8.3863 c 3.4294,0.143 9.801,1.8623 9.801,4.6125 l -1.0335,-0.3431 h -20.3727 l -0.9742,0.4043 z"
+               id="path10-8"
+               inkscape:connector-curvature="0"
+               style="fill:#ffffff" />
+            <path
+               d="m 639.5252,2168.418 c 0,1.6226 -1.3154,2.938 -2.9381,2.938 -1.6227,0 -2.9381,-1.3154 -2.9381,-2.938 0,-1.6226 1.3154,-2.9381 2.9381,-2.9381 1.6227,0 2.9381,1.3154 2.9381,2.9381 z"
+               transform="matrix(1.03658,0,0,1.03658,-23.50145,-79.37161)"
+               id="path12-6"
+               inkscape:connector-curvature="0"
+               style="stroke:#ffffff;stroke-width:0.96469998" />
+            <path
+               d="m 639.5252,2168.418 c 0,1.6226 -1.3154,2.938 -2.9381,2.938 -1.6227,0 -2.9381,-1.3154 -2.9381,-2.938 0,-1.6226 1.3154,-2.9381 2.9381,-2.9381 1.6227,0 2.9381,1.3154 2.9381,2.9381 z"
+               transform="matrix(1.03658,0,0,1.03658,-17.39404,-79.37161)"
+               id="path14-8"
+               inkscape:connector-curvature="0"
+               style="stroke:#ffffff;stroke-width:0.96469998" />
+            <path
+               d="m 639.5252,2168.418 c 0,1.6226 -1.3154,2.938 -2.9381,2.938 -1.6227,0 -2.9381,-1.3154 -2.9381,-2.938 0,-1.6226 1.3154,-2.9381 2.9381,-2.9381 1.6227,0 2.9381,1.3154 2.9381,2.9381 z"
+               transform="matrix(1.03658,0,0,1.03658,-11.24033,-79.37161)"
+               id="path16-6"
+               inkscape:connector-curvature="0"
+               style="stroke:#ffffff;stroke-width:0.96469998" />
+            <path
+               d="m 639.5252,2168.418 c 0,1.6226 -1.3154,2.938 -2.9381,2.938 -1.6227,0 -2.9381,-1.3154 -2.9381,-2.938 0,-1.6226 1.3154,-2.9381 2.9381,-2.9381 1.6227,0 2.9381,1.3154 2.9381,2.9381 z"
+               transform="matrix(1.03658,0,0,1.03658,-5.14929,-79.37161)"
+               id="path18-2"
+               inkscape:connector-curvature="0"
+               style="stroke:#ffffff;stroke-width:0.96469998" />
+            <path
+               d="m 638.9036,2153.7238 c -1.6828,1.2384 -2.7659,3.2453 -2.7659,5.495 h 13.6081 c 0,-2.2497 -1.083,-4.2566 -2.7659,-5.495 h -8.0764 z"
+               id="path20-4"
+               inkscape:connector-curvature="0"
+               style="fill:#ffffff;stroke:#000000" />
+            <path
+               d="m 636.308,2165.321 h 18.3718"
+               id="path22-1"
+               inkscape:connector-curvature="0"
+               style="fill:none;stroke:#ffffff" />
+            <path
+               d="m 636.308,2171.4062 h 18.3718"
+               id="path24-9"
+               inkscape:connector-curvature="0"
+               style="fill:none;stroke:#ffffff" />
+            <path
+               d="m 2247.9482,-78.3481 h 4.4117 v 3.3004 h -4.4117 z"
+               transform="matrix(0.25881905,0.96592583,-0.96592583,0.25881905,0,0)"
+               id="path26"
+               inkscape:connector-curvature="0"
+               style="fill:#ffffff;stroke:#000000" />
+            <path
+               d="m 639.3365,2155.5067 v -4.6631"
+               id="path28"
+               inkscape:connector-curvature="0"
+               style="fill:none;stroke:#ffffff" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -5,6 +5,7 @@ import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -169,7 +170,7 @@ public class BuildPanel extends Group {
             this.skin = skin;
 
             imgHiglight = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
-            imgHiglight.setScale(0.75f);
+//            imgHiglight.setScale(0.75f);
 
             icon = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
             icon.setScale(0.75f);

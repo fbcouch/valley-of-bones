@@ -31,6 +31,9 @@ public class Main {
         cfg.addIcon("icon_32.png", Files.FileType.Internal);
         cfg.addIcon("icon_16.png", Files.FileType.Internal);
 
+        TextureManager.defaultMaxFilter = Texture.TextureFilter.Linear;
+        TextureManager.defaultMinFilter = Texture.TextureFilter.Linear;
+
         new LwjglApplication(new VOBGame(), cfg);
     }
 

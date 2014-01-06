@@ -71,7 +71,7 @@ public class AbstractScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-//		stage.setViewport(width, height, true);
+//		stage.setViewport(width, height, false);
         stage.setViewport(800, 480, false);  // TODO probably need to make this different for android vs desktop
 		stage.clear();
 	}
