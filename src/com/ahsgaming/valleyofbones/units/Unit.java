@@ -131,7 +131,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         healthBar = new ProgressBar();
         healthBar.setSize(getWidth(), 4f);
 
-        if (this.proto.attackSound != null)
+        if (this.proto.attackSound != null && VOBGame.instance.getSoundManager() != null)
             attackSound = VOBGame.instance.getSoundManager().getSound(this.proto.attackSound);
 	}
 	

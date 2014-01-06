@@ -59,6 +59,7 @@ public class GameServer implements NetController {
 	GameSetupConfig gameConfig;
 
 	Array<Player> players = new Array<Player>();
+    Array<Command> recdCommands = new Array<Command>();
     Array<KryoCommon.Spectator> spectators = new Array<KryoCommon.Spectator>();
 	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 	int nextPlayerId = 0;
@@ -101,6 +102,7 @@ public class GameServer implements NetController {
         gameStarted = false;
         nextPlayerId = 0;
         players = new Array<Player>();
+        recdCommands = new Array<Command>();
         spectators = new Array<KryoCommon.Spectator>();
         connMap = new ObjectMap<Connection, NetPlayer>();
         host = null;
@@ -283,15 +285,7 @@ public class GameServer implements NetController {
 						Command cmd = (Command)obj;
 						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
 
-                        // discard past, future, invalid, or duplicated commands
-						if (cmd.turn == controller.getGameTurn() && !controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
-							if (cmd instanceof EndTurn) {
-                                endTurnRecd = true;
-                            } else {
-                                controller.queueCommand(cmd);
-                                server.sendToAllTCP(cmd);
-                            }
-						}
+                        recdCommands.add((Command)obj);
 					}
 				} else {
                     if (obj instanceof StartGame) {
@@ -434,6 +428,23 @@ public class GameServer implements NetController {
 		}
 
 		if (gameStarted) {
+
+            // moved this logic here to avoid "nested" iterator problem, which I think occurred because of the call to validate on another thread
+            synchronized (recdCommands) {
+                for (Command cmd: recdCommands) {
+                    // discard past, future, invalid, or duplicated commands
+                    if (cmd.turn == controller.getGameTurn() && !controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
+                        if (cmd instanceof EndTurn) {
+                            endTurnRecd = true;
+                        } else {
+                            controller.queueCommand(cmd);
+                            server.sendToAllTCP(cmd);
+                        }
+                    }
+                }
+                recdCommands.clear();
+            }
+
 			controller.update(delta);
 
             if (awaitReconnect) {
