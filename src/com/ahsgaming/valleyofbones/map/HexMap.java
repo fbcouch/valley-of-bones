@@ -632,7 +632,8 @@ public class HexMap {
             v2 = from;
         }
 
-        int dist = (int)(Math.abs(v2.x - v1.x) + Math.abs(v2.y - v1.y) - Math.floor(Math.abs(v2.y - v1.y) / 2));
+        int dist = (int)(Math.abs(v2.x - v1.x) + Math.abs(v2.y - v1.y)/* - Math.floor(Math.abs(v2.y - v1.y) / 2)*/);
+        if (Math.abs(v2.y - v1.y) > 1) dist--;
         if (v1.y % 2 == 1 && v2.y % 2 != 1) {
             dist--;
         }

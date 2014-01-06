@@ -115,6 +115,8 @@ public class HexMapTests {
 		
 		cases.add(new DistTestCase(0, 1, 4, 4, 5));
 		cases.add(new DistTestCase(4, 4, 0, 1, 5));
+
+        cases.add(new DistTestCase(0, 0, 1, 4, 4));
 		
 		for (DistTestCase dtc: cases) {
 			Assert.assertEquals(String.format("getMapDist (%d, %d) ---> (%d, %d)", dtc.x1, dtc.y1, dtc.x2, dtc.y2),
