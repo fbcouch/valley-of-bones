@@ -99,7 +99,7 @@ public class LevelScreen extends AbstractScreen {
 	public LevelScreen(VOBGame game, GameController gController) {
 		super(game);
 		this.gController = gController;
-		unitBoxRenderer = new UnitBoxRenderer(SELECT_BOX_LINE_WIDTH);
+		unitBoxRenderer = new UnitBoxRenderer(SELECT_BOX_LINE_WIDTH * VOBGame.SCALE);
         instance = this;
 	}
 	
@@ -541,7 +541,7 @@ public class LevelScreen extends AbstractScreen {
                             }
 
                         }
-                        shapeRenderer.rectLine(cur.x, cur.y, next.x, next.y, SELECT_BOX_LINE_WIDTH);
+                        shapeRenderer.rectLine(cur.x, cur.y, next.x, next.y, lineWidth);
                         cur.set(next);
                     }
 

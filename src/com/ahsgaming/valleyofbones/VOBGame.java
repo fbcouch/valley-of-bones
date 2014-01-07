@@ -16,7 +16,7 @@ public class VOBGame extends Game {
     public static final boolean DEBUG_AI = false;
 	public static final String LOG = "VOBGame";
 
-    public static float SCALE = 2.0f; // 0.75f = ldpi; 1.0f = mdpi; 2.0f = hdpi; 4.0f = xhdpi;
+    public static float SCALE = 4.0f; // 0.75f = ldpi; 1.0f = mdpi; 2.0f = hdpi; 4.0f = xhdpi;
 
     public static final String VERSION = "0.0.17";
 

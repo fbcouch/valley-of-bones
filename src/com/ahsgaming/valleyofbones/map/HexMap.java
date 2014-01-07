@@ -334,7 +334,7 @@ public class HexMap {
                     for (TileLayer l: tileLayers) {
                         int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
                         if (gid != 0) {
-                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY, tileSize.x, tileSize.y);
+                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
                             drewTile = true;
                         }
                     }
@@ -351,7 +351,7 @@ public class HexMap {
                         prev = hexStatus[i + j * (int)bounds.x];
                         batch.setColor(HEX_COLOR[prev]);
                     }
-//                    batch.draw(depth, curX, curY - 32);
+                    batch.draw(depth, curX, curY - tileSize.y * 0.5f);
                 }
                 curX += tileSize.x;
             }
@@ -386,7 +386,7 @@ public class HexMap {
                     for (TileLayer l: tileLayers) {
                         int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
                         if (gid != 0) {
-                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY, tileSize.x, tileSize.y);
+                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
                         }
                     }
                 }
@@ -623,21 +623,22 @@ public class HexMap {
         if (from.x == to.x) return Math.round(Math.abs(from.y - to.y));
         if (from.y == to.y) return Math.round(Math.abs(from.x - to.x));
 
-        Vector2 v1, v2;
-        if (from.x <= to.x) {
-            v1 = from;
-            v2 = to;
-        } else {
-            v1 = to;
-            v2 = from;
+        // otherwise, move along the gradient
+        from = new Vector2(from);
+        float dx = to.x - from.x, dy = to.y - from.y;
+        if (from.y % 2 == 0 && dx < 0) {
+            from.x -= 1;
+        } else if (from.y % 2 == 1 && dx > 0) {
+            from.x += 1;
         }
 
-        int dist = (int)(Math.abs(v2.x - v1.x) + Math.abs(v2.y - v1.y)/* - Math.floor(Math.abs(v2.y - v1.y) / 2)*/);
-        if (Math.abs(v2.y - v1.y) > 1) dist--;
-        if (v1.y % 2 == 1 && v2.y % 2 != 1) {
-            dist--;
+        if (dy > 0) {
+            from.y += 1;
+        } else {
+            from.y -= 1;
         }
-        return dist;
+
+        return 1 + getMapDist(from, to);
 	}
 
     public Vector2[] getAdjacent(int x, int y) {
