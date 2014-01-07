@@ -376,6 +376,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
         this.buildTime = buildTime;
     }
 
+    public boolean isCapturable() {
+        return capturable;
+    }
+
     public int getCost() {
 		return cost;
 	}

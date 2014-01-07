@@ -175,10 +175,8 @@ public class AIPlayer extends Player {
 
                 // build units
                 Prototypes.JsonProto unitToBuild = null;
-                for (Prototypes.JsonProto proto: Prototypes.getPlayerCanBuild()) {
-                    if ((proto.cost <= getBankMoney() && proto.food <= getMaxFood() - getCurFood()) && (unitToBuild == null || proto.cost > unitToBuild.cost)) {
-                        unitToBuild = proto;
-                    }
+                if (getBankMoney() >= 45) {
+                    unitToBuild = Prototypes.getProto("marine-base");
                 }
                 int positionToBuild = -1;
                 if (unitToBuild != null) {
@@ -275,12 +273,13 @@ public class AIPlayer extends Player {
     public float calcUnitMatrix(int x, int y, HexMap map, Array<Unit> units) {
         float total = 0;
         for (Unit unit: units) {
-            int mul = (unit.getOwner() == this ? -1 : 1);
+            int mul = unit.getOwner() == this ? -1 : unit.getOwner() == null ? 0 : 1;
             if (x == unit.getBoardPosition().x && y == unit.getBoardPosition().y) {
                 total += (unit.getMaxHP() * mul);
                 return -1 * unit.getMaxHP();
             } else {
-                total += (mul * unit.getMaxHP() / map.getMapDist(new Vector2(x, y), unit.getBoardPosition()));
+                int dist = map.getMapDist(new Vector2(x, y), unit.getBoardPosition());
+                total += (mul * unit.getMaxHP() / dist) + ((mul == 0 ? 1 : 0) * Math.pow(unit.getMaxHP() * (unit.isCapturable() ? 10 : 1), 3) / dist);
             }
         }
         return total;

@@ -450,7 +450,7 @@ public class GameController {
 		// TODO place builder
 		// for now, just add the unit
 		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
-		unit.setPosition(levelPos.x - 300, levelPos.y + 600);
+		unit.setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
 		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
         unit.addAction(GameObject.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
 		

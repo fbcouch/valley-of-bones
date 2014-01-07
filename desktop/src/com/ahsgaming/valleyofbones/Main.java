@@ -34,7 +34,7 @@ public class Main {
         TextureManager.defaultMaxFilter = Texture.TextureFilter.Linear;
         TextureManager.defaultMinFilter = Texture.TextureFilter.Linear;
 
-//        VOBGame.SCALE = 4.0f; // TODO load this from config?
+        VOBGame.SCALE = 4.0f; // TODO load this from config?
 
         new LwjglApplication(new VOBGame(), cfg);
     }

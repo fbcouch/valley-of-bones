@@ -65,7 +65,7 @@ public class ProgressBar {
     }
 
     public void setCurrent(float current) {
-        this.current = current;
+        this.current = (current > 0 ? current : 0);
     }
 
     public Color getHighColor() {
