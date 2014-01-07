@@ -79,6 +79,13 @@ skull-crossed-bones
   orig: 128, 128
   offset: 0, 0
   index: -1
+bazooka-overlay
+  rotate: false
+  xy: 730, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 detect
   rotate: false
   xy: 1644, 826
@@ -268,13 +275,6 @@ radial-balance
   orig: 128, 128
   offset: 0, 0
   index: -1
-bazooka-trooper-overlay
-  rotate: false
-  xy: 730, 2
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
 tank
   rotate: false
   xy: 684, 1952
@@ -294,6 +294,13 @@ checked-shield
   xy: 1220, 826
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+bazooka
+  rotate: false
+  xy: 988, 2
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1
 stealth
@@ -385,13 +392,6 @@ reticule
   xy: 766, 1342
   size: 128, 128
   orig: 128, 128
-  offset: 0, 0
-  index: -1
-bazooka-trooper
-  rotate: false
-  xy: 988, 2
-  size: 256, 256
-  orig: 256, 256
   offset: 0, 0
   index: -1
 castle

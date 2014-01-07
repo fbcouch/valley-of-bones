@@ -54,13 +54,16 @@ public class TurnPanel extends Group {
 
         player1 = gController.getPlayers().get(0);
         lblPlayer1 = new Label(player1.getPlayerName(), skin, "small-font", player1.getPlayerColor());
+        lblPlayer1.setFontScale(VOBGame.SCALE);
         addActor(lblPlayer1);
 
         player2 = gController.getPlayers().get(1);
         lblPlayer2 = new Label(player2.getPlayerName(), skin, "small-font", player2.getPlayerColor());
+        lblPlayer2.setFontScale(VOBGame.SCALE);
         addActor(lblPlayer2);
 
         lblTime = new Label(String.format(TIME, 0, 0), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+        lblTime.setFontScale(VOBGame.SCALE);
         addActor(lblTime);
 
         if (thePlayer == null) {
@@ -84,12 +87,13 @@ public class TurnPanel extends Group {
             endTurn.setSize(bg.getWidth(), bg.getHeight());
 
             Label end = new Label("End Turn", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            end.setFontScale(VOBGame.SCALE);
             endTurn.addActor(end);
             if (end.getWidth() > endTurn.getWidth() - 70)
                 end.setFontScale((endTurn.getWidth() - 70) / end.getWidth());
 
-            end.setX((thePlayer != player1 ? 25 : 45) + (endTurn.getWidth() - 70 - end.getWidth() * end.getFontScaleX()) * 0.5f);
-            end.setY(endTurn.getHeight() * 0.5f - (end.getHeight() * end.getFontScaleY()) * 0.5f);
+            end.setX((thePlayer != player1 ? 25 * VOBGame.SCALE : 45 * VOBGame.SCALE) + (endTurn.getWidth() - 70 * VOBGame.SCALE - end.getWidth() * end.getFontScaleX()) * 0.5f);
+            end.setY(endTurn.getHeight() * 0.5f - end.getHeight() * 0.5f);
 
             endTurn.setX(imgBackground.getWidth() * 0.5f - endTurn.getWidth() * 0.5f);
 
@@ -110,7 +114,7 @@ public class TurnPanel extends Group {
         setSize(imgBackground.getWidth(), imgBackground.getHeight());
 
         lblTime.setPosition(
-                (imgBackground.getWidth() - lblTime.getWidth()) * 0.5f,
+                197 * VOBGame.SCALE,
                 (imgBackground.getHeight() - lblTime.getHeight()) * 0.5f
         );
 
@@ -124,43 +128,43 @@ public class TurnPanel extends Group {
                 (imgBackground.getHeight() - imgP2Indicator.getHeight()) * 0.5f
         );
 
-        if (lblPlayer1.getWidth() > imgP1Indicator.getX() - 25)
-            lblPlayer1.setFontScale((imgP1Indicator.getX() - 25) / lblPlayer1.getWidth());
+        if (lblPlayer1.getWidth() > imgP1Indicator.getX() - 25 * VOBGame.SCALE)
+            lblPlayer1.setFontScale((imgP1Indicator.getX() - 25 * VOBGame.SCALE) / lblPlayer1.getWidth());
 
         lblPlayer1.setPosition(
-                25,
+                25 * VOBGame.SCALE,
                 (imgBackground.getHeight() - lblPlayer1.getHeight()) * 0.5f
         );
 
         Gdx.app.log("width", Float.toString(lblPlayer2.getWidth()));
-        Gdx.app.log("max", Float.toString((getWidth() - imgP2Indicator.getRight() - 25)));
-        if (lblPlayer2.getWidth() > getWidth() - imgP2Indicator.getRight() - 25)
-            lblPlayer2.setFontScale((getWidth() - imgP2Indicator.getRight() - 25) / lblPlayer2.getWidth());
+        Gdx.app.log("max", Float.toString((getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE)));
+        if (lblPlayer2.getWidth() > getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE)
+            lblPlayer2.setFontScale((getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE) / lblPlayer2.getWidth());
         Gdx.app.log("scale", Float.toString(lblPlayer2.getFontScaleX()));
 
         lblPlayer2.setPosition(
-                imgBackground.getWidth() - lblPlayer2.getWidth() * lblPlayer2.getFontScaleX() - 25,
+                imgBackground.getWidth() - lblPlayer2.getWidth() * lblPlayer2.getFontScaleX() - 25 * VOBGame.SCALE,
                 (imgBackground.getHeight() - lblPlayer2.getHeight()) * 0.5f
         );
 
         if (thePlayer == null) {
             infoPanel.setPosition(
-                    -infoPanel.getWidth() + 45,
+                    -infoPanel.getWidth() + 45 * VOBGame.SCALE,
                     imgBackground.getHeight() - infoPanel.getHeight()
             );
             infoPanel2.setPosition(
-                    imgBackground.getWidth() - 45,
+                    imgBackground.getWidth() - 45 * VOBGame.SCALE,
                     imgBackground.getHeight() - infoPanel2.getHeight()
             );
         } else {
             if (thePlayer == player1) {
                 infoPanel.setPosition(
-                        -infoPanel.getWidth() + 45,
+                        -infoPanel.getWidth() + 45 * VOBGame.SCALE,
                         imgBackground.getHeight() - infoPanel.getHeight()
                 );
             } else {
                 infoPanel.setPosition(
-                        imgBackground.getWidth() - 45,
+                        imgBackground.getWidth() - 45 * VOBGame.SCALE,
                         imgBackground.getHeight() - infoPanel.getHeight()
                 );
 
@@ -195,16 +199,16 @@ public class TurnPanel extends Group {
             if (thePlayer != null) {
                 if (thePlayer == player1) {
                     if (isCurrent) {
-                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - 45, endTurn.getY(), 0.5f));
+                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - 45 * VOBGame.SCALE, endTurn.getY(), 0.5f));
                     } else {
-                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - endTurn.getWidth() + 10, endTurn.getY(), 0.5f));
+                        endTurn.addAction(Actions.moveTo(imgBackground.getWidth() - endTurn.getWidth() + 10 * VOBGame.SCALE, endTurn.getY(), 0.5f));
                     }
 
                 } else {
                     if (isCurrent) {
-                        endTurn.addAction(Actions.moveTo(-endTurn.getWidth() + 45, endTurn.getY(), 0.5f));
+                        endTurn.addAction(Actions.moveTo(-endTurn.getWidth() + 45 * VOBGame.SCALE, endTurn.getY(), 0.5f));
                     } else {
-                        endTurn.addAction(Actions.moveTo(-10, endTurn.getY(), 0.5f));
+                        endTurn.addAction(Actions.moveTo(-10 * VOBGame.SCALE, endTurn.getY(), 0.5f));
                     }
                 }
             }
@@ -226,7 +230,7 @@ public class TurnPanel extends Group {
 
         boolean pullRight;
 
-        int padLeft = 25, padRight = 45;
+        float padLeft = 25 * VOBGame.SCALE, padRight = 45 * VOBGame.SCALE;
 
         public InfoPanel(Player player, boolean pullRight, Skin skin) {
             this.player = player;
@@ -242,18 +246,18 @@ public class TurnPanel extends Group {
             imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg-small"));
             addActor(imgBackground);
 
-            imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"));
-            imgMoney.setScale(20 / imgMoney.getWidth());
+            imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money-small"));
             addActor(imgMoney);
 
-            imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"));
-            imgSupply.setScale(20 / imgSupply.getWidth());
+            imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply-small"));
             addActor(imgSupply);
 
             lblMoney = new Label("0000", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            lblMoney.setFontScale(VOBGame.SCALE);
             addActor(lblMoney);
 
             lblSupply = new Label("00/00", skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+            lblSupply.setFontScale(VOBGame.SCALE);
             addActor(lblSupply);
 
             layout();
@@ -265,19 +269,19 @@ public class TurnPanel extends Group {
             lblMoney.setText(String.format("%04d", (int)player.getBankMoney()));
             lblSupply.setText(String.format("%02d/%02d", player.getCurFood(), player.getMaxFood()));
 
-            imgMoney.setPosition(padLeft, (imgBackground.getHeight() - imgMoney.getHeight() * imgMoney.getScaleY()) * 0.5f);
+            imgMoney.setPosition(padLeft, (imgBackground.getHeight() - imgMoney.getHeight()) * 0.5f);
             imgSupply.setPosition(
                     padLeft + (imgBackground.getWidth() - padLeft - padRight) * 0.5f,
-                    (imgBackground.getHeight() - imgSupply.getHeight() * imgSupply.getScaleY()) * 0.5f
+                    (imgBackground.getHeight() - imgSupply.getHeight()) * 0.5f
             );
 
             if (lblMoney.getWidth() > imgSupply.getX() - (imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX()))
                 lblMoney.setFontScale((imgSupply.getX() - (imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX())) / lblMoney.getWidth() );
-            lblMoney.setPosition(imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX(), imgMoney.getY());
+            lblMoney.setPosition(imgMoney.getX() + imgMoney.getWidth() * imgMoney.getScaleX(), imgMoney.getY() + (imgMoney.getHeight() - lblMoney.getHeight()) * 0.5f);
 
             if (lblSupply.getWidth() > imgBackground.getWidth() - padRight - (imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX()))
                 lblSupply.setFontScale((imgBackground.getWidth() - padRight - (imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX())) / lblSupply.getWidth() );
-            lblSupply.setPosition(imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX(), imgSupply.getY());
+            lblSupply.setPosition(imgSupply.getX() + imgSupply.getWidth() * imgSupply.getScaleX(), imgSupply.getY() + (imgSupply.getHeight() - lblSupply.getHeight()) * 0.5f);
 
             setSize(imgBackground.getWidth(), imgBackground.getHeight());
         }

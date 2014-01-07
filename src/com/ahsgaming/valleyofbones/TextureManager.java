@@ -44,7 +44,19 @@ public class TextureManager {
     public static TextureFilter defaultMinFilter = TextureFilter.Nearest;
     public static TextureFilter defaultMaxFilter = TextureFilter.Nearest;
 
-    String size = "mdpi";
+    String size = "xhdpi";
+
+    public TextureManager() {
+        if (VOBGame.SCALE < 1.0f) {
+            size = "ldpi";
+        } else if (VOBGame.SCALE < 2.0f) {
+            size = "mdpi";
+        } else if (VOBGame.SCALE < 4.0f) {
+            size = "hdpi";
+        } else {
+            size = "xhdpi";
+        }
+    }
 
     public void clear() {
         dispose();

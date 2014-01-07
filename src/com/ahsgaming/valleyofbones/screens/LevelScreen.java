@@ -339,7 +339,8 @@ public class LevelScreen extends AbstractScreen {
 	
 	@Override
 	public void resize(int width, int height) {
-		super.resize(width, height);
+		stage.setViewport(800 * VOBGame.SCALE, 480 * VOBGame.SCALE, true);
+        stage.clear();
 
         stage.addListener(new LevelScreenInputListener(this));
 
@@ -448,6 +449,7 @@ public class LevelScreen extends AbstractScreen {
 
 		Gdx.app.log(LOG, "Floating Label!");
 		Label lbl = new Label(text, new LabelStyle(getSmallFont(), new Color(1,1,1,1)));
+        lbl.setFontScale(VOBGame.SCALE);
 		lbl.setPosition(screenPos.x - lbl.getWidth() * 0.5f, screenPos.y - lbl.getHeight() * 0.5f);
 		lbl.addAction(Actions.parallel(Actions.fadeOut(1f), Actions.moveBy(0, 64f, 1f)));
 		grpLevel.addActor(lbl);
@@ -457,6 +459,7 @@ public class LevelScreen extends AbstractScreen {
         Gdx.app.log(LOG, "Popup message!");
         Group popup = new Group();
         Label lbl = new Label(text, getSkin(), "medium");
+        lbl.setFontScale(VOBGame.SCALE);
         Image img = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", icon));
         popup.addActor(img);
         popup.addActor(lbl);

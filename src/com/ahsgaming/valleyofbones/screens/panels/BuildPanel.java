@@ -95,9 +95,9 @@ public class BuildPanel extends Group {
     }
 
     public void layout() {
-        imgInfantryTab.setPosition(-15, imgBackground.getTop() - 4);
-        imgMechTab.setPosition(imgInfantryTab.getRight() - 25, imgInfantryTab.getY());
-        int y = 150;
+        imgInfantryTab.setPosition(-15 * VOBGame.SCALE, imgBackground.getTop() - 4 * VOBGame.SCALE);
+        imgMechTab.setPosition(imgInfantryTab.getRight() - 25 * VOBGame.SCALE, imgInfantryTab.getY());
+        float y = 150 * VOBGame.SCALE;
         switch(selected) {
             default:
             case 0:
@@ -176,22 +176,22 @@ public class BuildPanel extends Group {
             icon.setScale(0.75f);
             addActor(icon);
 
-            imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply"));
-            imgSupply.setScale(20 / imgSupply.getWidth());
-            imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX(), 0);
+            imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply-small"));
+            imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX() + 5 * VOBGame.SCALE, 0);
             addActor(imgSupply);
 
             lblSupply = new Label(Integer.toString(proto.food), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
-            lblSupply.setPosition(imgSupply.getRight(), imgSupply.getY());
+            lblSupply.setFontScale(VOBGame.SCALE);
+            lblSupply.setPosition(imgSupply.getRight(), imgSupply.getY() + (imgSupply.getHeight() - lblSupply.getHeight()) * 0.5f);
             addActor(lblSupply);
 
-            imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money"));
-            imgMoney.setScale(20 / imgMoney.getWidth());
+            imgMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money-small"));
             imgMoney.setPosition(imgSupply.getX(), imgSupply.getY() + imgSupply.getHeight() * imgSupply.getScaleY() + 1);
             addActor(imgMoney);
 
             lblMoney = new Label(Integer.toString(proto.cost), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
-            lblMoney.setPosition(imgMoney.getRight(), imgMoney.getY());
+            lblMoney.setFontScale(VOBGame.SCALE);
+            lblMoney.setPosition(imgMoney.getRight(), imgMoney.getY() + (imgMoney.getHeight() - lblMoney.getHeight()) * 0.5f);
             addActor(lblMoney);
 
             setSize(Math.max(lblSupply.getRight(), lblMoney.getRight()), icon.getHeight() * icon.getScaleY());

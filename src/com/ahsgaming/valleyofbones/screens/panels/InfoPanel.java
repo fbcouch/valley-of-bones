@@ -53,14 +53,14 @@ public class InfoPanel extends Group {
         this.levelScreen = lvlScreen;
         this.skin = skin;
 
-        iconHealth = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hospital-cross"));
-        iconAttack = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "crossed-swords"));
-        iconRange = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "archery-target"));
-        iconArmor = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "checked-shield"));
-        iconMove = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "radial-balance"));
-        iconMovesLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot"));
-        iconAttacksLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword"));
-        iconRefund = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "skull-crossed-bones"));
+        iconHealth = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hospital-cross-small"));
+        iconAttack = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "crossed-swords-small"));
+        iconRange = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "archery-target-small"));
+        iconArmor = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "checked-shield-small"));
+        iconMove = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "radial-balance-small"));
+        iconMovesLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot-small"));
+        iconAttacksLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword-small"));
+        iconRefund = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "skull-crossed-bones-small"));
         imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "selection-hud-bg"));
 
         iconRefund.addListener(new ClickListener() {
@@ -73,14 +73,23 @@ public class InfoPanel extends Group {
 
 
         lblTitle = new Label("NOTHING", skin, "small");
+        lblTitle.setFontScale(VOBGame.SCALE);
         lblHealth = new Label(String.format(HEALTH, 0, 0), skin, "small");
+        lblHealth.setFontScale(VOBGame.SCALE);
         lblAttack = new Label(String.format(ATTACK, 0), skin, "small");
+        lblAttack.setFontScale(VOBGame.SCALE);
         lblRange = new Label(String.format(RANGE, 0), skin, "small");
+        lblRange.setFontScale(VOBGame.SCALE);
         lblArmor = new Label(String.format(ARMOR, 0), skin, "small");
+        lblArmor.setFontScale(VOBGame.SCALE);
         lblMove = new Label(String.format(MOVE, 0), skin, "small");
+        lblMove.setFontScale(VOBGame.SCALE);
         lblAttacksLeft = new Label(String.format(ATTACK_LEFT, 0), skin, "small");
+        lblAttacksLeft.setFontScale(VOBGame.SCALE);
         lblMovesLeft = new Label(String.format(MOVE_LEFT, 0), skin, "small");
+        lblMovesLeft.setFontScale(VOBGame.SCALE);
         lblRefund = new Label(String.format(REFUND, 0), skin, "small");
+        lblRefund.setFontScale(VOBGame.SCALE);
 
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
@@ -201,28 +210,23 @@ public class InfoPanel extends Group {
 //        }
 
         iconAttack.setPosition(x, y);
-        iconAttack.setScale(20 / iconAttack.getWidth());
 
         lblAttack.setPosition(iconAttack.getX() + iconAttack.getWidth() * iconAttack.getScaleX(), y);
 
         iconRange.setPosition(lblAttack.getRight(), y);
-        iconRange.setScale(20 / iconAttack.getWidth());
 
         lblRange.setPosition(iconRange.getX() + iconRange.getWidth() * iconRange.getScaleX(), y);
 
         iconHealth.setPosition(x, y);
-        iconHealth.setScale(20 / iconAttack.getWidth());
 
         lblHealth.setPosition(iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX(), y);
-        lblHealth.setFontScale(iconHealth.getScaleY());
+        lblHealth.setFontScale(0.75f * VOBGame.SCALE);
 
         iconMove.setPosition(Math.max(lblHealth.getRight(), lblRange.getRight()), y);
-        iconMove.setScale(20 / iconAttack.getWidth());
 
         lblMove.setPosition(iconMove.getX() + iconMove.getWidth() * iconMove.getScaleX(), y);
 
         iconArmor.setPosition(lblMove.getRight(), y);
-        iconArmor.setScale(20 / iconAttack.getWidth());
 
         lblArmor.setPosition(iconArmor.getX() + iconArmor.getWidth() * iconArmor.getScaleX(), y);
         y += iconArmor.getHeight() * iconArmor.getScaleY() + 5;
@@ -231,12 +235,10 @@ public class InfoPanel extends Group {
         lblHealth.setY(y);
 
         iconMovesLeft.setPosition(iconMove.getX(), y);
-        iconMovesLeft.setScale(20 / iconAttack.getWidth());
 
         lblMovesLeft.setPosition(iconMovesLeft.getX() + iconMovesLeft.getWidth() * iconMovesLeft.getScaleX(), y);
 
         iconAttacksLeft.setPosition(iconArmor.getX(), y);
-        iconAttacksLeft.setScale(20 / iconAttack.getWidth());
 
         lblAttacksLeft.setPosition(iconAttacksLeft.getX() + iconAttacksLeft.getWidth() * iconAttacksLeft.getScaleX(), y);
         y += iconAttacksLeft.getHeight() * iconAttacksLeft.getScaleY() + 5;
@@ -248,7 +250,7 @@ public class InfoPanel extends Group {
             iconAbility.setPosition(lblAttacksLeft.getX() + lblAttacksLeft.getWidth() + 5, lblAttacksLeft.getTop() - iconAbility.getHeight());
         }
 
-        healthBar.setSize(iconMovesLeft.getX() - (iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX()), 4);
+        healthBar.setSize(iconMovesLeft.getX() - (iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX()), 4 * VOBGame.SCALE);
     }
 
     public void setSelected(Unit unit) {

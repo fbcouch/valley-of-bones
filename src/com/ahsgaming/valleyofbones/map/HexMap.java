@@ -210,9 +210,9 @@ public class HexMap {
 
         bounds.y = json.getFloat("height", bounds.y);
 
-        tileSize.x = json.getFloat("tilewidth", tileSize.x);
+        tileSize.x = json.getFloat("tilewidth", tileSize.x) * VOBGame.SCALE;
 
-        tileSize.y = json.getFloat("tileheight", tileSize.y);
+        tileSize.y = json.getFloat("tileheight", tileSize.y) * VOBGame.SCALE;
 
         version = json.getString("version", version);
 
@@ -351,7 +351,7 @@ public class HexMap {
                         prev = hexStatus[i + j * (int)bounds.x];
                         batch.setColor(HEX_COLOR[prev]);
                     }
-                    batch.draw(depth, curX, curY - 32);
+//                    batch.draw(depth, curX, curY - 32);
                 }
                 curX += tileSize.x;
             }
@@ -386,7 +386,7 @@ public class HexMap {
                     for (TileLayer l: tileLayers) {
                         int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
                         if (gid != 0) {
-                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
+                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY, tileSize.x, tileSize.y);
                         }
                     }
                 }

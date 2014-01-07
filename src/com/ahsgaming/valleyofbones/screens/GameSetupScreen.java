@@ -149,7 +149,8 @@ public class GameSetupScreen extends AbstractScreen {
 				table.add(new Label(String.format("%s (%d)", team2.get(i).getPlayerName(), team2.get(i).getPlayerId()), getSkin())).left().colspan(2);
 				
 				if (config.isHost && team2.get(i).getPlayerId() != game.getPlayer().getPlayerId()) {
-					table.add(getRemovePlayerButton(team2.get(i))).right();
+                    Image btn = getRemovePlayerButton(team2.get(i));
+					table.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).right();
 				} else {
 					table.add();
 				}
@@ -216,6 +217,7 @@ public class GameSetupScreen extends AbstractScreen {
 	
 	private Image getRemovePlayerButton(final Player p) {
 		Image remove = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot"));
+
 		remove.addListener(new ClickListener() {
 
 			/* (non-Javadoc)
