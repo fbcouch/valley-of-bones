@@ -22,7 +22,7 @@ public class Main {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Valley of Bones | ahsgaming.com | (c) 2013 Jami Couch";
         cfg.useGL20 = false;
-        cfg.width = 1280;
+        cfg.width = 1280;     // TODO load from config?
         cfg.height = 768;
         cfg.fullscreen = false;
         cfg.resizable = true;
@@ -33,6 +33,8 @@ public class Main {
 
         TextureManager.defaultMaxFilter = Texture.TextureFilter.Linear;
         TextureManager.defaultMinFilter = Texture.TextureFilter.Linear;
+
+//        VOBGame.SCALE = 4.0f; // TODO load this from config?
 
         new LwjglApplication(new VOBGame(), cfg);
     }

@@ -16,7 +16,7 @@ public class VOBGame extends Game {
     public static final boolean DEBUG_AI = false;
 	public static final String LOG = "VOBGame";
 
-    public static float SCALE = 4.0f; // 0.75f = ldpi; 1.0f = mdpi; 2.0f = hdpi; 4.0f = xhdpi;
+    public static float SCALE = -1.0f; // 0.75f = ldpi; 1.0f = mdpi; 2.0f = hdpi; 4.0f = xhdpi; -1 = auto
 
     public static final String VERSION = "0.0.17";
 
@@ -122,7 +122,6 @@ public class VOBGame extends Game {
 	
 	@Override
 	public void create() {
-        textureManager = new TextureManager();
         soundManager = new SoundManager();
 
         Gdx.app.log(LOG, String.format("Valley of Bones Client Version %s", VERSION));
@@ -191,6 +190,21 @@ public class VOBGame extends Game {
 	public void resize(int width, int height) {
 		super.resize(width, height);
         Gdx.app.log(LOG, "resize");
+        if (textureManager == null) {
+            if (VOBGame.SCALE == -1) {
+                if (width <= 600) {
+                    VOBGame.SCALE = 0.75f;
+                } else if (width <= 800) {
+                    VOBGame.SCALE = 1.0f;
+                } else if (width < 1600) {
+                    VOBGame.SCALE = 2.0f;
+                } else {
+                    VOBGame.SCALE = 4.0f;
+                }
+            }
+            Gdx.app.log(LOG, "Scale: " + VOBGame.SCALE);
+            textureManager = new TextureManager();
+        }
 	}
 
 	@Override

@@ -172,16 +172,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="263.38367"
-     inkscape:cy="147.65143"
+     inkscape:zoom="1"
+     inkscape:cx="323.15447"
+     inkscape:cy="247.65143"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g4454"
      showgrid="false"
-     inkscape:window-width="1440"
-     inkscape:window-height="871"
-     inkscape:window-x="1920"
-     inkscape:window-y="180"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -191,7 +191,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -2919,6 +2919,141 @@
              y="987.11688"
              style="font-size:24px">1</tspan></text>
       </g>
+    </g>
+    <g
+       id="g4492">
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+         sodipodi:nodetypes="ccccccccc"
+         inkscape:connector-curvature="0"
+         id="rect3755-0-2-0"
+         d="m 553.21449,932.18137 -15,14.2857 -276.42898,0 -15,-14.2857 0,-292 15,-14.2857 276.42898,0 15,14.2857 z"
+         style="color:#000000;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4249"
+         d="m 247.48737,659.35295 306.88435,0"
+         style="fill:#b3b3b3;stroke:#808080;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       x="326.25391"
+       y="651.57477"
+       id="text4245"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4247"
+         x="326.25391"
+         y="651.57477"
+         style="font-size:24px;fill:#b3b3b3">GAME MENU</tspan></text>
+    <path
+       style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 543.21449,733.18137 -15,14.2857 -256.42898,0 -15,-14.2857 0,-22 15,-14.2857 256.42898,0 15,14.2857 z"
+       id="rect3755-0-2-0-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 543.21449,797.18137 -15,14.2857 -256.42898,0 -15,-14.2857 0,-22 15,-14.2857 256.42898,0 15,14.2857 z"
+       id="rect3755-0-2-0-5-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 543.21449,861.18137 -15,14.2857 -256.42898,0 -15,-14.2857 0,-22 15,-14.2857 256.42898,0 15,14.2857 z"
+       id="rect3755-0-2-0-5-6-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       x="399.90625"
+       y="730.77124"
+       id="text4245-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4247-4"
+         x="399.90625"
+         y="730.77124"
+         style="font-size:24px;text-align:center;text-anchor:middle;fill:#b3b3b3">SURRENDER</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       x="399.90625"
+       y="794.77124"
+       id="text4245-8-6"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4247-4-7"
+         x="399.90625"
+         y="794.77124"
+         style="font-size:24px;text-align:center;text-anchor:middle;fill:#b3b3b3">UNIT LIST</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       x="399.90625"
+       y="858.77124"
+       id="text4245-8-6-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4247-4-7-9"
+         x="399.90625"
+         y="858.77124"
+         style="font-size:24px;text-align:center;text-anchor:middle;fill:#b3b3b3">RETURN TO GAME</tspan></text>
+    <path
+       style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m -27.90535,757.89204 -15,14.2857 -256.42898,0 -15,-14.2857 0,-22 15,-14.2857 256.42898,0 15,14.2857 z"
+       id="rect3755-0-2-0-5-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="color:#000000;fill:#808080;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m -27.90535,817.28901 -15,14.2857 -256.42898,0 -15,-14.2857 0,-22 15,-14.2857 256.42898,0 15,14.2857 z"
+       id="rect3755-0-2-0-5-3-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       transform="translate(14,18.83348)"
+       id="g4454">
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/btn-end-turn-bg.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="rect3755-5-1-5"
+         d="m 691.28926,1036.8647 214.42898,0 -20,-24.5714 -174.42898,0 z"
+         style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4245-8-7"
+         y="1032.9579"
+         x="748.42358"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#b3b3b3;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+         xml:space="preserve"><tspan
+           style="font-size:24px;text-align:center;text-anchor:middle;fill:#b3b3b3"
+           y="1032.9579"
+           x="748.42358"
+           id="tspan4247-4-8"
+           sodipodi:role="line">MENU</tspan></text>
     </g>
   </g>
 </svg>

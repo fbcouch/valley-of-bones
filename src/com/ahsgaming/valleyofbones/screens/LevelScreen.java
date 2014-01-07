@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -311,7 +312,7 @@ public class LevelScreen extends AbstractScreen {
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
         selectionPanel = new InfoPanel(game, this, getSkin());
         turnPanel = new TurnPanel(gController, game.getPlayer(), getSkin());
-        menuButton = new TextButton("Menu", getSkin(), "small");
+        menuButton = new SmallUIButton("Menu", getSkin());
         menuPanel = new MenuPanel(this);
 
         ClickListener interruptListener = new ClickListener() {
@@ -365,16 +366,15 @@ public class LevelScreen extends AbstractScreen {
 //        upgradePanel.setAnchor(0, 64);
 
         stage.addActor(buildPanel);
-        buildPanel.setPosition(-3, -3);
+        buildPanel.setPosition(-3 * VOBGame.SCALE, -3 * VOBGame.SCALE);
 
         stage.addActor(selectionPanel);
-        selectionPanel.setPosition(stage.getWidth() * 0.5f - selectionPanel.getWidth() * 0.5f, -selectionPanel.getHeight() + 3);
+        selectionPanel.setPosition(stage.getWidth() * 0.5f - selectionPanel.getWidth() * 0.5f, -selectionPanel.getHeight() + 3 * VOBGame.SCALE);
 
-        turnPanel.setPosition(stage.getWidth() * 0.5f - turnPanel.getWidth() * 0.5f, stage.getHeight() - turnPanel.getHeight() + 3);
+        turnPanel.setPosition(stage.getWidth() * 0.5f - turnPanel.getWidth() * 0.5f, stage.getHeight() - turnPanel.getHeight() + 3 * VOBGame.SCALE);
         stage.addActor(turnPanel);
 
         stage.addActor(menuButton);
-        menuButton.setPosition(stage.getWidth() - menuButton.getWidth(), 0);
 
         menuPanel.resize(stage.getWidth(), stage.getHeight());
 	}
@@ -404,12 +404,12 @@ public class LevelScreen extends AbstractScreen {
             gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit) lastSelected).getMovesLeft(), true);
 
             selectionPanel.setSelected((Unit) lastSelected);
-            if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f, 0.01f)) {
-                selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6, 0.5f));
+            if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
+                selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6  * VOBGame.SCALE, 0.5f));
             }
         } else {
-            if (Utils.epsilonEquals(selectionPanel.getY(), -3f, 0.01f)) {
-                selectionPanel.addAction(Actions.moveBy(0, -selectionPanel.getHeight() + 6, 0.5f));
+            if (Utils.epsilonEquals(selectionPanel.getY(), -3f * VOBGame.SCALE, 0.01f)) {
+                selectionPanel.addAction(Actions.moveBy(0, -selectionPanel.getHeight() + 6 * VOBGame.SCALE, 0.5f));
             }
         }
 
@@ -441,6 +441,7 @@ public class LevelScreen extends AbstractScreen {
         // DRAW BOXES
         drawUnitBoxes();
 
+        menuButton.setPosition(stage.getWidth() - menuButton.getWidth() + 30 * VOBGame.SCALE, -3  * VOBGame.SCALE);
         stage.draw();
 	}
 	
@@ -569,13 +570,18 @@ public class LevelScreen extends AbstractScreen {
         LevelScreen levelScreen;
 
         SubPanel subPanel;
+        Label lblTitle;
 
         public MenuPanel(LevelScreen levelScreen) {
             super();
             this.levelScreen = levelScreen;
-            imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "hud-bar"));
-            imgBackground.setColor(0.2f, 0.2f, 0.2f, 1.0f);
+            imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "game-menu-bg"));
             addActor(imgBackground);
+
+            lblTitle = new Label("Game Menu", levelScreen.getSkin(), "medium");
+            lblTitle.setFontScale(VOBGame.SCALE);
+            lblTitle.setColor(0.8f, 0.8f, 0.8f, 1.0f);
+            addActor(lblTitle);
 
             show(new GameMenu(levelScreen));
         }
@@ -586,8 +592,17 @@ public class LevelScreen extends AbstractScreen {
 
         public void resize(float width, float height) {
             setSize(width, height);
-            imgBackground.setSize(width, height);
-            if (subPanel != null) subPanel.resize(width, height);
+            imgBackground.setPosition((width - imgBackground.getWidth()) * 0.5f, (height - imgBackground.getHeight()) * 0.5f);
+
+            lblTitle.setPosition(
+                    imgBackground.getX() + (imgBackground.getWidth() - lblTitle.getWidth() * lblTitle.getFontScaleX()) * 0.5f,
+                    imgBackground.getTop() - 13 * VOBGame.SCALE - lblTitle.getHeight()
+            );
+
+            if (subPanel != null) {
+                subPanel.resize(imgBackground.getWidth(), imgBackground.getHeight());
+                subPanel.setPosition(imgBackground.getX(), imgBackground.getY());
+            }
         }
 
         public void showUnitList() {
@@ -603,7 +618,7 @@ public class LevelScreen extends AbstractScreen {
             this.subPanel = subPanel;
             addActor(subPanel);
             subPanel.show();
-            subPanel.resize(getWidth(), getHeight());
+            resize(getWidth(), getHeight());
         }
 
         public static abstract class SubPanel extends Group {
@@ -637,16 +652,16 @@ public class LevelScreen extends AbstractScreen {
                 table.setFillParent(true);
                 addActor(table);
 
-                btnSurrender = new TextButton("Surrender", levelScreen.getSkin());
-                table.add(btnSurrender).size(MainMenuScreen.BUTTON_WIDTH, MainMenuScreen.BUTTON_HEIGHT).pad(MainMenuScreen.BUTTON_SPACING);
+                btnSurrender = new MedUIButton("Surrender", levelScreen.getSkin());
+                table.add(btnSurrender).pad(10 * VOBGame.SCALE);
                 table.row();
 
-                btnUnitList = new TextButton("Unit List", levelScreen.getSkin());
-                table.add(btnUnitList).size(MainMenuScreen.BUTTON_WIDTH, MainMenuScreen.BUTTON_HEIGHT).pad(MainMenuScreen.BUTTON_SPACING);
-                table.row();
+                btnUnitList = new MedUIButton("Unit List", levelScreen.getSkin());
+//                table.add(btnUnitList).pad(10 * VOBGame.SCALE);
+//                table.row();
 
-                btnReturnToGame = new TextButton("Return to Game", levelScreen.getSkin());
-                table.add(btnReturnToGame).size(MainMenuScreen.BUTTON_WIDTH, MainMenuScreen.BUTTON_HEIGHT).pad(MainMenuScreen.BUTTON_SPACING);
+                btnReturnToGame = new MedUIButton("Return to Game", levelScreen.getSkin());
+                table.add(btnReturnToGame).pad(10 * VOBGame.SCALE);
                 table.row();
 
                 btnSurrender.addListener(new ClickListener() {
@@ -686,7 +701,7 @@ public class LevelScreen extends AbstractScreen {
             LevelScreen levelScreen;
             Array<Prototypes.JsonProto> itemProtos;
 
-            TextButton btnBack;
+            SmallUIButton btnBack;
             TextureManager textureManager;
 
             public UnitList(LevelScreen levelScreen) {
@@ -745,7 +760,7 @@ public class LevelScreen extends AbstractScreen {
 
                 }
 
-                btnBack = new TextButton("Back", levelScreen.getSkin(), "small");
+                btnBack = new SmallUIButton("Back", levelScreen.getSkin());
                 addActor(btnBack);
 
                 btnBack.addListener(new ClickListener() {
@@ -761,6 +776,53 @@ public class LevelScreen extends AbstractScreen {
             @Override
             public void update(float delta) {
             }
+        }
+    }
+
+    public static class ScalingTextButton extends TextButton {
+
+        public ScalingTextButton(String text, Skin skin) {
+            super(text, skin);
+        }
+
+        public ScalingTextButton(String text, Skin skin, String styleName) {
+            super(text, skin, styleName);
+        }
+
+        public ScalingTextButton(String text, TextButtonStyle style) {
+            super(text, style);
+        }
+
+        @Override
+        public void layout() {
+            getLabel().setFontScale(VOBGame.SCALE * getScaleX(), VOBGame.SCALE * getScaleY());
+            setSize(getPrefWidth(), getPrefHeight());
+
+            super.layout();
+        }
+    }
+
+    public static class SmallUIButton extends ScalingTextButton {
+
+        public SmallUIButton(String text, Skin skin) {
+            super(text, new TextButtonStyle(
+                    new TextureRegionDrawable(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "small-btn-up")),
+                    new TextureRegionDrawable(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "small-btn-up")),
+                    new TextureRegionDrawable(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "small-btn-up")),
+                    skin.getFont("small-font")
+            ));
+        }
+    }
+
+    public static class MedUIButton extends ScalingTextButton {
+
+        public MedUIButton(String text, Skin skin) {
+            super(text, new TextButtonStyle(
+                    new TextureRegionDrawable(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "med-btn-up")),
+                    new TextureRegionDrawable(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "med-btn-dn")),
+                    new TextureRegionDrawable(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "med-btn-up")),
+                    skin.getFont("medium-font")
+            ));
         }
     }
 }
