@@ -79,7 +79,7 @@ public class Player {
         updateFoodAndUpkeep(controller, true);
     }
 
-	public void update(GameController controller) {
+	public void update(GameController controller, float delta) {
         updateFoodAndUpkeep(controller, false);
 	}
 	

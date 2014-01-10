@@ -149,7 +149,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         capturable = properties.getBoolean("capturable", false);
         cost = properties.getInt("cost", 0);
         curHP = properties.getInt("curhp", 0);
-        Gdx.app.log(LOG, Integer.toString(curHP));
+//        Gdx.app.log(LOG, Integer.toString(curHP));
         food = properties.getInt("food", 0);
         maxHP = properties.getInt("maxhp", 0);
         moveSpeed = properties.getFloat("movespeed", 0);
@@ -638,7 +638,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 attackSound.play(VOBGame.instance.getSoundManager().getVolume());
 
             if (ability.equals("sabotage")) {
-                Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Sabotaging (%d)", other.getObjId()));
+//                Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Sabotaging (%d)", other.getObjId()));
                 if (other.capturable) {
                     other.setOwner(getOwner());
                     other.setAttacksLeft(0);
@@ -653,7 +653,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 return true;
             }
             attacksLeft--;
-            Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
+//            Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
 
             if (stealthActive) activateAbility(controller);

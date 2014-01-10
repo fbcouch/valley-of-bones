@@ -20,6 +20,8 @@ public class Prototypes {
 	}
 
     public static Array<JsonProto> getPlayerCanBuild() {
+        if (protos == null) loadUnits(UNIT_FILE);
+
         Array<JsonProto> returnVal = new Array<JsonProto>();
         for (JsonProto jp: protos.values()) {
             int cost = 0;
@@ -51,6 +53,17 @@ public class Prototypes {
         }
 
         return returnVal;
+    }
+
+    public static Array<JsonProto> getAll() {
+        if (protos == null) loadUnits(UNIT_FILE);
+
+        Array<JsonProto> array = new Array<JsonProto>();
+        for(JsonProto proto: protos.values()) {
+            if (proto.type.equals("building") || proto.type.equals("unit"))
+                array.add(proto);
+        }
+        return array;
     }
 	
 	public static class JsonProto {

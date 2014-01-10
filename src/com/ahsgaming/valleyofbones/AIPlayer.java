@@ -30,8 +30,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 /**
  * @author jami
@@ -43,10 +45,11 @@ public class AIPlayer extends Player {
     float countdown = 1;
     float timer = 1;
 
-    float[] goalMatrix, unitMatrix;
+    float[] goalMatrix, threatMatrix, valueMatrix;
     boolean[] visibilityMatrix;
 
     NetController netController;
+    GenomicAI genome;
 
 	/**
 	 * @param id
@@ -73,32 +76,49 @@ public class AIPlayer extends Player {
 	}
 	
 	@Override
-	public void update(GameController controller) {
-		super.update(controller);
-        // only create goalMatrix once (based on knowledge of the map)
-        if (goalMatrix == null)  {
-            goalMatrix = createGoalMatrix(controller.getMap(), controller.getUnits());
+	public void update(GameController controller, float delta) {
+		super.update(controller, delta);
+
+        if (genome == null) {
+//            genome = GenomicAI.generateRandom();
+            Json json = new Json();
+            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/9gwe4pqw").readString());
+            System.out.println(json.toJson(genome));
         }
 
+
         if (controller.getCurrentPlayer().getPlayerId() == getPlayerId()) {
-            timer -= Gdx.graphics.getDeltaTime();
+            timer -= delta;
             if (timer < 0) {
                 timer = countdown;
+
+                if (VOBGame.DEBUG_AI) Gdx.app.log(LOG, "start...");
                 // first, create the visibility matrix
                 if (visibilityMatrix == null) {
+                    if (VOBGame.DEBUG_AI) Gdx.app.log(LOG, "...create visibility matrix");
                     visibilityMatrix = createVisibilityMatrix(controller.getMap(), controller.getUnitsByPlayerId(getPlayerId()));
                     return;
                 }
 
-                // next, create the unit matrix
-                if (unitMatrix == null) {
+                // next, create the value matrix and threat matrix
+                if (valueMatrix == null) {
                     Array<Unit> visibleUnits = new Array<Unit>();
                     for (Unit unit: controller.getUnits()) {
                         if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) {
                             visibleUnits.add(unit);
                         }
                     }
-                    unitMatrix = createUnitMatrix(controller.getMap(), visibleUnits);
+                    if (VOBGame.DEBUG_AI) Gdx.app.log(LOG, "...create value/threat matrices");
+                    valueMatrix = createUnitMatrix(controller.getMap(), visibleUnits, false);
+                    threatMatrix = createUnitMatrix(controller.getMap(), visibleUnits, true);
+                    return;
+                }
+
+                // create goalMatrix (based on knowledge of the map)
+                if (goalMatrix == null)  {
+                    if (VOBGame.DEBUG_AI) Gdx.app.log(LOG, "...create goal matrix");
+                    goalMatrix = createGoalMatrix(controller.getMap(), controller.getUnits());
+
                     if (VOBGame.DEBUG_AI) {
                         DecimalFormat formatter = new DecimalFormat("00.0");
                         for (int y = 0; y < controller.getMap().getHeight(); y++) {
@@ -107,12 +127,13 @@ public class AIPlayer extends Player {
                             }
                             for (int x = 0; x < controller.getMap().getWidth(); x++) {
                                 int i = y * controller.getMap().getWidth() + x;
-                                float sum = (visibilityMatrix[i] ? goalMatrix[i] + unitMatrix[i] : 0);
+                                float sum = (visibilityMatrix[i] ? goalMatrix[i] + valueMatrix[i] + threatMatrix[i] : 0);
                                 System.out.print((sum >= 0 ? " " : "") + formatter.format(sum) + " ");
                             }
                             System.out.println("\n");
                         }
                     }
+
                     return;
                 }
 
@@ -122,11 +143,13 @@ public class AIPlayer extends Player {
                     Vector2[] adjacent = controller.getMap().getAdjacent((int)unit.getBoardPosition().x, (int)unit.getBoardPosition().y);
                     Vector2 finalPos = new Vector2(unit.getBoardPosition());
                     float finalSum = goalMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x]
-                            + unitMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x];
+                            + valueMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x]
+                            + threatMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x];
                     for (Vector2 v: adjacent) {
                         if (v.x < 0 || v.x >= controller.getMap().getWidth() || v.y < 0 || v.y >= controller.getMap().getHeight()) continue;
                         float curSum = goalMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x]
-                                + unitMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x];
+                                + valueMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x]
+                                + threatMatrix[(int)v.y * controller.getMap().getWidth() + (int)v.x];
                         if (curSum > finalSum && controller.isBoardPosEmpty(v)) {
                             finalPos.set(v);
                             finalSum = curSum;
@@ -140,7 +163,8 @@ public class AIPlayer extends Player {
                         mv.unit = unit.getObjId();
                         mv.toLocation = finalPos;
                         netController.sendAICommand(mv);
-                        unitMatrix = null;
+                        valueMatrix = null;
+                        threatMatrix = null;
                         return;
                     }
                 }
@@ -156,9 +180,12 @@ public class AIPlayer extends Player {
                 for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
                     if (unit.getAttacksLeft() < 1) continue;
                     Unit toAttack = null;
+                    float toAttackThreat = 0;
                     for (Unit o: visibleUnits) {
-                        if (unit.canAttack(o, controller) && (toAttack == null || o.getMaxHP() > toAttack.getMaxHP())) {
+                        float thisThreat = threatMatrix[controller.getMap().getWidth() * (int)o.getBoardPosition().y + (int)o.getBoardPosition().x];
+                        if (unit.canAttack(o, controller) && (toAttack == null || thisThreat > toAttackThreat)) {
                             toAttack = o;
+                            toAttackThreat = thisThreat;
                         }
                     }
                     if (toAttack != null) {
@@ -168,45 +195,81 @@ public class AIPlayer extends Player {
                         at.unit = unit.getObjId();
                         at.target = toAttack.getObjId();
                         netController.sendAICommand(at);
-                        unitMatrix = null;
+                        valueMatrix = null;
+                        threatMatrix = null;
                         return;
                     }
                 }
 
-                // build units
-                Prototypes.JsonProto unitToBuild = null;
-                if (getBankMoney() >= 45) {
-                    unitToBuild = Prototypes.getProto("marine-base");
-                }
-                int positionToBuild = -1;
-                if (unitToBuild != null) {
-                    for (int i = 0; i < unitMatrix.length; i ++) {
-                        if (visibilityMatrix[i]) {
-                            float sum = unitMatrix[i] + goalMatrix[i];
+                // build units // TODO build other than marines (ie: implement chromosome 11)
 
-                            if ((positionToBuild == -1 || unitMatrix[positionToBuild] + goalMatrix[positionToBuild] < sum)
-                                    /*&& controller.isBoardPosEmpty(
-                                            positionToBuild % controller.getMap().getWidth(),
-                                            positionToBuild / controller.getMap().getWidth())
-                                    */) {
-                                Gdx.app.log(LOG, i + ":" + controller.isBoardPosEmpty(
-                                        i % controller.getMap().getWidth(),
-                                        i / controller.getMap().getWidth()));
-                                if (controller.isBoardPosEmpty(i % controller.getMap().getWidth(), i / controller.getMap().getWidth())) {
-                                    positionToBuild = i;
-                                }
+                int positionToBuild = -1;
+                for (int i = 0; i < valueMatrix.length; i ++) {
+                    if (visibilityMatrix[i]) {
+                        float sum = threatMatrix[i] + valueMatrix[i] + goalMatrix[i];
+
+                        if ((positionToBuild == -1 || valueMatrix[positionToBuild] + valueMatrix[positionToBuild] + goalMatrix[positionToBuild] < sum)) {
+//                                Gdx.app.log(LOG, i + ":" + controller.isBoardPosEmpty(
+//                                        i % controller.getMap().getWidth(),
+//                                        i / controller.getMap().getWidth()));
+                            if (controller.isBoardPosEmpty(i % controller.getMap().getWidth(), i / controller.getMap().getWidth())) {
+                                positionToBuild = i;
                             }
                         }
                     }
                 }
+                Prototypes.JsonProto unitToBuild = null;
+
                 if (positionToBuild >= 0) {
+                    Vector2 buildPosition = new Vector2(positionToBuild % controller.getMap().getWidth(), positionToBuild / controller.getMap().getWidth());
+                    Array<String> protoIds = new Array<String>();
+                    HashMap<String, Float> buildScores = new HashMap<String, Float>();
+                    for (Prototypes.JsonProto proto: Prototypes.getAll()) {
+                        protoIds.add(proto.id);
+                        if (proto.cost > 0) {
+                            buildScores.put(proto.id, 0f);
+                        }
+                    }
+
+                    for (Unit unit: controller.getUnits()) {
+                        if (unit.getOwner() == this || !visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) continue;
+
+                        int unitIndex = protoIds.indexOf(unit.getProtoId(), false);
+                        int unitDistance = controller.getMap().getMapDist(unit.getBoardPosition(), buildPosition);
+                        for (String key: buildScores.keySet()) {
+                            buildScores.put(key, buildScores.get(key) + ((Array<Float>)genome.chromosomes.get(10).genes.get(key)).get(unitIndex) / unitDistance);
+                        }
+                    }
+
+                    String maxScore = null;
+                    float maxBuildScore = 0;
+                    while(unitToBuild == null && buildScores.keySet().size() > 0) {
+                        for (String id: buildScores.keySet()) {
+                            if (maxScore == null || buildScores.get(id) > buildScores.get(maxScore)) {
+                                maxScore = id;
+                                if (buildScores.get(id) > maxBuildScore) {
+                                    maxBuildScore = buildScores.get(id);
+                                }
+                            }
+                        }
+
+                        if (buildScores.get(maxScore) > 0 && buildScores.get(maxScore) >= maxBuildScore - (Float)genome.chromosomes.get(10).genes.get("wait") && getBankMoney() >= Prototypes.getProto(maxScore).cost) {
+                            unitToBuild = Prototypes.getProto(maxScore);
+                        } else {
+                            buildScores.remove(maxScore);
+                            maxScore = null;
+                        }
+                    }
+                }
+
+                if (unitToBuild != null) {
                     Build build = new Build();
                     build.owner = getPlayerId();
                     build.turn = controller.getGameTurn();
                     build.building = unitToBuild.id;
                     build.location = new Vector2(positionToBuild % controller.getMap().getWidth(), positionToBuild / controller.getMap().getWidth());
                     netController.sendAICommand(build);
-                    unitMatrix = null;
+                    valueMatrix = null;
                     return;
                 }
 
@@ -217,7 +280,9 @@ public class AIPlayer extends Player {
             }
         } else {
             visibilityMatrix = null;
-            unitMatrix = null;
+            valueMatrix = null;
+            threatMatrix = null;
+            goalMatrix = null;
         }
 
 	}
@@ -238,11 +303,53 @@ public class AIPlayer extends Player {
     public float calcGoalMatrix(int x, int y, HexMap map, Array<Unit> units) {
         float total = 0;
         for (Unit unit: units) {
-            if (unit.getBoardPosition().x == x && unit.getBoardPosition().y == y)
-                total += unit.getMaxHP();
-            else
-                total += unit.getMaxHP() / Math.pow(map.getMapDist(new Vector2(x, y), unit.getBoardPosition()), 2);
+            if (unit.getType().equals("building")) {
+                int dist = map.getMapDist(unit.getBoardPosition(), new Vector2(x, y));
+                Float value = 0f;
+                Array<Float> coeff_array = new Array<Float>();
+                if (unit.getProtoId().equals("tower")) {
+                    value = (Float)genome.chromosomes.get(9).genes.get("tower_val");
+                    if (!visibilityMatrix[(int)(unit.getBoardPosition().y * map.getWidth() + unit.getBoardPosition().x)] || unit.getOwner() == null) {
+                        // neutral tower
+                        coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("tower_n_coeff");
+                    } else if (unit.getOwner() == this) {
+                        // friendly tower
+                        coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("tower_f_coeff");
+                    } else {
+                        // enemy tower
+                        coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("tower_e_coeff");
+                    }
+                } else {
+
+                    if (unit.getOwner() == this) {
+                        // friendly castle
+                        value = threatMatrix[(int)(unit.getBoardPosition().y * map.getWidth() + unit.getBoardPosition().x)];
+                        coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("castle_f_coeff");
+                    } else {
+                        // enemy castle
+                        value = (Float)genome.chromosomes.get(9).genes.get("castle_e_value");
+                        coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("castle_e_coeff");
+                    }
+                }
+                total += calc_value(value, dist, coeff_array);
+            }
         }
+        return total;
+    }
+
+    public float calc_value(float value, int distance, Array<Float> coeff_array) {
+        float total = 0;
+        if (distance == 0) {
+            if (coeff_array.size > 0) {
+                return value * coeff_array.get(0);
+            }
+            return 0;
+        }
+
+        for (int i = 0; i < coeff_array.size; i++) {
+            total += value / Math.pow(distance, i) * coeff_array.get(i);
+        }
+
         return total;
     }
 
@@ -260,28 +367,162 @@ public class AIPlayer extends Player {
         return matrix;
     }
 
-    public float[] createUnitMatrix(HexMap map, Array<Unit> units) {
+    public float[] createUnitMatrix(HexMap map, Array<Unit> units, boolean threat) {
         float[] unitMatrix = new float[map.getWidth() * map.getHeight()];
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
-                unitMatrix[y * map.getWidth() + x] = calcUnitMatrix(x, y, map, units);
+                unitMatrix[y * map.getWidth() + x] = calcUnitMatrix(x, y, map, units, threat);
             }
         }
         return unitMatrix;
     }
 
-    public float calcUnitMatrix(int x, int y, HexMap map, Array<Unit> units) {
+    public float calcUnitMatrix(int x, int y, HexMap map, Array<Unit> units, boolean threat) {
         float total = 0;
         for (Unit unit: units) {
-            int mul = unit.getOwner() == this ? -1 : unit.getOwner() == null ? 0 : 1;
-            if (x == unit.getBoardPosition().x && y == unit.getBoardPosition().y) {
-                total += (unit.getMaxHP() * mul);
-                return -1 * unit.getMaxHP();
-            } else {
-                int dist = map.getMapDist(new Vector2(x, y), unit.getBoardPosition());
-                total += (mul * unit.getMaxHP() / dist) + ((mul == 0 ? 1 : 0) * Math.pow(unit.getMaxHP() * (unit.isCapturable() ? 10 : 1), 3) / dist);
+            if (unit.getOwner() == this) {
+                int i = Prototypes.getAll().indexOf(Prototypes.getProto(unit.getProtoId()), true);
+                total += calc_value(
+                        (Float)genome.chromosomes.get(i).genes.get((threat ? "threat" : "value")),   // TODO this is a horrible way to look this up
+                        map.getMapDist(unit.getBoardPosition(), new Vector2(x, y)),
+                        (Array<Float>)genome.chromosomes.get(i).genes.get((threat ? "threat_coeff" : "value_coeff"))
+                );
             }
         }
         return total;
+    }
+
+    public GenomicAI getGenome() {
+        return genome;
+    }
+
+    public void setGenome(GenomicAI genome) {
+        this.genome = genome;
+    }
+
+    public static class GenomicAI {
+        public String id;
+        public int wins, losses;
+        public Array<Chromosome> chromosomes = new Array<Chromosome>();
+
+        public void mutate(float rate) {
+            for (Chromosome chromo: chromosomes) {
+                for (String gene: chromo.genes.keySet()) {
+                    Object val = chromo.genes.get(gene);
+                    if (val instanceof Float) {
+                        chromo.genes.put(gene, mutatedValue((Float)val, rate, 10f));
+                    } else if (val instanceof Array) {
+                        Array<Float> valArray = (Array<Float>)val;
+                        for (int i = 0; i < valArray.size; i++) {
+                            valArray.set(i, mutatedValue(valArray.get(i), rate, 10f));
+                        }
+                    }
+                }
+            }
+        }
+
+        float mutatedValue(float currentValue, float mutationRate, float mutationCoeff) {
+            if (Math.random() < mutationRate) {
+                return currentValue + (float)((Math.random() < 0.5 ? 1 : -1) * Math.pow((Math.random() * 2 - 1), 2) * mutationCoeff);
+            }
+            return currentValue;
+        }
+
+        public static GenomicAI generateRandom() {
+            GenomicAI ai = new GenomicAI();
+
+            ai.id = Utils.getRandomId(8);
+            ai.wins = 0;
+            ai.losses = 0;
+
+            float range = 10f;
+
+            for (Prototypes.JsonProto proto: Prototypes.getAll()) {
+                Chromosome chromo = new Chromosome();
+
+                chromo.genes.put("threat", (float)Math.random() * range - (range / 2));
+                Array<Float> coeff_array = new Array<Float>(5);
+                for (int i = 1; i <= 5; i++)
+                    coeff_array.add((float)(Math.random() * range - (range / 2))/ i);
+                chromo.genes.put("threat_coeff", coeff_array);
+                coeff_array = new Array<Float>(5);;
+
+                chromo.genes.put("value", (float)(Math.random() * range - (range / 2)));
+                for (int i = 1; i <= 5; i++)
+                    coeff_array.add((float)(Math.random() * range - (range / 2)));
+                chromo.genes.put("value_coeff", coeff_array);
+
+                ai.chromosomes.add(chromo);
+            }
+
+            Chromosome goal_chromo = new Chromosome();
+            Array<Float> coeff_array = new Array<Float>(5);
+
+            goal_chromo.genes.put("tower_val", (float)(Math.random() * range - (range / 2)));
+
+            for (int i = 1; i <= 5; i++)
+                coeff_array.add((float)(Math.random() * range - (range / 2)) / i);
+            goal_chromo.genes.put("tower_e_coeff", coeff_array);
+            coeff_array = new Array<Float>(5);;
+
+            for (int i = 1; i <= 5; i++)
+                coeff_array.add((float)(Math.random() * range - (range / 2)) / i);
+            goal_chromo.genes.put("tower_n_coeff", coeff_array);
+            coeff_array = new Array<Float>(5);;
+
+            for (int i = 1; i <= 5; i++)
+                coeff_array.add((float)(Math.random() * range - (range / 2)) / i);
+            goal_chromo.genes.put("tower_f_coeff", coeff_array);
+            coeff_array = new Array<Float>(5);;
+
+            goal_chromo.genes.put("castle_e_value", (float)Math.random() * range);
+
+            for (int i = 1; i <= 5; i++)
+                coeff_array.add((float)(Math.random() * range - (range / 2)) / i);
+            goal_chromo.genes.put("castle_e_coeff", coeff_array);
+            coeff_array = new Array<Float>(5);;
+
+            for (int i = 1; i <= 5; i++)
+                coeff_array.add((float)(Math.random() * range - (range / 2)) / i);
+            goal_chromo.genes.put("castle_f_coeff", coeff_array);
+            coeff_array = new Array<Float>(5);;
+
+            ai.chromosomes.add(goal_chromo);
+
+            Chromosome build_chromo = new Chromosome();
+
+            Array<Prototypes.JsonProto> protoArray = Prototypes.getAll();
+
+            for (Prototypes.JsonProto proto: protoArray) {
+                if (proto.cost > 0) {
+                    // buildable
+                    for (int i = 0; i < protoArray.size; i++)
+                        coeff_array.add((float)Math.random() * range - (range / 2));
+                    build_chromo.genes.put(proto.id, coeff_array);
+                    coeff_array = new Array<Float>(5);;
+                }
+            }
+
+            build_chromo.genes.put("wait", (float)Math.random() * 10f);
+
+            ai.chromosomes.add(build_chromo);
+
+            return ai;
+        }
+
+        public static GenomicAI clone(GenomicAI genome) {
+            Json json = new Json();
+
+            GenomicAI child = json.fromJson(GenomicAI.class, json.toJson(genome));
+            child.id = Utils.getRandomId(8);
+            child.wins = 0;
+            child.losses = 0;
+
+            return child;
+        }
+    }
+
+    public static class Chromosome {
+        HashMap<String, Object> genes = new HashMap<String, Object>();
     }
 }

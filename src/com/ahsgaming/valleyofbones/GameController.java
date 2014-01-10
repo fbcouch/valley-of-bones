@@ -165,7 +165,7 @@ public class GameController {
                 updateObjects(delta);
 
                 for (int p = 0; p < players.size; p++) {
-                    players.get(p).update(this);
+                    players.get(p).update(this, delta);
                 }
 
                 turnTimer -= delta;
@@ -210,7 +210,7 @@ public class GameController {
     }
 	
 	public void doTurn() {
-		Gdx.app.log(LOG, "doTurn");
+//		Gdx.app.log(LOG, "doTurn");
 
         if (nextTurn) {
             for (Unit unit: getUnitsByPlayerId(currentPlayer.getPlayerId())) {
@@ -293,10 +293,10 @@ public class GameController {
 		Command command;
 		while (commandQueue.size > 0) {
             command = commandQueue.pop();
-			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
-            if (command instanceof Unpause) Gdx.app.log(LOG, "UNPAUSE");
-            if (command instanceof Pause) Gdx.app.log(LOG, "PAUSE");
-            Gdx.app.log(LOG, "Current turn: " + gameTurn);
+//			Gdx.app.log(LOG, "Command: " + Integer.toString(command.turn));
+//            if (command instanceof Unpause) Gdx.app.log(LOG, "UNPAUSE");
+//            if (command instanceof Pause) Gdx.app.log(LOG, "PAUSE");
+//            Gdx.app.log(LOG, "Current turn: " + gameTurn);
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
 
@@ -367,7 +367,7 @@ public class GameController {
 		if (cmd instanceof Attack) {
 			executeAttack((Attack)cmd);
 		} else if (cmd instanceof Build) {
-			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.turn));
+//			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.turn));
 			executeBuild((Build)cmd);
 		} else if (cmd instanceof Move) {
 			executeMove((Move)cmd);
@@ -390,7 +390,7 @@ public class GameController {
             Player p = getPlayerById(cmd.owner);
             p.getBaseUnit().setCurHP(0);
         } else {
-			Gdx.app.log(LOG, "Unknown command");
+//			Gdx.app.log(LOG, "Unknown command");
 		}
 
         commandHistory.add(cmd);
@@ -433,7 +433,7 @@ public class GameController {
             if (obj instanceof Unit) {
                 Unit u = (Unit)obj;
                 if (u.getOwner() == player && u.getSightRange() >= map.getMapDist(u.getBoardPosition(), target.getBoardPosition())) {
-                    Gdx.app.log(LOG, String.format("%s: %d", u.getProtoId(), map.getMapDist(u.getBoardPosition(), target.getBoardPosition())));
+//                    Gdx.app.log(LOG, String.format("%s: %d", u.getProtoId(), map.getMapDist(u.getBoardPosition(), target.getBoardPosition())));
                     return true;
                 }
             }
@@ -463,7 +463,7 @@ public class GameController {
 	}
 	
 	public void executeMove(Move cmd) {
-		Gdx.app.log(LOG, "Move unit: " + Integer.toString(cmd.unit)+ " to: " + cmd.toLocation.toString());
+//		Gdx.app.log(LOG, "Move unit: " + Integer.toString(cmd.unit)+ " to: " + cmd.toLocation.toString());
 		GameObject obj = getObjById(cmd.unit);
 		if (obj == null) {
 			Gdx.app.log(this.getClass().getSimpleName(), "Error: unknown unit id");
@@ -708,11 +708,11 @@ public class GameController {
     }
 	
 	public void queueCommand(Command cmd) {
-		Gdx.app.log(LOG, state.toString());
+//		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
 			//if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
 				cmdsToAdd.add(cmd);
-				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
+//				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
 			//}
 		}
 	}
