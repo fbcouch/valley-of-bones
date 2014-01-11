@@ -27,6 +27,7 @@ import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -42,8 +43,8 @@ import java.util.HashMap;
 public class AIPlayer extends Player {
 	public String LOG = "AIPlayer";
 
-    float countdown = 1;
-    float timer = 1;
+    float countdown = 0.5f;
+    float timer = 0.5f;
 
     float[] goalMatrix, threatMatrix, valueMatrix;
     boolean[] visibilityMatrix;
@@ -82,8 +83,16 @@ public class AIPlayer extends Player {
         if (genome == null) {
 //            genome = GenomicAI.generateRandom();
             Json json = new Json();
-            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/9gwe4pqw").readString());
-            System.out.println(json.toJson(genome));
+//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/mp5hzjb0").readString());
+//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/uu6e1ef8").readString());
+//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/uwpgaroh").readString());
+//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/s2pzsfce").readString());
+//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/smxebe1h").readString());
+            FileHandle[] files = Gdx.files.internal("ai").list();
+
+            genome = json.fromJson(GenomicAI.class, files[(int)Math.floor(Math.random() * files.length)].readString());
+//            System.out.println(json.toJson(genome));
+            Gdx.app.log(LOG, "Loaded ai: " + genome.id);
         }
 
 
@@ -171,9 +180,11 @@ public class AIPlayer extends Player {
 
                 // attack
                 Array<Unit> visibleUnits = new Array<Unit>();
+                Array<Unit> friendlyUnits = controller.getUnitsByPlayerId(this.getPlayerId());
                 for (Unit unit: controller.getUnits()) {
                     if (unit.getOwner() == this || unit.getOwner() == null) continue;
-                    if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) {
+                    if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]
+                            && !unit.getInvisible() || controller.getMap().detectorCanSee(this, friendlyUnits, unit.getBoardPosition())) {
                         visibleUnits.add(unit);
                     }
                 }
@@ -189,6 +200,7 @@ public class AIPlayer extends Player {
                         }
                     }
                     if (toAttack != null) {
+//                        Gdx.app.log(LOG + "$attack", String.format("%s --> %s", unit.getProtoId(), toAttack.getProtoId()));
                         Attack at = new Attack();
                         at.owner = getPlayerId();
                         at.turn = controller.getGameTurn();
@@ -458,7 +470,7 @@ public class AIPlayer extends Player {
             Chromosome goal_chromo = new Chromosome();
             Array<Float> coeff_array = new Array<Float>(5);
 
-            goal_chromo.genes.put("tower_val", (float)(Math.random() * range - (range / 2)));
+            goal_chromo.genes.put("tower_val", (float)(Math.pow(Math.random() * range, 2)));
 
             for (int i = 1; i <= 5; i++)
                 coeff_array.add((float)(Math.random() * range - (range / 2)) / i);
@@ -475,7 +487,7 @@ public class AIPlayer extends Player {
             goal_chromo.genes.put("tower_f_coeff", coeff_array);
             coeff_array = new Array<Float>(5);;
 
-            goal_chromo.genes.put("castle_e_value", (float)Math.random() * range);
+            goal_chromo.genes.put("castle_e_value", (float)(Math.pow(Math.random() * range, 2)));
 
             for (int i = 1; i <= 5; i++)
                 coeff_array.add((float)(Math.random() * range - (range / 2)) / i);

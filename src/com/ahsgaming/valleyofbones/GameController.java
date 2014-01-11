@@ -120,7 +120,7 @@ public class GameController {
                 unit.setBuilding(false);
 				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
-			Gdx.app.log(LOG, spawn.toString());
+//			Gdx.app.log(LOG, spawn.toString());
 			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
 			unit.setPosition(pos.x, pos.y);
 			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
@@ -137,7 +137,7 @@ public class GameController {
             Unit unit;
             unit = new Unit(getNextObjectId(), null, Prototypes.getProto("tower-base"));
             Vector2 pos = map.boardToMapCoords(point.x, point.y);
-            Gdx.app.log(LOG, point.toString());
+//            Gdx.app.log(LOG, point.toString());
             unit.setPosition(pos.x, pos.y);
             unit.setBoardPosition(point);
             addGameUnitNow(unit);

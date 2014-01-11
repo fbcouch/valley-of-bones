@@ -52,10 +52,20 @@ public class VOBAIRunner extends VOBGame {
 
 //        aiPlayers.add(json.fromJson(AIPlayer.GenomicAI.class, Gdx.files.local("ai/9gwe4pqw").readString()));
 //        wins.add(0);
-        for (int i = 0; i < NUM_PER_GENERATION; i++) {
-            aiPlayers.add(AIPlayer.GenomicAI.generateRandom());
-            wins.add(0);
+        String[] files = new String[] {
+                "aqphsvek.0", "jlmaeuyd.0",
+                "kio2g7vm.1", "8sq9s7pe.1",
+                "f41sy4hy.2", "a48foj8u.2",
+                "aiy9ngj6.3", "t53n7go6.3",
+                "jami.0"
+        };
+        for (String file: files) {
+            aiPlayers.add(json.fromJson(AIPlayer.GenomicAI.class, Gdx.files.local("ai/save/" + file).readString()));
         }
+//        for (int i = 0; i < NUM_PER_GENERATION; i++) {
+//            aiPlayers.add(AIPlayer.GenomicAI.generateRandom());
+//            wins.add(0);
+//        }
 
         startGeneration();
     }
@@ -70,8 +80,8 @@ public class VOBAIRunner extends VOBGame {
         GameSetupScreen.GameSetupConfig config = new GameSetupScreen.GameSetupConfig();
         config.isMulti = false;
 
-        for (int i = 0; i < NUM_PER_GENERATION; i++) {
-            for (int j = i + 1; j < NUM_PER_GENERATION; j++) {
+        for (int i = 0; i < aiPlayers.size; i++) {
+            for (int j = i + 1; j < aiPlayers.size; j++) {
 
                 SPGameClient client = new SPGameClient(this, config);
                 client.removePlayer(client.getPlayer().getPlayerId());
@@ -122,7 +132,7 @@ public class VOBAIRunner extends VOBGame {
                 wins.set(i, wins.get(i) + 1);
                 aiPlayers.get(i).wins++;
                 toRemove.add(client);
-            } else if (client.getGameController().getGameTurn() >= 100) {
+            } else if (client.getGameController().getGameTurn() >= 50) {
                 Gdx.app.log(LOG, "Tie");
 
                 toRemove.add(client);
@@ -153,6 +163,7 @@ public class VOBAIRunner extends VOBGame {
                 if (wins.get(maxWins) > 0) {
                     toKeep.add(aiPlayers.get(maxWins));
                     aiPlayers.removeIndex(maxWins);
+                    wins.removeIndex(maxWins);
                 } else {
                     cont = false;
                 }
@@ -161,6 +172,12 @@ public class VOBAIRunner extends VOBGame {
             aiPlayers.clear();
             aiPlayers.addAll(toKeep);
 
+            Json json = new Json();
+            for (AIPlayer.GenomicAI ai: aiPlayers) {
+
+                Gdx.files.local("ai/" + ai.id).writeString(json.prettyPrint(ai), false);
+            }
+
             for (AIPlayer.GenomicAI ai: toKeep) {
                 AIPlayer.GenomicAI child = AIPlayer.GenomicAI.clone(ai);
                 child.mutate(MUTATION_RATE);
@@ -168,12 +185,6 @@ public class VOBAIRunner extends VOBGame {
                 child = AIPlayer.GenomicAI.clone(ai);
                 child.mutate(MUTATION_RATE);
                 aiPlayers.add(child);
-            }
-
-            Json json = new Json();
-            for (AIPlayer.GenomicAI ai: aiPlayers) {
-
-                Gdx.files.local("ai/" + ai.id).writeString(json.prettyPrint(ai), false);
             }
 
             while(aiPlayers.size < NUM_PER_GENERATION) {

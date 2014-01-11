@@ -140,7 +140,12 @@ public class GameServer implements NetController {
         } catch (IOException ex) {
             Gdx.app.log(LOG, ex.getMessage());
         }
-		
+
+        // ai vs ai
+//        addAIPlayer(0);
+//        addAIPlayer(1);
+//        loadGame = true;
+
 		
 		
 		server.addListener(new Listener() {
@@ -233,9 +238,9 @@ public class GameServer implements NetController {
                         return;
                     }
 
-                    for (KryoCommon.Spectator spectator: spectators) {
-                        if (spectator.name.equals(sp.name)) return;
-                    }
+//                    for (KryoCommon.Spectator spectator: spectators) {
+//                        if (spectator.name.equals(sp.name)) return;
+//                    }
 
                     Gdx.app.log(LOG, "Spectator joined");
                     spectators.add(sp);

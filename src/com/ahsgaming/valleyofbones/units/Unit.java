@@ -629,7 +629,8 @@ public class Unit extends GameObject implements Selectable, Targetable {
     public boolean canAttack(Unit other, GameController controller) {
         return (attacksLeft >= 1
                 && controller.getMap().getMapDist(getBoardPosition(), other.getBoardPosition()) <= getAttackRange()
-                && controller.getMap().isBoardPositionVisible(other.getBoardPosition()));
+                && controller.getMap().isBoardPositionVisible(other.getBoardPosition())
+                && (!other.getInvisible() || isDetector()));
     }
 
     public boolean attack(Unit other, GameController controller) {
@@ -653,7 +654,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
                 return true;
             }
             attacksLeft--;
-//            Gdx.app.log(LOG + String.format(" (%d)", this.getObjId()), String.format("Attacking (%d) for %d", other.getObjId(), getAttackDamage()));
+//            Gdx.app.log(LOG + String.format(" (%d - %s)", this.getObjId(), this.protoId), String.format("Attacking (%d - %s) for %d", other.getObjId(), other.protoId, getAttackDamage()));
             float damage = other.takeDamage(getAttackDamage() * getBonus(other.getSubtype()));
 
             if (stealthActive) activateAbility(controller);
