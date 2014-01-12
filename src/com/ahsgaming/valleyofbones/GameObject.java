@@ -51,7 +51,7 @@ public class GameObject {
 	
 	protected float localRotation = 0;
 	
-	protected Vector2 boardPos = new Vector2(0, 0);
+	protected Vector2 boardPos = new Vector2(0, 0), lastBoardPos;
     protected Vector2 position = new Vector2();
     protected Vector2 size = new Vector2();
     protected Color color = new Color(1, 1, 1, 1);
@@ -293,6 +293,15 @@ public class GameObject {
 	public Vector2 getBoardPosition() {
 		return boardPos;
 	}
+
+    public void setLastBoardPos(Vector2 boardPos) {
+        if (lastBoardPos == null) lastBoardPos = new Vector2(boardPos);
+        else lastBoardPos.set(boardPos);
+    }
+
+    public Vector2 getLastBoardPos() {
+        return lastBoardPos;
+    }
 	
 	/**
 	 * @return the image

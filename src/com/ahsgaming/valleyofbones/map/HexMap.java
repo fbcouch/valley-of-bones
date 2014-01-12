@@ -361,7 +361,8 @@ public class HexMap {
         // draw enemy units
         for (Unit u: units) {
             if (currentPlayer != u.getOwner()){
-                if ((hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG || (u.hasActions() && !u.isBuilding()))
+                if ((hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG
+                        || (u.getLastBoardPos() != null && hexStatus[(int)(u.getLastBoardPos().x + u.getLastBoardPos().y * getWidth())] != FOG && u.hasActions() && !u.isBuilding()))
                         && (!u.getInvisible() || detectorCanSee(currentPlayer, units, u.getBoardPosition())))
                     u.draw(batch, x, y, alpha);
             }

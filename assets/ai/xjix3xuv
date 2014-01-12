@@ -1,60 +1,60 @@
 {
-wins: 0,
+wins: 31,
 chromosomes: [
 	{
 		genes: {
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: 1.5327904
+					value: -10.212253
 				},
 				{
 					class: java.lang.Float,
-					value: 6.53815
+					value: 3.9597845
 				},
 				{
 					class: java.lang.Float,
-					value: -0.71675354
+					value: -9.893787
 				},
 				{
 					class: java.lang.Float,
-					value: -4.4510794
+					value: 29.776638
 				},
 				{
 					class: java.lang.Float,
-					value: -0.46937335
+					value: -0.112607
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 1.5749035
-			},
-			value: {
-				class: java.lang.Float,
-				value: 4.576913
+				value: -10.641152
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: -4.0439405
+					value: -8.576046
 				},
 				{
 					class: java.lang.Float,
-					value: -7.455789
+					value: 8.215919
 				},
 				{
 					class: java.lang.Float,
-					value: -1.7660228
+					value: 6.8282385
 				},
 				{
 					class: java.lang.Float,
-					value: -1.2422911
+					value: -19.811321
 				},
 				{
 					class: java.lang.Float,
-					value: 0.09884323
+					value: -19.028889
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 3.55781
+			}
 		}
 	},
 	{
@@ -62,55 +62,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: -2.7299614
+					value: -22.143526
 				},
 				{
 					class: java.lang.Float,
-					value: -1.8860592
+					value: -14.100157
 				},
 				{
 					class: java.lang.Float,
-					value: 3.9626796
+					value: -19.432364
 				},
 				{
 					class: java.lang.Float,
-					value: 0.58633804
+					value: -7.238665
 				},
 				{
 					class: java.lang.Float,
-					value: -1.1687112
+					value: -20.991486
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 3.2353477
-			},
-			value: {
-				class: java.lang.Float,
-				value: -4.301196
+				value: -15.457786
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: 1.2192731
+					value: -7.6448627
 				},
 				{
 					class: java.lang.Float,
-					value: 7.7249928
+					value: -1.5095105
 				},
 				{
 					class: java.lang.Float,
-					value: -0.20790404
+					value: 20.575365
 				},
 				{
 					class: java.lang.Float,
-					value: 10.976799
+					value: -6.097652
 				},
 				{
 					class: java.lang.Float,
-					value: -9.714117
+					value: 6.0754366
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 3.1696234
+			}
 		}
 	},
 	{
@@ -118,55 +118,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: -3.9985356
+					value: -31.646126
 				},
 				{
 					class: java.lang.Float,
-					value: 2.250578
+					value: 18.162214
 				},
 				{
 					class: java.lang.Float,
-					value: 8.8347435
+					value: 11.26727
 				},
 				{
 					class: java.lang.Float,
-					value: 1.5372496
+					value: -14.04354
 				},
 				{
 					class: java.lang.Float,
-					value: 5.3467174
+					value: 2.3879862
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 4.352748
-			},
-			value: {
-				class: java.lang.Float,
-				value: -2.0779464
+				value: -14.020562
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: 7.0433836
+					value: 8.004301
 				},
 				{
 					class: java.lang.Float,
-					value: -1.7407969
+					value: -3.2096
 				},
 				{
 					class: java.lang.Float,
-					value: -3.301588
+					value: 16.311033
 				},
 				{
 					class: java.lang.Float,
-					value: 0.058059752
+					value: 4.2934403
 				},
 				{
 					class: java.lang.Float,
-					value: 1.1573966
+					value: -8.774316
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 3.6748312
+			}
 		}
 	},
 	{
@@ -174,55 +174,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: -11.01848
+					value: -7.1949067
 				},
 				{
 					class: java.lang.Float,
-					value: 0.14786792
+					value: 3.8081295
 				},
 				{
 					class: java.lang.Float,
-					value: 1.2171813
+					value: -8.018145
 				},
 				{
 					class: java.lang.Float,
-					value: 0.70691943
+					value: 10.2659855
 				},
 				{
 					class: java.lang.Float,
-					value: -2.226736
+					value: -2.3140774
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: -4.1022778
-			},
-			value: {
-				class: java.lang.Float,
-				value: -9.521342
+				value: 0.18428993
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: 3.360527
+					value: 5.35832
 				},
 				{
 					class: java.lang.Float,
-					value: 6.6742277
+					value: -6.1769853
 				},
 				{
 					class: java.lang.Float,
-					value: -1.5062922
+					value: 3.551405
 				},
 				{
 					class: java.lang.Float,
-					value: -1.3579164
+					value: 0.5571481
 				},
 				{
 					class: java.lang.Float,
-					value: 0.18488231
+					value: 0.24350071
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 1.6073196
+			}
 		}
 	},
 	{
@@ -230,55 +230,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: 1.357901
+					value: -5.609257
 				},
 				{
 					class: java.lang.Float,
-					value: 2.0236866
+					value: -8.79041
 				},
 				{
 					class: java.lang.Float,
-					value: -4.52827
+					value: -8.667511
 				},
 				{
 					class: java.lang.Float,
-					value: 5.829751
+					value: -4.854554
 				},
 				{
 					class: java.lang.Float,
-					value: 4.554903
+					value: -10.526948
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 3.742115
-			},
-			value: {
-				class: java.lang.Float,
-				value: 3.7307944
+				value: 1.2532783
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: 6.731966
+					value: 10.119475
 				},
 				{
 					class: java.lang.Float,
-					value: -1.7992028
+					value: 11.412933
 				},
 				{
 					class: java.lang.Float,
-					value: 0.2395842
+					value: -18.782322
 				},
 				{
 					class: java.lang.Float,
-					value: -2.3605464
+					value: 14.1623
 				},
 				{
 					class: java.lang.Float,
-					value: -0.15996023
+					value: 9.353608
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: -7.2708154
+			}
 		}
 	},
 	{
@@ -286,55 +286,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: -1.2524079
+					value: 1.9342717
 				},
 				{
 					class: java.lang.Float,
-					value: -3.3189888
+					value: 38.571117
 				},
 				{
 					class: java.lang.Float,
-					value: -1.4757081
+					value: -0.5502121
 				},
 				{
 					class: java.lang.Float,
-					value: 9.779806
+					value: 0.09983742
 				},
 				{
 					class: java.lang.Float,
-					value: -2.481675
+					value: 2.0939493
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 4.664859
-			},
-			value: {
-				class: java.lang.Float,
-				value: 2.0644584
+				value: -16.586203
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: -1.1064186
+					value: -3.3504524
 				},
 				{
 					class: java.lang.Float,
-					value: 1.504561
+					value: 7.442951
 				},
 				{
 					class: java.lang.Float,
-					value: -2.032308
+					value: -6.8961024
 				},
 				{
 					class: java.lang.Float,
-					value: 0.3560866
+					value: 14.074502
 				},
 				{
 					class: java.lang.Float,
-					value: 2.5739837
+					value: -15.342834
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 5.2577124
+			}
 		}
 	},
 	{
@@ -342,55 +342,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: -2.738311
+					value: -11.348685
 				},
 				{
 					class: java.lang.Float,
-					value: 0.4235775
+					value: 19.245644
 				},
 				{
 					class: java.lang.Float,
-					value: -2.418338
+					value: 6.3604302
 				},
 				{
 					class: java.lang.Float,
-					value: -0.7468352
+					value: 22.709408
 				},
 				{
 					class: java.lang.Float,
-					value: 3.0192256
+					value: 19.794966
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 7.248022
-			},
-			value: {
-				class: java.lang.Float,
-				value: 8.9258375
+				value: 12.5323925
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: 13.227413
+					value: 16.199675
 				},
 				{
 					class: java.lang.Float,
-					value: 7.253397
+					value: -6.252079
 				},
 				{
 					class: java.lang.Float,
-					value: 2.5906787
+					value: 2.049429
 				},
 				{
 					class: java.lang.Float,
-					value: -2.9346266
+					value: -31.554245
 				},
 				{
 					class: java.lang.Float,
-					value: -0.9613007
+					value: 10.776197
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: -7.8544235
+			}
 		}
 	},
 	{
@@ -398,55 +398,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: -10.1597805
+					value: 2.360329
 				},
 				{
 					class: java.lang.Float,
-					value: -3.7856305
+					value: 21.560585
 				},
 				{
 					class: java.lang.Float,
-					value: 1.4856037
+					value: -37.994026
 				},
 				{
 					class: java.lang.Float,
-					value: -6.161648
+					value: -5.56809
 				},
 				{
 					class: java.lang.Float,
-					value: -1.9057183
+					value: 11.19389
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: -4.502452
-			},
-			value: {
-				class: java.lang.Float,
-				value: 2.5428345
+				value: 8.815001
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: 1.2344204
+					value: -11.106234
 				},
 				{
 					class: java.lang.Float,
-					value: 10.422232
+					value: -27.622046
 				},
 				{
 					class: java.lang.Float,
-					value: 0.56657356
+					value: -2.969174
 				},
 				{
 					class: java.lang.Float,
-					value: -0.31705087
+					value: -9.78469
 				},
 				{
 					class: java.lang.Float,
-					value: -1.7284431
+					value: 27.931566
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 24.802488
+			}
 		}
 	},
 	{
@@ -454,55 +454,55 @@ chromosomes: [
 			value_coeff: [
 				{
 					class: java.lang.Float,
-					value: 5.5437593
+					value: 6.4755497
 				},
 				{
 					class: java.lang.Float,
-					value: -4.2062507
+					value: -18.106812
 				},
 				{
 					class: java.lang.Float,
-					value: 0.6293831
+					value: 1.4295897
 				},
 				{
 					class: java.lang.Float,
-					value: 1.1755165
+					value: -0.8427189
 				},
 				{
 					class: java.lang.Float,
-					value: 4.28473
+					value: -22.910723
 				}
 			],
 			threat: {
 				class: java.lang.Float,
-				value: 4.499012
-			},
-			value: {
-				class: java.lang.Float,
-				value: 3.736785
+				value: 13.769628
 			},
 			threat_coeff: [
 				{
 					class: java.lang.Float,
-					value: -4.2175703
+					value: -13.363586
 				},
 				{
 					class: java.lang.Float,
-					value: -2.0940354
+					value: -13.56264
 				},
 				{
 					class: java.lang.Float,
-					value: 1.949789
+					value: 5.294528
 				},
 				{
 					class: java.lang.Float,
-					value: 3.4735792
+					value: 9.275049
 				},
 				{
 					class: java.lang.Float,
-					value: 0.18488722
+					value: 4.4413815
 				}
-			]
+			],
+			value: {
+				class: java.lang.Float,
+				value: 0.57346654
+			}
 		}
 	},
 	{
@@ -510,397 +510,397 @@ chromosomes: [
 			castle_e_coeff: [
 				{
 					class: java.lang.Float,
-					value: -0.34251845
+					value: 17.033392
 				},
 				{
 					class: java.lang.Float,
-					value: 2.4837897
+					value: 31.803635
 				},
 				{
 					class: java.lang.Float,
-					value: 3.0258994
+					value: 8.370238
 				},
 				{
 					class: java.lang.Float,
-					value: 3.2673323
+					value: 9.195131
 				},
 				{
 					class: java.lang.Float,
-					value: -4.4650874
+					value: -25.080564
+				}
+			],
+			tower_f_coeff: [
+				{
+					class: java.lang.Float,
+					value: 15.116044
+				},
+				{
+					class: java.lang.Float,
+					value: 9.23848
+				},
+				{
+					class: java.lang.Float,
+					value: -9.411179
+				},
+				{
+					class: java.lang.Float,
+					value: 0.06590971
+				},
+				{
+					class: java.lang.Float,
+					value: -8.7892275
 				}
 			],
 			castle_e_value: {
 				class: java.lang.Float,
-				value: 91.10057
+				value: 106.04529
 			},
-			tower_f_coeff: [
-				{
-					class: java.lang.Float,
-					value: 5.798234
-				},
-				{
-					class: java.lang.Float,
-					value: -0.8394808
-				},
-				{
-					class: java.lang.Float,
-					value: 3.8649619
-				},
-				{
-					class: java.lang.Float,
-					value: -3.5183654
-				},
-				{
-					class: java.lang.Float,
-					value: 0.04918676
-				}
-			],
 			tower_e_coeff: [
 				{
 					class: java.lang.Float,
-					value: 1.292337
+					value: -5.286924
 				},
 				{
 					class: java.lang.Float,
-					value: 7.630078
+					value: 8.524178
 				},
 				{
 					class: java.lang.Float,
-					value: 0.45914242
+					value: -7.515214
 				},
 				{
 					class: java.lang.Float,
-					value: -0.7654599
+					value: 4.9586573
 				},
 				{
 					class: java.lang.Float,
-					value: 0.48961663
-				}
-			],
-			castle_f_coeff: [
-				{
-					class: java.lang.Float,
-					value: 3.7934372
-				},
-				{
-					class: java.lang.Float,
-					value: 1.5348308
-				},
-				{
-					class: java.lang.Float,
-					value: -1.4023975
-				},
-				{
-					class: java.lang.Float,
-					value: 0.51486295
-				},
-				{
-					class: java.lang.Float,
-					value: -0.6719694
+					value: 12.583054
 				}
 			],
 			tower_n_coeff: [
 				{
 					class: java.lang.Float,
-					value: 0.62626815
+					value: 20.171904
 				},
 				{
 					class: java.lang.Float,
-					value: 0.6823239
+					value: -11.737286
 				},
 				{
 					class: java.lang.Float,
-					value: -6.5325575
+					value: -14.25474
 				},
 				{
 					class: java.lang.Float,
-					value: 4.574007
+					value: -31.212278
 				},
 				{
 					class: java.lang.Float,
-					value: -0.8986335
+					value: -25.502016
+				}
+			],
+			castle_f_coeff: [
+				{
+					class: java.lang.Float,
+					value: 6.5764318
+				},
+				{
+					class: java.lang.Float,
+					value: -7.320441
+				},
+				{
+					class: java.lang.Float,
+					value: 22.503607
+				},
+				{
+					class: java.lang.Float,
+					value: 9.163524
+				},
+				{
+					class: java.lang.Float,
+					value: -15.83018
 				}
 			],
 			tower_val: {
 				class: java.lang.Float,
-				value: 46.041855
+				value: 45.403553
 			}
 		}
 	},
 	{
 		genes: {
-			bazooka: [
-				{
-					class: java.lang.Float,
-					value: 5
-				},
-				{
-					class: java.lang.Float,
-					value: 10
-				},
-				{
-					class: java.lang.Float,
-					value: 15
-				},
-				{
-					class: java.lang.Float,
-					value: 0
-				},
-				{
-					class: java.lang.Float,
-					value: 10
-				},
-				{
-					class: java.lang.Float,
-					value: 5
-				},
-				{
-					class: java.lang.Float,
-					value: 20
-				},
-				{
-					class: java.lang.Float,
-					value: 15
-				},
-				{
-					class: java.lang.Float,
-					value: 0
-				}
-			],
 			light-mech: [
 				{
 					class: java.lang.Float,
-					value: 5.439442
+					value: 4.7817664
 				},
 				{
 					class: java.lang.Float,
-					value: 5
+					value: 12.031038
 				},
 				{
 					class: java.lang.Float,
-					value: 0.76990557
+					value: 4.6698275
 				},
 				{
 					class: java.lang.Float,
-					value: -5.0580645
+					value: 1.3473554
 				},
 				{
 					class: java.lang.Float,
-					value: 10
+					value: 7.233933
 				},
 				{
 					class: java.lang.Float,
-					value: -5
+					value: -12.919914
 				},
 				{
 					class: java.lang.Float,
-					value: -4.9661727
+					value: -6.6925454
 				},
 				{
 					class: java.lang.Float,
-					value: 0
+					value: 28.88538
 				},
 				{
 					class: java.lang.Float,
-					value: 20
+					value: 5.1581206
+				}
+			],
+			bazooka: [
+				{
+					class: java.lang.Float,
+					value: -29.808647
+				},
+				{
+					class: java.lang.Float,
+					value: 9.912814
+				},
+				{
+					class: java.lang.Float,
+					value: -3.2700818
+				},
+				{
+					class: java.lang.Float,
+					value: -17.553244
+				},
+				{
+					class: java.lang.Float,
+					value: 10.27313
+				},
+				{
+					class: java.lang.Float,
+					value: 22.911818
+				},
+				{
+					class: java.lang.Float,
+					value: 25.407312
+				},
+				{
+					class: java.lang.Float,
+					value: 26.65559
+				},
+				{
+					class: java.lang.Float,
+					value: 24.189024
 				}
 			],
 			saboteur: [
 				{
 					class: java.lang.Float,
-					value: 5
+					value: -13.631344
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: 5.7143807
 				},
 				{
 					class: java.lang.Float,
-					value: 5
+					value: -14.433757
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: -10.065884
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: -20.215893
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: 3.069603
 				},
 				{
 					class: java.lang.Float,
-					value: 20
+					value: 36.686523
 				},
 				{
 					class: java.lang.Float,
-					value: 20
+					value: 5.509496
 				},
 				{
 					class: java.lang.Float,
-					value: -100
+					value: 27.62514
 				}
 			],
 			wait: {
 				class: java.lang.Float,
-				value: 11.593224
+				value: 13.269779
 			},
 			marine-base: [
 				{
 					class: java.lang.Float,
-					value: -5
+					value: 4.798814
 				},
 				{
 					class: java.lang.Float,
-					value: 5
+					value: 17.183237
 				},
 				{
 					class: java.lang.Float,
-					value: -5
+					value: 23.195087
 				},
 				{
 					class: java.lang.Float,
-					value: 10
+					value: -9.409726
 				},
 				{
 					class: java.lang.Float,
-					value: 0
+					value: 18.852348
 				},
 				{
 					class: java.lang.Float,
-					value: 15
+					value: 7.474016
 				},
 				{
 					class: java.lang.Float,
-					value: -5
+					value: 9.206641
 				},
 				{
 					class: java.lang.Float,
-					value: 15
+					value: -6.0832434
 				},
 				{
 					class: java.lang.Float,
-					value: 5
-				}
-			],
-			tank-base: [
-				{
-					class: java.lang.Float,
-					value: 4.5022316
-				},
-				{
-					class: java.lang.Float,
-					value: 30
-				},
-				{
-					class: java.lang.Float,
-					value: 10
-				},
-				{
-					class: java.lang.Float,
-					value: -20
-				},
-				{
-					class: java.lang.Float,
-					value: 5
-				},
-				{
-					class: java.lang.Float,
-					value: -5
-				},
-				{
-					class: java.lang.Float,
-					value: 5
-				},
-				{
-					class: java.lang.Float,
-					value: 5
-				},
-				{
-					class: java.lang.Float,
-					value: 15
+					value: 14.321183
 				}
 			],
 			sniper-base: [
 				{
 					class: java.lang.Float,
-					value: 0
+					value: -25.178833
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: 2.9866652
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: -19.140469
 				},
 				{
 					class: java.lang.Float,
-					value: 0
+					value: -26.638859
 				},
 				{
 					class: java.lang.Float,
-					value: 5
+					value: -35.428143
 				},
 				{
 					class: java.lang.Float,
-					value: 5
+					value: -14.445207
 				},
 				{
 					class: java.lang.Float,
-					value: -10
+					value: 5.885433
 				},
 				{
 					class: java.lang.Float,
-					value: -5
+					value: 17.9728
 				},
 				{
 					class: java.lang.Float,
-					value: 15
+					value: 14.929534
+				}
+			],
+			tank-base: [
+				{
+					class: java.lang.Float,
+					value: 4.427283
+				},
+				{
+					class: java.lang.Float,
+					value: 0.06397343
+				},
+				{
+					class: java.lang.Float,
+					value: 9.483854
+				},
+				{
+					class: java.lang.Float,
+					value: 11.092756
+				},
+				{
+					class: java.lang.Float,
+					value: 11.48062
+				},
+				{
+					class: java.lang.Float,
+					value: -14.408717
+				},
+				{
+					class: java.lang.Float,
+					value: -18.510414
+				},
+				{
+					class: java.lang.Float,
+					value: -7.85591
+				},
+				{
+					class: java.lang.Float,
+					value: -11.232888
 				}
 			],
 			artillery: [
 				{
 					class: java.lang.Float,
-					value: 1.3959188
+					value: 24.828672
 				},
 				{
 					class: java.lang.Float,
-					value: 15
+					value: -13.4028015
 				},
 				{
 					class: java.lang.Float,
-					value: 0.35651207
+					value: 19.798935
 				},
 				{
 					class: java.lang.Float,
-					value: -5
+					value: -37.783325
 				},
 				{
 					class: java.lang.Float,
-					value: 6.5057344
+					value: -7.5071616
 				},
 				{
 					class: java.lang.Float,
-					value: -5
+					value: -13.0375
 				},
 				{
 					class: java.lang.Float,
-					value: -10.316702
+					value: 6.800802
 				},
 				{
 					class: java.lang.Float,
-					value: 10
+					value: 8.675799
 				},
 				{
 					class: java.lang.Float,
-					value: 5
+					value: 21.609766
 				}
 			]
 		}
 	}
 ],
-id: jami.0
+id: xjix3xuv
 }

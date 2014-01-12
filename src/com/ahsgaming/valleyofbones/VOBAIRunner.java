@@ -26,8 +26,8 @@ public class VOBAIRunner extends VOBGame {
     Array<AIPlayer.GenomicAI> aiPlayers;
     Array<Integer> wins;
 
-    public static int NUM_PER_GENERATION = 8;
-    public static float MUTATION_RATE = 0.05f;
+    public static int NUM_PER_GENERATION = 16;
+    public static float MUTATION_RATE = 0.10f;
 
     int generation = 0;
 
@@ -53,19 +53,15 @@ public class VOBAIRunner extends VOBGame {
 //        aiPlayers.add(json.fromJson(AIPlayer.GenomicAI.class, Gdx.files.local("ai/9gwe4pqw").readString()));
 //        wins.add(0);
         String[] files = new String[] {
-                "aqphsvek.0", "jlmaeuyd.0",
-                "kio2g7vm.1", "8sq9s7pe.1",
-                "f41sy4hy.2", "a48foj8u.2",
-                "aiy9ngj6.3", "t53n7go6.3",
-                "jami.0"
+                "uf4hdkq1", "0yqn34og", "wf8ukdfe", "bebxzd7t"
         };
         for (String file: files) {
-            aiPlayers.add(json.fromJson(AIPlayer.GenomicAI.class, Gdx.files.local("ai/save/" + file).readString()));
+            aiPlayers.add(json.fromJson(AIPlayer.GenomicAI.class, Gdx.files.local("ai/" + file).readString()));
         }
-//        for (int i = 0; i < NUM_PER_GENERATION; i++) {
-//            aiPlayers.add(AIPlayer.GenomicAI.generateRandom());
-//            wins.add(0);
-//        }
+
+        for (int i = aiPlayers.size; i < NUM_PER_GENERATION; i++) {
+            aiPlayers.add(AIPlayer.GenomicAI.generateRandom());
+        }
 
         startGeneration();
     }
@@ -178,14 +174,16 @@ public class VOBAIRunner extends VOBGame {
                 Gdx.files.local("ai/" + ai.id).writeString(json.prettyPrint(ai), false);
             }
 
-            for (AIPlayer.GenomicAI ai: toKeep) {
-                AIPlayer.GenomicAI child = AIPlayer.GenomicAI.clone(ai);
-                child.mutate(MUTATION_RATE);
-                aiPlayers.add(child);
-                child = AIPlayer.GenomicAI.clone(ai);
-                child.mutate(MUTATION_RATE);
-                aiPlayers.add(child);
-            }
+//            for (AIPlayer.GenomicAI ai: toKeep) {
+//                AIPlayer.GenomicAI child = AIPlayer.GenomicAI.clone(ai);
+//                child.mutate(MUTATION_RATE);
+//                aiPlayers.add(child);
+//                child = AIPlayer.GenomicAI.clone(ai);
+//                child.mutate(MUTATION_RATE);
+//                aiPlayers.add(child);
+//            }
+
+            aiPlayers.addAll(AIPlayer.GenomicAI.breed(toKeep.size * 4, toKeep, MUTATION_RATE));
 
             while(aiPlayers.size < NUM_PER_GENERATION) {
                 aiPlayers.add(AIPlayer.GenomicAI.generateRandom());

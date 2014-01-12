@@ -81,20 +81,10 @@ public class AIPlayer extends Player {
 		super.update(controller, delta);
 
         if (genome == null) {
-//            genome = GenomicAI.generateRandom();
             Json json = new Json();
-//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/mp5hzjb0").readString());
-//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/uu6e1ef8").readString());
-//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/uwpgaroh").readString());
-//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/s2pzsfce").readString());
-//            genome = json.fromJson(GenomicAI.class, Gdx.files.local("ai/smxebe1h").readString());
-            FileHandle[] files = Gdx.files.internal("ai").list();
-
-            genome = json.fromJson(GenomicAI.class, files[(int)Math.floor(Math.random() * files.length)].readString());
-//            System.out.println(json.toJson(genome));
+            genome = json.fromJson(GenomicAI.class, Gdx.files.internal("ai/xjix3xuv").readString());
             Gdx.app.log(LOG, "Loaded ai: " + genome.id);
         }
-
 
         if (controller.getCurrentPlayer().getPlayerId() == getPlayerId()) {
             timer -= delta;
@@ -265,12 +255,13 @@ public class AIPlayer extends Player {
                             }
                         }
 
-                        if (buildScores.get(maxScore) > 0 && buildScores.get(maxScore) >= maxBuildScore - (Float)genome.chromosomes.get(10).genes.get("wait") && getBankMoney() >= Prototypes.getProto(maxScore).cost) {
+                        if (!maxScore.equals("saboteur") && buildScores.get(maxScore) > 0 && buildScores.get(maxScore) >= maxBuildScore - (Float)genome.chromosomes.get(10).genes.get("wait") && getBankMoney() >= Prototypes.getProto(maxScore).cost) {
                             unitToBuild = Prototypes.getProto(maxScore);
                         } else {
                             buildScores.remove(maxScore);
                             maxScore = null;
                         }
+
                     }
                 }
 
@@ -531,6 +522,32 @@ public class AIPlayer extends Player {
             child.losses = 0;
 
             return child;
+        }
+
+        public static Array<GenomicAI> breed(int offspring, Array<GenomicAI> parents, float mutationRate) {
+            Array<GenomicAI> children = new Array<GenomicAI>();
+            for (int i = 0; i < offspring; i++) {
+                GenomicAI child = new GenomicAI();
+                child.id = Utils.getRandomId(8);
+                children.add(child);
+
+                for (int c = 0; c < parents.get(0).chromosomes.size; c++) {
+                    Chromosome chromo = new Chromosome();
+                    child.chromosomes.add(chromo);
+                    for (String gene: parents.get(0).chromosomes.get(c).genes.keySet()) {
+                        int p = (int)Math.floor(Math.random() * parents.size);
+                        chromo.genes.put(gene, parents.get(p).chromosomes.get(c).genes.get(gene));
+                    }
+                }
+            }
+
+            Json json = new Json();
+            for (int i = 0; i < children.size; i++) {
+                children.set(i, json.fromJson(GenomicAI.class, json.toJson(children.get(i))));
+                children.get(i).mutate(mutationRate);
+            }
+
+            return children;
         }
     }
 

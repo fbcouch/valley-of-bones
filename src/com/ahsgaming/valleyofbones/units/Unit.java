@@ -612,6 +612,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (canMove(location, controller)) {
             movesLeft -= dist;
 
+            setLastBoardPos(boardPos);
             setBoardPosition(location);
             Vector2 pos = controller.getMap().boardToMapCoords(location.x, location.y);
             addAction(Actions.moveTo(pos.x, pos.y, 1f / dist));
