@@ -9,4 +9,5 @@ bash export.sh;
 cd ../units;
 bash export.sh;
 cd ..;
+bash export-assets.sh;
 
