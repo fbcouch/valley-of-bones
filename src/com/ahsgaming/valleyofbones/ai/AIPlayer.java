@@ -20,8 +20,12 @@
  * Licensed under Apache License, Version 2.0 (see above).
  * 
  */
-package com.ahsgaming.valleyofbones;
+package com.ahsgaming.valleyofbones.ai;
 
+import com.ahsgaming.valleyofbones.GameController;
+import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.Utils;
+import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
@@ -359,6 +363,7 @@ public class AIPlayer extends Player {
     public boolean[] createVisibilityMatrix(HexMap map, Array<Unit> units) {
         boolean[] matrix = new boolean[map.getWidth() * map.getHeight()];
         for (Unit unit: units) {
+            if (unit.isBuilding()) continue;
             int range = unit.getSightRange();
             for (int x = (int)Math.max(unit.getBoardPosition().x - range - 1, 0); x < Math.min(unit.getBoardPosition().x + range + 1, map.getWidth()); x++) {
                 for (int y = (int)Math.max(unit.getBoardPosition().y - range - 1, 0); y < Math.min(unit.getBoardPosition().y + range + 1, map.getHeight()); y++) {

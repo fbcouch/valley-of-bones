@@ -1,8 +1,7 @@
 package com.ahsgaming.valleyofbones.screens;
 
-import com.ahsgaming.valleyofbones.AIPlayer;
+import com.ahsgaming.valleyofbones.ai.AIPlayer;
 import com.ahsgaming.valleyofbones.VOBAIRunner;
-import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.SPGameClient;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;

@@ -23,15 +23,10 @@
 package com.ahsgaming.valleyofbones.network;
 
 import com.ahsgaming.valleyofbones.*;
-import com.ahsgaming.valleyofbones.network.KryoCommon.*;
+import com.ahsgaming.valleyofbones.ai.AIPlayer;
+import com.ahsgaming.valleyofbones.ai.FSMAIPlayer;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-
-import java.io.IOException;
 
 /**
  * @author jami
@@ -110,7 +105,7 @@ public class SPGameClient implements NetController {
 	
 	public void addAIPlayer(int team) {
 		if (players.size < 4)
-            players.add(new AIPlayer(this, getNextPlayerId(), "AI Player", Player.getUnusedColor(players), team));
+            players.add(new FSMAIPlayer(this, getNextPlayerId(), "AI Player", Player.getUnusedColor(players), team));
 	}
 	
 	public void removePlayer(int playerId) {

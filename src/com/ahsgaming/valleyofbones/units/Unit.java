@@ -33,6 +33,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -78,6 +79,7 @@ public class Unit extends GameObject implements Selectable, Targetable {
     float movesLeft = 0, attacksLeft = 0;
 
     ProgressBar healthBar;
+    Array<Vector2> path = new Array<Vector2>();
 
 	Array<String> requires = new Array<String>();
 	
@@ -162,45 +164,6 @@ public class Unit extends GameObject implements Selectable, Targetable {
         subtype = properties.getString("subtype", "");
         upkeep = properties.getInt("upkeep", 0);
 	}
-
-    @Override
-    public void draw(SpriteBatch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha * (getInvisible() ? 0.5f : 1));
-
-        if (overlay != null) {
-            Color color = getColor();
-            if (owner != null)
-                batch.setColor(color.r * owner.getPlayerColor().r, color.g * owner.getPlayerColor().g, color.b * owner.getPlayerColor().b, color.a * parentAlpha * owner.getPlayerColor().a * (getInvisible() ? 0.5f : 1));
-            else
-                batch.setColor(color);
-
-            batch.draw(overlay, getX(), getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, getRotation());
-        }
-
-        if (healthBar != null) {
-            batch.setColor(getColor());
-            healthBar.setCurrent((float)curHP / maxHP);
-            healthBar.draw(batch, getX(), getY() + 8, parentAlpha);
-        }
-
-        if (isTurn) {
-            int x = 0;
-            batch.setColor(getColor());
-            if (getMovesLeft() > 0) {
-                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot");
-
-                batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
-                x += tex.getRegionWidth() * 0.5f;
-            }
-
-            if (getAttacksLeft() > 0) {
-                TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword");
-
-                batch.draw(tex, getX() + x, getY() + healthBar.getHeight() + 8, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, getRotation());
-                x += tex.getRegionWidth() * 0.5f;
-            }
-        }
-    }
 
     @Override
     public void draw(SpriteBatch batch, float offsetX, float offsetY, float parentAlpha) {
@@ -421,6 +384,10 @@ public class Unit extends GameObject implements Selectable, Targetable {
 		this.moveSpeed = moveSpeed;
 	}
 
+    public Array<Vector2> getPath() {
+        return path;
+    }
+
 	public Array<String> getRequires() {
 		return requires;
 	}
@@ -612,11 +579,22 @@ public class Unit extends GameObject implements Selectable, Targetable {
         if (canMove(location, controller)) {
             movesLeft -= dist;
 
+            path.clear();
+            path.addAll(getRoute(boardPos, location));
+
             setLastBoardPos(boardPos);
             setBoardPosition(location);
             Vector2 pos = controller.getMap().boardToMapCoords(location.x, location.y);
             addAction(Actions.moveTo(pos.x, pos.y, 1f / dist));
+
         }
+    }
+
+    public Array<Vector2> getRoute(Vector2 start, Vector2 end) {
+        Array<Vector2> route = new Array<Vector2>();
+        route.add(new Vector2(start));
+        route.add(new Vector2(end));
+        return route;
     }
 
     public int getAttacksLeft() {

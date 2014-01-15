@@ -126,6 +126,28 @@ public class LevelScreen extends AbstractScreen {
 
 
 		}
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.setProjectionMatrix(mapCamera.combined);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        for (Unit unit: gController.getUnits()) {
+            if (unit.getMoveSpeed() > 0 && unit.getOwner() != null) {
+                sr.setColor(unit.getOwner().getPlayerColor());
+                Vector2 prev = null;
+                if (unit.getPath().size > 0) {
+                    for (Vector2 pos: unit.getPath()) {
+                        Vector2 mpos = gController.getMap().boardToMapCoords(pos.x, pos.y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
+                        if (prev != null) {
+                            // draw a rectLine
+                            sr.rectLine(prev, mpos, 3 * VOBGame.SCALE);
+                        }
+                        sr.circle(mpos.x, mpos.y, 5 * VOBGame.SCALE);
+                        prev = mpos;
+                    }
+                }
+
+            }
+        }
+        sr.end();
 	}
 
     protected void build(Vector2 boardPos) {

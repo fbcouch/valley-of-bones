@@ -1,15 +1,12 @@
 package com.ahsgaming.valleyofbones;
 
-import com.ahsgaming.valleyofbones.network.GameServer;
+import com.ahsgaming.valleyofbones.ai.AIPlayer;
 import com.ahsgaming.valleyofbones.network.SPGameClient;
 import com.ahsgaming.valleyofbones.screens.AIRunnerScreen;
 import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-
-import java.io.FileWriter;
 
 /**
  * valley-of-bones
@@ -86,8 +83,8 @@ public class VOBAIRunner extends VOBGame {
                 client.addAIPlayer(0);
                 client.addAIPlayer(1);
 
-                ((AIPlayer)client.getPlayers().get(0)).genome = aiPlayers.get(i);
-                ((AIPlayer)client.getPlayers().get(1)).genome = aiPlayers.get(j);
+                ((AIPlayer)client.getPlayers().get(0)).setGenome(aiPlayers.get(i));
+                ((AIPlayer)client.getPlayers().get(1)).setGenome(aiPlayers.get(j));
 
                 client = new SPGameClient(this, config);
                 client.removePlayer(client.getPlayer().getPlayerId());
@@ -96,8 +93,8 @@ public class VOBAIRunner extends VOBGame {
                 client.addAIPlayer(0);
                 client.addAIPlayer(1);
 
-                ((AIPlayer)client.getPlayers().get(1)).genome = aiPlayers.get(i);
-                ((AIPlayer)client.getPlayers().get(0)).genome = aiPlayers.get(j);
+                ((AIPlayer)client.getPlayers().get(1)).setGenome(aiPlayers.get(i));
+                ((AIPlayer)client.getPlayers().get(0)).setGenome(aiPlayers.get(j));
             }
         }
 
@@ -124,7 +121,7 @@ public class VOBAIRunner extends VOBGame {
         for (SPGameClient client: gameClients) {
             if (client.getGameController().getState() == GameStates.GAMEOVER) {
                 Gdx.app.log(LOG, "Winner: " + client.getGameController().getGameResult().winner);
-                int i = aiPlayers.indexOf(((AIPlayer) client.getPlayers().get(client.getGameController().getGameResult().winner - 1)).genome, true);
+                int i = aiPlayers.indexOf(((AIPlayer) client.getPlayers().get(client.getGameController().getGameResult().winner - 1)).getGenome(), true);
                 wins.set(i, wins.get(i) + 1);
                 aiPlayers.get(i).wins++;
                 toRemove.add(client);

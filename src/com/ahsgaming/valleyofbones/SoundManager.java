@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class SoundManager {
     public static final String LOG = "SoundManager";
 
-    float volume = 1;
+    float volume = 0;
 
     ObjectMap<String, Sound> soundMap;
 

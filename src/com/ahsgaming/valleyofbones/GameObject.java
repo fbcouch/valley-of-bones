@@ -47,8 +47,6 @@ public class GameObject {
 	protected final int objId;
 	protected Player owner;
 	
-	protected ArrayList<Vector2> path;
-	
 	protected float localRotation = 0;
 	
 	protected Vector2 boardPos = new Vector2(0, 0), lastBoardPos;
@@ -68,7 +66,6 @@ public class GameObject {
 		objId = id;
 		this.owner = owner;
 		image = null;
-		path = new ArrayList<Vector2>();
         actions = new Array<Action>();
 	}
 	
@@ -336,13 +333,6 @@ public class GameObject {
 	 */
 	public int getObjId() {
 		return objId;
-	}
-
-	/**
-	 * @return the path
-	 */
-	public ArrayList<Vector2> getPath() {
-		return path;
 	}
 
 	/**
