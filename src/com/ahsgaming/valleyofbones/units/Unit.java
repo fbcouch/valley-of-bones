@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones.units;
 import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.*;
+import com.ahsgaming.valleyofbones.ai.UnitFSM;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
@@ -44,63 +45,16 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author jami
  *
  */
-public class Unit extends GameObject implements Selectable, Targetable {
+public class Unit {
 	public String LOG = "Unit";
 
-	boolean selectable = true, targetable = true;
-	
-	int attackDamage = 0, attackRange = 0, sightRange = 0;
-	float attackSpeed = 0;
-	int armor = 0, cost = 0, curHP = 0, maxHP = 0, food = 0;
-	float moveSpeed = 0;
-	int upkeep = 0, buildTime = 0;
-    float splashDamage = 0;
+	JsonProto proto;
+    UnitData data;
+    UnitView view;
+    UnitFSM fsm;
+    Player owner;
+    int id;
 
-    String subtype = "";
-    ObjectMap<String, Float> bonus = new ObjectMap<String, Float>();
-
-    String ability = "";
-
-    // stealth
-    int lastStealthToggleTurn = 0;
-    boolean stealthActive = false;
-
-    boolean capturable = false;
-    Player uncontested = null;
-    int capUnitCount = 0;
-    boolean building = true;
-    int buildTimeLeft = 0;
-	
-	int upgradeAttackDamage = 0, upgradeAttackRange = 0;
-	float upgradeAttackSpeed = 0;
-	int upgradeArmor = 0, upgradeMaxHP = 0;
-    float upgradeMoveSpeed = 0;
-
-    float movesLeft = 0, attacksLeft = 0;
-
-    ProgressBar healthBar;
-    Array<Vector2> path = new Array<Vector2>();
-
-	Array<String> requires = new Array<String>();
-	
-	String protoId = "";
-	String type = "";
-	String sImage = "";
-	JsonValue properties;
-	
-	ArrayList<Command> commandQueue = new ArrayList<Command>();
-	GameObject commandTarget;
-	
-	final JsonProto proto;
-	
-	Array<JsonProto> upgrades = new Array<JsonProto>();
-
-    TextureRegion overlay;
-
-    Sound attackSound;
-
-    boolean isTurn = false;
-	
 	/**
 	 * Constructors
 	 */
@@ -209,54 +163,6 @@ public class Unit extends GameObject implements Selectable, Targetable {
             }
         }
     }
-
-    public void updateProperties() {
-        // TODO reimplement this with the new JSON API
-//		properties.put("attackdamage", attackDamage);
-//		properties.put("attackrange", attackRange);
-//		properties.put("attackspeed", attackSpeed);
-//		properties.put("armor", armor);
-//        properties.put("bonus", bonus);
-//		properties.put("cost", cost);
-//        properties.put("capturable", capturable);
-//		properties.put("curhp", curHP);
-//		properties.put("food", food);
-//		properties.put("maxhp", maxHP);
-//		properties.put("movespeed", moveSpeed);
-//		properties.put("requires", requires);
-//        properties.put("subtype", subtype);
-//		properties.put("upkeep", upkeep);
-//        properties.put("ability", ability);
-	}
-	
-	public void parseUpgrades() {
-		upgradeAttackDamage = 0;
-		upgradeAttackRange = 0;
-		upgradeAttackSpeed = 0;
-		upgradeArmor = 0;
-		upgradeMaxHP = 0;
-		upgradeMoveSpeed = 0;
-		
-		for (JsonProto up: upgrades) {
-			if (up.hasProperty("attackdamage"))
-				upgradeAttackDamage += (int)Float.parseFloat(up.getProperty("attackdamage").toString());
-			
-			if (up.hasProperty("attackrange"))
-				upgradeAttackRange += (int)Float.parseFloat(up.getProperty("attackrange").toString());
-			
-			if (up.hasProperty("attackspeed"))
-				upgradeAttackSpeed += Float.parseFloat(up.getProperty("attackspeed").toString());
-			
-			if (up.hasProperty("armor"))
-				upgradeArmor += (int)Float.parseFloat(up.getProperty("armor").toString());
-			
-			if (up.hasProperty("maxhp"))
-				upgradeMaxHP += (int)Float.parseFloat(up.getProperty("maxhp").toString());
-			
-			if (up.hasProperty("movespeed"))
-				upgradeMoveSpeed += (int)Float.parseFloat(up.getProperty("movespeed").toString());
-		}
-	}
 	
 	@Override
 	public float takeDamage(float amount) {
@@ -703,29 +609,4 @@ public class Unit extends GameObject implements Selectable, Targetable {
         this.building = building;
         if (building) this.buildTimeLeft = getBuildTime();
     }
-	
-	//-------------------------------------------------------------------------
-	// Implemented methods
-	//-------------------------------------------------------------------------
-
-	@Override
-	public boolean isTargetable() {
-		return this.targetable;
-	}
-
-	@Override
-	public void setTargetable(boolean targetable) {
-		this.targetable = targetable;
-		
-	}
-
-	@Override
-	public boolean isSelectable() {
-		return selectable;
-	}
-
-	@Override
-	public void setSelectable(boolean selectable) {
-		this.selectable = selectable;
-	}
 }
