@@ -27,6 +27,7 @@ import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.ai.AIPlayer;
+import com.ahsgaming.valleyofbones.ai.FSMAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
@@ -544,8 +545,11 @@ public class GameServer implements NetController {
 		if (players.size < Player.AUTOCOLORS.length) {
 			int id = getNextPlayerId();
 			Color use = Player.getUnusedColor(players);
-			
-			players.add(new AIPlayer(this, id, "AI Player", use, team));
+//			if (id == 0) {
+			    players.add(new AIPlayer(this, id, "AI Player", use, team));
+//            } else if (id == 1) {
+//                players.add(new FSMAIPlayer(this, id, "FSMAI Player", use, team));
+//            }
 		}
 	}
 

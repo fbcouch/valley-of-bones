@@ -27,16 +27,6 @@ public class FSMAIPlayer extends AIPlayer {
     HashMap<Integer, UnitFSM> unitFSMs;
     Array<Directive> currentGoals;
 
-    public FSMAIPlayer(NetController netController, int id, String name, Color color) {
-        super(netController, id, name, color);
-        initialize();
-    }
-
-    public FSMAIPlayer(NetController netController, int id, Color color) {
-        super(netController, id, color);
-        initialize();
-    }
-
     public FSMAIPlayer(NetController netController, int id, String name, Color color, int team) {
         super(netController, id, name, color, team);
         initialize();
@@ -57,105 +47,112 @@ public class FSMAIPlayer extends AIPlayer {
             // my turn
 
             Array<Unit> myUnits = controller.getUnitsByPlayerId(getPlayerId());
-            for (Unit unit: myUnits) {
-                if (!unitFSMs.containsKey(unit.getObjId())) {
-                    unitFSMs.put(unit.getObjId(), new UnitFSM(unit));
-                }
-            }
 
             if (visibilityMatrix == null) {
                 visibilityMatrix = createVisibilityMatrix(controller.getMap(), myUnits);
             }
 
-            Array<Integer> toRemove = new Array<Integer>();
-            for (Integer id: unitFSMs.keySet()) {
-                UnitFSM fsm = unitFSMs.get(id);
-                if (!fsm.unit.isAlive()) {
-                    toRemove.add(id);
-                } else {
-                    if (fsm.directives.size() == 0 && currentGoals.size > 0) {
-                        fsm.order(currentGoals.first());
-                    }
-                    Command cmd = fsm.update(controller);
-                    if (cmd != null) {
-                        cmd.turn = controller.getGameTurn();
-                        cmd.owner = getPlayerId();
-                        netController.sendAICommand(cmd);
-                        visibilityMatrix = null;
-                        return;
-                    }
-                }
-            }
-            for (Integer id: toRemove) {
-                unitFSMs.remove(id);
-            }
+            if (sendCommand(updateUnitFSMs(myUnits, controller), controller)) return;
+
 
             // TODO this will need a lot of cleanup, right now I just want a prototype that builds marines as close as possible to goals
             // TODO for the moment, the enemy's gate is down - build marines at the first tower and let them wander
 
-            for (int i = 0; i < currentGoals.size; i++) {
-                Directive goal = currentGoals.get(i);
-                switch(goal.type) {
-                    case CAPTURE:
-                        if (goal.target.getOwner() == this && goal.target.getCurHP() > 0) {
-                            currentGoals.removeIndex(i);
-                        }
-                        break;
-                }
-            }
+            updateGoals(myUnits, controller);
 
-            if (currentGoals.size == 0) {
-//                Directive goal = getGoal(controller);
-                Directive goal = new Directive(
-                        Directive.DirectiveType.CAPTURE,
-                        controller.getPlayers().get((controller.getPlayers().indexOf(this, true) + 1) % 2).getBaseUnit()
-                );
-                if (goal != null) {
-                    currentGoals.add(goal);
-                    for (Integer id: unitFSMs.keySet()) {
-                        unitFSMs.get(id).order(goal);
-                    }
-                }
-            }
+            if (sendCommand(buildUnits(controller), controller)) return;
 
-            if (currentGoals.size > 0 && getBankMoney() > 45 && getCurFood() < getMaxFood()) {
-                Vector2 targetPos = getBaseUnit().getBoardPosition(); //currentGoals.get(0).target.getBoardPosition();
-                Vector2 minDistLoc = null;
-                int minDist = 0;
-                for (int x = 0; x < controller.getMap().getWidth(); x++) {
-                    for (int y = 0; y < controller.getMap().getHeight(); y++) {
-                        if (visibilityMatrix[y * controller.getMap().getWidth() + x] && controller.isBoardPosEmpty(x, y)) {
-                            Vector2 loc = new Vector2(x, y);
-                            int dist = controller.getMap().getMapDist(loc, targetPos);
-                            if (minDistLoc == null || dist < minDist) {
-                                minDistLoc = loc;
-                                minDist = dist;
-                                if (minDist == 1) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (minDistLoc != null) {
-                    Build bld = new Build();
-                    bld.owner = getPlayerId();
-                    bld.turn = controller.getGameTurn();
-                    bld.building = "marine-base";
-                    bld.location = minDistLoc;
-                    netController.sendAICommand(bld);
-                    visibilityMatrix = null;
-                    return;
-                }
-            }
-
-            EndTurn et = new EndTurn();
-            et.owner = getPlayerId();
-            et.turn = controller.getGameTurn();
-            netController.sendAICommand(et);
+            sendCommand(new EndTurn(), controller);
         }
         visibilityMatrix = null;
         goalMatrix = null;
+    }
+
+    boolean sendCommand(Command cmd, GameController controller) {
+        if (cmd == null) return false;
+
+        cmd.owner = getPlayerId();
+        cmd.turn = controller.getGameTurn();
+        netController.sendAICommand(cmd);
+        countdown = timer;
+        visibilityMatrix = null;
+        return true;
+    }
+
+    Command updateUnitFSMs(Array<Unit> units, GameController controller) {
+        for (Unit unit: units) {
+            if (!unitFSMs.containsKey(unit.getObjId())) {
+                unitFSMs.put(unit.getObjId(), new UnitFSM(unit));
+            }
+        }
+
+        Command cmd = null;
+        Array<Integer> toRemove = new Array<Integer>();
+        for (Integer id: unitFSMs.keySet()) {
+            UnitFSM fsm = unitFSMs.get(id);
+            if (!fsm.unit.isAlive()) {
+                toRemove.add(id);
+            } else {
+                if (fsm.directives.size() == 0 && currentGoals.size > 0) {
+                    fsm.order(currentGoals.first());
+                }
+                cmd = fsm.update(controller);
+                if (cmd != null) break;
+            }
+        }
+        for (Integer id: toRemove) {
+            unitFSMs.remove(id);
+        }
+
+        return cmd;
+    }
+
+    void updateGoals(Array<Unit> myUnits, GameController controller) {
+        for (int i = 0; i < currentGoals.size; i++) {
+            Directive goal = currentGoals.get(i);
+            switch(goal.type) {
+                case CAPTURE:
+                    if (goal.target.getOwner() == this && goal.target.getCurHP() > 0) {
+                        currentGoals.removeIndex(i);
+                    }
+                    break;
+            }
+        }
+
+        if (currentGoals.size == 0) {
+//                Directive goal = getGoal(controller);
+            Directive goal = new Directive(
+                    Directive.DirectiveType.CAPTURE,
+                    controller.getPlayers().get((controller.getPlayers().indexOf(this, true) + 1) % 2).getBaseUnit()
+            );
+            if (goal != null) {
+                currentGoals.add(goal);
+                for (Integer id: unitFSMs.keySet()) {
+                    unitFSMs.get(id).order(goal);
+                }
+            }
+        }
+
+        for (Unit defend: myUnits) {
+            if (!defend.isCapturable() && defend != getBaseUnit()) continue;
+            Array<Unit> friendlyUnits = new Array<Unit>();
+            boolean threat = false;
+            for (Unit u: controller.getUnitsInArea(defend.getBoardPosition(), 5)) {
+                if (u.getOwner() != this && u.getOwner() != null && controller.playerCanSee(this, u)) {
+                    threat = true;
+                } else if (u.getOwner() == this) {
+                    friendlyUnits.add(u);
+                }
+            }
+
+            if (threat) {
+                for (Unit u: friendlyUnits) {
+                    UnitFSM fsm = unitFSMs.get(u.getObjId());
+                    if (fsm != null && (fsm.directives.size() == 0 || fsm.directives.peek().type == Directive.DirectiveType.CAPTURE))
+                        fsm.order(new Directive(Directive.DirectiveType.DEFEND, defend));
+                }
+            }
+        }
     }
 
     Directive getGoal(GameController controller) {
@@ -184,6 +181,36 @@ public class FSMAIPlayer extends AIPlayer {
             return new Directive(Directive.DirectiveType.CAPTURE, target);
         }
 
+        return null;
+    }
+
+    Command buildUnits(GameController controller) {
+        if (currentGoals.size > 0 && getBankMoney() > 45 && getCurFood() < getMaxFood()) {
+            Vector2 targetPos = getBaseUnit().getBoardPosition(); //currentGoals.get(0).target.getBoardPosition();
+            Vector2 minDistLoc = null;
+            int minDist = 0;
+            for (int x = 0; x < controller.getMap().getWidth(); x++) {
+                for (int y = 0; y < controller.getMap().getHeight(); y++) {
+                    if (visibilityMatrix[y * controller.getMap().getWidth() + x] && controller.isBoardPosEmpty(x, y)) {
+                        Vector2 loc = new Vector2(x, y);
+                        int dist = controller.getMap().getMapDist(loc, targetPos);
+                        if (minDistLoc == null || dist < minDist) {
+                            minDistLoc = loc;
+                            minDist = dist;
+                            if (minDist == 1) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (minDistLoc != null) {
+                Build bld = new Build();
+                bld.building = "marine-base";
+                bld.location = minDistLoc;
+                return bld;
+            }
+        }
         return null;
     }
 }

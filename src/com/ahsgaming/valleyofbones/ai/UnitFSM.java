@@ -19,7 +19,7 @@ import java.util.Stack;
  * Time: 9:06 AM
  */
 public class UnitFSM {
-    public static String LOG = "UnitFSM";
+    public String LOG = "UnitFSM";
     Stack<Directive> directives;
     Unit unit;
 
@@ -31,6 +31,7 @@ public class UnitFSM {
         visibleEnemyUnits = new Array<Unit>();
         towers = new Array<Unit>();
         this.unit = unit;
+        LOG += "[" + unit.getProtoId() + "(" + unit.getObjId() + ")]";
     }
 
     public void order(Directive order) {
@@ -72,8 +73,11 @@ public class UnitFSM {
 
     public Command capture(GameController controller) {
         Directive directive = directives.peek();
+        Gdx.app.log(LOG, "Capture " + directive.target.getProtoId() + " at " + directive.target.getBoardPosition());
         if (directive.target.getOwner() == unit.getOwner() && directive.target.getCurHP() > 0) {
             directives.pop();
+            Gdx.app.log(LOG, "Captured, defending...");
+            order(new Directive(Directive.DirectiveType.DEFEND, directive.target));
             return null;
         }
 
@@ -95,7 +99,8 @@ public class UnitFSM {
         }
 
         for (Unit u: towers) {
-            if (u.getOwner() != unit.getOwner() && controller.getMap().getMapDist(unit.getBoardPosition(), u.getBoardPosition()) < dist) {
+            if ((u.getOwner() != unit.getOwner() || (u.getOwner() == unit.getOwner() && u.getCurHP() == 0))
+                    && controller.getMap().getMapDist(unit.getBoardPosition(), u.getBoardPosition()) < dist) {
                 order(new Directive(Directive.DirectiveType.CAPTURE, u));
                 return null;
             }
@@ -119,13 +124,47 @@ public class UnitFSM {
     }
 
     public Command defend(GameController controller) {
-        directives.pop();
+        Directive directive = directives.peek();
+        Gdx.app.log(LOG, "Defend " + directive.target.getProtoId() + " at " + directive.target.getBoardPosition());
+
+        Array<Unit> threats = new Array<Unit>();
+        Array<Unit> threatsInRange = new Array<Unit>();
+        for (Unit u: visibleEnemyUnits) {
+            int dist = controller.getMap().getMapDist(directive.target.getBoardPosition(), u.getBoardPosition());
+            if (u.getAttackRange() + u.getMoveSpeed() > dist) {
+                threats.add(u);
+                if (unit.getAttackRange() + u.getMovesLeft() <= dist) {
+                    threatsInRange.add(u);
+                }
+            }
+        }
+        // TODO probably rank these by threat or something?
+        if (threatsInRange.size > 0) {
+            threats = threatsInRange;
+        }
+
+        Gdx.app.log(LOG, "Threats: " + threats.size);
+
+        Unit lowhp = null;
+        for (Unit u: threats) {
+            if (lowhp == null || u.getCurHP() < lowhp.getCurHP()) {
+                lowhp = u;
+            }
+        }
+
+        if (lowhp != null) {
+            order(new Directive(Directive.DirectiveType.HUNT, lowhp));
+        } else {
+            directives.pop();
+        }
+
         return null;
     }
 
     public Command hunt(GameController controller) {
-        Gdx.app.log(LOG, "Hunt");
         Directive directive = directives.peek();
+        Gdx.app.log(LOG, "Hunt " + directive.target.getProtoId() + " at " + directive.target.getBoardPosition());
+
         if (directive.target.getCurHP() <= 0 || !controller.playerCanSee(unit.getOwner(), directive.target)) {
             directives.pop();
             return null;
@@ -228,7 +267,7 @@ public class UnitFSM {
         // TODO evaluate unit priority - for now, just attack the lowest hp
         Unit lowHp = null;
         for (Unit u: visibleEnemyUnits) {
-            if (controller.getMap().getMapDist(unit.getBoardPosition(), u.getBoardPosition()) <= unit.getAttackRange()) {
+            if (!u.getProtoId().equals("tower-base") && controller.getMap().getMapDist(unit.getBoardPosition(), u.getBoardPosition()) <= unit.getAttackRange()) {
                 if (lowHp == null || (u.getCurHP() < lowHp.getCurHP() && u.getCurHP() > 0)) {
                     lowHp = u;
                 }
