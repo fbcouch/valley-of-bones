@@ -1,0 +1,62 @@
+Unit FSM
+
+- capture (tower/castle)
+
+- defend (tower/castle)
+
+- hunt (unit)
+
+- flee (location)
+
+capture tower ---> move towards ---> encounter enemy ---> hunt it
+   |   |                                                  |      |
+   |   ----------------------------------------------- kill it  health low ---> flee
+ captured ---> threatened? ---> defend ---> kill unit              
+ 
+ 
+class UnitFSM
+  Stack directives
+  
+  update() ->
+    switch(directives.peek())
+      when CAPTURE:
+      	capture()
+      when DEFEND:
+        defend()
+      when HUNT:
+        hunt()
+      when FLEE:
+        flee()
+        
+  capture() ->
+    move towards tower
+    captured?
+      directives.pop()
+      
+  defend() ->
+    find threat
+    directives.push(hunt)
+    
+  hunt() ->
+    move toward target
+    attack target
+    dead?
+      directives.pop()
+    overmatched?
+      directives.pop()
+      directives.push(flee)
+  
+  flee() ->
+    move away from threat
+    move toward units
+    value > threat?
+      directives.pop()
+      
+class Directive
+  Unit target
+  Vector2 location
+  int type
+  
+  constructor(type, target)
+  constructor(type, location)
+  
