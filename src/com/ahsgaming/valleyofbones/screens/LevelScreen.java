@@ -92,7 +92,7 @@ public class LevelScreen extends AbstractScreen {
     Prototypes.JsonProto buildProto = null;
     Image buildImage = null;
 
-    GameObject lastSelected = null;
+    Unit selected, lastSelected;
 
 	/**
 	 * @param game
@@ -119,37 +119,27 @@ public class LevelScreen extends AbstractScreen {
 	}
 	
 	private void drawUnitBoxes() {
-		if (gController.getSelectedObject() != null) {
-            GameObject obj = gController.getSelectedObject();
-
-            unitBoxRenderer.draw(mapCamera.combined, obj, gController.getMap().boardToMapCoords(obj.getBoardPosition().x, obj.getBoardPosition().y), new Vector2((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f)), new Vector2(gController.getMap().getTileWidth(), gController.getMap().getTileHeight()));
-
-
+		if (selected != null) {
+            unitBoxRenderer.draw(mapCamera.combined, selected, gController.getMap().boardToMapCoords(selected.getView().getBoardPosition().x, selected.getView().getBoardPosition().y), new Vector2((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f)), new Vector2(gController.getMap().getTileWidth(), gController.getMap().getTileHeight()));
 		}
-        if (VOBGame.DEBUG_PATHS) {
-            ShapeRenderer sr = new ShapeRenderer();
-            sr.setProjectionMatrix(mapCamera.combined);
-            sr.begin(ShapeRenderer.ShapeType.Filled);
-            for (Unit unit: gController.getUnits()) {
-                if (unit.getMoveSpeed() > 0 && unit.getOwner() != null) {
-                    sr.setColor(unit.getOwner().getPlayerColor());
-                    Vector2 prev = null;
-                    if (unit.getPath().size > 0) {
-                        for (Vector2 pos: unit.getPath()) {
-                            Vector2 mpos = gController.getMap().boardToMapCoords(pos.x, pos.y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
-                            if (prev != null) {
-                                // draw a rectLine
-                                sr.rectLine(prev, mpos, 3 * VOBGame.SCALE);
-                            }
-                            sr.circle(mpos.x, mpos.y, 5 * VOBGame.SCALE);
-                            prev = mpos;
-                        }
-                    }
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.setProjectionMatrix(mapCamera.combined);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        for (Unit unit: gController.getUnits()) {
+            if (unit.getData().getMoveSpeed() > 0 && unit.getOwner() != null) {
+                sr.setColor(unit.getOwner().getPlayerColor());
+                if (unit.getView().getLastBoardPosition() != null) {
+                    Vector2 lastPos = gController.getMap().boardToMapCoords(unit.getView().getLastBoardPosition().x, unit.getView().getLastBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
+                    Vector2 thisPos = gController.getMap().boardToMapCoords(unit.getView().getBoardPosition().x, unit.getView().getBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
 
+                    sr.rectLine(lastPos, thisPos, 3 * VOBGame.SCALE);
+                    sr.circle(lastPos.x, lastPos.y, 5 * VOBGame.SCALE);
+                    sr.circle(thisPos.x, thisPos.y, 5 * VOBGame.SCALE);
                 }
+
             }
-            sr.end();
         }
+        sr.end();
 	}
 
     protected void build(Vector2 boardPos) {
@@ -215,21 +205,21 @@ public class LevelScreen extends AbstractScreen {
         game.sendCommand(s);
     }
 
-    public boolean canRefund(Unit unit) {
-        return gController.canPlayerRefundUnit(game.getPlayer(), unit);
-    }
-
-    public void refundUnit(Unit unit) {
-        if (canRefund(unit)) {
-            int refund = unit.getRefund();
-            Refund r = new Refund();
-            r.owner = game.getPlayer().getPlayerId();
-            r.turn = gController.getGameTurn();
-            r.unit = unit.getObjId();
-            game.sendCommand(r);
-            addFloatingLabel(String.format("+$%02d", refund), unit.getX() + unit.getWidth() * 0.5f, unit.getY());
-        }
-    }
+//    public boolean canRefund(Unit unit) {
+//        return gController.canPlayerRefundUnit(game.getPlayer(), unit);
+//    }
+//
+//    public void refundUnit(Unit unit) {
+//        if (canRefund(unit)) {
+//            int refund = unit.getRefund();
+//            Refund r = new Refund();
+//            r.owner = game.getPlayer().getPlayerId();
+//            r.turn = gController.getGameTurn();
+//            r.unit = unit.getObjId();
+//            game.sendCommand(r);
+//            addFloatingLabel(String.format("+$%02d", refund), unit.getX() + unit.getWidth() * 0.5f, unit.getY());
+//        }
+//    }
 
     public void setBuildMode(Prototypes.JsonProto proto) {
         if (buildMode) unsetBuildMode();
@@ -414,20 +404,21 @@ public class LevelScreen extends AbstractScreen {
 	public void render(float delta) {
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
-        if (gController.getSelectedObject() != null && gController.getSelectedObject().isRemove()) gController.clearSelection();
+        if (selected != null && selected.getData().getCurHP() <= 0 && !selected.getData().getType().equals("building"))
+            selected = null;
 
         // clear highlighting if necessary
         gController.getMap().clearHighlightAndDim();
-        if (lastSelected != gController.getSelectedObject())
+        if (lastSelected != selected)
             gController.getMap().setMapDirty(true);
 
-        lastSelected = gController.getSelectedObject();
+        lastSelected = selected;
 
         selectionPanel.setSelected(null);
-        if (lastSelected != null && lastSelected instanceof Unit) {
-            gController.getMap().highlightArea(lastSelected.getBoardPosition(), ((Unit) lastSelected).getMovesLeft(), true);
+        if (lastSelected != null) {
+            gController.getMap().highlightArea(lastSelected.getView().getBoardPosition(), (int)lastSelected.getData().getMovesLeft(), true);
 
-            selectionPanel.setSelected((Unit) lastSelected);
+            selectionPanel.setSelected(lastSelected);
             if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
                 selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6  * VOBGame.SCALE, 0.5f));
             }
@@ -514,10 +505,10 @@ public class LevelScreen extends AbstractScreen {
             shapeRenderer = new ShapeRenderer();
         }
 
-        public void draw(Matrix4 projectionMatrix, GameObject obj, Vector2 start, Vector2 offset, Vector2 tileSize) {
+        public void draw(Matrix4 projectionMatrix, Unit unit, Vector2 start, Vector2 offset, Vector2 tileSize) {
             shapeRenderer.setProjectionMatrix(projectionMatrix);
             shapeRenderer.begin(ShapeType.Filled);
-            shapeRenderer.setColor((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+            shapeRenderer.setColor((unit.getOwner() != null ? unit.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
             start.sub(offset);
 
             Vector2 base = new Vector2(start.x, start.y);
@@ -529,13 +520,13 @@ public class LevelScreen extends AbstractScreen {
             shapeRenderer.rectLine(base.x + tileSize.x, base.y + tileSize.y * 0.25f, base.x + tileSize.x * 0.5f, base.y, lineWidth);
             shapeRenderer.end();
 
-            if (obj instanceof Unit && ((Unit)obj).getAttackRange() > 0) {
+            if (unit.getData().getAttackRange() > 0) {
                 shapeRenderer.begin(ShapeType.Filled);
-                Color color = new Color((obj.getOwner() != null ? obj.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
+                Color color = new Color((unit.getOwner() != null ? unit.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
                 color.mul(0.5f);
                 shapeRenderer.setColor(color);
 
-                int r = ((Unit)obj).getAttackRange();
+                int r = unit.getData().getAttackRange();
                 int segments = 6 + 12 * r;
                 int segperside = segments / 6;
                 Vector2 origin = new Vector2(start.x - (r - 1) * tileSize.x * 0.5f,

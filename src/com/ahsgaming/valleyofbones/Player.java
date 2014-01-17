@@ -91,10 +91,10 @@ public class Player {
 		float upkeep = 0;
 		int food = 0, mFood = 0;
 		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
-			if (unit.getFood() < 0) mFood -= unit.getFood();
-			else food += unit.getFood();
+			if (unit.getData().getFood() < 0) mFood -= unit.getData().getFood();
+			else food += unit.getData().getFood();
 			
-			upkeep += unit.getUpkeep();
+			upkeep += unit.getData().getUpkeep();
 		}
 		curFood = food;
 		maxFood = mFood;
@@ -138,7 +138,7 @@ public class Player {
 	public boolean hasAUnit(String id, GameController controller) {
 		Array<Unit> units = controller.getUnitsByPlayerId(getPlayerId());
 		for (Unit u: units) {
-			if (u.getProtoId().equals(id)) 
+			if (u.getProto().id.equals(id))
 				return true;
 		}
 		return false;
@@ -317,6 +317,6 @@ public class Player {
 	 */
 	public boolean isAlive() {
 		if (baseUnit == null) return false;
-		return baseUnit.isAlive();
+		return baseUnit.getData().getCurHP() > 0;
 	}
 }

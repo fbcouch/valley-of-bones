@@ -31,7 +31,6 @@ import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -107,7 +106,7 @@ public class AIPlayer extends Player {
                 if (valueMatrix == null) {
                     Array<Unit> visibleUnits = new Array<Unit>();
                     for (Unit unit: controller.getUnits()) {
-                        if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) {
+                        if (visibilityMatrix[(int)(unit.getView().getBoardPosition().y * controller.getMap().getWidth() + unit.getView().getBoardPosition().x)]) {
                             visibleUnits.add(unit);
                         }
                     }
@@ -142,9 +141,9 @@ public class AIPlayer extends Player {
 
                 // move units
                 for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
-                    if (unit.getMovesLeft() < 1) continue;
-                    Vector2[] adjacent = controller.getMap().getAdjacent((int)unit.getBoardPosition().x, (int)unit.getBoardPosition().y);
-                    Vector2 finalPos = new Vector2(unit.getBoardPosition());
+                    if (unit.getData().getMovesLeft() < 1) continue;
+                    Vector2[] adjacent = HexMap.getAdjacent((int) unit.getView().getBoardPosition().x, (int) unit.getView().getBoardPosition().y);
+                    Vector2 finalPos = new Vector2(unit.getView().getBoardPosition());
                     float finalSum = goalMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x]
                             + valueMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x]
                             + threatMatrix[(int)finalPos.y * controller.getMap().getWidth() + (int)finalPos.x];
@@ -158,12 +157,12 @@ public class AIPlayer extends Player {
                             finalSum = curSum;
                         }
                     }
-                    if (finalPos.x != unit.getBoardPosition().x || finalPos.y != unit.getBoardPosition().y) {
+                    if (finalPos.x != unit.getView().getBoardPosition().x || finalPos.y != unit.getView().getBoardPosition().y) {
                         // move!
                         Move mv = new Move();
                         mv.owner = getPlayerId();
                         mv.turn = controller.getGameTurn();
-                        mv.unit = unit.getObjId();
+                        mv.unit = unit.getId();
                         mv.toLocation = finalPos;
                         netController.sendAICommand(mv);
                         valueMatrix = null;
@@ -177,18 +176,18 @@ public class AIPlayer extends Player {
                 Array<Unit> friendlyUnits = controller.getUnitsByPlayerId(this.getPlayerId());
                 for (Unit unit: controller.getUnits()) {
                     if (unit.getOwner() == this || unit.getOwner() == null) continue;
-                    if (visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]
-                            && !unit.getInvisible() || controller.getMap().detectorCanSee(this, friendlyUnits, unit.getBoardPosition())) {
+                    if (visibilityMatrix[(int)(unit.getView().getBoardPosition().y * controller.getMap().getWidth() + unit.getView().getBoardPosition().x)]
+                            && !unit.getData().isInvisible() || controller.getMap().detectorCanSee(this, friendlyUnits, unit.getView().getBoardPosition())) {
                         visibleUnits.add(unit);
                     }
                 }
                 for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
-                    if (unit.getAttacksLeft() < 1) continue;
+                    if (unit.getData().getAttacksLeft() < 1) continue;
                     Unit toAttack = null;
                     float toAttackThreat = 0;
                     for (Unit o: visibleUnits) {
-                        float thisThreat = threatMatrix[controller.getMap().getWidth() * (int)o.getBoardPosition().y + (int)o.getBoardPosition().x];
-                        if (unit.canAttack(o, controller) && (toAttack == null || thisThreat > toAttackThreat)) {
+                        float thisThreat = threatMatrix[controller.getMap().getWidth() * (int)o.getView().getBoardPosition().y + (int)o.getView().getBoardPosition().x];
+                        if (controller.getUnitManager().canAttack(unit, o) && (toAttack == null || thisThreat > toAttackThreat)) {
                             toAttack = o;
                             toAttackThreat = thisThreat;
                         }
@@ -198,8 +197,8 @@ public class AIPlayer extends Player {
                         Attack at = new Attack();
                         at.owner = getPlayerId();
                         at.turn = controller.getGameTurn();
-                        at.unit = unit.getObjId();
-                        at.target = toAttack.getObjId();
+                        at.unit = unit.getId();
+                        at.target = toAttack.getId();
                         netController.sendAICommand(at);
                         valueMatrix = null;
                         threatMatrix = null;
@@ -238,10 +237,10 @@ public class AIPlayer extends Player {
                     }
 
                     for (Unit unit: controller.getUnits()) {
-                        if (unit.getOwner() == this || !visibilityMatrix[(int)(unit.getBoardPosition().y * controller.getMap().getWidth() + unit.getBoardPosition().x)]) continue;
+                        if (unit.getOwner() == this || !visibilityMatrix[(int)(unit.getView().getBoardPosition().y * controller.getMap().getWidth() + unit.getView().getBoardPosition().x)]) continue;
 
-                        int unitIndex = protoIds.indexOf(unit.getProtoId(), false);
-                        int unitDistance = controller.getMap().getMapDist(unit.getBoardPosition(), buildPosition);
+                        int unitIndex = protoIds.indexOf(unit.getProto().id, false);
+                        int unitDistance = controller.getMap().getMapDist(unit.getView().getBoardPosition(), buildPosition);
                         for (String key: buildScores.keySet()) {
                             buildScores.put(key, buildScores.get(key) + ((Array<Float>)genome.chromosomes.get(10).genes.get(key)).get(unitIndex) / unitDistance);
                         }
@@ -310,13 +309,13 @@ public class AIPlayer extends Player {
     public float calcGoalMatrix(int x, int y, HexMap map, Array<Unit> units) {
         float total = 0;
         for (Unit unit: units) {
-            if (unit.getType().equals("building")) {
-                int dist = map.getMapDist(unit.getBoardPosition(), new Vector2(x, y));
+            if (unit.getData().getType().equals("building")) {
+                int dist = map.getMapDist(unit.getView().getBoardPosition(), new Vector2(x, y));
                 Float value = 0f;
                 Array<Float> coeff_array = new Array<Float>();
-                if (unit.getProtoId().equals("tower")) {
+                if (unit.getProto().id.equals("tower")) {
                     value = (Float)genome.chromosomes.get(9).genes.get("tower_val");
-                    if (!visibilityMatrix[(int)(unit.getBoardPosition().y * map.getWidth() + unit.getBoardPosition().x)] || unit.getOwner() == null) {
+                    if (!visibilityMatrix[(int)(unit.getView().getBoardPosition().y * map.getWidth() + unit.getView().getBoardPosition().x)] || unit.getOwner() == null) {
                         // neutral tower
                         coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("tower_n_coeff");
                     } else if (unit.getOwner() == this) {
@@ -330,7 +329,7 @@ public class AIPlayer extends Player {
 
                     if (unit.getOwner() == this) {
                         // friendly castle
-                        value = threatMatrix[(int)(unit.getBoardPosition().y * map.getWidth() + unit.getBoardPosition().x)];
+                        value = threatMatrix[(int)(unit.getView().getBoardPosition().y * map.getWidth() + unit.getView().getBoardPosition().x)];
                         coeff_array = (Array<Float>)genome.chromosomes.get(9).genes.get("castle_f_coeff");
                     } else {
                         // enemy castle
@@ -363,11 +362,11 @@ public class AIPlayer extends Player {
     public boolean[] createVisibilityMatrix(HexMap map, Array<Unit> units) {
         boolean[] matrix = new boolean[map.getWidth() * map.getHeight()];
         for (Unit unit: units) {
-            if (unit.isBuilding()) continue;
-            int range = unit.getSightRange();
-            for (int x = (int)Math.max(unit.getBoardPosition().x - range - 1, 0); x < Math.min(unit.getBoardPosition().x + range + 1, map.getWidth()); x++) {
-                for (int y = (int)Math.max(unit.getBoardPosition().y - range - 1, 0); y < Math.min(unit.getBoardPosition().y + range + 1, map.getHeight()); y++) {
-                    if (map.getMapDist(new Vector2(x, y), unit.getBoardPosition()) <= range)
+            if (unit.getData().isBuilding()) continue;
+            int range = unit.getData().getSightRange();
+            for (int x = (int)Math.max(unit.getView().getBoardPosition().x - range - 1, 0); x < Math.min(unit.getView().getBoardPosition().x + range + 1, map.getWidth()); x++) {
+                for (int y = (int)Math.max(unit.getView().getBoardPosition().y - range - 1, 0); y < Math.min(unit.getView().getBoardPosition().y + range + 1, map.getHeight()); y++) {
+                    if (map.getMapDist(new Vector2(x, y), unit.getView().getBoardPosition()) <= range)
                         matrix[y * map.getWidth() + x] = true;
                 }
             }
@@ -389,10 +388,10 @@ public class AIPlayer extends Player {
         float total = 0;
         for (Unit unit: units) {
             if (unit.getOwner() == this) {
-                int i = Prototypes.getAll().indexOf(Prototypes.getProto(unit.getProtoId()), true);
+                int i = Prototypes.getAll().indexOf(Prototypes.getProto(unit.getProto().id), true);
                 total += calc_value(
                         (Float)genome.chromosomes.get(i).genes.get((threat ? "threat" : "value")),   // TODO this is a horrible way to look this up
-                        map.getMapDist(unit.getBoardPosition(), new Vector2(x, y)),
+                        map.getMapDist(unit.getView().getBoardPosition(), new Vector2(x, y)),
                         (Array<Float>)genome.chromosomes.get(i).genes.get((threat ? "threat_coeff" : "value_coeff"))
                 );
             }

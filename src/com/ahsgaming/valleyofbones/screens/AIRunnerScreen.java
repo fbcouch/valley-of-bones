@@ -55,8 +55,8 @@ public class AIRunnerScreen extends AbstractScreen {
                 AIPlayer p2 = (AIPlayer)client.getPlayers().get(1);
 
                 items.add(String.format("%s ($%.0f %d/%d %d/%d) vs %s ($%.0f %d/%d %d/%d) - %d", p1.getGenome().id,
-                        p1.getBankMoney(), p1.getCurFood(), p1.getMaxFood(), p1.getBaseUnit().getCurHP(), p1.getBaseUnit().getMaxHP(),
-                        p2.getGenome().id, p2.getBankMoney(), p2.getCurFood(), p2.getMaxFood(), p2.getBaseUnit().getCurHP(), p2.getBaseUnit().getMaxHP(),
+                        p1.getBankMoney(), p1.getCurFood(), p1.getMaxFood(), p1.getBaseUnit().getData().getCurHP(), p1.getBaseUnit().getData().getMaxHP(),
+                        p2.getGenome().id, p2.getBankMoney(), p2.getCurFood(), p2.getMaxFood(), p2.getBaseUnit().getData().getCurHP(), p2.getBaseUnit().getData().getMaxHP(),
                         client.getGameController().getGameTurn()));
             }
 

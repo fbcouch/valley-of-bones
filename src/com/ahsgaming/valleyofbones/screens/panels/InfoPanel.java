@@ -63,13 +63,13 @@ public class InfoPanel extends Group {
         iconRefund = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "skull-crossed-bones-small"));
         imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "selection-hud-bg"));
 
-        iconRefund.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                levelScreen.refundUnit(selected);
-            }
-        });
+//        iconRefund.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                super.clicked(event, x, y);
+//                levelScreen.refundUnit(selected);
+//            }
+//        });
 
 
         lblTitle = new Label("NOTHING", skin, "small");
@@ -122,31 +122,31 @@ public class InfoPanel extends Group {
         if (selected != null && selected != lastSelected) {
             Array<Label> labels = new Array<Label>();
 
-            lblTitle.setText(selected.getTitle());
+            lblTitle.setText(selected.getProto().title);
             labels.add(lblTitle);
-            lblHealth.setText(String.format(HEALTH, selected.getCurHP(), selected.getMaxHP()));
+            lblHealth.setText(String.format(HEALTH, selected.getData().getCurHP(), selected.getData().getMaxHP()));
             labels.add(lblHealth);
-            lblAttack.setText(String.format(ATTACK, selected.getAttackDamage()));
+            lblAttack.setText(String.format(ATTACK, selected.getData().getAttackDamage()));
             labels.add(lblAttack);
-            lblRange.setText(String.format(RANGE, selected.getAttackRange()));
+            lblRange.setText(String.format(RANGE, selected.getData().getAttackRange()));
             labels.add(lblRange);
-            lblArmor.setText(String.format(ARMOR, selected.getArmor()));
+            lblArmor.setText(String.format(ARMOR, selected.getData().getArmor()));
             labels.add(lblArmor);
-            lblMove.setText(String.format(MOVE, (int) selected.getMoveSpeed()));
+            lblMove.setText(String.format(MOVE, (int) selected.getData().getMoveSpeed()));
             labels.add(lblMove);
-            lblAttacksLeft.setText(String.format(ATTACK_LEFT, selected.getAttacksLeft()));
+            lblAttacksLeft.setText(String.format(ATTACK_LEFT, (int)selected.getData().getAttacksLeft()));
             labels.add(lblAttacksLeft);
-            lblMovesLeft.setText(String.format(MOVE_LEFT, selected.getMovesLeft()));
+            lblMovesLeft.setText(String.format(MOVE_LEFT, (int)selected.getData().getMovesLeft()));
             labels.add(lblMovesLeft);
-            lblRefund.setText(String.format(REFUND, selected.getRefund()));
+            lblRefund.setText(String.format(REFUND, selected.getData().getRefund()));
             labels.add(lblRefund);
 
             if (iconAbility != null) removeActor(iconAbility);
 
-            if (selected.getAbility().length() > 0) {
-                Gdx.app.log(LOG, selected.getAbility());
-                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getAbility()));
-                if (selected.isAbilityActive()) {
+            if (selected.getData().getAbility().length() > 0) {
+                Gdx.app.log(LOG, selected.getData().getAbility());
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getAbility()));
+                if (selected.getData().isAbilityActive()) {
                     iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
                 }
                 addActor(iconAbility);
@@ -156,7 +156,7 @@ public class InfoPanel extends Group {
                     public void clicked(InputEvent event, float x, float y) {
                         super.clicked(event, x, y);
 
-                        levelScreen.activateAbility(selected.getObjId());
+                        levelScreen.activateAbility(selected.getId());
                     }
                 });
             } else {
@@ -170,7 +170,7 @@ public class InfoPanel extends Group {
             }
 
             healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
-            healthBar.setCurrent((float)selected.getCurHP() / (float)selected.getMaxHP());
+            healthBar.setCurrent((float)selected.getData().getCurHP() / (float)selected.getData().getMaxHP());
             lastSelected = selected;
 
             layout();
@@ -192,7 +192,7 @@ public class InfoPanel extends Group {
         if (selected != null) {
             Gdx.app.log(LOG, "unit!");
             if (imgUnit != null) imgUnit.remove();
-            imgUnit = new Image(selected.getImage());
+            imgUnit = new Image(selected.getView().getImage());
             addActor(imgUnit);
             imgUnit.setPosition(25, getHeight() * 0.5f - imgUnit.getHeight() * 0.5f - 5);
             y = (int)imgUnit.getY();

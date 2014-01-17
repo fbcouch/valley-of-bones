@@ -27,9 +27,10 @@ import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.ahsgaming.valleyofbones.units.UnitManager;
+import com.ahsgaming.valleyofbones.units.UnitView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -42,8 +43,8 @@ public class GameController {
 	
 	public String LOG = "GameController";
 	
-	Array<GameObject> gameObjects, objsToAdd, objsToRemove;
-	GameObject selectedObject;
+	UnitManager unitManager;
+	Unit selectedObject;
 
 	Array<Player> players;
 	
@@ -75,11 +76,8 @@ public class GameController {
 		// TODO load map
 		this.mapName = mapName;
 
-		gameObjects = new Array<GameObject>();
-		selectedObject = null;
-		objsToAdd = new Array<GameObject>();
-		objsToRemove = new Array<GameObject>();
-		
+        unitManager = new UnitManager(this);
+
 		commandHistory = new Array<Command>();
 		commandQueue = new Array<Command>();
 		cmdsToAdd = new Array<Command>();
@@ -107,52 +105,46 @@ public class GameController {
 	
 	private void loadMapObjects() {
 		int player = 0;
-//        grpUnits = map.getObjectGroup();
 		for (Vector2 spawn : map.getPlayerSpawns()) {
-			//Vector2 objPos = mapToLevelCoords(spawn);
 			Unit unit;
 			if (player >= 0 && player < players.size) {
-				unit = new Unit(getNextObjectId(), players.get(player), Prototypes.getProto("castle-base"));
-                unit.setBuilding(false);
+                unit = Unit.createUnit(getNextObjectId(), "castle-base", players.get(player));
 				players.get(player).setBaseUnit(unit);
 			} else {
-				unit = new Unit(getNextObjectId(), null, Prototypes.getProto("castle-base"));
-                unit.setBuilding(false);
-				Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
+                unit = Unit.createUnit(getNextObjectId(), "castle-base", null);
+                Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
-//			Gdx.app.log(LOG, spawn.toString());
 			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
-			unit.setPosition(pos.x, pos.y);
-			unit.setBoardPosition((int)spawn.x, (int)spawn.y);
-			addGameUnitNow(unit);
+			unit.getView().setPosition(pos.x, pos.y);
+			unit.getView().setBoardPosition((int) spawn.x, (int) spawn.y);
+			unitManager.addUnit(unit);
 			
 			if (player >= 0 && player < players.size) {
-				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getX() + unit.getWidth() * 0.5f, unit.getY() + unit.getHeight() * 0.5f));
+				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getView().getX() + unit.getView().getWidth() * 0.5f, unit.getView().getY() + unit.getView().getHeight() * 0.5f));
 			}
-			player ++;
+			player++;
 		}
 		
 		// TODO load capture points
         for (Vector2 point : map.getControlPoints()) {
             Unit unit;
-            unit = new Unit(getNextObjectId(), null, Prototypes.getProto("tower-base"));
+            unit = Unit.createUnit(getNextObjectId(), "tower-base", null);
             Vector2 pos = map.boardToMapCoords(point.x, point.y);
-//            Gdx.app.log(LOG, point.toString());
-            unit.setPosition(pos.x, pos.y);
-            unit.setBoardPosition(point);
-            addGameUnitNow(unit);
+            unit.getView().setPosition(pos.x, pos.y);
+            unit.getView().setBoardPosition(point);
+            unitManager.addUnit(unit);
         }
 
         if (VOBGame.DEBUG_ATTACK) {
-            Unit unit = new Unit(getNextObjectId(), players.get(0), Prototypes.getProto("marine-base"));
-            unit.setBoardPosition(9, 0);
-            unit.setPosition(getMap().boardToMapCoords(9, 0));
-            addGameUnit(unit);
+            Unit unit = Unit.createUnit(getNextObjectId(), "marine-base", players.get(0));
+            unit.getView().setBoardPosition(9, 0);
+            unit.getView().setPosition(getMap().boardToMapCoords(9, 0));
+            unitManager.addUnit(unit);
 
-            unit = new Unit(getNextObjectId(), players.get(1), Prototypes.getProto("marine-base"));
-            unit.setBoardPosition(10, 0);
-            unit.setPosition(getMap().boardToMapCoords(10, 0));
-            addGameUnit(unit);
+            unit = Unit.createUnit(getNextObjectId(), "marine-base", players.get(1));
+            unit.getView().setBoardPosition(10, 0);
+            unit.getView().setPosition(getMap().boardToMapCoords(10, 0));
+            unitManager.addUnit(unit);
         }
 	}
 	
@@ -162,7 +154,7 @@ public class GameController {
             case RUNNING:
                 doCommands();
 
-                updateObjects(delta);
+                unitManager.update(delta);
 
                 for (int p = 0; p < players.size; p++) {
                     players.get(p).update(this, delta);
@@ -190,32 +182,12 @@ public class GameController {
         }
 
 	}
-
-    public void updateObjects(float delta) {
-        GameObject o;
-
-        for (int i=0;i<gameObjects.size;i++) {
-            o = gameObjects.get(i);
-            o.update(this, delta);
-
-            if (o.isRemove() && !o.hasActions()) objsToRemove.add(o);
-        }
-
-        gameObjects.removeAll(objsToRemove, true);
-
-        for (GameObject obj: objsToAdd) {
-            addGameUnitNow(obj);
-        }
-        objsToAdd.clear();
-    }
 	
 	public void doTurn() {
 //		Gdx.app.log(LOG, "doTurn");
 
         if (nextTurn) {
-            for (Unit unit: getUnitsByPlayerId(currentPlayer.getPlayerId())) {
-                unit.endTurn();
-            }
+            unitManager.endTurn(currentPlayer);
         }
 
 		gameTurn += 1;
@@ -230,9 +202,7 @@ public class GameController {
 
         currentPlayer.startTurn(this);
 
-        for (GameObject obj: gameObjects)
-            if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == currentPlayer.getPlayerId())
-                ((Unit) obj).startTurn();
+        unitManager.startTurn(currentPlayer);
 
         map.setMapDirty(true);
 	}
@@ -320,8 +290,8 @@ public class GameController {
 		if (cmd.owner != currentPlayer.getPlayerId() && !(cmd instanceof Surrender) && !(cmd instanceof Pause) && !(cmd instanceof Unpause)) return false;
 
 		if (cmd instanceof Attack) {
-            Unit u = ((Unit)getObjById(((Attack)cmd).unit));
-            return u != null && u.getAttacksLeft() >= 1;
+            Unit u = unitManager.getUnit(((Attack)cmd).unit);
+            return u != null && u.getData().getAttacksLeft() >= 1;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
@@ -331,30 +301,17 @@ public class GameController {
 			return true;
 		} else if (cmd instanceof Unpause) {
 			return true;
-		} else if (cmd instanceof Upgrade) {
-			Upgrade u = (Upgrade)cmd;
-			// TODO check dependencies here
-			
-			Player player = this.getPlayerById(u.owner);
-			GameObject obj = this.getObjById(u.unit);
-			if (obj.getOwner() != player) return false;
-			if (obj instanceof Unit) {
-				return player.canUpgrade((Unit)obj, u.upgrade, this);
-			}
-			
-			return false;
 		} else if (cmd instanceof EndTurn) {
             return (cmd.owner == currentPlayer.getPlayerId());
         } else if (cmd instanceof Refund) {
             Refund r = (Refund)cmd;
             Player p = getPlayerById(r.owner);
-            GameObject o = getObjById(r.unit);
-            if (!(o instanceof Unit)) return false;
-            return canPlayerRefundUnit(p, (Unit)o);
+            Unit u = unitManager.getUnit(r.unit);
+            return canPlayerRefundUnit(p, u);
         } else if (cmd instanceof ActivateAbility) {
             ActivateAbility ab = (ActivateAbility)cmd;
-            GameObject o = getObjById(ab.unit);
-            if (!(o instanceof Unit) || ((Unit)o).getOwner().getPlayerId() != ab.owner) return false;
+            Unit u = unitManager.getUnit(ab.unit);
+            if (u.getOwner() != null && u.getOwner().getPlayerId() != ab.owner) return false;
             return true;
         } else if (cmd instanceof Surrender) {
             return true;
@@ -375,20 +332,18 @@ public class GameController {
 			executePause((Pause)cmd);
 		} else if (cmd instanceof Unpause) {
 			executeUnpause((Unpause)cmd);
-		} else if (cmd instanceof Upgrade) {
-			executeUpgrade((Upgrade)cmd);
 		} else if (cmd instanceof EndTurn) {
             setNextTurn(true);
         } else if (cmd instanceof Refund) {
             Refund r = (Refund)cmd;
-            refundUnit(getPlayerById(r.owner), (Unit)getObjById(r.unit));
+            refundUnit(getPlayerById(r.owner), unitManager.getUnit(r.unit));
         } else if (cmd instanceof ActivateAbility) {
             ActivateAbility ab = (ActivateAbility)cmd;
-            Unit u = (Unit)getObjById(ab.unit);
-            u.activateAbility(this);
+            Unit u = unitManager.getUnit(ab.unit);
+            unitManager.activateAbility(u);
         } else if (cmd instanceof Surrender) {
             Player p = getPlayerById(cmd.owner);
-            p.getBaseUnit().setCurHP(0);
+            p.getBaseUnit().getData().setCurHP(0);
         } else {
 //			Gdx.app.log(LOG, "Unknown command");
 		}
@@ -399,46 +354,29 @@ public class GameController {
 	
 	public void executeAttack(Attack cmd) {
 		//Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
-		GameObject obj = getObjById(cmd.unit);
-		GameObject tar = getObjById(cmd.target);
+        Unit obj = unitManager.getUnit(cmd.unit);
+		Unit tar = unitManager.getUnit(cmd.target);
 		if (obj == null || tar == null) {
 			if (obj == null) Gdx.app.log(LOG, String.format("Attack: cannot find unit(%d)", cmd.unit));
 			if (tar == null) Gdx.app.log(LOG, String.format("Attack: cannot find target(%d)", cmd.target));
-		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
+		} else if (obj.getOwner() == null || obj.getOwner().getPlayerId() != cmd.owner) {
 			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
 		} else {
-			if (obj instanceof Unit && tar instanceof Unit && (!((Unit) tar).getInvisible() || ((Unit)obj).isDetector()) && playerCanSee(obj.owner, (Unit)tar)) {
-                if (((Unit)obj).attack((Unit)tar, this) && ((Unit)obj).getSplashDamage() > 0) {
-                    for (Vector2 pos: map.getAdjacent((int)tar.getBoardPosition().x, (int)tar.getBoardPosition().y)) {
-                        GameObject o = getObjAtBoardPos(pos);
-                        if (o != null && o instanceof Unit) {
-                            o.takeDamage(((Unit)obj).getAttackDamage() * ((Unit)obj).getSplashDamage() * ((Unit)obj).getBonus(((Unit)o).getSubtype()));
+			if ((!tar.getData().isInvisible() || obj.getData().isDetector()) && playerCanSee(obj.getOwner(), tar)) {
+                if (unitManager.attack(obj, tar) && obj.getData().getSplashDamage() > 0) {
+                    for (Vector2 pos: HexMap.getAdjacent((int) tar.getView().getBoardPosition().x, (int) tar.getView().getBoardPosition().y)) {
+                        Unit o = unitManager.getUnit(pos);
+                        if (o != null) {
+                            unitManager.applyDamage(o, obj.getData().getAttackDamage() * obj.getData().getSplashDamage() * obj.getData().getBonus(o.getData().getSubtype()));
                         }
                     }
                 }
-			} else {
-				if (!(obj instanceof Unit)) {
-					Gdx.app.log(LOG, "Error: unit is not a Unit");
-				}
-				
-				if (!(tar instanceof Unit)) {
-					Gdx.app.log(LOG, "Error: target is not a Unit");
-				}
-			}
+            }
 		}
 	}
 
     public boolean playerCanSee(Player player, Unit target) {
-        for (GameObject obj: gameObjects) {
-            if (obj instanceof Unit) {
-                Unit u = (Unit)obj;
-                if (u.getOwner() == player && u.getSightRange() >= map.getMapDist(u.getBoardPosition(), target.getBoardPosition())) {
-//                    Gdx.app.log(LOG, String.format("%s: %d", u.getProtoId(), map.getMapDist(u.getBoardPosition(), target.getBoardPosition())));
-                    return true;
-                }
-            }
-        }
-        return false;
+        return unitManager.canPlayerSee(player, target);
     }
 	
 	public void executeBuild(Build cmd) {
@@ -449,56 +387,37 @@ public class GameController {
 			
 		// TODO place builder
 		// for now, just add the unit
-		Unit unit = new Unit(getNextObjectId(), this.getPlayerById(cmd.owner), (JsonProto)Prototypes.getProto(cmd.building));
-		unit.setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
-		unit.setBoardPosition((int)cmd.location.x, (int)cmd.location.y);
-        unit.addAction(GameObject.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
+        Unit unit = Unit.createUnit(getNextObjectId(), cmd.building, this.getPlayerById(cmd.owner));
+		unit.getView().setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
+		unit.getView().setBoardPosition((int) cmd.location.x, (int) cmd.location.y);
+        unit.getView().addAction(UnitView.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
 		
-		addGameUnitNow(unit);
-		owner.setBankMoney(owner.getBankMoney() - unit.getCost());
+		unitManager.addUnit(unit);
+		owner.setBankMoney(owner.getBankMoney() - unit.getData().getCost());
 		owner.updateFood(this);
-        cmd.unitId = unit.getObjId();
-	
-		
+        cmd.unitId = unit.getId();
 	}
 	
 	public void executeMove(Move cmd) {
-//		Gdx.app.log(LOG, "Move unit: " + Integer.toString(cmd.unit)+ " to: " + cmd.toLocation.toString());
-		GameObject obj = getObjById(cmd.unit);
-		if (obj == null) {
-			Gdx.app.log(this.getClass().getSimpleName(), "Error: unknown unit id");
-		} else if (obj.owner == null || obj.owner.getPlayerId() != cmd.owner) {
-			Gdx.app.log(LOG, "Error: object owner does not match command owner");
-		} else {
-			// TODO implement unit command queue-ing?
-			if (isBoardPosEmpty(cmd.toLocation)) {
-				if (obj instanceof Unit) {
-                    ((Unit)obj).move(cmd.toLocation, this);
-                } else {
-                    obj.setBoardPosition(cmd.toLocation);
-                    obj.setPosition(map.boardToMapCoords(cmd.toLocation.x, cmd.toLocation.y));
-                }
-			}
-		}
+		Unit unit = unitManager.getUnit(cmd.unit);
+		unitManager.moveUnit(unit, cmd.toLocation);
 	}
 
     public boolean validateMove(Move m) {
         if (m.toLocation.x < 0 || m.toLocation.x >= map.getWidth() || m.toLocation.y < 0 || m.toLocation.y >= map.getHeight()) return false;
 
-        GameObject o = getObjById(m.unit);
-        if (!(o instanceof Unit)) return false;
-        Unit u = (Unit)o;
+        Unit u = unitManager.getUnit(m.unit);
 
-        if (u.getOwner().getPlayerId() != m.owner) return false;
+        if (u.getOwner() == null || u.getOwner().getPlayerId() != m.owner) return false;
 
         boolean[] notavailable = new boolean[map.getWidth() * map.getHeight()];
         for (Unit unit: getUnits()) {
-            if (unit.getObjId() != u.getObjId())
-                notavailable[(int)(unit.getBoardPosition().y * map.getWidth() + unit.getBoardPosition().x)] = true;
+            if (unit.getId() != u.getId())
+                notavailable[(int)(unit.getView().getBoardPosition().y * map.getWidth() + unit.getView().getBoardPosition().x)] = true;
         }
 
-        int[] start = {(int)(u.getBoardPosition().y * map.getWidth() + u.getBoardPosition().x)};
-        int[] radii = {u.getMovesLeft()};
+        int[] start = {(int)(u.getView().getBoardPosition().y * map.getWidth() + u.getView().getBoardPosition().x)};
+        int[] radii = {(int)u.getData().getMovesLeft()};
 
         boolean[] available = map.getAvailablePositions(start, radii, notavailable, true);
 
@@ -512,13 +431,6 @@ public class GameController {
 	
 	public void executeUnpause(Unpause cmd) {
 		state = GameStates.RUNNING;
-	}
-	
-	public void executeUpgrade(Upgrade cmd) {
-		GameObject obj = getObjById(cmd.unit);
-		if (obj instanceof Unit) {
-			((Unit)obj).applyUpgrade(Prototypes.getProto(cmd.upgrade));
-		}
 	}
 	
 	/**
@@ -535,130 +447,49 @@ public class GameController {
 		}
 		return null;
 	}
-	
-	private void addGameUnitNow(GameObject obj) {
-		if (!gameObjects.contains(obj, true)) gameObjects.add(obj);
-	}
-	
-	public void addGameUnit(GameObject obj) {
-		if (!objsToAdd.contains(obj, true)) objsToAdd.add(obj);
-	}
-	
-	public void removeGameUnit(GameObject obj) {
-		gameObjects.removeValue(obj, true);
-	}
 
     public Array<Unit> getUnits() {
-        Array<Unit> ret = new Array<Unit>();
-
-        for (GameObject obj: gameObjects) {
-            if(obj instanceof Unit) ret.add((Unit)obj);
-        }
-        return ret;
+        return unitManager.getUnits();
     }
 	
-	public Array<GameObject> getGameObjects() {
-		Array<GameObject> ret = new Array<GameObject>();
-		
-		for(GameObject obj: gameObjects) {
-			ret.add(obj);
-		}
-		
-		return ret;
-	}
-	
-	public GameObject getObjById(int id) {
-		
-		for (GameObject obj: gameObjects) {
-			if (obj.getObjId() == id) {
-				return obj;
-			}
-		}
-		
-		return null;
-	}
-	
 	public Array<Unit> getUnitsByPlayerId(int id) {
-		Array<Unit> ret = new Array<Unit>();
-		
-		for (GameObject obj: gameObjects) {
-			if (obj instanceof Unit && obj.getOwner() != null && obj.getOwner().getPlayerId() == id) {
-				ret.add((Unit)obj);
-			}
-		}
-		
-		return ret;
+		return unitManager.getUnits(id);
 	}
 
     public boolean canPlayerRefundUnit(Player player, Unit unit) {
-        return player != null && unit != null
-                && player == currentPlayer && unit.getOwner() == player
-                && !unit.getType().equals("building")
-                && gameObjects.contains(unit, true)
-                && !unit.isRemove();
+        return false; // TODO re-implement refund
+//        return player != null && unit != null
+//                && player == currentPlayer && unit.getOwner() == player
+//                && !unit.getData().getType().equals("building")
+//                && units.contains(unit, true)
+//                && !unit.isRemove();
     }
 
     public void refundUnit(Player player, Unit unit) {
-        unit.setRemove(true);
-        player.setBankMoney(player.getBankMoney() + unit.getRefund());
-        removeGameUnit(unit);
+//        unit.setRemove(true);
+//        player.setBankMoney(player.getBankMoney() + unit.getRefund());
+//        removeGameUnit(unit);
     }
 
     public Array<Unit> getUnitsInArea(Vector2 boardPos, int radius) {
-        Array<Unit> units = new Array<Unit>();
-
-        for (GameObject obj: gameObjects) {
-            if (obj instanceof Unit && map.getMapDist(boardPos, obj.getBoardPosition()) <= radius)
-                units.add((Unit)obj);
-        }
-
-        return units;
+        return unitManager.getUnitsInArea(boardPos, radius);
     }
-	
-	public GameObject getSelectedObject() {
-		return selectedObject;
-	}
-	
-	public void selectObjAtBoardPos(int x, int y, Player player) {
-		selectedObject = (map.isBoardPositionVisible(x, y) ? getObjAtBoardPos(x, y) : null);   // BUGFIX: prevent selecting non-visible objects
 
+	public Unit getUnitAtBoardPos(int x, int y) {
+        return unitManager.getUnit(new Vector2(x, y));
 	}
 	
-	public void selectObjAtBoardPos(float x, float y, Player player) {
-		selectObjAtBoardPos((int)x, (int)y, player);
+	public Unit getUnitAtBoardPos(float x, float y) {
+		return getUnitAtBoardPos((int) x, (int) y);
 	}
 	
-	public void selectObjAtBoardPos(Vector2 boardPos, Player player) {
-		selectObjAtBoardPos((int)boardPos.x, (int)boardPos.y, player);
-	}
-
-    public void clearSelection() {
-        selectedObject = null;
-    }
-	
-	public GameObject getObjAtBoardPos(int x, int y) {
-		for (GameObject obj: gameObjects) {
-			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) return obj; 
-		}
-		return null;
-	}
-	
-	public GameObject getObjAtBoardPos(float x, float y) {
-		return getObjAtBoardPos((int)x, (int)y);
-	}
-	
-	public GameObject getObjAtBoardPos(Vector2 boardPos) {
-		return getObjAtBoardPos((int)boardPos.x, (int)boardPos.y);
+	public Unit getUnitAtBoardPos(Vector2 boardPos) {
+		return getUnitAtBoardPos((int) boardPos.x, (int) boardPos.y);
 	}
 	
 	public boolean isBoardPosEmpty(int x, int y) {
         if (!map.isBoardPositionTraversible(x, y)) return false;
-        for (GameObject obj: this.gameObjects) {
-			if (obj.getBoardPosition().x == x && obj.getBoardPosition().y == y) {
-				return false;
-			}
-		}
-		return true;
+        return (unitManager.getUnit(new Vector2(x, y)) == null);
 	}
 	
 	public boolean isBoardPosEmpty(float x, float y) {
@@ -668,6 +499,10 @@ public class GameController {
 	public boolean isBoardPosEmpty(Vector2 boardPos) {
 		return isBoardPosEmpty((int)boardPos.x, (int)boardPos.y);
 	}
+
+    public UnitManager getUnitManager() {
+        return unitManager;
+    }
 	
 	public HexMap getMap() {
 		return map;

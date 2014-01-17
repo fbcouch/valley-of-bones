@@ -1,7 +1,5 @@
 package com.ahsgaming.valleyofbones.screens;
 
-import com.ahsgaming.valleyofbones.GameObject;
-import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -46,13 +44,14 @@ public class LevelScreenInputListener extends ActorGestureListener {
         }
 
         Gdx.app.log(LOG, String.format("Select obj at %s", boardPos.toString()));
-        levelScreen.gController.selectObjAtBoardPos(boardPos, levelScreen.game.getPlayer());
-        if (levelScreen.gController.getSelectedObject() != null && levelScreen.gController.getSelectedObject() instanceof Unit) {
-            Unit u = (Unit)levelScreen.gController.getSelectedObject();
-            Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProtoId(), u.getCurHP(), u.getMaxHP()));
+        Unit u = levelScreen.gController.getUnitAtBoardPos(boardPos);
+        if (u != null && levelScreen.gController.playerCanSee(levelScreen.game.getPlayer(), u)) {
+            levelScreen.selected = u;
+            Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProto().id, u.getData().getCurHP(), u.getData().getMaxHP()));
             levelScreen.unsetBuildMode();
+        } else {
+            levelScreen.selected = null;
         }
-
     }
 
     @Override
@@ -72,21 +71,21 @@ public class LevelScreenInputListener extends ActorGestureListener {
             levelScreen.build(boardPos);
         }
 
-        if (levelScreen.gController.getSelectedObject() != null &&
-            levelScreen.gController.getSelectedObject().getOwner() != null &&
+        if (levelScreen.selected != null &&
+            levelScreen.selected.getOwner() != null &&
             levelScreen.isCurrentPlayer() &&
-            levelScreen.gController.getSelectedObject().getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId())
+            levelScreen.selected.getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId())
         {
-            GameObject target = levelScreen.gController.getObjAtBoardPos(boardPos);
-            Unit unit = (Unit)levelScreen.gController.getSelectedObject();
+            Unit target = levelScreen.gController.getUnitAtBoardPos(boardPos);
+            Unit unit = levelScreen.selected;
 
-            if (target != null && target instanceof Unit && (!((Unit)target).getInvisible() || unit.isDetector())) {
+            if (target != null && (!target.getData().isInvisible() || unit.getData().isDetector())) {
                 if (target.getOwner() == null || target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
-                    levelScreen.attack(unit.getObjId(), target.getObjId());
+                    levelScreen.attack(unit.getId(), target.getId());
                 }
 
             } else {
-                levelScreen.move(unit.getObjId(), boardPos);
+                levelScreen.move(unit.getId(), boardPos);
             }
 
         }

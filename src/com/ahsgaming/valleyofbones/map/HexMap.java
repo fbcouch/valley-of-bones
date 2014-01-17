@@ -26,10 +26,8 @@ import java.util.ArrayList;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,7 +35,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -271,7 +268,7 @@ public class HexMap {
 
         }
         for (int i = 0; i < units.size; i++) {
-            if (units.get(i).isBuilding()) {
+            if (units.get(i).getData().isBuilding()) {
                 units.removeIndex(i);
                 i--;
             }
@@ -281,8 +278,8 @@ public class HexMap {
         int[] radii = new int[units.size];
         for (int u=0;u<units.size;u++) {
             Unit unit = units.get(u);
-            unitpositions[u] = (int)(unit.getBoardPosition().y * bounds.x + unit.getBoardPosition().x);
-            radii[u] = unit.getSightRange();
+            unitpositions[u] = (int)(unit.getView().getBoardPosition().y * bounds.x + unit.getView().getBoardPosition().x);
+            radii[u] = unit.getData().getSightRange();
         }
 
         boolean[] notavailable = new boolean[hexStatus.length];
@@ -361,10 +358,10 @@ public class HexMap {
         // draw enemy units
         for (Unit u: units) {
             if (currentPlayer != u.getOwner()){
-                if ((hexStatus[(int)(u.getBoardPosition().x + u.getBoardPosition().y * getWidth())] != FOG
-                        || (u.getLastBoardPos() != null && hexStatus[(int)(u.getLastBoardPos().x + u.getLastBoardPos().y * getWidth())] != FOG && u.hasActions() && !u.isBuilding()))
-                        && (!u.getInvisible() || detectorCanSee(currentPlayer, units, u.getBoardPosition())))
-                    u.draw(batch, x, y, alpha);
+                if ((hexStatus[(int)(u.getView().getBoardPosition().x + u.getView().getBoardPosition().y * getWidth())] != FOG
+                        || (u.getView().getLastBoardPosition() != null && hexStatus[(int)(u.getView().getLastBoardPosition().x + u.getView().getLastBoardPosition().y * getWidth())] != FOG && u.getView().hasActions() && !u.getData().isBuilding()))
+                        && (!u.getData().isInvisible() || detectorCanSee(currentPlayer, units, u.getView().getBoardPosition())))
+                    u.getView().draw(batch, x, y, alpha, false);
             }
         }
 
@@ -399,7 +396,7 @@ public class HexMap {
         // draw friendly units
         for (Unit u: units) {
             if (currentPlayer == u.getOwner())
-                u.draw(batch, x, y, alpha);
+                u.getView().draw(batch, x, y, alpha, true);
         }
 
         batch.setColor(save);
@@ -426,7 +423,7 @@ public class HexMap {
         boolean[] notavailable = new boolean[hexStatus.length];
 
         for (Unit u: parent.getUnits()) {
-            if (!u.getBoardPosition().equals(center)) notavailable[(int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x)] = true;
+            if (!u.getView().getBoardPosition().equals(center)) notavailable[(int)(u.getView().getBoardPosition().y * bounds.x + u.getView().getBoardPosition().x)] = true;
         }
 
         int[] start = {(int)(center.y * bounds.x + center.x)};
@@ -535,7 +532,7 @@ public class HexMap {
     public boolean detectorCanSee(Player player, Array<Unit> units, Vector2 boardPosition) {
         for (int u = 0; u < units.size; u++) {
             Unit unit = units.get(u);
-            if (unit.getOwner() == player && unit.isDetector() && getMapDist(unit.getBoardPosition(), boardPosition) <= unit.getSightRange()) return true;
+            if (unit.getOwner() == player && unit.getData().isDetector() && getMapDist(unit.getView().getBoardPosition(), boardPosition) <= unit.getData().getSightRange()) return true;
         }
         return false;
     }
@@ -619,7 +616,7 @@ public class HexMap {
 	 * ! --> y % 2 == 0 ? -1 : 0
 	 * ? --> y % 2 == 0 ? 0 : 1
 	 */
-	public int getMapDist(Vector2 from, Vector2 to) {
+	public static int getMapDist(Vector2 from, Vector2 to) {
         // completion cases:
         if (from.x == to.x) return Math.round(Math.abs(from.y - to.y));
         if (from.y == to.y) return Math.round(Math.abs(from.x - to.x));
@@ -642,7 +639,7 @@ public class HexMap {
         return 1 + getMapDist(from, to);
 	}
 
-    public Vector2[] getAdjacent(int x, int y) {
+    public static Vector2[] getAdjacent(int x, int y) {
         Vector2[] adjacent = new Vector2[6];
         adjacent[0] = new Vector2(x + 1, y);
         adjacent[1] = new Vector2(x - 1, y);
@@ -651,6 +648,10 @@ public class HexMap {
         adjacent[4] = new Vector2(x + (y % 2 == 0 ? -1 : 0), y - 1);
         adjacent[5] = new Vector2(x + (y % 2 == 0 ? -1 : 0), y + 1);
         return adjacent;
+    }
+
+    public static Vector2[] getAdjacent(Vector2 boardPosition) {
+        return getAdjacent((int)boardPosition.x, (int)boardPosition.y);
     }
 
     public boolean[] getAvailablePositions(int[] start, int[] radii, boolean[] unavailable, boolean requireTraversible) {

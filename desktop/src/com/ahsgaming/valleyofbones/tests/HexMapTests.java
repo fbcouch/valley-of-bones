@@ -130,7 +130,7 @@ public class HexMapTests {
     public void testGetAdjacent() {
         HexMap map = new HexMap(null, 10, 10, 2, 3);
 
-        Vector2[] adjacent = map.getAdjacent(0, 0);
+        Vector2[] adjacent = HexMap.getAdjacent(0, 0);
 
         Assert.assertEquals(adjacent[0], new Vector2(1, 0));
         Assert.assertEquals(adjacent[1], new Vector2(-1, 0));
@@ -139,7 +139,7 @@ public class HexMapTests {
         Assert.assertEquals(adjacent[4], new Vector2(-1, -1));
         Assert.assertEquals(adjacent[5], new Vector2(-1, 1));
 
-        adjacent = map.getAdjacent(0, 1);
+        adjacent = HexMap.getAdjacent(0, 1);
 
         Assert.assertEquals(adjacent[0], new Vector2(1, 1));
         Assert.assertEquals(adjacent[1], new Vector2(-1, 1));

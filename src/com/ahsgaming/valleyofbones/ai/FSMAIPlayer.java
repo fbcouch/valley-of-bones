@@ -81,8 +81,8 @@ public class FSMAIPlayer extends AIPlayer {
 
     Command updateUnitFSMs(Array<Unit> units, GameController controller) {
         for (Unit unit: units) {
-            if (!unitFSMs.containsKey(unit.getObjId())) {
-                unitFSMs.put(unit.getObjId(), new UnitFSM(unit));
+            if (!unitFSMs.containsKey(unit.getId())) {
+                unitFSMs.put(unit.getId(), new UnitFSM(unit));
             }
         }
 
@@ -90,7 +90,7 @@ public class FSMAIPlayer extends AIPlayer {
         Array<Integer> toRemove = new Array<Integer>();
         for (Integer id: unitFSMs.keySet()) {
             UnitFSM fsm = unitFSMs.get(id);
-            if (!fsm.unit.isAlive()) {
+            if (!fsm.unit.getData().isAlive()) {
                 toRemove.add(id);
             } else {
                 if (fsm.directives.size() == 0 && currentGoals.size > 0) {
@@ -112,7 +112,7 @@ public class FSMAIPlayer extends AIPlayer {
             Directive goal = currentGoals.get(i);
             switch(goal.type) {
                 case CAPTURE:
-                    if (goal.target.getOwner() == this && goal.target.getCurHP() > 0) {
+                    if (goal.target.getOwner() == this && goal.target.getData().getCurHP() > 0) {
                         currentGoals.removeIndex(i);
                     }
                     break;
@@ -134,10 +134,10 @@ public class FSMAIPlayer extends AIPlayer {
         }
 
         for (Unit defend: myUnits) {
-            if (!defend.isCapturable() && defend != getBaseUnit()) continue;
+            if (!defend.getData().isCapturable() && defend != getBaseUnit()) continue;
             Array<Unit> friendlyUnits = new Array<Unit>();
             boolean threat = false;
-            for (Unit u: controller.getUnitsInArea(defend.getBoardPosition(), 5)) {
+            for (Unit u: controller.getUnitsInArea(defend.getView().getBoardPosition(), 5)) {
                 if (u.getOwner() != this && u.getOwner() != null && controller.playerCanSee(this, u)) {
                     threat = true;
                 } else if (u.getOwner() == this) {
@@ -147,7 +147,7 @@ public class FSMAIPlayer extends AIPlayer {
 
             if (threat) {
                 for (Unit u: friendlyUnits) {
-                    UnitFSM fsm = unitFSMs.get(u.getObjId());
+                    UnitFSM fsm = unitFSMs.get(u.getId());
                     if (fsm != null && (fsm.directives.size() == 0 || fsm.directives.peek().type == Directive.DirectiveType.CAPTURE))
                         fsm.order(new Directive(Directive.DirectiveType.DEFEND, defend));
                 }
@@ -159,8 +159,8 @@ public class FSMAIPlayer extends AIPlayer {
         Unit target = null;
         int dist = 0;
         for (Unit unit: controller.getUnits()) {
-            if (unit.getProtoId().equals("tower-base") && unit.getOwner() != this) {
-                int unitDist = controller.getMap().getMapDist(getBaseUnit().getBoardPosition(), unit.getBoardPosition());
+            if (unit.getProto().id.equals("tower-base") && unit.getOwner() != this) {
+                int unitDist = controller.getMap().getMapDist(getBaseUnit().getView().getBoardPosition(), unit.getView().getBoardPosition());
                 if (target == null || unitDist < dist) {
                     target = unit;
                     dist = unitDist;
@@ -186,7 +186,7 @@ public class FSMAIPlayer extends AIPlayer {
 
     Command buildUnits(GameController controller) {
         if (currentGoals.size > 0 && getBankMoney() > 45 && getCurFood() < getMaxFood()) {
-            Vector2 targetPos = getBaseUnit().getBoardPosition(); //currentGoals.get(0).target.getBoardPosition();
+            Vector2 targetPos = getBaseUnit().getView().getBoardPosition(); //currentGoals.get(0).target.getBoardPosition();
             Vector2 minDistLoc = null;
             int minDist = 0;
             for (int x = 0; x < controller.getMap().getWidth(); x++) {
