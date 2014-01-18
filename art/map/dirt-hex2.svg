@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="dirt-hex.svg"
+   sodipodi:docname="dirt-hex2.svg"
    inkscape:export-filename="/home/jami/workspace/valley-of-bones/art/dirt-hex.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -28,8 +28,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9867623"
-     inkscape:cx="31.215276"
-     inkscape:cy="20.052255"
+     inkscape:cx="4.1693378"
+     inkscape:cy="49.208782"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -58,21 +58,21 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(201.27928,-994.84061)">
+     transform="translate(123.54309,-1047.32)">
     <path
-       style="fill:#c58f5c;stroke:none;fill-opacity:1"
+       style="fill:#ca9a6c;stroke:none"
        inkscape:connector-curvature="0"
-       d="m -201.27928,1043.5906 0,-32.5 32.55,-16.24998 32.45,16.24998 0,32.5 -32.45,16.25 -32.55,-16.25"
-       id="path316" />
+       d="m -123.54309,1096.07 0,-32.5 32.549997,-16.25 32.45,16.25 0,32.5 -32.45,16.25 -32.549997,-16.25"
+       id="path316-6" />
     <path
-       style="fill:#000000;fill-opacity:0.10196079;stroke:none"
-       d="m -168.71678,994.84059 -32.5625,16.25001 0,32.5 32.5625,16.25 32.4375,-16.25 0,-32.5 -32.4375,-16.25001 z m 0,5.62501 27.4375,13.75 0,26.2812 c -9.13333,4.6 -18.27083,9.1833 -27.4375,13.75 l -27.5625,-13.75 0,-26.2812 27.5625,-13.75 z"
-       id="path316-6"
-       inkscape:connector-curvature="0" />
+       style="fill:#b18053;fill-opacity:1;stroke:none"
+       inkscape:connector-curvature="0"
+       d="m -118.54309,1066.67 27.549997,-13.75 27.45,13.75 0,26.3 q -13.7,6.9 -27.45,13.75 l -27.549997,-13.75 0,-26.3"
+       id="path544-9" />
     <path
        style="fill:#000000;fill-opacity:0.10196078;stroke:none"
        inkscape:connector-curvature="0"
-       d="m -196.27928,1014.2406 0,-2 27.55,-13.74996 27.45,13.74996 0,2 -27.45,-13.75 -27.55,13.75"
+       d="m -118.54309,1066.67 0,-2 27.549997,-13.75 27.45,13.75 0,2 -27.45,-13.75 -27.549997,13.75"
        id="path542-9" />
   </g>
 </svg>

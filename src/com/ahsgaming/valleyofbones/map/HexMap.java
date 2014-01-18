@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -309,8 +311,9 @@ public class HexMap {
 
     public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units) {
         Color save = batch.getColor();
-        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "dirt-hex-depth");
+        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "metal-hex-depth");
 
+        batch.begin();
         // draw un-fogged hexes
         float curX = x;
         float curY = y + tileSize.y * 0.75f * (bounds.y - 1);
@@ -333,13 +336,16 @@ public class HexMap {
                         if (gid != 0) {
                             batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
                             drewTile = true;
+                            depth = tilesets.get(0).depths.get(gid - 1);
                         }
                     }
 
                 } else {
                     for (TileLayer l: tileLayers) {
-                        if (l.data[i + j * (int)bounds.x] != 0)
+                        if (l.data[i + j * (int)bounds.x] != 0) {
                             drewTile = true;
+                            depth = tilesets.get(0).depths.get(l.data[i + j * (int)bounds.x] - 1);
+                        }
                     }
                 }
 
@@ -348,12 +354,41 @@ public class HexMap {
                         prev = hexStatus[i + j * (int)bounds.x];
                         batch.setColor(HEX_COLOR[prev]);
                     }
-                    batch.draw(depth, curX, curY - tileSize.y * 0.5f);
+                    batch.draw(depth, curX, curY + tileSize.y * 0.25f - depth.getRegionHeight() + 1 * VOBGame.SCALE);
                 }
                 curX += tileSize.x;
             }
             curY -= tileSize.y * 0.75;
         }
+
+        batch.end();
+
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.setProjectionMatrix(batch.getProjectionMatrix());
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        for (Unit unit: units) {
+            if (unit.getData().getMoveSpeed() > 0 && unit.getOwner() != null) {
+                sr.setColor(unit.getOwner().getPlayerColor());
+                if (unit.getView().getLastBoardPosition() != null) {
+                    if (unit.getOwner() == currentPlayer ||
+                            (hexStatus[(int)(unit.getView().getBoardPosition().x + unit.getView().getBoardPosition().y * getWidth())] != FOG
+                                    || (unit.getView().getLastBoardPosition() != null && hexStatus[(int)(unit.getView().getLastBoardPosition().x + unit.getView().getLastBoardPosition().y * getWidth())] != FOG && unit.getView().hasActions() && !unit.getData().isBuilding()))
+                                    && (!unit.getData().isInvisible() || detectorCanSee(currentPlayer, units, unit.getView().getBoardPosition()))) {
+
+                        Vector2 lastPos = boardToMapCoords(unit.getView().getLastBoardPosition().x, unit.getView().getLastBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
+                        Vector2 thisPos = boardToMapCoords(unit.getView().getBoardPosition().x, unit.getView().getBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
+
+                        sr.rectLine(lastPos, thisPos, 3 * VOBGame.SCALE);
+                        sr.circle(lastPos.x, lastPos.y, 5 * VOBGame.SCALE);
+                        sr.circle(thisPos.x, thisPos.y, 5 * VOBGame.SCALE);
+
+                    }
+                }
+            }
+        }
+        sr.end();
+
+        batch.begin();
 
         // draw enemy units
         for (Unit u: units) {
@@ -398,6 +433,7 @@ public class HexMap {
             if (currentPlayer == u.getOwner())
                 u.getView().draw(batch, x, y, alpha, true);
         }
+        batch.end();
 
         batch.setColor(save);
     }

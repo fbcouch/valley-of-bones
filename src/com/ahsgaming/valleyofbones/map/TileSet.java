@@ -35,7 +35,7 @@ public class TileSet {
 	String name;
 	Array<String> images;
 
-	Array<TextureRegion> tiles;
+	Array<TextureRegion> tiles, depths;
 	
 	public TileSet() { }
 
@@ -49,10 +49,12 @@ public class TileSet {
 
         images = new Array<String>();
         tiles = new Array<TextureRegion>();
+        depths = new Array<TextureRegion>();
 
         for (JsonValue v: json.get("tiles")) {
             images.add(v.asString());
             tiles.add(VOBGame.instance.getTextureManager().getSpriteFromAtlas(atlas, v.asString()));
+            depths.add(VOBGame.instance.getTextureManager().getSpriteFromAtlas(atlas, v.asString() + "-depth"));
         }
 	}
 

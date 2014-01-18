@@ -32,6 +32,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -122,24 +123,6 @@ public class LevelScreen extends AbstractScreen {
 		if (selected != null) {
             unitBoxRenderer.draw(mapCamera.combined, selected, gController.getMap().boardToMapCoords(selected.getView().getBoardPosition().x, selected.getView().getBoardPosition().y), new Vector2((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f)), new Vector2(gController.getMap().getTileWidth(), gController.getMap().getTileHeight()));
 		}
-        ShapeRenderer sr = new ShapeRenderer();
-        sr.setProjectionMatrix(mapCamera.combined);
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        for (Unit unit: gController.getUnits()) {
-            if (unit.getData().getMoveSpeed() > 0 && unit.getOwner() != null) {
-                sr.setColor(unit.getOwner().getPlayerColor());
-                if (unit.getView().getLastBoardPosition() != null) {
-                    Vector2 lastPos = gController.getMap().boardToMapCoords(unit.getView().getLastBoardPosition().x, unit.getView().getLastBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
-                    Vector2 thisPos = gController.getMap().boardToMapCoords(unit.getView().getBoardPosition().x, unit.getView().getBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).sub((posCamera.x - mapCamera.viewportWidth * 0.5f), (posCamera.y - mapCamera.viewportHeight * 0.5f));
-
-                    sr.rectLine(lastPos, thisPos, 3 * VOBGame.SCALE);
-                    sr.circle(lastPos.x, lastPos.y, 5 * VOBGame.SCALE);
-                    sr.circle(thisPos.x, thisPos.y, 5 * VOBGame.SCALE);
-                }
-
-            }
-        }
-        sr.end();
 	}
 
     protected void build(Vector2 boardPos) {
@@ -444,14 +427,14 @@ public class LevelScreen extends AbstractScreen {
             if (!isCurrentPlayer()) unsetBuildMode();
         }
 
+
+
         stage.act(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapCamera.update();
         mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
-        mapSpriteBatch.begin();
         gController.getMap().draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits());
-        mapSpriteBatch.end();
 
         // DRAW BOXES
         drawUnitBoxes();
