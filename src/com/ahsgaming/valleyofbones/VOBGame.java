@@ -6,7 +6,9 @@ import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
@@ -33,6 +35,8 @@ public class VOBGame extends Game {
     protected TextureManager textureManager;
 	protected SoundManager soundManager;
 
+    int width, height;
+
 	NetController netController;
 	Player player;
 	
@@ -44,7 +48,13 @@ public class VOBGame extends Game {
 	
 	GameResult gameResult = null; // client sets this when a game ends
 
-    public String playerName = "Player";
+    public Profile profile;
+
+    public static class Profile {
+        public String name;
+        public float scale;
+        public Texture.TextureFilter filter;
+    }
 	
 	/*
 	 * Constructors
@@ -60,14 +70,41 @@ public class VOBGame extends Game {
 
     public boolean loadProfile() {
         if (Gdx.files.local("profile").exists()) {
-            playerName = Gdx.files.local("profile").readString();
+            String text = Gdx.files.local("profile").readString();
+            if (text.charAt(0) != '{') {
+                profile = new Profile();
+                profile.name = text;
+                profile.filter = Texture.TextureFilter.Linear;
+                profile.scale = VOBGame.SCALE;
+                return false;
+            }
+
+            Json json = new Json();
+            json.setElementType(Profile.class, "filter", Texture.TextureFilter.class);
+
+            profile = json.fromJson(Profile.class, text);
+            VOBGame.SCALE = profile.scale;
+            TextureManager.defaultMinFilter = profile.filter;
+            TextureManager.defaultMaxFilter = profile.filter;
             return true;
         }
+        profile = new Profile();
+        profile.name = "Player";
+        profile.filter = Texture.TextureFilter.Linear;
+        profile.scale = VOBGame.SCALE;
         return false;
     }
 
     public void saveProfile() {
-        Gdx.files.local("profile").writeString(playerName, false);
+        Json json = new Json();
+        json.setElementType(Profile.class, "filter", Texture.TextureFilter.class);
+
+        Gdx.files.local("profile").writeString(json.prettyPrint(profile), false);
+        textureManager = null;
+
+        VOBGame.SCALE = profile.scale;
+        TextureManager.defaultMinFilter = profile.filter;
+        TextureManager.defaultMaxFilter = profile.filter;
     }
 	
 	public void createGame(GameSetupConfig cfg) {
@@ -127,14 +164,14 @@ public class VOBGame extends Game {
 
         Gdx.app.log(LOG, String.format("Valley of Bones Client Version %s", VERSION));
         if (!loadProfile()) {
-            Gdx.files.local("profile").writeString(playerName, false);
+            saveProfile();
             setScreen(getOptionsScreen());
         } else {
             if (DEBUG_AI) {
                 GameSetupConfig cfg = new GameSetupConfig();
                 cfg.isHost = true;
                 cfg.isMulti = false;
-                cfg.playerName = playerName;
+                cfg.playerName = profile.name;
                 createGame(cfg);
                 addAIPlayer(1);
                 sendStartGame();
@@ -191,21 +228,8 @@ public class VOBGame extends Game {
 	public void resize(int width, int height) {
 		super.resize(width, height);
         Gdx.app.log(LOG, "resize");
-        if (textureManager == null) {
-            if (VOBGame.SCALE == -1) {
-                if (width <= 600) {
-                    VOBGame.SCALE = 0.75f;
-                } else if (width <= 800) {
-                    VOBGame.SCALE = 1.0f;
-                } else if (width < 1600) {
-                    VOBGame.SCALE = 2.0f;
-                } else {
-                    VOBGame.SCALE = 4.0f;
-                }
-            }
-            Gdx.app.log(LOG, "Scale: " + VOBGame.SCALE);
-            textureManager = new TextureManager();
-        }
+        this.width = width;
+        this.height = height;
 	}
 
 	@Override
@@ -244,7 +268,7 @@ public class VOBGame extends Game {
 		GameSetupConfig cfg = new GameSetupConfig();
 		cfg.isHost = true;
 		cfg.isMulti = false;
-		cfg.playerName = playerName;
+		cfg.playerName = profile.name;
 		return new GameSetupScreen(this, cfg);
 	}
 	
@@ -359,6 +383,21 @@ public class VOBGame extends Game {
 	}
 
     public TextureManager getTextureManager() {
+        if (textureManager == null) {
+            if (VOBGame.SCALE == -1) {
+                if (width <= 600) {
+                    VOBGame.SCALE = 0.75f;
+                } else if (width <= 800) {
+                    VOBGame.SCALE = 1.0f;
+                } else if (width < 1600) {
+                    VOBGame.SCALE = 2.0f;
+                } else {
+                    VOBGame.SCALE = 4.0f;
+                }
+            }
+            Gdx.app.log(LOG, "Scale: " + VOBGame.SCALE);
+            textureManager = new TextureManager();
+        }
         return textureManager;
     }
 

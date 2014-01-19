@@ -83,7 +83,7 @@ public class GameJoinScreen extends AbstractScreen {
 		lblNickname = new Label("Nickname:", getSkin());
 		table.add(lblNickname).pad(4).left();
 		
-		txtNickname = new TextField(game.playerName, getSkin());
+		txtNickname = new TextField(game.profile.name, getSkin());
 		table.add(txtNickname).pad(4).left();
 		
 		table.row();

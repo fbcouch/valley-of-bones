@@ -20,7 +20,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	toggle: { down: default-round-down, checked: default-round-down, up: default-round }
 },
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-	default: { down: default-round-down, up: default-round, font: default-font, fontColor: white },
+	default: { checked: default-round-down, down: default-round-down, up: default-round, font: default-font, fontColor: white },
 	cancel: { down: default-round-down, up: default-round, font: default-font, fontColor: red },
 	large: { down: default-round-down, up: default-round, font: large-font, fontColor: white },
 	medium: { down: default-round-down, up: default-round, font: medium-font, fontColor: white },
