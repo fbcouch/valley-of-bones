@@ -278,6 +278,7 @@ public class UnitManager {
             } else {
                 unit.data.uncontested = null;
                 unit.data.capUnitCount = 0;
+                return;
             }
         }
         unit.data.uncontested = p;

@@ -23,24 +23,15 @@
 package com.ahsgaming.valleyofbones.map;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.VOBGame;
-import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Unit;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 
 /**
  * @author jami
@@ -49,224 +40,62 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class HexMap {
     public static final String LOG = "HexMap";
 
-    public static final int HIGHLIGHT = 0;
-    public static final int NORMAL = 1;
-    public static final int DIMMED = 2;
-    public static final int FOG = 3;
+    GameController gameController;
+    MapData mapData;
+    HashMap<Integer, MapView> mapViews;
 
-    public static final Color[] HEX_COLOR = new Color[] {new Color(1, 1, 1, 1), new Color(0.8f, 0.8f, 0.8f, 1), new Color(0.6f, 0.6f, 0.6f, 1), new Color(0.4f, 0.4f, 0.4f, 1)};
+    public HexMap(GameController gameController, FileHandle jsonFile) {
+        this.gameController = gameController;
 
-    Array<TileSet> tilesets;
-    Array<TileLayer> tileLayers;
-    Array<Object> objLayers;
-    String title = "", description = "";
-    String file = "";
+        init(MapData.createFromFile(jsonFile));
 
-    String version = "";
-
-    ObjectMap<String, Object> properties;
-
-    ArrayList<Vector2> controlPoints;
-	ArrayList<Vector2> playerSpawns;
-	Vector2 bounds;
-	Vector2 tileSize;
-
-    int objDepth;
-    int[] hexStatus;
-    boolean[] hexHighlight;
-    boolean[] hexDimmed;
-
-    Player currentPlayer;
-    final GameController parent;
-
-    boolean mapDirty = true;
-
-	public HexMap(GameController parent, int width, int height, int players, int points) {
-		this.parent = parent;
-
-		generateMap(width, height, players, points);
-	}
-
-    public HexMap(GameController parent, FileHandle jsonFile) {
-        this.parent = parent;
-
-        loadFromFile(jsonFile);
     }
 
-    public HexMap(GameController parent, String jsonString) {
-        this.parent = parent;
+    public HexMap(GameController gameController, JsonValue json) {
+        this.gameController = gameController;
 
-        loadFromString(jsonString);
+        init(MapData.createFromJson(json));
     }
 
-    public HexMap(GameController parent, JsonValue json) {
-        this.parent = parent;
+    public void init(MapData mapData) {
+        this.mapData = mapData;
 
-        loadFromJson(json);
-    }
-
-    // TODO split this up into smaller chunks
-    public void generateMap(int width, int height, int players, int points) {
-        bounds = new Vector2(width, height);
-        controlPoints = new ArrayList<Vector2>();
-        playerSpawns = new ArrayList<Vector2>();
-        this.tileSize = new Vector2(64, 64);
-
-        int things = points + 1;
-        Vector2 thingDist = new Vector2(0, 0);
-        Vector2 current = new Vector2(0, 0);
-        if (width > height) {
-
-            current.set(0, (int)Math.round(height * 0.5f) - 1);
-        } else if (height > width) {
-
-            current.set((int)(width * 0.5f), 0);
+        mapViews = new HashMap<Integer, MapView>();
+        for (Player player: gameController.getPlayers()) {
+            mapViews.put(player.getPlayerId(), MapView.createMapView(mapData, player));
         }
-
-        playerSpawns.add(new Vector2(current.x + (thingDist.x > 0 ? 0 : 1), current.y + (thingDist.y > 0 ? 1 : 0)));
-        playerSpawns.add(new Vector2((current.x > 0 && current.y == 0 ? current.x : width - 2), (current.y > 0 && current.x == 0 ? current.y : height - 2)));
-
-        int pointsLeft = points;
-
-        int spawnDist = getMapDist(playerSpawns.get(0), playerSpawns.get(1));
-
-        if (pointsLeft >= 2 && spawnDist >= 9) {
-            // add "home base" control points
-            // TODO make this more flexible
-            Vector2 cp = new Vector2(playerSpawns.get(0));
-            cp.add(3, 0);
-            controlPoints.add(cp);
-            cp = new Vector2(playerSpawns.get(1));
-            cp.add(-3, 0);
-            controlPoints.add(cp);
-
-            pointsLeft -= 2;
-            spawnDist = getMapDist(controlPoints.get(0), controlPoints.get(1));
-            current.set(controlPoints.get(0));
-        }
-
-        // TODO make this more flexible
-        int cpNotInRow = 0;
-        int rowDist = spawnDist / (pointsLeft + 1);
-        while (rowDist <= 3) {
-            cpNotInRow += 1;
-            rowDist = spawnDist / (pointsLeft - cpNotInRow + 1);
-        }
-
-        int rows = (spawnDist - 1) / rowDist;
-        int remainder = spawnDist % rowDist;
-        //Gdx.app.log(LOG, String.format("rows %d (rem %d)", rows, remainder));
-        for (int r = 0; r < rows; r++) {
-            current.add(rowDist + (remainder / 2), 0);
-            if (cpNotInRow > 0) {
-                int numInRow = cpNotInRow / rows + 1;
-                int totalY = 4 * (numInRow - 1);
-                current.sub(0, totalY / 2);
-                //Gdx.app.log(LOG, String.format("num in row %d", numInRow));
-                for (int i = 0; i < numInRow; i++) {
-                    controlPoints.add(new Vector2(current));
-                    current.add(0, 4);
-                }
-            } else {
-                controlPoints.add(new Vector2(current));
-            }
-        }
-
-
-
-        hexStatus = new int[width * height];
-        hexHighlight = new boolean[width * height];
-        hexDimmed = new boolean[width * height];
-
-        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = NORMAL;
     }
 
-    void loadFromFile(FileHandle jsonFile) {
-        JsonReader jsonReader = new JsonReader();
-        JsonValue json = jsonReader.parse(jsonFile);
-
-        file = jsonFile.name();
-
-        loadFromJson(json);
-    }
-
-    void loadFromString(String jsonString) {
-        JsonReader jsonReader = new JsonReader();
-        JsonValue json = jsonReader.parse(jsonString);
-
-        loadFromJson(json);
-    }
-
-    void loadFromJson(JsonValue json) {
-        tilesets = new Array<TileSet>();
-        tileLayers = new Array<TileLayer>();
-        objLayers = new Array<Object>();
-        bounds = new Vector2();
-        tileSize = new Vector2();
-        properties = new ObjectMap<String, Object>();
-
-        bounds.x = json.getFloat("width", bounds.x);
-
-        bounds.y = json.getFloat("height", bounds.y);
-
-        tileSize.x = json.getFloat("tilewidth", tileSize.x) * VOBGame.SCALE;
-
-        tileSize.y = json.getFloat("tileheight", tileSize.y) * VOBGame.SCALE;
-
-        version = json.getString("version", version);
-
-        for (JsonValue v: json.get("properties"))
-            properties.put(v.name(), v.asString());
-
-        title = json.getString("title", "");
-
-        description = json.getString("description", "");
-
-        objDepth = json.getInt("objdepth", 0);
-
-        for (JsonValue v: json.get("tilesets"))
-            tilesets.add(new TileSet(v));
-
-        for (JsonValue v: json.get("tilelayers"))
-            tileLayers.add(new TileLayer(this, v));
-
-        // TODO load objects properly
-        controlPoints = new ArrayList<Vector2>();
-        playerSpawns = new ArrayList<Vector2>();
-
-        for (JsonValue v: json.get("objects")) {
-            Vector2 position = new Vector2(v.getFloat("x", 0), v.getFloat("y", 0));
-            if (v.getString("type", "").equals("spawn"))
-                playerSpawns.add(position);
-            else if (v.getString("type", "").equals("unit"))
-                controlPoints.add(position);
+    public void invalidateViews() {
+        for (MapView view: mapViews.values()) {
+            view.setMapDirty(true);
         }
-
-        hexStatus = new int[(int) (bounds.x * bounds.y)];
-        hexHighlight = new boolean[(int) (bounds.x * bounds.y)];
-        hexDimmed = new boolean[(int) (bounds.x * bounds.y)];
-
-        for (int i = 0; i < hexStatus.length; i++) hexStatus[i] = NORMAL;
-
     }
 
-    public void update(Player player) {
-        currentPlayer = player;
+    public void update() {
 
-        if (!mapDirty) return;
+//        if (!mapDirty) return;
+//
+//        mapDirty = false;
 
-        mapDirty = false;
+        for (MapView view: mapViews.values()) {
+            if (view.isMapDirty())
+                updateView(view);
+        }
+    }
 
+    void updateView(MapView view) {
+        view.setMapDirty(false);
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
         Array<Unit> units;
-        if (player == null) {
-            units = parent.getUnits();
+        if (view.player == null) {
+            units = gameController.getUnits();
         } else {
-            units = parent.getUnitsByPlayerId(player.getPlayerId());
+            units = gameController.getUnitsByPlayerId(view.player.getPlayerId());
         }
 
-        for (int i=0; i< hexStatus.length; i++) {
-            hexStatus[i] = FOG;
+        for (int i=0; i< view.hexStatus.length; i++) {
+            view.hexStatus[i] = MapView.FOG;
 
         }
         for (int i = 0; i < units.size; i++) {
@@ -280,289 +109,121 @@ public class HexMap {
         int[] radii = new int[units.size];
         for (int u=0;u<units.size;u++) {
             Unit unit = units.get(u);
-            unitpositions[u] = (int)(unit.getView().getBoardPosition().y * bounds.x + unit.getView().getBoardPosition().x);
+            unitpositions[u] = (int)(unit.getView().getBoardPosition().y * mapData.bounds.x + unit.getView().getBoardPosition().x);
             radii[u] = unit.getData().getSightRange();
         }
 
-        boolean[] notavailable = new boolean[hexStatus.length];
+        boolean[] notavailable = new boolean[view.hexStatus.length];
 
-        /*for (Unit u: parent.getUnits()) {
+        /*for (Unit u: gameController.getUnits()) {
             if (u.getOwner() == null || !u.getOwner().equals(player))
                 notavailable[(int)(u.getBoardPosition().y * bounds.x + u.getBoardPosition().x)] = true;
         } */
 
         boolean[] available = getAvailablePositions(unitpositions, radii, notavailable, false);
 
-        for (int i=0; i< hexStatus.length; i++) {
+        for (int i=0; i< view.hexStatus.length; i++) {
 
-            if (available[i]) hexStatus[i] = NORMAL;
+            if (available[i]) view.hexStatus[i] = MapView.NORMAL;
 
-            if (hexHighlight[i])
-                hexStatus[i] = HIGHLIGHT;
+            if (view.hexHighlight[i])
+                view.hexStatus[i] = MapView.HIGHLIGHT;
 
-            if (hexDimmed[i])
-                hexStatus[i] = DIMMED;
-
-//            for (TileLayer tl: tileLayers) {
-//                tl.setTileStatus((int) (i % bounds.x), (int) (i / bounds.x), bsq);
-//            }
+            if (view.hexDimmed[i])
+                view.hexStatus[i] = MapView.DIMMED;
         }
+
+        view.modified = TimeUtils.millis();
     }
 
-    public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units) {
-        Color save = batch.getColor();
-        TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "metal-hex-depth");
+    public void highlightArea(MapView view, Vector2 center, int radius) {
+        Array<Unit> units = gameController.getUnits();
 
-        batch.begin();
-        // draw un-fogged hexes
-        float curX = x;
-        float curY = y + tileSize.y * 0.75f * (bounds.y - 1);
-        int prev = -1;
-        boolean odd = false;
+        boolean[] notavailable = new boolean[view.hexStatus.length];
 
-        for (int j = (int)bounds.y - 1; j >= 0; j--) {
-            curX = x + (odd ? tileSize.x * 0.5f : 0);
-            odd = !odd;
-            for (int i = 0; i < bounds.x; i++) {
-                boolean drewTile = false;
-                if (hexStatus[i + j * (int)bounds.x] != FOG) {
-                    if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
-                        prev = hexStatus[i + j * (int)bounds.x];
-                        batch.setColor(HEX_COLOR[prev]);
-                    }
-
-                    for (TileLayer l: tileLayers) {
-                        int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
-                        if (gid != 0) {
-                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
-                            drewTile = true;
-                            depth = tilesets.get(0).depths.get(gid - 1);
-                        }
-                    }
-
-                } else {
-                    for (TileLayer l: tileLayers) {
-                        if (l.data[i + j * (int)bounds.x] != 0) {
-                            drewTile = true;
-                            depth = tilesets.get(0).depths.get(l.data[i + j * (int)bounds.x] - 1);
-                        }
-                    }
-                }
-
-                if (drewTile) {
-                    if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
-                        prev = hexStatus[i + j * (int)bounds.x];
-                        batch.setColor(HEX_COLOR[prev]);
-                    }
-                    batch.draw(depth, curX, curY + tileSize.y * 0.25f - depth.getRegionHeight() + 1 * VOBGame.SCALE);
-                }
-                curX += tileSize.x;
-            }
-            curY -= tileSize.y * 0.75;
-        }
-
-        batch.end();
-
-        ShapeRenderer sr = new ShapeRenderer();
-        sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        for (Unit unit: units) {
-            if (unit.getData().getMoveSpeed() > 0 && unit.getOwner() != null) {
-                sr.setColor(unit.getOwner().getPlayerColor());
-                if (unit.getView().getLastBoardPosition() != null) {
-                    if (unit.getOwner() == currentPlayer ||
-                            (hexStatus[(int)(unit.getView().getBoardPosition().x + unit.getView().getBoardPosition().y * getWidth())] != FOG
-                                    || (unit.getView().getLastBoardPosition() != null && hexStatus[(int)(unit.getView().getLastBoardPosition().x + unit.getView().getLastBoardPosition().y * getWidth())] != FOG && unit.getView().hasActions() && !unit.getData().isBuilding()))
-                                    && (!unit.getData().isInvisible() || detectorCanSee(currentPlayer, units, unit.getView().getBoardPosition()))) {
-
-                        Vector2 lastPos = boardToMapCoords(unit.getView().getLastBoardPosition().x, unit.getView().getLastBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
-                        Vector2 thisPos = boardToMapCoords(unit.getView().getBoardPosition().x, unit.getView().getBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
-
-                        sr.rectLine(lastPos, thisPos, 3 * VOBGame.SCALE);
-                        sr.circle(lastPos.x, lastPos.y, 5 * VOBGame.SCALE);
-                        sr.circle(thisPos.x, thisPos.y, 5 * VOBGame.SCALE);
-
-                    }
-                }
-            }
-        }
-        sr.end();
-
-        batch.begin();
-
-        // draw enemy units
         for (Unit u: units) {
-            if (currentPlayer != u.getOwner()){
-                if ((hexStatus[(int)(u.getView().getBoardPosition().x + u.getView().getBoardPosition().y * getWidth())] != FOG
-                        || (u.getView().getLastBoardPosition() != null && hexStatus[(int)(u.getView().getLastBoardPosition().x + u.getView().getLastBoardPosition().y * getWidth())] != FOG && u.getView().hasActions() && !u.getData().isBuilding()))
-                        && (!u.getData().isInvisible() || detectorCanSee(currentPlayer, units, u.getView().getBoardPosition())))
-                    u.getView().draw(batch, x, y, alpha, false);
-            }
+            if (!u.getView().getBoardPosition().equals(center))
+                notavailable[(int)(u.getView().getBoardPosition().y * mapData.bounds.x + u.getView().getBoardPosition().x)] = true;
         }
 
-        // draw fogged hexes
-        curX = x;
-        curY = y + tileSize.y * 0.75f * (bounds.y - 1);
-        prev = -1;
-        odd = false;
-
-        for (int j = (int)bounds.y - 1; j >= 0; j--) {
-            curX = x + (odd ? tileSize.x * 0.5f : 0);
-            odd = !odd;
-            for (int i = 0; i < bounds.x; i++) {
-                if (hexStatus[i + j * (int)bounds.x] == FOG) {
-                    if (prev < 0 || prev != hexStatus[i + j * (int)bounds.x]) {
-                        prev = hexStatus[i + j * (int)bounds.x];
-                        batch.setColor(HEX_COLOR[prev]);
-                    }
-
-                    for (TileLayer l: tileLayers) {
-                        int gid = l.data[i + j * (int)bounds.x];//  getTileData(i, j);
-                        if (gid != 0) {
-                            batch.draw(tilesets.get(0).tiles.get(gid - 1), curX, curY);
-                        }
-                    }
-                }
-                curX += tileSize.x;
-            }
-            curY -= tileSize.y * 0.75;
-        }
-
-        // draw friendly units
-        for (Unit u: units) {
-            if (currentPlayer == u.getOwner())
-                u.getView().draw(batch, x, y, alpha, true);
-        }
-        batch.end();
-
-        batch.setColor(save);
-    }
-
-    public void clearHighlight() {
-        for (int i = 0; i < hexHighlight.length; i++)
-            hexHighlight[i] = false;
-    }
-
-    public void clearDim() {
-        for (int i = 0; i < hexDimmed.length; i++)
-            hexDimmed[i] = false;
-    }
-
-    public void clearHighlightAndDim() {
-        clearDim();
-        clearHighlight();
-    }
-
-    public void highlightArea(Vector2 center, int radius, boolean dimIfOccupied) {
-        Array<Unit> units = parent.getUnits();
-
-        boolean[] notavailable = new boolean[hexStatus.length];
-
-        for (Unit u: parent.getUnits()) {
-            if (!u.getView().getBoardPosition().equals(center)) notavailable[(int)(u.getView().getBoardPosition().y * bounds.x + u.getView().getBoardPosition().x)] = true;
-        }
-
-        int[] start = {(int)(center.y * bounds.x + center.x)};
+        int[] start = {(int)(center.y * mapData.bounds.x + center.x)};
         int[] radii = {radius};
         boolean[] available = getAvailablePositions(start, radii, notavailable, true);
 
-        for (int i=0;i< hexStatus.length;i++) {
-            if (available[i] && hexStatus[i] != FOG) {
+        for (int i=0;i < view.hexStatus.length;i++) {
+            if (available[i] && view.hexStatus[i] != MapView.FOG) {
                 if (notavailable[i] || i == start[0]) {
-                    hexDimmed[i] = true;
-                    hexStatus[i] = DIMMED;
+                    view.hexDimmed[i] = true;
+                    view.hexStatus[i] = MapView.DIMMED;
                 } else {
-                    hexHighlight[i] = true;
-                    hexStatus[i] = HIGHLIGHT;
+                    view.hexHighlight[i] = true;
+                    view.hexStatus[i] = MapView.HIGHLIGHT;
                 }
 
-            } else if (hexStatus[i] != FOG){
-                if (getMapDist(center, new Vector2((int)(i % bounds.x), (int)(i / bounds.x))) <= radius) {
-                    hexDimmed[i] = true;
-                    hexStatus[i] = DIMMED;
+            } else if (view.hexStatus[i] != MapView.FOG){
+                if (getMapDist(center, new Vector2((int)(i % mapData.bounds.x), (int)(i / mapData.bounds.x))) <= radius) {
+                    view.hexDimmed[i] = true;
+                    view.hexStatus[i] = MapView.DIMMED;
                 }
             }
         }
     }
 
-    public void dimIfHighlighted(Array<Vector2> positions) {
-        clearDim();
-        for (Vector2 p: positions) {
-            int ind = (int)p.y * (int)bounds.x + (int)p.x;
-            if (hexHighlight[ind]) {
-                hexDimmed[ind] = true;
-                hexStatus[ind] = DIMMED;
-            }
-        }
+	public MapData getMapData() {
+        return mapData;
     }
 
-	public int getWidth() {
-		return (int)bounds.x;
+    public MapView getMapView(int id) {
+        return mapViews.get(id);
+    }
+
+    public int getWidth() {
+		return (int)mapData.bounds.x;
 	}
-	
+
 	public int getHeight() {
-		return (int)bounds.y;
+		return (int)mapData.bounds.y;
 	}
 
-    public TextureRegion getTile(int gid) {
-        for (TileSet ts: tilesets) {
-            if (ts.getFirstgid() <= gid && ts.getLastgid() >= gid) {
-                return ts.getTile(gid);
-            }
-        }
-        return null;
-    }
-	
 	public int getTileWidth() {
-		return (int)tileSize.x;
+		return (int)mapData.tileSize.x;
 	}
-	
+
 	public int getTileHeight() {
-		return (int)tileSize.y;
+		return (int)mapData.tileSize.y;
 	}
-	
+
 	public int getMapWidth() {
-		return (int)(bounds.x * tileSize.x + tileSize.x * 0.5f);
+		return mapData.getMapWidth();
 	}
-	
+
 	public int getMapHeight() {
-		return (int)(bounds.y * tileSize.y * 0.75f + tileSize.y * 0.25f);
+		return mapData.getMapHeight();
 	}
 	
-	public ArrayList<Vector2> getPlayerSpawns() {
-		return playerSpawns;
-	}
-	
-	public ArrayList<Vector2> getControlPoints() {
-		return controlPoints;
-	}
-
-    public boolean isBoardPositionVisible(Vector2 pos) {
-        return isBoardPositionVisible((int)pos.x, (int)pos.y);
-    }
-
-    public boolean isBoardPositionVisible(float x, float y) {
-        return isBoardPositionVisible((int)x, (int)y);
-    }
-
-    public boolean isBoardPositionVisible(int x, int y) {
-        return (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length && hexStatus[y * (int)bounds.x + x] != FOG);
-    }
-
-    public boolean isBoardPositionTraversible(int x, int y) {
-        if (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < hexStatus.length) {
-            boolean traversible = false;
-            for (TileLayer tl: tileLayers) {
-                if (tl.isCollidable() && tl.getData()[y * (int)bounds.x + x] != 0) {
-                    return false;
-                }
-                if (tl.isTraversible() && tl.getData()[y * (int)bounds.x + x] != 0) {
-                    traversible = true;
-                }
+	public Array<MapData.MapObject> getPlayerSpawns() {
+		Array<MapData.MapObject> spawns = new Array<MapData.MapObject>();
+        for (MapData.MapObject obj: mapData.mapObjects) {
+            if (obj.type.equals("spawn")) {
+                spawns.add(obj);
             }
-            return traversible;
         }
-        return false;
+        return spawns;
+	}
+	
+	public Array<MapData.MapObject> getControlPoints() {
+		Array<MapData.MapObject> points = new Array<MapData.MapObject>();
+        for (MapData.MapObject obj: mapData.mapObjects) {
+            if (obj.type.equals("unit")) {
+                points.add(obj);
+            }
+        }
+        return points;
+	}
+
+    public boolean isBoardPositionVisible(Player player, Vector2 pos) {
+        return mapViews.get(player.getPlayerId()) != null
+                && mapViews.get(player.getPlayerId()).isBoardPositionVisible(pos);
     }
 
     public boolean detectorCanSee(Player player, Array<Unit> units, Vector2 boardPosition) {
@@ -572,73 +233,43 @@ public class HexMap {
         }
         return false;
     }
-
-    public boolean isMapDirty() {
-        return mapDirty;
-    }
-
-    public void setMapDirty(boolean dirty) {
-        mapDirty = dirty;
-    }
 	
-	public void drawDebug(Vector2 offset) {
-		ShapeRenderer renderer = new ShapeRenderer();
-		renderer.begin(ShapeType.Line);
-		renderer.setColor(1, 1, 1, 1);
-		for (int x = 0; x < bounds.x; x ++) {
-			for (int y = 0; y < bounds.y; y++) {
-				Vector2 base = new Vector2(offset.x + x * getTileWidth() + (y % 2 == 1 ? getTileWidth() * 0.5f : 0), offset.y + y * getTileHeight() * 0.75f);
-				renderer.line(base.x + getTileWidth() * 0.5f, base.y, base.x, base.y + getTileHeight() * 0.25f);
-				renderer.line(base.x, base.y + getTileHeight() * 0.25f, base.x, base.y + getTileHeight() * 0.75f);
-				renderer.line(base.x, base.y + getTileHeight() * 0.75f, base.x + getTileWidth() * 0.5f, base.y + getTileHeight());
-				renderer.line(base.x + getTileWidth() * 0.5f, base.y + getTileHeight(), base.x + getTileWidth(), base.y + getTileHeight() * 0.75f);
-				renderer.line(base.x + getTileWidth(), base.y + getTileHeight() * 0.75f, base.x + getTileWidth(), base.y + getTileHeight() * 0.25f);
-				renderer.line(base.x + getTileWidth(), base.y + getTileHeight() * 0.25f, base.x + getTileWidth() * 0.5f, base.y);
-			}
-		}
-		
-		renderer.end();
-	}
-	
-	public Vector2 boardToMapCoords(int bx, int by) {
-		return new Vector2(bx * getTileWidth() + (by % 2 == 1 ? getTileWidth() * 0.5f : 0), by * getTileHeight() * 0.75f);
+	public static Vector2 boardToMapCoords(MapData data, int bx, int by) {
+		return new Vector2(bx * data.tileSize.x + (by % 2 == 1 ? data.tileSize.x * 0.5f : 0), by * data.tileSize.y * 0.75f);
 	}
 
 	public Vector2 boardToMapCoords(float x, float y) {
-		return boardToMapCoords((int)x, (int)y);
+		return HexMap.boardToMapCoords(mapData, (int)x, (int)y);
 	}
 	
-	public Vector2 mapToBoardCoords(float x, float y) {
+	public static Vector2 mapToBoardCoords(MapData data, float x, float y) {
         Vector2 boardCoords = new Vector2();
 		
-		float dx = x / getTileWidth();
-		float dy = y / (getTileHeight() * 0.75f);
-		float mx = x % getTileWidth();
-		float my = y % (getTileHeight() * 0.75f);
+		float dx;
+		float dy = y / (data.tileSize.y * 0.75f);
+		float mx = x % data.tileSize.x;
+		float my = y % (data.tileSize.y * 0.75f);
 		
 		
 		boardCoords.y = (float) Math.floor(dy);
-		if (my < getTileHeight() * 0.25) {
+		if (my < data.tileSize.y * 0.25) {
 			if (Math.floor(dy) % 2 == 1) {
-				dx = (x - getTileWidth() * 0.5f) / getTileWidth();
-				mx = (x - getTileWidth() * 0.5f) % getTileWidth();
+				mx = (x - data.tileSize.x * 0.5f) % data.tileSize.x;
 			}
 			
 			// if (mx, my) <= (y = -0.5x + .25 * Th) or (mx, my) <= (y = 0.5x - 0.25 * Th)
-			if (my <= -0.5 * mx + 0.25f * getTileHeight() || my <= 0.5 * mx - 0.25 * getTileHeight()) {
+			if (my <= -0.5 * mx + 0.25f * data.tileSize.y || my <= 0.5 * mx - 0.25 * data.tileSize.y) {
 				boardCoords.y -= 1;
 			}
 		}
 
 		if (boardCoords.y % 2 == 1) {
-			dx = (x - getTileWidth() * 0.5f) / getTileWidth();
-			mx = (x - getTileWidth() * 0.5f) % getTileWidth();
+			dx = (x - data.tileSize.x * 0.5f) / data.tileSize.x;
 		} else {
-			dx = x / getTileWidth();
-			mx = x % getTileWidth();
+			dx = x / data.tileSize.x;
 		}
 		boardCoords.x = (float) Math.floor(dx);
-		
+
 		return boardCoords;
 	}
 	
@@ -691,7 +322,7 @@ public class HexMap {
     }
 
     public boolean[] getAvailablePositions(int[] start, int[] radii, boolean[] unavailable, boolean requireTraversible) {
-        boolean[] available = new boolean[(int)(bounds.x * bounds.y)];
+        boolean[] available = new boolean[(int)(mapData.bounds.x * mapData.bounds.y)];
 
         for (int u=0;u<start.length;u++) {
             int unit = start[u];
@@ -705,13 +336,13 @@ public class HexMap {
                     available[p] = true;
 
                     // check if this position is traversible and not blocked
-                    if (requireTraversible && !isBoardPositionTraversible((int) (p % bounds.x), (int) (p / bounds.x))) unavailable[p] = true;
+                    if (requireTraversible && !mapData.isBoardPositionTraversible((int) (p % mapData.bounds.x), (int) (p / mapData.bounds.x))) unavailable[p] = true;
 
                     if (unavailable[p]) continue; // we can see this point but not beyond it
-                    for (Vector2 point: getAdjacent((int)(p % bounds.x), (int)(p / bounds.x))) {
-                        if (point.x < 0 || point.y < 0 || point.x >= bounds.x || point.y >= bounds.y)
+                    for (Vector2 point: getAdjacent((int)(p % mapData.bounds.x), (int)(p / mapData.bounds.x))) {
+                        if (point.x < 0 || point.y < 0 || point.x >= mapData.bounds.x || point.y >= mapData.bounds.y)
                             continue;
-                        next.add((int)(point.y * bounds.x + point.x));
+                        next.add((int)(point.y * mapData.bounds.x + point.x));
                     }
                 }
                 current.addAll(next);

@@ -299,7 +299,7 @@ public class AIPlayer extends Player {
 
         for (int y = 0; y < mapHeight; y++) {
             for (int x = 0; x < mapWidth; x++) {
-                goalMatrix[y * mapWidth + x] = (map.isBoardPositionTraversible(x, y) ? calcGoalMatrix(x, y, map, units) : -1);
+                goalMatrix[y * mapWidth + x] = (map.getMapData().isBoardPositionTraversible(x, y) ? calcGoalMatrix(x, y, map, units) : -1);
             }
         }
 

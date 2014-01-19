@@ -32,131 +32,25 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class TileLayer {
     public static final String LOG = "TileLayer";
-	int[] data = new int[0];
-	Vector2 size = new Vector2();
-    boolean traversible = false;
+	Array<Integer> data;
+	boolean traversible = false;
     boolean collidable = false;
 	boolean visible = true;
 	float opacity = 1;
-	
-	final HexMap map;
-	
-	Group layerGroup = new Group();
-    Image[] tiles;
 
-	@SuppressWarnings("unchecked")
-	public TileLayer(HexMap map, JsonValue layer) {
-		this.map = map;
+	public static TileLayer createFromJson(JsonValue value) {
+        TileLayer tileLayer = new TileLayer();
 
-        collidable = layer.getBoolean("collidable", true);
-        opacity = layer.getFloat("opacity", 1);
-        visible = layer.getBoolean("visible", true);
-        traversible = layer.getBoolean("traversible", true);
+        tileLayer.traversible = value.getBoolean("traversible", true);
+        tileLayer.collidable = value.getBoolean("collidable", false);
+        tileLayer.visible = value.getBoolean("visible", true);
+        tileLayer.opacity = value.getFloat("opacity", 1);
 
-        data = new int[layer.get("data").size];
-        int i = 0;
-        for (JsonValue v: layer.get("data")) {
-            data[i] = v.asInt();
-            i++;
+        tileLayer.data = new Array<Integer>();
+        for (JsonValue v: value.get("data")) {
+            tileLayer.data.add(v.asInt());
         }
 
-        size.set(map.getWidth(), map.getHeight());
-
-        init();
-	}
-	
-	public Group getGroup() {
-		return layerGroup;
-	}
-	
-	public void init() {
-		layerGroup.remove();
-        layerGroup.setTransform(false);
-		layerGroup.setBounds(0, 0, size.x, size.y);
-		tiles = new Image[(int)(size.x * size.y)];
-		for (int i=0; i < data.length; i++) {
-			if (data[i] == 0) continue;
-			Image img = new Image(map.getTile(data[i]));
-			img.setPosition(i % map.getWidth() * map.getTileWidth() + ((i / map.getWidth()) % 2) * map.getTileWidth() * 0.5f, (int)(i / map.getWidth()) * map.getTileHeight() * 0.75f);
-			layerGroup.addActor(img);
-            tiles[i] = img;
-		}
-	}
-	
-	@Override
-	public String toString() {
-		String json = "{";
-		
-		Array<Object> data = new Array<Object>();
-		for (int i=0;i<this.data.length; i++) {
-			data.add(this.data[i]);
-		}
-
-		json += Utils.toJsonProperty("data", data);
-        json += Utils.toJsonProperty("collidable", this.collidable);
-        json += Utils.toJsonProperty("opacity", this.opacity);
-		json += Utils.toJsonProperty("visible", this.visible);
-        json += Utils.toJsonProperty("traversible", this.traversible);
-		
-		return json + "}";
-	}
-
-	/**
-	 * @return the data
-	 */
-	public int[] getData() {
-		return data;
-	}
-	
-	public void setTile(int x, int y, int gid) {
-		data[x + y * (int)size.x] = gid;
-	}
-
-    public int getTileData(int x, int y) {
-        return data[x + y * (int)size.x];
+        return tileLayer;
     }
-
-    public void setTileStatus(int x, int y, Color status) {
-        if (tiles[x + y * (int)size.x] != null) tiles[x + y * (int)size.x].setColor(status);
-    }
-
-    public Color getTileStatus(int x, int y) {
-        return (tiles[x + y * (int)size.x] == null ? null : tiles[x + y * (int)size.x].getColor());
-    }
-
-    public boolean isCollidable() {
-        return collidable;
-    }
-
-	/**
-	 * @return the visible
-	 */
-	public boolean isVisible() {
-		return visible;
-	}
-
-    public boolean isTraversible() {
-        return traversible;
-    }
-
-	/**
-	 * @return the opacity
-	 */
-	public float getOpacity() {
-		return opacity;
-	}
-
-	/**
-	 * @return the map
-	 */
-	public HexMap getMap() {
-		return map;
-	}
-
-	/**
-	 * @return the layerGroup
-	 */
-	public Group getLayerGroup() {
-		return layerGroup;
-	}
 }

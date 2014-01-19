@@ -23,6 +23,7 @@
 package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.map.HexMap;
+import com.ahsgaming.valleyofbones.map.MapData;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
@@ -104,34 +105,32 @@ public class GameController {
 	}
 	
 	private void loadMapObjects() {
-		int player = 0;
-		for (Vector2 spawn : map.getPlayerSpawns()) {
+		for (MapData.MapObject spawn : map.getPlayerSpawns()) {
 			Unit unit;
-			if (player >= 0 && player < players.size) {
-                unit = Unit.createUnit(getNextObjectId(), "castle-base", players.get(player));
-				players.get(player).setBaseUnit(unit);
+			if (spawn.player >= 0 && spawn.player < players.size) {
+                unit = Unit.createUnit(getNextObjectId(), "castle-base", players.get(spawn.player));
+				players.get(spawn.player).setBaseUnit(unit);
 			} else {
                 unit = Unit.createUnit(getNextObjectId(), "castle-base", null);
                 Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
 			}
-			Vector2 pos = map.boardToMapCoords((int)spawn.x, (int)spawn.y);
+			Vector2 pos = map.boardToMapCoords(spawn.x, spawn.y);
 			unit.getView().setPosition(pos.x, pos.y);
-			unit.getView().setBoardPosition((int) spawn.x, (int) spawn.y);
+			unit.getView().setBoardPosition(spawn.x, spawn.y);
 			unitManager.addUnit(unit);
 			
-			if (player >= 0 && player < players.size) {
-				addSpawnPoint(players.get(player).getPlayerId(), new Vector2(unit.getView().getX() + unit.getView().getWidth() * 0.5f, unit.getView().getY() + unit.getView().getHeight() * 0.5f));
+			if (spawn.player >= 0 && spawn.player < players.size) {
+				addSpawnPoint(players.get(spawn.player).getPlayerId(), new Vector2(unit.getView().getX() + unit.getView().getWidth() * 0.5f, unit.getView().getY() + unit.getView().getHeight() * 0.5f));
 			}
-			player++;
 		}
 		
 		// TODO load capture points
-        for (Vector2 point : map.getControlPoints()) {
+        for (MapData.MapObject obj : map.getControlPoints()) {
             Unit unit;
-            unit = Unit.createUnit(getNextObjectId(), "tower-base", null);
-            Vector2 pos = map.boardToMapCoords(point.x, point.y);
+            unit = Unit.createUnit(getNextObjectId(), obj.proto, obj.player == -1 ? null : players.get(obj.player));
+            Vector2 pos = map.boardToMapCoords(obj.x, obj.y);
             unit.getView().setPosition(pos.x, pos.y);
-            unit.getView().setBoardPosition(point);
+            unit.getView().setBoardPosition(new Vector2(obj.x, obj.y));
             unitManager.addUnit(unit);
         }
 
@@ -155,6 +154,7 @@ public class GameController {
                 doCommands();
 
                 unitManager.update(delta);
+                map.update();
 
                 for (int p = 0; p < players.size; p++) {
                     players.get(p).update(this, delta);
@@ -173,7 +173,7 @@ public class GameController {
                 for (Command c: cmdsToAdd) {
                     if (c instanceof Unpause) {
                         executeCommand(c);
-                        map.setMapDirty(true);
+                        map.invalidateViews();
                     } else {
                         commandQueue.add(c);
                     }
@@ -204,7 +204,7 @@ public class GameController {
 
         unitManager.startTurn(currentPlayer);
 
-        map.setMapDirty(true);
+        map.invalidateViews();
 	}
 	
 	public void checkResult() {
@@ -349,7 +349,7 @@ public class GameController {
 		}
 
         commandHistory.add(cmd);
-        map.setMapDirty(true);
+        map.invalidateViews();
 	}
 	
 	public void executeAttack(Attack cmd) {
@@ -488,7 +488,7 @@ public class GameController {
 	}
 	
 	public boolean isBoardPosEmpty(int x, int y) {
-        if (!map.isBoardPositionTraversible(x, y)) return false;
+        if (!map.getMapData().isBoardPositionTraversible(x, y)) return false;
         return (unitManager.getUnit(new Vector2(x, y)) == null);
 	}
 	

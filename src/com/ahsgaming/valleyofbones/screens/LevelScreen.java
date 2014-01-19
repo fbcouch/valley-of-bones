@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.map.HexMap;
+import com.ahsgaming.valleyofbones.map.MapView;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.panels.*;
 import com.ahsgaming.valleyofbones.units.Prototypes;
@@ -95,6 +96,8 @@ public class LevelScreen extends AbstractScreen {
 
     Unit selected, lastSelected;
 
+    MapView mapView;
+
 	/**
 	 * @param game
 	 */
@@ -103,6 +106,7 @@ public class LevelScreen extends AbstractScreen {
 		this.gController = gController;
 		unitBoxRenderer = new UnitBoxRenderer(SELECT_BOX_LINE_WIDTH * VOBGame.SCALE);
         instance = this;
+        mapView = gController.getMap().getMapView(game.getPlayer().getPlayerId());
 	}
 	
 	/**
@@ -130,7 +134,7 @@ public class LevelScreen extends AbstractScreen {
 
         if (boardPos.x < 0 || boardPos.y < 0 || boardPos.x >= gController.getMap().getWidth() || boardPos.y >= gController.getMap().getHeight()) {
             unsetBuildMode();
-        } else if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(boardPos)) {
+        } else if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(game.getPlayer(), boardPos)) {
             Build bld = new Build();
             bld.owner = game.getPlayer().getPlayerId();
             bld.turn = gController.getGameTurn();
@@ -391,15 +395,15 @@ public class LevelScreen extends AbstractScreen {
             selected = null;
 
         // clear highlighting if necessary
-        gController.getMap().clearHighlightAndDim();
+        mapView.clearHighlightAndDim();
         if (lastSelected != selected)
-            gController.getMap().setMapDirty(true);
+            mapView.setMapDirty(true);
 
         lastSelected = selected;
 
         selectionPanel.setSelected(null);
         if (lastSelected != null) {
-            gController.getMap().highlightArea(lastSelected.getView().getBoardPosition(), (int)lastSelected.getData().getMovesLeft(), true);
+            gController.getMap().highlightArea(mapView, lastSelected.getView().getBoardPosition(), (int)lastSelected.getData().getMovesLeft());
 
             selectionPanel.setSelected(lastSelected);
             if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
@@ -411,7 +415,7 @@ public class LevelScreen extends AbstractScreen {
             }
         }
 
-        gController.getMap().update(game.getPlayer());
+//        gController.getMap().update(game.getPlayer());
 
 		yourTurnPopup();
         buildPanel.update();
@@ -434,7 +438,7 @@ public class LevelScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapCamera.update();
         mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
-        gController.getMap().draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits());
+        mapView.draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits(), gController.getMap());
 
         // DRAW BOXES
         drawUnitBoxes();

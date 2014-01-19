@@ -1,5 +1,6 @@
 package com.ahsgaming.valleyofbones.screens;
 
+import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -37,7 +38,7 @@ public class LevelScreenInputListener extends ActorGestureListener {
         }
 
         Vector2 mapPos = levelScreen.screenToMapCoords(x , y);
-        Vector2 boardPos = levelScreen.gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
+        Vector2 boardPos = HexMap.mapToBoardCoords(levelScreen.gController.getMap().getMapData(), mapPos.x, mapPos.y);
         if (levelScreen.getClickInterrupt()) {
             levelScreen.setClickInterrupt(false);
             return;
@@ -64,7 +65,7 @@ public class LevelScreenInputListener extends ActorGestureListener {
         }
 
         Vector2 mapPos = levelScreen.screenToMapCoords(x , y);
-        Vector2 boardPos = levelScreen.gController.getMap().mapToBoardCoords(mapPos.x, mapPos.y);
+        Vector2 boardPos = HexMap.mapToBoardCoords(levelScreen.gController.getMap().getMapData(), mapPos.x, mapPos.y);
 
         if (levelScreen.isBuildMode()) {
             Gdx.app.log(LOG, String.format("Build at %s", boardPos.toString()));

@@ -53,7 +53,7 @@ public class HexMapTests {
 	 */
 	@Test
 	public void testGetMapDist() {
-		HexMap map = new HexMap(null, 10, 10, 2, 3);
+//		HexMap map = new HexMap(null, 10, 10, 2, 3);
 		
 		Array<DistTestCase> cases = new Array<DistTestCase>();
 		
@@ -121,14 +121,14 @@ public class HexMapTests {
 		for (DistTestCase dtc: cases) {
 			Assert.assertEquals(String.format("getMapDist (%d, %d) ---> (%d, %d)", dtc.x1, dtc.y1, dtc.x2, dtc.y2),
                     dtc.d,
-                    map.getMapDist(new Vector2(dtc.x1, dtc.y1), new Vector2(dtc.x2, dtc.y2)));
+                    HexMap.getMapDist(new Vector2(dtc.x1, dtc.y1), new Vector2(dtc.x2, dtc.y2)));
 		}
 		
 	}
 
     @Test
     public void testGetAdjacent() {
-        HexMap map = new HexMap(null, 10, 10, 2, 3);
+//        HexMap map = new HexMap(null, 10, 10, 2, 3);
 
         Vector2[] adjacent = HexMap.getAdjacent(0, 0);
 

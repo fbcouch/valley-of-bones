@@ -230,7 +230,7 @@ public class UnitFSM {
             }
 
             for(Vector2 loc: HexMap.getAdjacent((int) least.location.x, (int) least.location.y)) {
-                if (loc.epsilonEquals(boardPosition, 0.1f) || controller.getMap().isBoardPositionTraversible((int)loc.x, (int)loc.y) && controller.isBoardPosEmpty(loc)) {
+                if (loc.epsilonEquals(boardPosition, 0.1f) || controller.getMap().getMapData().isBoardPositionTraversible((int)loc.x, (int)loc.y) && controller.isBoardPosEmpty(loc)) {
                     for (AStarNode node: closedList) {
                         if (node.location.epsilonEquals(loc, 0.1f))
                             continue;
