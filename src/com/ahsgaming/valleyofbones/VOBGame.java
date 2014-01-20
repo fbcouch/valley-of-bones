@@ -189,7 +189,7 @@ public class VOBGame extends Game {
 
         Gdx.app.log(LOG, "dispose");
 //        if (AbstractScreen.skin != null) AbstractScreen.skin.dispose();
-        textureManager.dispose();
+        if (textureManager != null) textureManager.dispose();
         if (soundManager != null) soundManager.dispose();
 
 		closeGame();
