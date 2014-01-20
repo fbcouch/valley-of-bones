@@ -57,7 +57,10 @@ See New BSD License at
 ## ARTWORK ##
 
 The font art assets used were created by Kenney, Inc. licensed as CC-SA.
+The hexagon tiles were adapted from art by Kenney, Inc. licensed as CC0.
+
 	http://kenney.nl/
+
 	
 Several icons used were licensed from game-icons.net:
 
@@ -97,8 +100,7 @@ Several icons used were licensed from game-icons.net:
 
 - "Walking Boot Icon" by Lorc, CC-BY
 
-
-All other art assets are original creations by Jami Couch and are licensed as CC-BY-SA.
+All other art assets are original creations by Jami Couch and Steven Hochman and are licensed as CC-BY-SA.
 
 
 

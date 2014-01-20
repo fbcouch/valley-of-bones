@@ -25,18 +25,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="Public servers ping the global server every 30 minutes while waiting for players">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/AIPlayer.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/AIPlayer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/tests/HexMapTests.java" afterPath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/tests/HexMapTests.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreenInputListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/MapData.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/MapData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/MapView.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/MapView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/UnitFSM.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/UnitFSM.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitManager.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/maps/test.json" afterPath="$PROJECT_DIR$/assets/maps/test.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -114,7 +103,7 @@
     <file path="/strings.xml" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386126422314" ignored="false" />
     <file path="/Main.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1389135111863" ignored="false" />
     <file path="/ant.properties" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1387572768830" ignored="false" />
-    <file path="/README.md" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386275070395" ignored="false" />
+    <file path="/README.md" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390180093566" ignored="false" />
     <file path="/api-1" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386431366381" ignored="false" />
     <file path="/package.json" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386434537259" ignored="false" />
     <file path="/app.coffee" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386982512910" ignored="false" />
@@ -144,7 +133,7 @@
     <file path="/FSMAIPlayer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1389966093579" ignored="false" />
     <file path="/UnitFSM.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390175988686" ignored="false" />
     <file path="/UnitData.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1389966256068" ignored="false" />
-    <file path="/UnitView.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1389968486158" ignored="false" />
+    <file path="/UnitView.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390179377188" ignored="false" />
     <file path="/UnitManager.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390178988858" ignored="false" />
     <file path="/MapData.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390176856556" ignored="false" />
     <file path="/MapView.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390177100990" ignored="false" />
@@ -215,10 +204,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="UnitManager.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="UnitManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="266" column="38" selection-start="9404" selection-end="9404" vertical-scroll-proportion="0.5112782">
+            <state line="259" column="34" selection-start="9120" selection-end="9120" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UnitView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="181" column="38" selection-start="5044" selection-end="5044" vertical-scroll-proportion="-16.703703">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="102" column="108" selection-start="2597" selection-end="2597" vertical-scroll-proportion="0.70615387">
               <folding />
             </state>
           </provider>
@@ -247,8 +257,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitView.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitData.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileSet.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileLayer.java" />
@@ -263,6 +271,8 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitManager.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitView.java" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -496,6 +506,38 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="art" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="valley-of-bones" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="art" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="units" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -879,7 +921,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1919" y="27" width="1922" height="1054" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="4" side_tool="false" content_ui="tabs" />
@@ -1004,13 +1046,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/TileSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="109" selection-start="1603" selection-end="1603" vertical-scroll-proportion="1.0470016">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/UnitFSM.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="233" column="0" selection-start="8509" selection-end="8509" vertical-scroll-proportion="0.54448396">
@@ -1021,13 +1056,6 @@
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/Unit.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="94" column="50" selection-start="2478" selection-end="2478" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="191" column="62" selection-start="5369" selection-end="5369" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1111,7 +1139,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="266" column="38" selection-start="9404" selection-end="9404" vertical-scroll-proportion="0.5112782">
+        <state line="259" column="34" selection-start="9120" selection-end="9120" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="181" column="38" selection-start="5044" selection-end="5044" vertical-scroll-proportion="-16.703703">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="102" column="108" selection-start="2597" selection-end="2597" vertical-scroll-proportion="0.70615387">
           <folding />
         </state>
       </provider>

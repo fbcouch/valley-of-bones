@@ -20,6 +20,8 @@ public class UnitView {
     ProgressBar healthBar;
     Sprite image;
     Sprite overlay;
+    Sprite buildImage;
+    Sprite buildImageOverlay;
     Vector2 boardPosition = new Vector2();
     Vector2 lastBoardPosition;
     Vector2 position = new Vector2();
@@ -34,6 +36,9 @@ public class UnitView {
         view.unit = unit;
         view.image = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", unit.data.image);
         view.overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", unit.data.image + "-overlay");
+
+        view.buildImage = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-builder");
+        view.buildImageOverlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-builder-overlay");
 
         view.setSize(view.image.getRegionWidth(), view.image.getRegionHeight());
 
@@ -165,7 +170,7 @@ public class UnitView {
 
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * (unit.getData().isInvisible() ? 0.5f : 1));
 
-        batch.draw(image, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
+        batch.draw(unit.data.building ? buildImage : image, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
 
         if (overlay != null) {
 
@@ -174,7 +179,7 @@ public class UnitView {
             else
                 batch.setColor(color);
 
-            batch.draw(overlay, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
+            batch.draw(unit.data.building? buildImageOverlay : overlay, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
 
         }
 
