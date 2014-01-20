@@ -100,7 +100,7 @@ public class GameController {
 		if (mapName == null || mapName.length() == 0) mapName = DEFAULT_MAP;
 		// TODO implement loading of maps
 		//map = new HexMap(this, 19, 13, 2, 4);
-		map = new HexMap(this, Gdx.files.internal("maps/test.json"));
+		map = new HexMap(this, Gdx.files.internal("maps/radial.json"));
 		return map;
 	}
 	
