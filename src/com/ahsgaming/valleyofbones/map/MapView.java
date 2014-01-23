@@ -210,7 +210,7 @@ public class MapView {
     }
 
     public boolean isBoardPositionVisible(int x, int y) {
-        return (x > 0 && y > 0 && y * mapData.bounds.x + x < hexStatus.length && hexStatus[y * (int)mapData.bounds.x + x] != FOG);
+        return (x >= 0 && y >= 0 && y * mapData.bounds.x + x < hexStatus.length && hexStatus[y * (int)mapData.bounds.x + x] != FOG);
     }
 
     public static MapView createMapView(MapData data, Player player) {
