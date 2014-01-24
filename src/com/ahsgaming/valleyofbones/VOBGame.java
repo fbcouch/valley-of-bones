@@ -2,7 +2,7 @@ package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.*;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -119,8 +119,14 @@ public class VOBGame extends Game {
 	}
 	
 	public void closeGame() {
-        if (netController != null)
+        if (netController != null) {
+            if (netController.getGameController() != null) {
+                Surrender surrender = new Surrender();
+                surrender.owner = getPlayer().getPlayerId();
+                netController.sendCommand(surrender);
+            }
             netController.stop();
+        }
 	}
 	
 	public void startGame() {
@@ -265,24 +271,24 @@ public class VOBGame extends Game {
 		return new OptionsScreen(this);
 	}
 	
-	public GameSetupScreen getGameSetupScreen() {
+	public SPGameSetupScreen getGameSetupScreen() {
 		
 		GameSetupConfig cfg = new GameSetupConfig();
 		cfg.isHost = true;
 		cfg.isMulti = false;
 		cfg.playerName = profile.name;
-		return new GameSetupScreen(this, cfg);
+		return new SPGameSetupScreen(this, cfg);
 	}
 	
-	public GameSetupScreen getGameSetupScreenMP(boolean isHost) {
+	public MPGameSetupScreen getGameSetupScreenMP(boolean isHost) {
 		GameSetupConfig cfg = new GameSetupConfig();
 		cfg.isMulti = true;
 		cfg.isHost = isHost;
-		return new GameSetupScreen(this, cfg);
+		return new MPGameSetupScreen(this, cfg);
 	}
 	
-	public GameSetupScreen getGameSetupScreenMP(GameSetupConfig cfg) {
-		return new GameSetupScreen(this, cfg);
+	public MPGameSetupScreen getGameSetupScreenMP(GameSetupConfig cfg) {
+		return new MPGameSetupScreen(this, cfg);
 	}
 	
 	public GameJoinScreen getGameJoinScreen() {

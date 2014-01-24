@@ -27,13 +27,12 @@ import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.ai.AIPlayer;
-import com.ahsgaming.valleyofbones.ai.FSMAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;

@@ -1,7 +1,7 @@
 package com.ahsgaming.valleyofbones.network;
 
 import com.ahsgaming.valleyofbones.*;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
@@ -21,7 +21,7 @@ public class SpectatorClient implements NetController {
     public String LOG = "SpectatorClient";
 
     VOBGame game;
-    GameSetupScreen.GameSetupConfig gameConfig;
+    GameSetupConfig gameConfig;
     GameController gameController;
     GameResult gameResult;
     Array<Command> commandQueue;
@@ -37,7 +37,7 @@ public class SpectatorClient implements NetController {
     boolean stopClient = false;
     boolean recdEndTurn = false;
 
-    public SpectatorClient(VOBGame vobGame, GameSetupScreen.GameSetupConfig cfg) {
+    public SpectatorClient(VOBGame vobGame, GameSetupConfig cfg) {
         game = vobGame;
         gameConfig = cfg;
         commandQueue = new Array<Command>();

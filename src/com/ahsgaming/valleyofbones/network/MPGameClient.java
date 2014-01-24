@@ -34,7 +34,7 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RemovePlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
@@ -354,6 +354,11 @@ public class MPGameClient implements NetController {
 
     @Override
     public void setMap(String map) {
-        // TODO
+        if (gameConfig.isHost) {
+            gameConfig.mapName = map;
+            KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
+            gameDetails.mapName = map;
+            client.sendTCP(gameDetails);
+        }
     }
 }

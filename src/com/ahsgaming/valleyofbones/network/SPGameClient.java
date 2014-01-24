@@ -23,9 +23,8 @@
 package com.ahsgaming.valleyofbones.network;
 
 import com.ahsgaming.valleyofbones.*;
-import com.ahsgaming.valleyofbones.ai.AIPlayer;
 import com.ahsgaming.valleyofbones.ai.FSMAIPlayer;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.utils.Array;
 
 /**

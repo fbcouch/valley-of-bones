@@ -3,7 +3,7 @@ package com.ahsgaming.valleyofbones;
 import com.ahsgaming.valleyofbones.ai.AIPlayer;
 import com.ahsgaming.valleyofbones.network.SPGameClient;
 import com.ahsgaming.valleyofbones.screens.AIRunnerScreen;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -36,7 +36,7 @@ public class VOBAIRunner extends VOBGame {
     }
 
     @Override
-    public void createGame(GameSetupScreen.GameSetupConfig cfg) {
+    public void createGame(GameSetupConfig cfg) {
         super.createGame(cfg);
     }
 
@@ -70,7 +70,7 @@ public class VOBAIRunner extends VOBGame {
             wins.add(0);
         }
 
-        GameSetupScreen.GameSetupConfig config = new GameSetupScreen.GameSetupConfig();
+        GameSetupConfig config = new GameSetupConfig();
         config.isMulti = false;
 
         for (int i = 0; i < aiPlayers.size; i++) {

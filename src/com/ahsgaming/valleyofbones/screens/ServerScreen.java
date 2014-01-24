@@ -22,12 +22,9 @@
  */
 package com.ahsgaming.valleyofbones.screens;
 
-import com.ahsgaming.valleyofbones.Utils;
-import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.VOBServer;
 import com.ahsgaming.valleyofbones.network.GameServer;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -59,7 +56,7 @@ public class ServerScreen extends AbstractScreen {
 	}
 
     protected void addServer() {
-        GameSetupScreen.GameSetupConfig cfg = new GameSetupScreen.GameSetupConfig();
+        GameSetupConfig cfg = new GameSetupConfig();
         cfg.isMulti = true;
         cfg.hostName = txtName.getText();
         cfg.hostPort = Integer.parseInt(txtPort.getText());

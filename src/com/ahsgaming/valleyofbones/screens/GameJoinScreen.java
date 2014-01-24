@@ -27,7 +27,6 @@ import java.net.InetAddress;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
-import com.ahsgaming.valleyofbones.screens.GameSetupScreen.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -63,7 +62,7 @@ public class GameJoinScreen extends AbstractScreen {
 	
 	Label lblStatus;
 	
-	GameSetupScreen gsScreen = null;
+	MPGameSetupScreen gsScreen = null;
     Array<ServerObj> servers;
     List listNames, listServers, listPlayers, listStatus;
 	
