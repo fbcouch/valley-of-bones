@@ -41,8 +41,6 @@ public class VOBGame extends Game {
 	Player player;
 	
 	boolean started = false;
-	
-//	boolean isServer = false;
 
 	boolean loadGame = false;
 	
@@ -153,6 +151,10 @@ public class VOBGame extends Game {
 	public void removePlayer(int playerId) {
 		netController.removePlayer(playerId);
 	}
+
+    public void setMap(String map) {
+        netController.setMap(map);
+    }
 	
 	/**
 	 * Implemented methods

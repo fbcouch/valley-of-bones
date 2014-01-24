@@ -158,4 +158,9 @@ public class SPGameClient implements NetController {
 	public GameController getGameController() {
 		return controller;
 	}
+
+    @Override
+    public void setMap(String map) {
+        gameConfig.mapName = map;
+    }
 }

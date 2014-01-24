@@ -29,12 +29,17 @@ import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
 /**
  * @author jami
@@ -47,6 +52,9 @@ public class GameSetupScreen extends AbstractScreen {
 	Array<Player> pList;
 
     boolean isHost = false;
+
+    SelectBox mapSelect;
+    Label mapSelection;
 	
 	/**
 	 * @param game
@@ -61,7 +69,7 @@ public class GameSetupScreen extends AbstractScreen {
 		
 		Label gameTypeLbl = new Label("Game Type: " + (config.isMulti ? "Multiplayer" : "Single Player"), getSkin());
 		
-		Label mapLbl = new Label("Map: " + config.mapName, getSkin());
+		Label mapLbl = new Label("Map:", getSkin());
 		
 		Table table = new Table(getSkin());
 		table.setFillParent(true);
@@ -69,7 +77,35 @@ public class GameSetupScreen extends AbstractScreen {
 		
 		table.add(gameTypeLbl).colspan(7).center();
 		table.row();
-		table.add(mapLbl).colspan(7);
+		table.add(mapLbl).colspan(3).align(Align.right);
+
+        JsonReader reader = new JsonReader();
+        JsonValue val = reader.parse(Gdx.files.internal("maps/maps.json").readString());
+
+        Array<String> maps = new Array<String>();
+        for (JsonValue v: val) {
+            maps.add(v.asString());
+        }
+
+        if (!config.isMulti || config.isHost) {
+            mapSelect = new SelectBox(maps.toArray(), getSkin());
+
+            mapSelect.setSelection(config.mapName);
+
+            game.setMap(mapSelect.getSelection());
+
+            mapSelect.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    game.setMap(((SelectBox)actor).getSelection());
+                }
+            });
+
+            table.add(mapSelect).colspan(4).align(Align.left);
+        } else {
+            mapSelection = new Label(config.mapName, getSkin());
+            table.add(mapSelection).colspan(4).align(Align.left);
+        }
 		table.row();
 
 		
@@ -267,6 +303,16 @@ public class GameSetupScreen extends AbstractScreen {
 				setupScreen();
 			}
 		}
+
+        if (!config.isMulti || config.isHost) {
+            if (!mapSelect.getSelection().equals(config.mapName)) {
+                mapSelect.setSelection(config.mapName);
+            }
+        } else {
+            if (!mapSelection.getText().equals(config.mapName)) {
+                mapSelection.setText(config.mapName);
+            }
+        }
 	}
 	
 	public static class GameSetupConfig {

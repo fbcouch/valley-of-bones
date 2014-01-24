@@ -777,4 +777,9 @@ public class GameServer implements NetController {
             }
         });
     }
+
+    @Override
+    public void setMap(String map) {
+        // TODO
+    }
 }

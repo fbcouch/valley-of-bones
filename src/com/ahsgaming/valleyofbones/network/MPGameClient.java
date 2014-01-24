@@ -351,4 +351,9 @@ public class MPGameClient implements NetController {
 	public GameController getGameController() {
 		return controller;
 	}
+
+    @Override
+    public void setMap(String map) {
+        // TODO
+    }
 }

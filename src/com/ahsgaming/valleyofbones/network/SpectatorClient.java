@@ -290,4 +290,9 @@ public class SpectatorClient implements NetController {
     public boolean isConnecting() {
         return isConnecting;
     }
+
+    @Override
+    public void setMap(String map) {
+        // TODO
+    }
 }

@@ -1,6 +1,6 @@
 {
-    title: "Test map",
-    description: "This is a very simple map for demo purposes",
+    title: "Valley of Bones",
+    description: "The original valley of bones.",
     width: 19,
     height: 13,
     tilewidth: 64,
