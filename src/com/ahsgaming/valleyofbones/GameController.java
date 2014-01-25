@@ -598,6 +598,10 @@ public class GameController {
         this.nextTurn = nextTurn;
     }
 
+    public String getMapName() {
+        return mapName;
+    }
+
     /**
 	 * static methods
 	 */

@@ -696,21 +696,22 @@ public class GameServer implements NetController {
 //            httpPost.setHeader("Content-Type", "application/json");
             httpPost.setUrl(String.format("%s/game", globalServerUrl));
             HashMap parameters = new HashMap();
-
-//            parameters.put("players",
-//                    String.format("{ %d: \"%s\", %d: \"%s\" }",
-//                            controller.getPlayers().get(0).getPlayerId(),
-//                            controller.getPlayers().get(0).getPlayerName(),
-//                            controller.getPlayers().get(1).getPlayerId(),
-//                            controller.getPlayers().get(1).getPlayerName()));
+            String playersString = "{}";
+            if (controller.getPlayers().size >= 2) {
+                playersString = String.format("{ %d: \"%s\", %d: \"%s\" }",
+                                    controller.getPlayers().get(0).getPlayerId(),
+                                    controller.getPlayers().get(0).getPlayerName(),
+                                    controller.getPlayers().get(1).getPlayerId(),
+                                    controller.getPlayers().get(1).getPlayerName());
+            }
             String historyString = "[";
             for (Command command: controller.getCommandHistory()) {
                 historyString += command.toJson() + ",";
             }
             historyString += "]";
-            parameters.put("game", "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + "}");
+            parameters.put("game", "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + ", \"map\": \"" + controller.getMapName() + "\", \"players\": " + playersString + "}");
             parameters.put("version", VOBGame.VERSION);
-//            parameters.put("result", String.format("%d", gameResult.winner));
+            parameters.put("map", controller.getMapName());
 
             httpPost.setContent(HttpParametersUtils.convertHttpParameters(parameters));
 

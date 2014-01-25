@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.8.2
 Created-By: Jami Couch
-Main-Class: com.ahsgaming.valleyofbones.Main
-Built-Date: January 19 2014
+Main-Class: com.ahsgaming.valleyofbones.ServerMain
+Built-Date: January 24 2014
 
