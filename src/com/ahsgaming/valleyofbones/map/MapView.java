@@ -3,6 +3,7 @@ package com.ahsgaming.valleyofbones.map;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -38,6 +39,8 @@ public class MapView {
     boolean[] hexDimmed;
     Player player;
     MapData mapData;
+
+    Sprite pathNode, pathEdge;
 
     long modified;
     boolean mapDirty = true;
@@ -102,34 +105,34 @@ public class MapView {
             curY -= mapData.tileSize.y * 0.75;
         }
 
-        batch.end();
-
-        ShapeRenderer sr = new ShapeRenderer();
-        sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.begin(ShapeRenderer.ShapeType.Filled);
         for (Unit unit: units) {
             if (unit.getData().getMoveSpeed() > 0 && unit.getOwner() != null) {
-                sr.setColor(unit.getOwner().getPlayerColor());
+                batch.setColor(unit.getOwner().getPlayerColor());
                 if (unit.getView().getLastBoardPosition() != null) {
                     if (unit.getOwner() == player ||
                             (hexStatus[(int)(unit.getView().getBoardPosition().x + unit.getView().getBoardPosition().y * mapData.bounds.x)] != FOG
                                     || (unit.getView().getLastBoardPosition() != null && hexStatus[(int)(unit.getView().getLastBoardPosition().x + unit.getView().getLastBoardPosition().y * mapData.bounds.x)] != FOG && unit.getView().hasActions() && !unit.getData().isBuilding()))
                                     && (!unit.getData().isInvisible() || map.detectorCanSee(player, units, unit.getView().getBoardPosition()))) {
 
-                        Vector2 lastPos = map.boardToMapCoords(unit.getView().getLastBoardPosition().x, unit.getView().getLastBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
-                        Vector2 thisPos = map.boardToMapCoords(unit.getView().getBoardPosition().x, unit.getView().getBoardPosition().y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
+                        Vector2 lastPos = null;
+                        for (Vector2 thisPos: unit.getView().getPath()) {
+                            thisPos = map.boardToMapCoords(thisPos.x, thisPos.y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
+                            Gdx.app.log("Path", "" + thisPos);
+                            if (lastPos != null) {
+                                batch.draw(pathNode, lastPos.x - pathNode.getRegionWidth() * 0.5f, lastPos.y - pathNode.getRegionHeight() * 0.5f);
 
-                        sr.rectLine(lastPos, thisPos, 3 * VOBGame.SCALE);
-                        sr.circle(lastPos.x, lastPos.y, 5 * VOBGame.SCALE);
-                        sr.circle(thisPos.x, thisPos.y, 5 * VOBGame.SCALE);
+                                Vector2 angle = new Vector2(thisPos);
+                                angle.sub(lastPos);
 
+                                batch.draw(pathEdge, lastPos.x, lastPos.y - pathEdge.getHeight() * 0.5f, 0, pathEdge.getHeight() * 0.5f, angle.len(), pathEdge.getRegionHeight(), 1, 1, angle.angle());
+                            }
+                            batch.draw(pathNode, thisPos.x - pathNode.getRegionWidth() * 0.5f, thisPos.y - pathNode.getRegionHeight() * 0.5f);
+                            lastPos = thisPos;
+                        }
                     }
                 }
             }
         }
-        sr.end();
-
-        batch.begin();
 
         // draw enemy units
         for (Unit u: units) {
@@ -230,6 +233,9 @@ public class MapView {
             mapView.tileSprites.add(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", tile));
             mapView.tileDepthSprites.add(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", tile + "-depth"));
         }
+
+        mapView.pathNode = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "path-node");
+        mapView.pathEdge = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "path-edge");
 
         return mapView;
     }

@@ -698,15 +698,21 @@ public class GameServer implements NetController {
             HashMap parameters = new HashMap();
             String playersString = "{}";
             if (controller.getPlayers().size >= 2) {
-                playersString = String.format("{ %d: \"%s\", %d: \"%s\" }",
+                playersString = String.format("{ \"%d\": \"%s\", \"%d\": \"%s\" }",
                                     controller.getPlayers().get(0).getPlayerId(),
                                     controller.getPlayers().get(0).getPlayerName(),
                                     controller.getPlayers().get(1).getPlayerId(),
                                     controller.getPlayers().get(1).getPlayerName());
             }
             String historyString = "[";
+            boolean first = true;
             for (Command command: controller.getCommandHistory()) {
-                historyString += command.toJson() + ",";
+                if (first) {
+                    first = false;
+                } else {
+                    historyString += ", ";
+                }
+                historyString += command.toJson();
             }
             historyString += "]";
             parameters.put("game", "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + ", \"map\": \"" + controller.getMapName() + "\", \"players\": " + playersString + "}");

@@ -24,6 +24,7 @@ public class UnitView {
     Sprite buildImageOverlay;
     Vector2 boardPosition = new Vector2();
     Vector2 lastBoardPosition;
+    Array<Vector2> path = new Array<Vector2>();
     Vector2 position = new Vector2();
     Vector2 size = new Vector2();
     Array<Action> actions = new Array<Action>();
@@ -140,6 +141,18 @@ public class UnitView {
 
     public Vector2 getLastBoardPosition() {
         return lastBoardPosition;
+    }
+
+    public Array<Vector2> getPath() {
+        return path;
+    }
+
+    public void clearPath() {
+        path.clear();
+    }
+
+    public void addToPath(Vector2 position) {
+        path.add(position);
     }
 
     public void addAction(Action action) {

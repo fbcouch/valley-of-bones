@@ -201,7 +201,7 @@ king
   index: -1
 king-small
   rotate: false
-  xy: 1454, 566
+  xy: 1571, 582
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -271,9 +271,23 @@ money
   index: -1
 money-small
   rotate: false
-  xy: 1496, 566
+  xy: 1613, 582
   size: 40, 40
   orig: 40, 40
+  offset: 0, 0
+  index: -1
+path-edge
+  rotate: false
+  xy: 890, 441
+  size: 128, 6
+  orig: 128, 6
+  offset: 0, 0
+  index: -1
+path-node
+  rotate: false
+  xy: 583, 167
+  size: 20, 20
+  orig: 20, 20
   offset: 0, 0
   index: -1
 radial-balance
@@ -285,7 +299,7 @@ radial-balance
   index: -1
 radial-balance-small
   rotate: false
-  xy: 887, 341
+  xy: 1571, 540
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -299,7 +313,7 @@ reticule
   index: -1
 reticule-small
   rotate: false
-  xy: 887, 299
+  xy: 1613, 540
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -313,7 +327,7 @@ rune-sword
   index: -1
 rune-sword-small
   rotate: false
-  xy: 1414, 524
+  xy: 1655, 582
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -327,7 +341,7 @@ sabotage
   index: -1
 sabotage-small
   rotate: false
-  xy: 1414, 482
+  xy: 1655, 540
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -362,7 +376,7 @@ skull-crossed-bones
   index: -1
 skull-crossed-bones-small
   rotate: false
-  xy: 1456, 524
+  xy: 1697, 590
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -397,7 +411,7 @@ stealth
   index: -1
 stealth-small
   rotate: false
-  xy: 1414, 440
+  xy: 1739, 590
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -411,7 +425,7 @@ supply
   index: -1
 supply-small
   rotate: false
-  xy: 1456, 482
+  xy: 1697, 548
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -467,7 +481,7 @@ turn-indicator-base
   index: -1
 turn-indicator-overlay
   rotate: false
-  xy: 956, 398
+  xy: 1520, 557
   size: 49, 49
   orig: 49, 49
   offset: 0, 0
@@ -495,14 +509,14 @@ unit-highlight
   index: -1
 walking-boot
   rotate: false
-  xy: 890, 383
+  xy: 1454, 542
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 walking-boot-small
   rotate: false
-  xy: 1456, 440
+  xy: 1781, 590
   size: 40, 40
   orig: 40, 40
   offset: 0, 0

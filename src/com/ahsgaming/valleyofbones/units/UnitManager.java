@@ -119,6 +119,9 @@ public class UnitManager {
             if (unit.data.capturable && unit.data.uncontested == unit.owner)
                 unit.data.setCurHP(unit.data.curHP += 5 * unit.data.capUnitCount);
 
+            unit.view.clearPath();
+            unit.view.addToPath(unit.view.getBoardPosition());
+
             unit.data.stealthEntered = false;
         }
     }
@@ -174,6 +177,7 @@ public class UnitManager {
 
             unit.view.lastBoardPosition = unit.view.boardPosition;
             unit.view.boardPosition = boardPosition;
+            unit.view.addToPath(boardPosition);
             // TODO add unit animation (need static ref to boardToMapCoords)
             Vector2 pos = gameController.getMap().boardToMapCoords(boardPosition.x, boardPosition.y);
             unit.view.addAction(UnitView.Actions.moveTo(pos.x, pos.y, dist / unit.data.moveSpeed));
