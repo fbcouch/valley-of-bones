@@ -52,16 +52,17 @@ public class GameOverScreen extends AbstractScreen {
 
     public void updateLayout() {
 
-
-
-
         Table table = new Table(getSkin());
         stage.addActor(table);
 
-        if (result.winner == game.getPlayer().getPlayerId()) {
-            table.add("VICTORY", "large-font", "white").pad(4).colspan(4).center();
+        if (game.getPlayer() != null) {
+            if (result.winner == game.getPlayer().getPlayerId()) {
+                table.add("VICTORY", "large-font", "white").pad(4).colspan(4).center();
+            } else {
+                table.add("DEFEAT", "large-font", "white").pad(4).colspan(4).center();
+            }
         } else {
-            table.add("DEFEAT", "large-font", "white").pad(4).colspan(4).center();
+            table.add("GAME OVER", "large-font", "white").pad(4).colspan(4).center();
         }
 
         table.row();

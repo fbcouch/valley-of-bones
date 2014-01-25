@@ -32,4 +32,11 @@ public class SpectatorLevelScreen extends LevelScreen {
     public void resize(int width, int height) {
         super.resize(width, height);
     }
+
+    @Override
+    public void render(float delta) {
+
+
+        super.render(delta);
+    }
 }

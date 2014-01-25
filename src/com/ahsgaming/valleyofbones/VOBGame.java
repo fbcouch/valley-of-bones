@@ -120,10 +120,12 @@ public class VOBGame extends Game {
 	
 	public void closeGame() {
         if (netController != null) {
-            if (netController.getGameController() != null) {
+            if (netController.getGameController() != null && netController.getPlayer() != null) {
+
                 Surrender surrender = new Surrender();
                 surrender.owner = getPlayer().getPlayerId();
                 netController.sendCommand(surrender);
+
             }
             netController.stop();
         }
@@ -322,6 +324,13 @@ public class VOBGame extends Game {
 		}
 		return new Array<Player>();
 	}
+
+    public Array<String> getSpectators() {
+        if (netController != null) {
+            return new Array<String>(netController.getSpectators());
+        }
+        return new Array<String>();
+    }
 	
 	public void setLoadGame() {
 		// TODO Auto-generated method stub

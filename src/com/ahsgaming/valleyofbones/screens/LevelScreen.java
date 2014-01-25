@@ -106,7 +106,7 @@ public class LevelScreen extends AbstractScreen {
 		this.gController = gController;
 		unitBoxRenderer = new UnitBoxRenderer(SELECT_BOX_LINE_WIDTH * VOBGame.SCALE);
         instance = this;
-        mapView = gController.getMap().getMapView(game.getPlayer().getPlayerId());
+        mapView = gController.getMap().getMapView((game.getPlayer() == null ? -1 : game.getPlayer().getPlayerId()));
 	}
 	
 	/**
@@ -185,11 +185,16 @@ public class LevelScreen extends AbstractScreen {
     }
 
     public void surrender() {
-        Surrender s = new Surrender();
-        s.owner = game.getPlayer().getPlayerId();
-        s.turn = gController.getGameTurn();
+        if (game.getPlayer() == null) {
+            game.closeGame();
+            game.setScreen(game.getMainMenuScreen());
+        } else {
+            Surrender s = new Surrender();
+            s.owner = game.getPlayer().getPlayerId();
+            s.turn = gController.getGameTurn();
 
-        game.sendCommand(s);
+            game.sendCommand(s);
+        }
     }
 
 //    public boolean canRefund(Unit unit) {
@@ -307,7 +312,7 @@ public class LevelScreen extends AbstractScreen {
         if (game.getPlayer() != null) {
 		    posCamera.set(gController.getSpawnPoint(game.getPlayer().getPlayerId()));
         } else {
-            posCamera.set(gController.getMap().getWidth(), gController.getMap().getHeight());
+            posCamera.set(gController.getMap().getMapWidth() * 0.5f, gController.getMap().getMapHeight() * 0.5f);
         }
 
         buildPanel = new BuildPanel(gController, game.getPlayer(), this);
@@ -389,6 +394,14 @@ public class LevelScreen extends AbstractScreen {
 	
 	@Override
 	public void render(float delta) {
+        if (game.getPlayer() == null) {
+            if (selected != null && selected.getOwner() != null) {
+                Gdx.app.log(LOG, "" + selected.getOwner().getPlayerId());
+                mapView = gController.getMap().getMapView(selected.getOwner().getPlayerId());
+            } else {
+                mapView = gController.getMap().getMapView(-1);
+            }
+        }
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
         if (selected != null && selected.getData().getCurHP() <= 0 && !selected.getData().getType().equals("building"))
@@ -654,7 +667,7 @@ public class LevelScreen extends AbstractScreen {
                 table.setFillParent(true);
                 addActor(table);
 
-                btnSurrender = new MedUIButton("Surrender", levelScreen.getSkin());
+                btnSurrender = new MedUIButton(VOBGame.instance.getPlayer() == null ? "Leave Game" : "Surrender", levelScreen.getSkin());
                 table.add(btnSurrender).pad(10 * VOBGame.SCALE);
                 table.row();
 

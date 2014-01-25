@@ -44,6 +44,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 	GameSetupConfig config;
 	
 	Array<Player> pList;
+    Array<String> sList;
 
     boolean isHost = false;
 
@@ -82,27 +83,27 @@ public class MPGameSetupScreen extends AbstractScreen {
         for (Player p: pList) {
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
-                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE);
+                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).expandX();
             } else {
                 if (config.isHost) {
                     Image btn = getRemovePlayerButton(p);
-                    playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE);
+                    playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).expandX();
                 } else {
-                    playerTable.add();
+                    playerTable.add().expandX();
                 }
             }
 
-            playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left();
-            playerTable.add("Terran");
+            playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left().expandX();
+            playerTable.add("Terran").expandX();
             if (pList.indexOf(p, true) == 0) {
-                playerTable.add(new Label("Red", getSkin(), "default-font", Player.COLOR_RED));
+                playerTable.add(new Label("Red", getSkin(), "default-font", Player.COLOR_RED)).expandX();
             } else {
-                playerTable.add(new Label("Blue", getSkin(), "default-font", Player.COLOR_BLUE));
+                playerTable.add(new Label("Blue", getSkin(), "default-font", Player.COLOR_BLUE)).expandX();
             }
             playerTable.row().expandX().padBottom(5).padTop(5);
         }
 
-        if (pList.size < 2) {
+        if (pList.size < 2 && config.isHost) {
             TextButton addAI = new TextButton("Add AI Player", getSkin());
             addAI.addListener(new ClickListener() {
                 @Override
@@ -119,6 +120,23 @@ public class MPGameSetupScreen extends AbstractScreen {
         table.add(playerTable).fillX().colspan(2);
 
         table.row();
+
+        sList = new Array<String>(game.getSpectators());
+        if (sList.size > 0) {
+            table.add("Spectators").colspan(2).left();
+            table.row();
+
+            Table spectatorTable = new Table(getSkin());
+            spectatorTable.setBackground(getSkin().getDrawable("default-pane"));
+
+            for (String name: sList) {
+                spectatorTable.add(name).expandX().left();
+                spectatorTable.row().expandX().padBottom(5).padTop(5);
+            }
+
+            table.add(spectatorTable).fillX().colspan(2);
+            table.row();
+        }
 
         Table setupTable = new Table(getSkin());
 
@@ -253,8 +271,17 @@ public class MPGameSetupScreen extends AbstractScreen {
 			if (!pList.equals(players) || isHost != config.isHost) {
 				stage.clear();
 				setupScreen();
+                return;
 			}
 		}
+
+        synchronized (game.getSpectators()) {
+            if (!sList.equals(game.getSpectators())) {
+                stage.clear();
+                setupScreen();
+                return;
+            }
+        }
 
         if (!config.isMulti || config.isHost) {
             if (!mapSelect.getSelection().equals(config.mapName)) {

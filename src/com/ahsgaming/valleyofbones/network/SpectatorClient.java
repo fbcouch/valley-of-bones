@@ -25,6 +25,7 @@ public class SpectatorClient implements NetController {
     GameController gameController;
     GameResult gameResult;
     Array<Command> commandQueue;
+    KryoCommon.GameUpdate gameUpdate;
 
     Client client;
     boolean isConnecting = false;
@@ -32,6 +33,7 @@ public class SpectatorClient implements NetController {
     KryoCommon.Error error;
 
     Array<Player> players;
+    Array<String> spectators;
     int firstTurnPid = -1;
 
     boolean stopClient = false;
@@ -46,6 +48,7 @@ public class SpectatorClient implements NetController {
         client.start();
 
         players = new Array<Player>();
+        spectators = new Array<String>();
 
         KryoCommon.register(client);
 
@@ -94,6 +97,10 @@ public class SpectatorClient implements NetController {
                     commandQueue.addAll((Command[])obj);
                 }
 
+                if (obj instanceof KryoCommon.GameUpdate) {
+                    gameUpdate = (KryoCommon.GameUpdate)obj;
+                }
+
                 if (gameController == null) {
                     if (obj instanceof KryoCommon.GameDetails) {
                         Gdx.app.log(LOG, "GameDetails rec'd");
@@ -113,6 +120,15 @@ public class SpectatorClient implements NetController {
                         for (KryoCommon.RegisteredPlayer rp: plist) {
                             Player pl = new Player(rp.id, rp.name, rp.color, rp.team);
                             players.add(pl);
+                        }
+                    }
+
+                    if (obj instanceof KryoCommon.Spectator[]) {
+                        Gdx.app.log(LOG, "Spectator list rec'd");
+                        KryoCommon.Spectator[] slist = (KryoCommon.Spectator[])obj;
+                        spectators.clear();
+                        for (KryoCommon.Spectator s: slist) {
+                            spectators.add(s.name);
                         }
                     }
                     return;
@@ -170,11 +186,6 @@ public class SpectatorClient implements NetController {
         gameController = new GameController(gameConfig.mapName, players);
         gameController.LOG += "#Spectator";
         gameController.setCurrentPlayer(firstTurnPid);
-        Unpause up = new Unpause();
-        up.owner = -1;
-        up.turn = gameController.getGameTurn();
-        gameController.queueCommand(up);
-        gameController.doTurn();
     }
 
     @Override
@@ -240,6 +251,17 @@ public class SpectatorClient implements NetController {
             gameController.update(0);
         }
 
+        if (gameUpdate != null) {
+            while (gameUpdate.turn > gameController.getGameTurn()) {
+                gameController.setNextTurn(true);
+                gameController.doTurn();
+                gameController.update(0);
+            }
+            gameController.setCurrentPlayer(gameUpdate.currentPlayer);
+            gameController.setTurnTimer(gameUpdate.timer);
+            gameUpdate = null;
+        }
+
         if (recdEndTurn) {
             gameController.setNextTurn(true);
             gameController.doTurn();
@@ -294,5 +316,10 @@ public class SpectatorClient implements NetController {
     @Override
     public void setMap(String map) {
         // TODO
+    }
+
+    @Override
+    public Array<String> getSpectators() {
+        return spectators;
     }
 }

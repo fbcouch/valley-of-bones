@@ -241,7 +241,7 @@ public class UnitManager {
     }
 
     public boolean canPlayerSee(Player player, Unit unit) {
-        if (unit.owner == player) return true;
+        if (unit.owner == player || player == null) return true;
 
         for (Unit u: units.values()) {
             if (u.owner == player && canUnitSee(u, unit)) {

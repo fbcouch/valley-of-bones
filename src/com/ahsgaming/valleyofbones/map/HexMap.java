@@ -174,6 +174,11 @@ public class HexMap {
     }
 
     public MapView getMapView(int id) {
+        if (id == -1) {
+            if (!mapViews.containsKey(id)) {
+                mapViews.put(id, MapView.createMapView(mapData, null));
+            }
+        }
         return mapViews.get(id);
     }
 

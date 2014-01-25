@@ -516,6 +516,10 @@ public class GameController {
 		return turnTimer;
 	}
 
+    public void setTurnTimer(float timer) {
+        turnTimer = timer;
+    }
+
     public Player getCurrentPlayer() {
         return currentPlayer;
     }

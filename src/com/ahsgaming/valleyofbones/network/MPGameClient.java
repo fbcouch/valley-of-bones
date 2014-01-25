@@ -59,6 +59,8 @@ public class MPGameClient implements NetController {
 	GameSetupConfig gameConfig;
 	
 	Array<Player> players = new Array<Player>();
+    Array<String> spectators = new Array<String>();
+
     int firstTurnPid = -1;
 	
 	VOBGame game;
@@ -132,6 +134,15 @@ public class MPGameClient implements NetController {
                             Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
                             players.add(pl);
                             if (pl.getPlayerId() == playerId) player = pl;
+                        }
+                    }
+
+                    if (obj instanceof KryoCommon.Spectator[]) {
+                        Gdx.app.log(LOG, "Spectator list rec'd");
+                        KryoCommon.Spectator[] slist = (KryoCommon.Spectator[])obj;
+                        spectators.clear();
+                        for (KryoCommon.Spectator s: slist) {
+                            spectators.add(s.name);
                         }
                     }
 
@@ -327,6 +338,10 @@ public class MPGameClient implements NetController {
 	public Player getPlayer() {
 		return player;
 	}
+
+    public Array<String> getSpectators() {
+        return spectators;
+    }
 	
 	public boolean isConnected() {
 		if (client == null) return false;

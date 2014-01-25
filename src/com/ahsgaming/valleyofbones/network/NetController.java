@@ -21,6 +21,7 @@ public interface NetController {
 	public void removePlayer(int playerId);
 
 	public Array<Player> getPlayers();
+    public Array<String> getSpectators();
     public Player getPlayer();
 	
 	public void sendCommand(Command cmd);

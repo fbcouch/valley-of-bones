@@ -117,7 +117,6 @@ public class MapView {
                         Vector2 lastPos = null;
                         for (Vector2 thisPos: unit.getView().getPath()) {
                             thisPos = map.boardToMapCoords(thisPos.x, thisPos.y).add(32 * VOBGame.SCALE, 32 * VOBGame.SCALE).add(x, y);
-                            Gdx.app.log("Path", "" + thisPos);
                             if (lastPos != null) {
                                 batch.draw(pathNode, lastPos.x - pathNode.getRegionWidth() * 0.5f, lastPos.y - pathNode.getRegionHeight() * 0.5f);
 

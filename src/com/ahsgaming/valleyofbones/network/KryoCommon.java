@@ -67,6 +67,8 @@ public class KryoCommon {
         kryo.register(VersionError.class);
         kryo.register(GameFullError.class);
         kryo.register(Spectator.class);
+        kryo.register(Spectator[].class);
+        kryo.register(GameUpdate.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -109,5 +111,11 @@ public class KryoCommon {
     public static class Spectator {
         public String name;
         public String version = VOBGame.VERSION;
+    }
+
+    public static class GameUpdate {
+        public int currentPlayer;
+        public int turn;
+        public float timer;
     }
 }
