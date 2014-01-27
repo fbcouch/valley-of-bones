@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="228.75"
-   height="27.5625"
+   width="220.875"
+   height="28"
    id="svg3627"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 11">
+   sodipodi:docname="turn-hud-bg-small.svg">
   <defs
      id="defs3629" />
   <sodipodi:namedview
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="120.8125"
-     inkscape:cy="-31.924683"
+     inkscape:zoom="1.4"
+     inkscape:cx="86.25"
+     inkscape:cy="-10.080933"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,8 +34,8 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="473"
-     inkscape:window-height="402"
+     inkscape:window-width="566"
+     inkscape:window-height="430"
      inkscape:window-x="1"
      inkscape:window-y="58"
      inkscape:window-maximized="0" />
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,15 +55,15 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-254.1875,-472.875)">
+     transform="translate(-288.75,-494.28125)">
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
-       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/turn-hud-bg-small.png"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/turn-hud-bg.png"
        sodipodi:nodetypes="ccccc"
        inkscape:connector-curvature="0"
-       id="rect3755-5"
-       d="m 257.35694,474.36218 222.42898,0 -20,24.57143 -182.42898,0 z"
-       style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       id="rect3755-05"
+       d="m 291.62169,495.79443 215.13163,0 -17.50026,25.00042 -180.13109,0 z"
+       style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:2.99958873;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
   </g>
 </svg>

@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="bazookas.1.svg"
+   sodipodi:docname="bazooka.svg"
    inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/bazooka-overlay.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -151,17 +151,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="14.622968"
-     inkscape:cx="31.196257"
-     inkscape:cy="24.442783"
+     inkscape:zoom="5.1699999"
+     inkscape:cx="19.092011"
+     inkscape:cy="39.722271"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1024"
-     inkscape:window-x="1920"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1918"
+     inkscape:window-height="1050"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -170,7 +170,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -244,7 +244,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="color:#000000;fill:url(#linearGradient3840);fill-opacity:1;fill-rule:nonzero;stroke:#333333;stroke-width:1;stroke-miterlimit:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 15.178572,1006.3641 35.642856,0 c 1.108,0 3.976125,0.2226 3.23094,1.0425 l -1.436097,1.5801 c -0.392465,0.4318 1.804298,1.8592 1.408422,2.2241 -0.356017,0.3282 -2.678633,0.3914 -3.203265,0.3914 l -35.642856,0 c -1.108,0 -4,3.108 -4,2 l 0,-9.2381 c 0,-1.108 2.892,2 4,2 z"
+       d="m 15.178572,1006.3641 35.642856,0 c 1.108,0 3.338758,-1.9029 3.327652,-0.795 l -0.03378,3.3693 c -0.0058,0.5834 0.353621,3.4065 -0.04225,3.7714 -0.356017,0.3282 -2.726989,-1.1076 -3.251621,-1.1076 l -35.642856,0 c -1.108,0 -4,3.108 -4,2 l 0,-9.2381 c 0,-1.108 2.892,2 3.999997,2 z"
        id="rect3008"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ssssssssss" />
@@ -277,20 +277,16 @@
        d="m 38.401788,12.32332 c 0,0 -10.041414,-3.3960703 -13.422619,-0.015 -0.920422,0.7565 -0.943108,3.4318 -0.699406,5.128 0.344555,-2.2525 0.747732,-5.4127 2.451928,-4.7192 0.231134,-2.0621 6.317388,-0.9048 11.670097,-0.3939 z"
        style="color:#000000;fill:#ffffff;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     <path
-       sodipodi:type="arc"
-       style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       id="path3894"
-       sodipodi:cx="31.726191"
-       sodipodi:cy="26.440475"
-       sodipodi:rx="1.6666666"
-       sodipodi:ry="1.6666666"
-       d="m 33.392857,26.440475 a 1.6666666,1.6666666 0 1 1 -3.333333,0 1.6666666,1.6666666 0 1 1 3.333333,0 z"
-       transform="translate(-1.5478857,-2.2176257)" />
-    <path
        style="fill:#ffffff;stroke:none;display:inline"
        d="m 33.070895,36.665863 c -0.15918,7.5531 -1.647692,10.7858 -3.035714,14.3452 0.470087,-4.5415 0.968701,-9.0666 0.357143,-14.2262 z"
        id="path3896"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#dcd900;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 32.798171,23.809314 c -1.380514,-1.704353 -4.872839,0.825512 -4.349774,1.469284 l -0.544359,-1.49275 c 0.611316,-1.425931 2.779169,-1.961853 4.161209,-1.396749 z"
+       id="path3019"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
   </g>
 </svg>

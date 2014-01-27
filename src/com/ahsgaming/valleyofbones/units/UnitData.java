@@ -1,9 +1,11 @@
 package com.ahsgaming.valleyofbones.units;
 
 import com.ahsgaming.valleyofbones.Player;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;
 
@@ -49,6 +51,8 @@ public class UnitData {
 
     Player uncontested = null;
     int capUnitCount = 0;
+
+    long modified;
 
     public static UnitData createUnitData(String protoId) {
         return createUnitData(Prototypes.getProto(protoId));
@@ -119,6 +123,7 @@ public class UnitData {
 
     public void setAbility(String ability) {
         this.ability = ability;
+        modified = TimeUtils.millis();
     }
 
     public int getArmor() {
@@ -127,6 +132,7 @@ public class UnitData {
 
     public void setArmor(int armor) {
         this.armor = armor;
+        modified = TimeUtils.millis();
     }
 
     public int getAttackDamage() {
@@ -135,6 +141,7 @@ public class UnitData {
 
     public void setAttackDamage(int attackDamage) {
         this.attackDamage = attackDamage;
+        modified = TimeUtils.millis();
     }
 
     public int getAttackRange() {
@@ -143,6 +150,7 @@ public class UnitData {
 
     public void setAttackRange(int attackRange) {
         this.attackRange = attackRange;
+        modified = TimeUtils.millis();
     }
 
     public float getAttackSpeed() {
@@ -151,6 +159,7 @@ public class UnitData {
 
     public void setAttackSpeed(float attackSpeed) {
         this.attackSpeed = attackSpeed;
+        modified = TimeUtils.millis();
     }
 
     public float getBonus(String type) {
@@ -159,6 +168,7 @@ public class UnitData {
 
     public void setBonus(String type, float bonus) {
         this.bonus.put(type, bonus);
+        modified = TimeUtils.millis();
     }
 
     public int getBuildTime() {
@@ -167,6 +177,7 @@ public class UnitData {
 
     public void setBuildTime(int buildTime) {
         this.buildTime = buildTime;
+        modified = TimeUtils.millis();
     }
 
     public boolean isCapturable() {
@@ -175,6 +186,7 @@ public class UnitData {
 
     public void setCapturable(boolean capturable) {
         this.capturable = capturable;
+        modified = TimeUtils.millis();
     }
 
     public int getCost() {
@@ -183,6 +195,7 @@ public class UnitData {
 
     public void setCost(int cost) {
         this.cost = cost;
+        modified = TimeUtils.millis();
     }
 
     public int getCurHP() {
@@ -191,6 +204,7 @@ public class UnitData {
 
     public void setCurHP(int curHP) {
         this.curHP = (curHP > maxHP ? maxHP : curHP);
+        modified = TimeUtils.millis();
     }
 
     public int getFood() {
@@ -199,6 +213,7 @@ public class UnitData {
 
     public void setFood(int food) {
         this.food = food;
+        modified = TimeUtils.millis();
     }
 
     public String getImage() {
@@ -207,6 +222,7 @@ public class UnitData {
 
     public void setImage(String image) {
         this.image = image;
+        modified = TimeUtils.millis();
     }
 
     public int getMaxHP() {
@@ -215,6 +231,7 @@ public class UnitData {
 
     public void setMaxHP(int maxHP) {
         this.maxHP = maxHP;
+        modified = TimeUtils.millis();
     }
 
     public float getMoveSpeed() {
@@ -223,6 +240,7 @@ public class UnitData {
 
     public void setMoveSpeed(float moveSpeed) {
         this.moveSpeed = moveSpeed;
+        modified = TimeUtils.millis();
     }
 
     public String getProtoId() {
@@ -231,6 +249,7 @@ public class UnitData {
 
     public void setProtoId(String protoId) {
         this.protoId = protoId;
+        modified = TimeUtils.millis();
     }
 
     public Array<String> getRequires() {
@@ -239,6 +258,7 @@ public class UnitData {
 
     public void setRequires(Array<String> requires) {
         this.requires = requires;
+        modified = TimeUtils.millis();
     }
 
     public int getSightRange() {
@@ -247,6 +267,7 @@ public class UnitData {
 
     public void setSightRange(int sightRange) {
         this.sightRange = sightRange;
+        modified = TimeUtils.millis();
     }
 
     public float getSplashDamage() {
@@ -255,6 +276,7 @@ public class UnitData {
 
     public void setSplashDamage(float splashDamage) {
         this.splashDamage = splashDamage;
+        modified = TimeUtils.millis();
     }
 
     public String getSubtype() {
@@ -263,6 +285,7 @@ public class UnitData {
 
     public void setSubtype(String subtype) {
         this.subtype = subtype;
+        modified = TimeUtils.millis();
     }
 
     public String getType() {
@@ -271,6 +294,7 @@ public class UnitData {
 
     public void setType(String type) {
         this.type = type;
+        modified = TimeUtils.millis();
     }
 
     public int getUpkeep() {
@@ -279,6 +303,7 @@ public class UnitData {
 
     public void setUpkeep(int upkeep) {
         this.upkeep = upkeep;
+        modified = TimeUtils.millis();
     }
 
     public boolean isBuilding() {
@@ -287,6 +312,7 @@ public class UnitData {
 
     public void setBuilding(boolean building) {
         this.building = building;
+        modified = TimeUtils.millis();
     }
 
     public int getBuildTimeLeft() {
@@ -295,6 +321,7 @@ public class UnitData {
 
     public void setBuildTimeLeft(int buildTimeLeft) {
         this.buildTimeLeft = buildTimeLeft;
+        modified = TimeUtils.millis();
     }
 
     public boolean isStealthActive() {
@@ -303,6 +330,7 @@ public class UnitData {
 
     public void setStealthActive(boolean stealthActive) {
         this.stealthActive = stealthActive;
+        modified = TimeUtils.millis();
     }
 
     public boolean isStealthEntered() {
@@ -311,6 +339,7 @@ public class UnitData {
 
     public void setStealthEntered(boolean stealthEntered) {
         this.stealthEntered = stealthEntered;
+        modified = TimeUtils.millis();
     }
 
     public float getMovesLeft() {
@@ -319,6 +348,7 @@ public class UnitData {
 
     public void setMovesLeft(float movesLeft) {
         this.movesLeft = movesLeft;
+        modified = TimeUtils.millis();
     }
 
     public float getAttacksLeft() {
@@ -327,6 +357,7 @@ public class UnitData {
 
     public void setAttacksLeft(float attacksLeft) {
         this.attacksLeft = attacksLeft;
+        modified = TimeUtils.millis();
     }
 
     public Player getUncontested() {
@@ -343,5 +374,9 @@ public class UnitData {
 
     public void setCapUnitCount(int capUnitCount) {
         this.capUnitCount = capUnitCount;
+    }
+
+    public long getModified() {
+        return modified;
     }
 }

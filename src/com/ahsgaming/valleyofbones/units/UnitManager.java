@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -97,6 +98,7 @@ public class UnitManager {
                 unit.data.curHP = 0;
                 if (unit.owner != unit.data.uncontested) {
                     // set map dirty
+                    unit.data.modified = TimeUtils.millis();
                 }
                 unit.owner = unit.data.uncontested;
                 unit.data.attacksLeft = 0;
@@ -123,6 +125,8 @@ public class UnitManager {
             unit.view.addToPath(unit.view.getBoardPosition());
 
             unit.data.stealthEntered = false;
+
+            unit.data.modified = TimeUtils.millis();
         }
     }
 
@@ -136,6 +140,8 @@ public class UnitManager {
                 if (unit.data.buildTimeLeft <= 0)
                     unit.data.building = false;
             }
+
+            unit.data.modified = TimeUtils.millis();
         }
     }
 
@@ -165,6 +171,7 @@ public class UnitManager {
                         UnitView.Actions.colorTo(new Color(1, 1, 1, 1), 0.1f)
                 ));
             }
+            attacker.data.modified = TimeUtils.millis();
             return true;
         }
         return false;
@@ -181,6 +188,7 @@ public class UnitManager {
             // TODO add unit animation (need static ref to boardToMapCoords)
             Vector2 pos = gameController.getMap().boardToMapCoords(boardPosition.x, boardPosition.y);
             unit.view.addAction(UnitView.Actions.moveTo(pos.x, pos.y, dist / unit.data.moveSpeed));
+            unit.data.modified = TimeUtils.millis();
         }
     }
 
@@ -211,6 +219,7 @@ public class UnitManager {
             } else {
                 unit.data.movesLeft = unit.data.moveSpeed - (float)Math.floor(unit.data.moveSpeed * 0.5f - unit.data.movesLeft);
             }
+            unit.data.modified = TimeUtils.millis();
         }
     }
 
@@ -229,6 +238,8 @@ public class UnitManager {
                     UnitView.Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
                     UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f)
             ));
+
+            unit.data.modified = TimeUtils.millis();
         }
     }
 

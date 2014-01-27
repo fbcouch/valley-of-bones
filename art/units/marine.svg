@@ -14,7 +14,7 @@
    height="64"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.2 r9819"
    sodipodi:docname="marine.svg"
    inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/marine-overlay.png"
    inkscape:export-xdpi="90"
@@ -277,16 +277,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="13.632812"
+     inkscape:zoom="27.265624"
      inkscape:cx="36.731582"
-     inkscape:cy="34.117414"
+     inkscape:cy="29.108596"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g3757"
      showgrid="false"
      inkscape:window-width="1918"
      inkscape:window-height="1050"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="22"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -296,7 +296,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -344,11 +344,11 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccccccccc" />
     <path
-       style="fill:url(#linearGradient3824);stroke:#000000;stroke-width:0.81737822000000004px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
-       d="m 41.508817,1008.3355 c 0,0 3.299362,-2.2126 5.069072,-1.8757 1.713269,0.3265 3.464598,1.8028 3.895803,3.4928 0.227359,0.891 0.739113,2.4969 0.739113,2.4969 l 3.991542,4.6185 0.449146,2.1282 -1.290881,0.8597 -13.008123,0.3319 -3.077458,-0.063 -0.185056,-1.3784 -1.519772,-1.1464 1.631707,-0.9932 0.948266,-1.554 10.856982,1.4096 -5.821854,-2.6748"
+       style="fill:url(#linearGradient3824);fill-opacity:1;stroke:#000000;stroke-width:0.81737822px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 41.508817,1008.3355 c 0,0 4.074887,-1.3591 5.802596,-0.8488 1.574678,0.4651 2.31375,1.1932 3.162279,2.4659 0.510107,0.7651 1.325933,2.717 1.325933,2.717 l 3.404722,4.3984 c 0.460856,0.7094 0.574652,1.4188 0.449146,2.1282 -0.163525,0.6867 -0.750634,0.7381 -1.290881,0.8597 l -13.008123,0.3319 -3.077458,-0.063 -1.274284,-1.1191 -0.635961,-0.7918 0.101684,-1.2882 0.853687,-0.5263 1.274145,-0.052 -0.118407,-1.4484 3.176221,1.2113 8.355045,0.3539 -5.821854,-2.6748"
        id="path3776-5"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="csscccccccccccc"
+       sodipodi:nodetypes="cssccccccccccccccc"
        inkscape:transform-center-x="-1.0966418"
        inkscape:transform-center-y="7.3382055" />
     <path
@@ -358,11 +358,11 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccccccccc" />
     <path
-       style="fill:url(#linearGradient3816);stroke:#000000;stroke-width:0.81737822000000004px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
-       d="m 20.339829,1009.9682 c 0,0 -3.963487,0.2688 -5.156967,1.6185 -1.155334,1.3065 -1.637152,3.5459 -0.944119,5.1463 0.365425,0.8439 1.489655,2.531 1.489655,2.531 l 0.625479,6.0011 0.899949,1.1636 1.055745,0.5163 7.109397,0.1972 c 0,0 1.484861,1.0996 2.314486,1.1332 1.202647,0.049 2.460543,-0.4024 2.638128,-1.5928 0.182789,-1.2252 -0.76318,-3.3887 -1.884398,-3.9153 -2.263197,-1.0632 -7.967953,1.0934 -7.967953,1.0934 l 0.901438,-7.5755"
+       style="fill:url(#linearGradient3816);fill-opacity:1;stroke:#000000;stroke-width:0.81737822px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 20.339829,1009.9682 c 0,0 -3.963487,0.2688 -5.156967,1.6185 -1.155334,1.3065 -1.637152,3.5459 -0.944119,5.1463 0.365425,0.8439 1.489655,2.531 1.489655,2.531 l 0.625479,6.0011 c 0.08229,0.5185 0.329835,0.9378 0.899949,1.1636 0.321079,0.2338 0.639474,0.4729 1.055745,0.5163 l 7.109397,0.1972 c 0,0 2.36509,0.4394 3.194715,0.473 1.202647,0.049 1.921894,-1.489 2.099491,-2.6794 0.122825,-0.8233 -1.201312,-0.04 -1.808498,-0.9293 -0.296435,-0.4341 -0.04965,-1.0664 -0.417492,-1.2392 -0.668944,-0.3142 -1.271754,0.9732 -2.305809,1.0827 -2.464545,0.261 -5.662144,0.011 -5.662144,0.011 l 0.901438,-7.5755"
        id="path3776"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="csscccccssscc"
+       sodipodi:nodetypes="csscccccssssscc"
        inkscape:transform-center-x="-4.1547992"
        inkscape:transform-center-y="5.1372933" />
   </g>

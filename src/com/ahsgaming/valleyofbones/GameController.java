@@ -61,7 +61,9 @@ public class GameController {
 	
 	Player currentPlayer;
     int gameTurn = 0;
-	float turnLength = 60;
+	float turnLength = 30;
+    float turnAfterMoveReset = 15;
+
 	float turnTimer = 0;
 	boolean nextTurn = false;
 	
@@ -323,11 +325,17 @@ public class GameController {
 		if (!validate(cmd)) return;
 		if (cmd instanceof Attack) {
 			executeAttack((Attack)cmd);
+            if (turnTimer < turnAfterMoveReset)
+                turnTimer = turnAfterMoveReset;
 		} else if (cmd instanceof Build) {
 //			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.turn));
 			executeBuild((Build)cmd);
+            if (turnTimer < turnAfterMoveReset)
+                turnTimer = turnAfterMoveReset;
 		} else if (cmd instanceof Move) {
 			executeMove((Move)cmd);
+            if (turnTimer < turnAfterMoveReset)
+                turnTimer = turnAfterMoveReset;
 		} else if (cmd instanceof Pause) {
 			executePause((Pause)cmd);
 		} else if (cmd instanceof Unpause) {
@@ -337,10 +345,14 @@ public class GameController {
         } else if (cmd instanceof Refund) {
             Refund r = (Refund)cmd;
             refundUnit(getPlayerById(r.owner), unitManager.getUnit(r.unit));
+            if (turnTimer < turnAfterMoveReset)
+                turnTimer = turnAfterMoveReset;
         } else if (cmd instanceof ActivateAbility) {
             ActivateAbility ab = (ActivateAbility)cmd;
             Unit u = unitManager.getUnit(ab.unit);
             unitManager.activateAbility(u);
+            if (turnTimer < turnAfterMoveReset)
+                turnTimer = turnAfterMoveReset;
         } else if (cmd instanceof Surrender) {
             Player p = getPlayerById(cmd.owner);
             p.getBaseUnit().getData().setCurHP(0);

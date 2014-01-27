@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="309.40625"
-   height="87.5625"
+   width="309.42899"
+   height="103.5714"
    id="svg3717"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 17">
+   sodipodi:docname="selection-hud-bg.svg">
   <defs
      id="defs3719" />
   <sodipodi:namedview
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="32.5625"
-     inkscape:cy="-47.643433"
+     inkscape:zoom="1.979899"
+     inkscape:cx="32.57163"
+     inkscape:cy="49.169331"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,11 +34,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="473"
-     inkscape:window-height="402"
+     inkscape:window-width="1920"
+     inkscape:window-height="1024"
      inkscape:window-x="0"
-     inkscape:window-y="29"
-     inkscape:window-maximized="0" />
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata3722">
     <rdf:RDF>
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,10 +55,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-342.4375,-397.15625)">
+     transform="translate(-342.42837,-397.14791)">
     <path
        style="color:#000000;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 343.92837,483.21931 306.42898,0 0,-70.2857 -15,-14.2857 -276.42898,0 -15,14.2857 z"
+       d="m 343.92837,499.21931 306.42898,0 0,-86.2857 -15,-14.2857 -276.42898,0 -15,14.2857 z"
        id="rect3755-0"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccc"

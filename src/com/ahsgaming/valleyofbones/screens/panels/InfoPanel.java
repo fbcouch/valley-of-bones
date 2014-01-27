@@ -12,11 +12,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,14 +37,20 @@ public class InfoPanel extends Group {
     final String REFUND = "$%d";
 
     Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft, lblRefund;
-    Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit, iconAbility;
+    Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit, iconAbility, imgAbilityBg;
+    Image iconSubtype;
     Skin skin;
     VOBGame game;
     LevelScreen levelScreen;
-
+    Group grpAbility;
+    Image imgCheckOn, imgCheckOff;
     Unit selected, lastSelected;
 
+    Table bonusTable;
+
     ProgressBar healthBar;
+
+    long lastUpdated = 0;
 
     public InfoPanel(VOBGame game, LevelScreen lvlScreen, Skin skin) {
         super();
@@ -62,6 +67,16 @@ public class InfoPanel extends Group {
         iconAttacksLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword-small"));
         iconRefund = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "skull-crossed-bones-small"));
         imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "selection-hud-bg"));
+        imgAbilityBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
+        imgCheckOff = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-off"));
+        imgCheckOn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-on"));
+
+
+        grpAbility = new Group();
+        grpAbility.addActor(imgAbilityBg);
+
+        bonusTable = new Table(skin);
+
 
 //        iconRefund.addListener(new ClickListener() {
 //            @Override
@@ -111,6 +126,8 @@ public class InfoPanel extends Group {
         addActor(iconAttacksLeft);
         addActor(lblAttacksLeft);
         addActor(lblTitle);
+        addActor(grpAbility);
+        addActor(bonusTable);
 
 
         layout();
@@ -119,7 +136,8 @@ public class InfoPanel extends Group {
 
     public void update() {
 
-        if (selected != null && selected != lastSelected) {
+        if (selected != null && (selected != lastSelected || selected.getData().getModified() > lastUpdated)) {
+            lastUpdated = TimeUtils.millis();
             Array<Label> labels = new Array<Label>();
 
             lblTitle.setText(selected.getProto().title);
@@ -141,24 +159,47 @@ public class InfoPanel extends Group {
             lblRefund.setText(String.format(REFUND, selected.getData().getRefund()));
             labels.add(lblRefund);
 
-            if (iconAbility != null) removeActor(iconAbility);
+            if (iconAbility != null) {
+                grpAbility.removeActor(iconAbility);
+                grpAbility.removeActor(imgCheckOn);
+            }
 
-            if (selected.getData().getAbility().length() > 0) {
+            grpAbility.addActor(imgCheckOff);
+
+            if (!selected.getData().getAbility().equals("")) {
                 Gdx.app.log(LOG, selected.getData().getAbility());
-                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getAbility()));
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getAbility() + "-small"));
                 if (selected.getData().isAbilityActive()) {
                     iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
+                    grpAbility.removeActor(imgCheckOff);
+                    grpAbility.addActor(imgCheckOn);
+
+                    if (imgCheckOn.getListeners().size > 0)
+                        imgCheckOn.removeListener(imgCheckOn.getListeners().first());
+                    imgCheckOn.addListener(new ClickListener(){
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            super.clicked(event, x, y);
+
+                            levelScreen.activateAbility(selected.getId());
+                        }
+                    });
+                } else {
+                    if (imgCheckOff.getListeners().size > 0)
+                        imgCheckOff.removeListener(imgCheckOff.getListeners().first());
+                    imgCheckOff.addListener(new ClickListener(){
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            super.clicked(event, x, y);
+
+                            levelScreen.activateAbility(selected.getId());
+                        }
+                    });
                 }
-                addActor(iconAbility);
 
-                iconAbility.addListener(new ClickListener(){
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        super.clicked(event, x, y);
+                grpAbility.addActor(iconAbility);
 
-                        levelScreen.activateAbility(selected.getId());
-                    }
-                });
+
             } else {
                 iconAbility = null;
             }
@@ -197,17 +238,12 @@ public class InfoPanel extends Group {
             imgUnit.setPosition(25, getHeight() * 0.5f - imgUnit.getHeight() * 0.5f - 5);
             y = (int)imgUnit.getY();
             x = (int)imgUnit.getRight() + 25;
-        }
 
-//        if (levelScreen.canRefund(selected)) {
-//            iconRefund.setPosition(x, y);
-//            addActor(iconRefund);
-//
-//            lblRefund.setPosition(iconRefund.getRight(), y);
-//            addActor(lblRefund);
-//            y += iconRefund.getHeight();
-//
-//        }
+            if (iconSubtype != null) iconSubtype.remove();
+            iconSubtype = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getSubtype() + "-small"));
+            addActor(iconSubtype);
+            iconSubtype.setPosition(imgUnit.getRight() - iconSubtype.getWidth(), imgUnit.getY());
+        }
 
         iconAttack.setPosition(x, y);
 
@@ -246,8 +282,17 @@ public class InfoPanel extends Group {
         lblTitle.setPosition(x, y);
         y += lblTitle.getHeight();
 
+
+        imgCheckOff.setPosition(0, 0);
+        imgCheckOn.setPosition(0, 0);
+        imgAbilityBg.setPosition(0, imgCheckOff.getTop() + 5 * VOBGame.SCALE);
+        grpAbility.setSize(imgAbilityBg.getRight(), imgAbilityBg.getTop());
+        grpAbility.setPosition(Math.max(lblTitle.getRight(), Math.max(lblAttacksLeft.getRight(), lblArmor.getRight())) + 5 * VOBGame.SCALE, lblArmor.getY());
         if (iconAbility != null) {
-            iconAbility.setPosition(lblAttacksLeft.getX() + lblAttacksLeft.getWidth() + 5, lblAttacksLeft.getTop() - iconAbility.getHeight());
+            iconAbility.setPosition(
+                    (imgAbilityBg.getWidth() - iconAbility.getWidth()) * 0.5f,
+                    imgAbilityBg.getY() + (imgAbilityBg.getHeight() - iconAbility.getHeight()) * 0.5f
+            );
         }
 
         healthBar.setSize(iconMovesLeft.getX() - (iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX()), 4 * VOBGame.SCALE);

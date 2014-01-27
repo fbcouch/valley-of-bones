@@ -161,7 +161,7 @@ public class BuildPanel extends Group {
     public static class BuildItem extends Group {
 
         Skin skin;
-        Image icon, imgSupply, imgMoney, imgHiglight;
+        Image icon, imgSupply, imgMoney, imgHighlight, iconSubtype;
         Label lblSupply, lblMoney;
         Prototypes.JsonProto proto;
 
@@ -169,12 +169,18 @@ public class BuildPanel extends Group {
             this.proto = proto;
             this.skin = skin;
 
-            imgHiglight = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
-//            imgHiglight.setScale(0.75f);
+            imgHighlight = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
+//            imgHighlight.setScale(0.75f);
 
             icon = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
             icon.setScale(0.75f);
             addActor(icon);
+
+            if (proto.hasProperty("subtype")) {
+                iconSubtype = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.getProperty("subtype").asString() + "-small"));
+                addActor(iconSubtype);
+                iconSubtype.setPosition(icon.getWidth() * 0.75f - iconSubtype.getWidth(), icon.getY());
+            }
 
             imgSupply = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "supply-small"));
             imgSupply.setPosition(icon.getX() + icon.getWidth() * icon.getScaleX() + 5 * VOBGame.SCALE, 0);
@@ -199,10 +205,10 @@ public class BuildPanel extends Group {
 
         public void setHighlight(boolean highlight) {
             if (highlight) {
-                addActor(imgHiglight);
-                imgHiglight.setZIndex(0);
+                addActor(imgHighlight);
+                imgHighlight.setZIndex(0);
             } else {
-                imgHiglight.remove();
+                imgHighlight.remove();
             }
         }
     }
