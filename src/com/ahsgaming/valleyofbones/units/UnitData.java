@@ -166,6 +166,10 @@ public class UnitData {
         return (bonus.containsKey(type) ? bonus.get(type) : 1);
     }
 
+    public HashMap<String, Float> getBonus() {
+        return new HashMap<String, Float>(bonus);
+    }
+
     public void setBonus(String type, float bonus) {
         this.bonus.put(type, bonus);
         modified = TimeUtils.millis();

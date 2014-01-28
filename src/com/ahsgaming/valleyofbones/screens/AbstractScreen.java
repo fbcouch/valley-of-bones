@@ -27,6 +27,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -158,4 +160,13 @@ public class AbstractScreen implements Screen {
 	}
 
 
+    public static Vector2 localToGlobal(Vector2 local, Actor actor) {
+        Vector2 coords = new Vector2(local);
+        Actor cur = actor;
+        while (cur.getParent() != null) {
+            coords.add(cur.getX(), cur.getY());
+            cur = cur.getParent();
+        }
+        return coords;
+    }
 }

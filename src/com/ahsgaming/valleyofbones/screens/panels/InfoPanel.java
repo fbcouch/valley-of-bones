@@ -2,6 +2,7 @@ package com.ahsgaming.valleyofbones.screens.panels;
 
 import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.screens.AbstractScreen;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.ProgressBar;
 import com.ahsgaming.valleyofbones.units.Unit;
@@ -42,11 +43,11 @@ public class InfoPanel extends Group {
     Skin skin;
     VOBGame game;
     LevelScreen levelScreen;
-    Group grpAbility;
+    Group grpAbility, grpUnit;
     Image imgCheckOn, imgCheckOff;
     Unit selected, lastSelected;
 
-    Table bonusTable;
+    Table bonusTable, mainTable, statTable;
 
     ProgressBar healthBar;
 
@@ -70,10 +71,16 @@ public class InfoPanel extends Group {
         imgAbilityBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
         imgCheckOff = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-off"));
         imgCheckOn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-on"));
+        imgUnit = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
+
 
 
         grpAbility = new Group();
         grpAbility.addActor(imgAbilityBg);
+
+        grpUnit = new Group();
+        grpUnit.addActor(imgUnit);
+        grpUnit.setSize(imgUnit.getImageWidth(), imgUnit.getImageHeight());
 
         bonusTable = new Table(skin);
 
@@ -88,9 +95,9 @@ public class InfoPanel extends Group {
 
 
         lblTitle = new Label("NOTHING", skin, "small");
-        lblTitle.setFontScale(VOBGame.SCALE);
+        lblTitle.setFontScale(VOBGame.SCALE * 0.75f);
         lblHealth = new Label(String.format(HEALTH, 0, 0), skin, "small");
-        lblHealth.setFontScale(VOBGame.SCALE);
+        lblHealth.setFontScale(0.75f * VOBGame.SCALE);
         lblAttack = new Label(String.format(ATTACK, 0), skin, "small");
         lblAttack.setFontScale(VOBGame.SCALE);
         lblRange = new Label(String.format(RANGE, 0), skin, "small");
@@ -111,23 +118,58 @@ public class InfoPanel extends Group {
 
 
         addActor(imgBackground);
-        addActor(iconAttack);
-        addActor(lblAttack);
-        addActor(iconRange);
-        addActor(lblRange);
-        addActor(iconHealth);
-        addActor(lblHealth);
-        addActor(iconMove);
-        addActor(lblMove);
-        addActor(iconArmor);
-        addActor(lblArmor);
-        addActor(iconMovesLeft);
-        addActor(lblMovesLeft);
-        addActor(iconAttacksLeft);
-        addActor(lblAttacksLeft);
-        addActor(lblTitle);
-        addActor(grpAbility);
-        addActor(bonusTable);
+//        addActor(iconAttack);
+//        addActor(lblAttack);
+//        addActor(iconRange);
+//        addActor(lblRange);
+//        addActor(iconHealth);
+//        addActor(lblHealth);
+//        addActor(iconMove);
+//        addActor(lblMove);
+//        addActor(iconArmor);
+//        addActor(lblArmor);
+//        addActor(iconMovesLeft);
+//        addActor(lblMovesLeft);
+//        addActor(iconAttacksLeft);
+//        addActor(lblAttacksLeft);
+//        addActor(lblTitle);
+//        addActor(grpAbility);
+//        addActor(bonusTable);
+
+        setSize(imgBackground.getWidth(), imgBackground.getHeight());
+
+
+        mainTable = new Table(skin);
+        mainTable.setFillParent(true);
+        addActor(mainTable);
+
+        mainTable.add(grpUnit).expandX();
+
+        statTable = new Table(skin);
+        mainTable.add(statTable);
+
+        statTable.add(lblTitle).colspan(8).pad(5 * VOBGame.SCALE);
+        statTable.row().padBottom(5 * VOBGame.SCALE);
+        statTable.add(iconHealth);
+        statTable.add(lblHealth).bottom().left().colspan(3);
+        statTable.add(iconMovesLeft);
+        statTable.add(lblMovesLeft);
+        statTable.add(iconAttacksLeft);
+        statTable.add(lblAttacksLeft);
+        statTable.row().padBottom(3 * VOBGame.SCALE);
+        statTable.add(iconAttack);
+        statTable.add(lblAttack);
+        statTable.add(iconRange);
+        statTable.add(lblRange);
+        statTable.add(iconMove);
+        statTable.add(lblMove);
+        statTable.add(iconArmor);
+        statTable.add(lblArmor);
+        statTable.row();
+
+        statTable.add(bonusTable).colspan(8).expandX();
+
+        mainTable.add(grpAbility).expandX();
 
 
         layout();
@@ -142,6 +184,13 @@ public class InfoPanel extends Group {
 
             lblTitle.setText(selected.getProto().title);
             labels.add(lblTitle);
+
+//            Gdx.app.log(LOG, "" + lblTitle.getPrefWidth());
+//            Gdx.app.log(LOG, "" + (getWidth() - imgAbilityBg.getWidth()));
+//            if (lblTitle.getFontScaleX() * lblTitle.getPrefWidth() > getWidth() - imgAbilityBg.getWidth() - 64 * VOBGame.SCALE) {
+//                lblTitle.scale((lblTitle.getFontScaleX() * lblTitle.getPrefWidth()) / (getWidth() - imgAbilityBg.getWidth() - 64 * VOBGame.SCALE));
+//            }
+
             lblHealth.setText(String.format(HEALTH, selected.getData().getCurHP(), selected.getData().getMaxHP()));
             labels.add(lblHealth);
             lblAttack.setText(String.format(ATTACK, selected.getData().getAttackDamage()));
@@ -158,6 +207,18 @@ public class InfoPanel extends Group {
             labels.add(lblMovesLeft);
             lblRefund.setText(String.format(REFUND, selected.getData().getRefund()));
             labels.add(lblRefund);
+
+            bonusTable.clearChildren();
+
+            for (String subtype: selected.getData().getBonus().keySet()) {
+                bonusTable.add(new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", subtype + "-small")));
+                Label times = new Label("x", skin, "small");
+                times.setFontScale(VOBGame.SCALE * 0.75f);
+                bonusTable.add(times).bottom();
+                Label label = new Label(String.format("%.1f", selected.getData().getBonus(subtype)), skin, "small");
+                label.setFontScale(VOBGame.SCALE);
+                bonusTable.add(label).bottom();
+            }
 
             if (iconAbility != null) {
                 grpAbility.removeActor(iconAbility);
@@ -221,7 +282,9 @@ public class InfoPanel extends Group {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        healthBar.draw((SpriteBatch)batch, getX() + lblHealth.getX(), getY() + iconHealth.getY() + iconHealth.getHeight() * iconHealth.getScaleY() - healthBar.getHeight(), parentAlpha);
+        Vector2 coords = AbstractScreen.localToGlobal(new Vector2(0, 0), lblHealth);
+        healthBar.setSize(iconMovesLeft.getX() - iconHealth.getX() - iconHealth.getWidth(), 4 * VOBGame.SCALE);
+        healthBar.draw((SpriteBatch)batch, coords.x, coords.y + iconHealth.getHeight() * iconHealth.getScaleY() - healthBar.getHeight(), parentAlpha);
     }
 
     public void layout() {
@@ -234,60 +297,61 @@ public class InfoPanel extends Group {
             Gdx.app.log(LOG, "unit!");
             if (imgUnit != null) imgUnit.remove();
             imgUnit = new Image(selected.getView().getImage());
-            addActor(imgUnit);
-            imgUnit.setPosition(25, getHeight() * 0.5f - imgUnit.getHeight() * 0.5f - 5);
+            grpUnit.addActor(imgUnit);
+            //imgUnit.setPosition(25, getHeight() * 0.5f - imgUnit.getHeight() * 0.5f - 5);
             y = (int)imgUnit.getY();
             x = (int)imgUnit.getRight() + 25;
 
             if (iconSubtype != null) iconSubtype.remove();
             iconSubtype = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getSubtype() + "-small"));
-            addActor(iconSubtype);
+            grpUnit.addActor(iconSubtype);
             iconSubtype.setPosition(imgUnit.getRight() - iconSubtype.getWidth(), imgUnit.getY());
+            grpUnit.setSize(imgUnit.getWidth(), imgUnit.getHeight());
         }
 
-        iconAttack.setPosition(x, y);
-
-        lblAttack.setPosition(iconAttack.getX() + iconAttack.getWidth() * iconAttack.getScaleX(), y);
-
-        iconRange.setPosition(lblAttack.getRight(), y);
-
-        lblRange.setPosition(iconRange.getX() + iconRange.getWidth() * iconRange.getScaleX(), y);
-
-        iconHealth.setPosition(x, y);
-
-        lblHealth.setPosition(iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX(), y);
-        lblHealth.setFontScale(0.75f * VOBGame.SCALE);
-
-        iconMove.setPosition(Math.max(lblHealth.getRight(), lblRange.getRight()), y);
-
-        lblMove.setPosition(iconMove.getX() + iconMove.getWidth() * iconMove.getScaleX(), y);
-
-        iconArmor.setPosition(lblMove.getRight(), y);
-
-        lblArmor.setPosition(iconArmor.getX() + iconArmor.getWidth() * iconArmor.getScaleX(), y);
-        y += iconArmor.getHeight() * iconArmor.getScaleY() + 5;
-
-        iconHealth.setY(y);
-        lblHealth.setY(y);
-
-        iconMovesLeft.setPosition(iconMove.getX(), y);
-
-        lblMovesLeft.setPosition(iconMovesLeft.getX() + iconMovesLeft.getWidth() * iconMovesLeft.getScaleX(), y);
-
-        iconAttacksLeft.setPosition(iconArmor.getX(), y);
-
-        lblAttacksLeft.setPosition(iconAttacksLeft.getX() + iconAttacksLeft.getWidth() * iconAttacksLeft.getScaleX(), y);
-        y += iconAttacksLeft.getHeight() * iconAttacksLeft.getScaleY() + 5;
-
-        lblTitle.setPosition(x, y);
-        y += lblTitle.getHeight();
+//        iconAttack.setPosition(x, y);
+//
+//        lblAttack.setPosition(iconAttack.getX() + iconAttack.getWidth() * iconAttack.getScaleX(), y);
+//
+//        iconRange.setPosition(lblAttack.getRight(), y);
+//
+//        lblRange.setPosition(iconRange.getX() + iconRange.getWidth() * iconRange.getScaleX(), y);
+//
+//        iconHealth.setPosition(x, y);
+//
+//        lblHealth.setPosition(iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX(), y);
+//        lblHealth.setFontScale(0.75f * VOBGame.SCALE);
+//
+//        iconMove.setPosition(Math.max(lblHealth.getRight(), lblRange.getRight()), y);
+//
+//        lblMove.setPosition(iconMove.getX() + iconMove.getWidth() * iconMove.getScaleX(), y);
+//
+//        iconArmor.setPosition(lblMove.getRight(), y);
+//
+//        lblArmor.setPosition(iconArmor.getX() + iconArmor.getWidth() * iconArmor.getScaleX(), y);
+//        y += iconArmor.getHeight() * iconArmor.getScaleY() + 5;
+//
+//        iconHealth.setY(y);
+//        lblHealth.setY(y);
+//
+//        iconMovesLeft.setPosition(iconMove.getX(), y);
+//
+//        lblMovesLeft.setPosition(iconMovesLeft.getX() + iconMovesLeft.getWidth() * iconMovesLeft.getScaleX(), y);
+//
+//        iconAttacksLeft.setPosition(iconArmor.getX(), y);
+//
+//        lblAttacksLeft.setPosition(iconAttacksLeft.getX() + iconAttacksLeft.getWidth() * iconAttacksLeft.getScaleX(), y);
+//        y += iconAttacksLeft.getHeight() * iconAttacksLeft.getScaleY() + 5;
+//
+//        lblTitle.setPosition(x, y);
+//        y += lblTitle.getHeight();
 
 
         imgCheckOff.setPosition(0, 0);
         imgCheckOn.setPosition(0, 0);
         imgAbilityBg.setPosition(0, imgCheckOff.getTop() + 5 * VOBGame.SCALE);
         grpAbility.setSize(imgAbilityBg.getRight(), imgAbilityBg.getTop());
-        grpAbility.setPosition(Math.max(lblTitle.getRight(), Math.max(lblAttacksLeft.getRight(), lblArmor.getRight())) + 5 * VOBGame.SCALE, lblArmor.getY());
+//        grpAbility.setPosition(Math.max(lblTitle.getRight(), Math.max(lblAttacksLeft.getRight(), lblArmor.getRight())) + 5 * VOBGame.SCALE, lblArmor.getY());
         if (iconAbility != null) {
             iconAbility.setPosition(
                     (imgAbilityBg.getWidth() - iconAbility.getWidth()) * 0.5f,
@@ -295,7 +359,11 @@ public class InfoPanel extends Group {
             );
         }
 
-        healthBar.setSize(iconMovesLeft.getX() - (iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX()), 4 * VOBGame.SCALE);
+        healthBar.setSize( iconMovesLeft.getX() - iconHealth.getX()
+//                AbstractScreen.localToGlobal(new Vector2(0, 0), iconMovesLeft).x
+//                        - AbstractScreen.localToGlobal(new Vector2(0, 0), iconHealth).x
+                , 4 * VOBGame.SCALE
+        );
     }
 
     public void setSelected(Unit unit) {
