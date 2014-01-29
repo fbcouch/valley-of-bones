@@ -223,6 +223,7 @@ public class LevelScreen extends AbstractScreen {
             buildProto = proto;
             buildImage = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
             buildImage.setColor(1, 1, 1, 0.5f);
+            selected = null;
         }
     }
 
@@ -407,6 +408,7 @@ public class LevelScreen extends AbstractScreen {
         }
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
+
         if (selected != null && selected.getData().getCurHP() <= 0 && !selected.getData().getType().equals("building"))
             selected = null;
 
@@ -420,16 +422,27 @@ public class LevelScreen extends AbstractScreen {
         lastSelected = selected;
 
         selectionPanel.setSelected(null);
-        if (lastSelected != null) {
-            gController.getMap().highlightArea(mapView, lastSelected.getView().getBoardPosition(), (int)lastSelected.getData().getMovesLeft());
+        if (buildMode) {
+            selectionPanel.setBuildProto(buildProto);
 
-            selectionPanel.setSelected(lastSelected);
             if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
                 selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6  * VOBGame.SCALE, 0.5f));
             }
+
         } else {
-            if (Utils.epsilonEquals(selectionPanel.getY(), -3f * VOBGame.SCALE, 0.01f)) {
-                selectionPanel.addAction(Actions.moveBy(0, -selectionPanel.getHeight() + 6 * VOBGame.SCALE, 0.5f));
+            selectionPanel.setBuildProto(null);
+
+            if (lastSelected != null) {
+                gController.getMap().highlightArea(mapView, lastSelected.getView().getBoardPosition(), (int)lastSelected.getData().getMovesLeft());
+
+                selectionPanel.setSelected(lastSelected);
+                if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
+                    selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6  * VOBGame.SCALE, 0.5f));
+                }
+            } else {
+                if (Utils.epsilonEquals(selectionPanel.getY(), -3f * VOBGame.SCALE, 0.01f)) {
+                    selectionPanel.addAction(Actions.moveBy(0, -selectionPanel.getHeight() + 6 * VOBGame.SCALE, 0.5f));
+                }
             }
         }
 

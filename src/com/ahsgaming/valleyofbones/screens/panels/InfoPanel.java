@@ -5,6 +5,7 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.AbstractScreen;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.ProgressBar;
+import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -46,6 +47,7 @@ public class InfoPanel extends Group {
     Group grpAbility, grpUnit;
     Image imgCheckOn, imgCheckOff;
     Unit selected, lastSelected;
+    Prototypes.JsonProto lastBuildProto, buildProto;
 
     Table bonusTable, mainTable, statTable;
 
@@ -73,8 +75,6 @@ public class InfoPanel extends Group {
         imgCheckOn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-on"));
         imgUnit = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
 
-
-
         grpAbility = new Group();
         grpAbility.addActor(imgAbilityBg);
 
@@ -83,16 +83,6 @@ public class InfoPanel extends Group {
         grpUnit.setSize(imgUnit.getImageWidth(), imgUnit.getImageHeight());
 
         bonusTable = new Table(skin);
-
-
-//        iconRefund.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                super.clicked(event, x, y);
-//                levelScreen.refundUnit(selected);
-//            }
-//        });
-
 
         lblTitle = new Label("NOTHING", skin, "small");
         lblTitle.setFontScale(VOBGame.SCALE * 0.75f);
@@ -116,28 +106,8 @@ public class InfoPanel extends Group {
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
 
-
         addActor(imgBackground);
-//        addActor(iconAttack);
-//        addActor(lblAttack);
-//        addActor(iconRange);
-//        addActor(lblRange);
-//        addActor(iconHealth);
-//        addActor(lblHealth);
-//        addActor(iconMove);
-//        addActor(lblMove);
-//        addActor(iconArmor);
-//        addActor(lblArmor);
-//        addActor(iconMovesLeft);
-//        addActor(lblMovesLeft);
-//        addActor(iconAttacksLeft);
-//        addActor(lblAttacksLeft);
-//        addActor(lblTitle);
-//        addActor(grpAbility);
-//        addActor(bonusTable);
-
         setSize(imgBackground.getWidth(), imgBackground.getHeight());
-
 
         mainTable = new Table(skin);
         mainTable.setFillParent(true);
@@ -178,35 +148,55 @@ public class InfoPanel extends Group {
 
     public void update() {
 
-        if (selected != null && (selected != lastSelected || selected.getData().getModified() > lastUpdated)) {
+        if (buildProto != null && buildProto != lastBuildProto) {
+            selected = null;
+            lastSelected = null;
+            lastBuildProto = buildProto;
+
+            System.out.println("BuildProto: " + buildProto.title);
+            lblTitle.setText(buildProto.title);
+            lblHealth.setText(String.format(HEALTH, buildProto.getProperty("curhp").asInt(), buildProto.getProperty("maxhp").asInt()));
+            lblAttack.setText(String.format(ATTACK, buildProto.getProperty("attackdamage").asInt()));
+            lblRange.setText(String.format(RANGE, buildProto.getProperty("attackrange").asInt()));
+            lblArmor.setText(String.format(ARMOR, buildProto.getProperty("armor").asInt()));
+            lblMove.setText(String.format(MOVE, (int) buildProto.getProperty("movespeed").asFloat()));
+            lblAttacksLeft.setText(String.format(ATTACK_LEFT, (int)buildProto.getProperty("attackspeed").asFloat()));
+            lblMovesLeft.setText(String.format(MOVE_LEFT, (int)buildProto.getProperty("movespeed").asFloat()));
+
+            grpAbility.removeActor(imgCheckOn);
+            grpAbility.removeActor(imgCheckOff);
+
+            if (iconAbility != null) {
+                grpAbility.removeActor(iconAbility);
+            }
+
+            if (buildProto.hasProperty("ability") && !buildProto.getProperty("ability").asString().equals("")) {
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", buildProto.getProperty("ability").asString() + "-small"));
+                grpAbility.addActor(iconAbility);
+            } else {
+                iconAbility = null;
+            }
+
+            healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
+            healthBar.setCurrent(buildProto.getProperty("curhp").asFloat() / buildProto.getProperty("maxhp").asFloat());
+
+            layout();
+
+        } else if (selected != null && (selected != lastSelected || selected.getData().getModified() > lastUpdated)) {
+            lastSelected = selected;
+            buildProto = null;
+            lastBuildProto = null;
             lastUpdated = TimeUtils.millis();
-            Array<Label> labels = new Array<Label>();
 
             lblTitle.setText(selected.getProto().title);
-            labels.add(lblTitle);
-
-//            Gdx.app.log(LOG, "" + lblTitle.getPrefWidth());
-//            Gdx.app.log(LOG, "" + (getWidth() - imgAbilityBg.getWidth()));
-//            if (lblTitle.getFontScaleX() * lblTitle.getPrefWidth() > getWidth() - imgAbilityBg.getWidth() - 64 * VOBGame.SCALE) {
-//                lblTitle.scale((lblTitle.getFontScaleX() * lblTitle.getPrefWidth()) / (getWidth() - imgAbilityBg.getWidth() - 64 * VOBGame.SCALE));
-//            }
-
             lblHealth.setText(String.format(HEALTH, selected.getData().getCurHP(), selected.getData().getMaxHP()));
-            labels.add(lblHealth);
             lblAttack.setText(String.format(ATTACK, selected.getData().getAttackDamage()));
-            labels.add(lblAttack);
             lblRange.setText(String.format(RANGE, selected.getData().getAttackRange()));
-            labels.add(lblRange);
             lblArmor.setText(String.format(ARMOR, selected.getData().getArmor()));
-            labels.add(lblArmor);
             lblMove.setText(String.format(MOVE, (int) selected.getData().getMoveSpeed()));
-            labels.add(lblMove);
             lblAttacksLeft.setText(String.format(ATTACK_LEFT, (int)selected.getData().getAttacksLeft()));
-            labels.add(lblAttacksLeft);
             lblMovesLeft.setText(String.format(MOVE_LEFT, (int)selected.getData().getMovesLeft()));
-            labels.add(lblMovesLeft);
             lblRefund.setText(String.format(REFUND, selected.getData().getRefund()));
-            labels.add(lblRefund);
 
             bonusTable.clearChildren();
 
@@ -265,15 +255,8 @@ public class InfoPanel extends Group {
                 iconAbility = null;
             }
 
-            for (Label lbl: labels) {
-                lbl.invalidate();
-                lbl.layout();
-                lbl.setSize(lbl.getPrefWidth(), lbl.getPrefHeight());
-            }
-
             healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
             healthBar.setCurrent((float)selected.getData().getCurHP() / (float)selected.getData().getMaxHP());
-            lastSelected = selected;
 
             layout();
         }
@@ -293,59 +276,23 @@ public class InfoPanel extends Group {
         int y = 0;
         float x = 0;
 
-        if (selected != null) {
-            Gdx.app.log(LOG, "unit!");
-            if (imgUnit != null) imgUnit.remove();
-            imgUnit = new Image(selected.getView().getImage());
-            grpUnit.addActor(imgUnit);
-            //imgUnit.setPosition(25, getHeight() * 0.5f - imgUnit.getHeight() * 0.5f - 5);
-            y = (int)imgUnit.getY();
-            x = (int)imgUnit.getRight() + 25;
+        if (imgUnit != null) imgUnit.remove();
+        if (iconSubtype != null) iconSubtype.remove();
 
-            if (iconSubtype != null) iconSubtype.remove();
+        if (buildProto != null) {
+            imgUnit = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", buildProto.image));
+            iconSubtype = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", buildProto.getProperty("subtype").asString() + "-small"));
+        } else if (selected != null) {
+            imgUnit = new Image(selected.getView().getImage());
             iconSubtype = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getSubtype() + "-small"));
+        }
+
+        if (imgUnit != null && iconSubtype != null) {
+            grpUnit.addActor(imgUnit);
             grpUnit.addActor(iconSubtype);
             iconSubtype.setPosition(imgUnit.getRight() - iconSubtype.getWidth(), imgUnit.getY());
             grpUnit.setSize(imgUnit.getWidth(), imgUnit.getHeight());
         }
-
-//        iconAttack.setPosition(x, y);
-//
-//        lblAttack.setPosition(iconAttack.getX() + iconAttack.getWidth() * iconAttack.getScaleX(), y);
-//
-//        iconRange.setPosition(lblAttack.getRight(), y);
-//
-//        lblRange.setPosition(iconRange.getX() + iconRange.getWidth() * iconRange.getScaleX(), y);
-//
-//        iconHealth.setPosition(x, y);
-//
-//        lblHealth.setPosition(iconHealth.getX() + iconHealth.getWidth() * iconHealth.getScaleX(), y);
-//        lblHealth.setFontScale(0.75f * VOBGame.SCALE);
-//
-//        iconMove.setPosition(Math.max(lblHealth.getRight(), lblRange.getRight()), y);
-//
-//        lblMove.setPosition(iconMove.getX() + iconMove.getWidth() * iconMove.getScaleX(), y);
-//
-//        iconArmor.setPosition(lblMove.getRight(), y);
-//
-//        lblArmor.setPosition(iconArmor.getX() + iconArmor.getWidth() * iconArmor.getScaleX(), y);
-//        y += iconArmor.getHeight() * iconArmor.getScaleY() + 5;
-//
-//        iconHealth.setY(y);
-//        lblHealth.setY(y);
-//
-//        iconMovesLeft.setPosition(iconMove.getX(), y);
-//
-//        lblMovesLeft.setPosition(iconMovesLeft.getX() + iconMovesLeft.getWidth() * iconMovesLeft.getScaleX(), y);
-//
-//        iconAttacksLeft.setPosition(iconArmor.getX(), y);
-//
-//        lblAttacksLeft.setPosition(iconAttacksLeft.getX() + iconAttacksLeft.getWidth() * iconAttacksLeft.getScaleX(), y);
-//        y += iconAttacksLeft.getHeight() * iconAttacksLeft.getScaleY() + 5;
-//
-//        lblTitle.setPosition(x, y);
-//        y += lblTitle.getHeight();
-
 
         imgCheckOff.setPosition(0, 0);
         imgCheckOn.setPosition(0, 0);
@@ -368,5 +315,10 @@ public class InfoPanel extends Group {
 
     public void setSelected(Unit unit) {
         selected = unit;
+        buildProto = null;
+    }
+
+    public void setBuildProto(Prototypes.JsonProto proto) {
+        buildProto = proto;
     }
 }
