@@ -123,7 +123,7 @@ public class GameJoinScreen extends AbstractScreen {
 		table.add(lblJoinHostname).pad(4).left();
 		
 		txtJoinHostname = new TextField("", getSkin());
-		table.add(txtJoinHostname).pad(4).left();
+		table.add(txtJoinHostname).pad(4).fillX().left().colspan(3);
 		
 		table.row();
 		

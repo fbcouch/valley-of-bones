@@ -151,7 +151,7 @@ public class SPGameSetupScreen extends AbstractScreen {
             }
 
         });
-		controlTable.add(start).size(150, 50).pad(4).right().bottom().colspan(2);
+		controlTable.add(start).padTop(4).colspan(2);
 
 		controlTable.row();
 
@@ -173,7 +173,7 @@ public class SPGameSetupScreen extends AbstractScreen {
 			
 		});
 		
-		controlTable.add(cancel).size(150, 50).pad(4).right().bottom().colspan(2);
+		controlTable.add(cancel).fillX().padTop(4).colspan(2);
 		
 		table.add(controlTable).fillX();
 	}

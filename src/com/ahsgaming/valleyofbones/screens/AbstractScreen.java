@@ -147,7 +147,7 @@ public class AbstractScreen implements Screen {
 	
 	public Skin getSkin() {
         if (skin == null) {
-            skin = new Skin(Gdx.files.internal("newui/uiskin.json"));
+            skin = new Skin(Gdx.files.internal("uiskin.json"));
             fontSmall = skin.getFont("small-font");
             fontMed = skin.getFont("medium-font");
             fontLarge = skin.getFont("large-font");
