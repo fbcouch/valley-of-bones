@@ -456,7 +456,7 @@ public class LevelScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapCamera.update();
         mapSpriteBatch.setProjectionMatrix(mapCamera.combined);
-        mapView.draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits(), gController.getMap());
+        mapView.draw(mapSpriteBatch, -posCamera.x + mapCamera.viewportWidth * 0.5f, -posCamera.y + mapCamera.viewportHeight * 0.5f, 1, gController.getUnits(), gController.getMap(), gController.getCurrentPlayer());
 
         // DRAW BOXES
         drawUnitBoxes();

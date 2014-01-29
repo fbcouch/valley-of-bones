@@ -53,7 +53,7 @@ public class MapView {
         this.mapDirty = mapDirty;
     }
 
-    public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units, HexMap map) {
+    public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units, HexMap map, Player currentPlayer) {
         Color save = batch.getColor();
         TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "metal-hex-depth");
 
@@ -139,7 +139,7 @@ public class MapView {
                 if ((hexStatus[(int)(u.getView().getBoardPosition().x + u.getView().getBoardPosition().y * mapData.bounds.x)] != FOG
                         || (u.getView().getLastBoardPosition() != null && hexStatus[(int)(u.getView().getLastBoardPosition().x + u.getView().getLastBoardPosition().y * mapData.bounds.x)] != FOG && u.getView().hasActions() && !u.getData().isBuilding()))
                         && (!u.getData().isInvisible() || map.detectorCanSee(player, units, u.getView().getBoardPosition())))
-                    u.getView().draw(batch, x, y, alpha, false);
+                    u.getView().draw(batch, x, y, alpha, u.getOwner() == currentPlayer);
             }
         }
 
@@ -174,7 +174,7 @@ public class MapView {
         // draw friendly units
         for (Unit u: units) {
             if (player == u.getOwner())
-                u.getView().draw(batch, x, y, alpha, true);
+                u.getView().draw(batch, x, y, alpha, u.getOwner() == currentPlayer);
         }
         batch.end();
 
