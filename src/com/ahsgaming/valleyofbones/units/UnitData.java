@@ -48,6 +48,7 @@ public class UnitData {
     boolean stealthActive = false;
 
     float movesLeft = 0, attacksLeft = 0;
+    int movesThisTurn = 0;
 
     Player uncontested = null;
     int capUnitCount = 0;

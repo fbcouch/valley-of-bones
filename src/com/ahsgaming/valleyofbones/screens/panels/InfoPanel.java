@@ -143,10 +143,10 @@ public class InfoPanel extends Group {
         mainTable.setFillParent(true);
         addActor(mainTable);
 
-        mainTable.add(grpUnit).expandX();
+        mainTable.add(grpUnit).padLeft(20 * VOBGame.SCALE);
 
         statTable = new Table(skin);
-        mainTable.add(statTable);
+        mainTable.add(statTable).expandX();
 
         statTable.add(lblTitle).colspan(8).pad(5 * VOBGame.SCALE);
         statTable.row().padBottom(5 * VOBGame.SCALE);
@@ -169,7 +169,7 @@ public class InfoPanel extends Group {
 
         statTable.add(bonusTable).colspan(8).expandX();
 
-        mainTable.add(grpAbility).expandX();
+        mainTable.add(grpAbility).padRight(20 * VOBGame.SCALE);
 
 
         layout();

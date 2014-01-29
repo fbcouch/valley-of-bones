@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * @author jami
@@ -62,6 +63,8 @@ public class LevelScreen extends AbstractScreen {
 	private Group grpLevel;
 	
 	protected GameController gController = null;
+
+    long lastUpdate;
 
 	UnitBoxRenderer unitBoxRenderer;
 
@@ -409,8 +412,10 @@ public class LevelScreen extends AbstractScreen {
 
         // clear highlighting if necessary
         mapView.clearHighlightAndDim();
-        if (lastSelected != selected)
+        if (lastSelected != selected || (selected != null && selected.getData().getModified() > lastUpdate)) {
+            lastUpdate = TimeUtils.millis();
             mapView.setMapDirty(true);
+        }
 
         lastSelected = selected;
 

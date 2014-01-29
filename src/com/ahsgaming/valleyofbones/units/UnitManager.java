@@ -115,6 +115,7 @@ public class UnitManager {
 
             if (!unit.data.building) {
                 unit.data.movesLeft = (unit.data.movesLeft % 1) + unit.data.moveSpeed * (unit.data.stealthActive ? 0.5f : 1f);
+                unit.data.movesThisTurn = 0;
                 unit.data.attacksLeft = (unit.data.attacksLeft % 1) + unit.data.attackSpeed;
             }
 
@@ -181,6 +182,7 @@ public class UnitManager {
         if (canUnitMove(unit, boardPosition)) {
             int dist = HexMap.getMapDist(unit.view.boardPosition, boardPosition);
             unit.data.movesLeft -= dist;
+            unit.data.movesThisTurn += dist;
 
             unit.view.lastBoardPosition = unit.view.boardPosition;
             unit.view.boardPosition = boardPosition;
@@ -211,13 +213,15 @@ public class UnitManager {
                 return; // cant re-enter stealth this turn
 
             unit.data.stealthActive = !unit.data.stealthActive;
+            if (!unit.data.building) {
+                if (unit.data.stealthActive) {
+                    unit.data.stealthEntered = true;
 
-            if (unit.data.stealthActive) {
-                unit.data.stealthEntered = true;
-                unit.data.movesLeft = (float)Math.floor(unit.data.moveSpeed * 0.5f) - unit.data.moveSpeed - unit.data.movesLeft;
-                if (unit.data.movesLeft < 0) unit.data.movesLeft = 0;
-            } else {
-                unit.data.movesLeft = unit.data.moveSpeed - (float)Math.floor(unit.data.moveSpeed * 0.5f - unit.data.movesLeft);
+                    unit.data.movesLeft = (float)Math.floor(unit.data.moveSpeed * 0.5f) - unit.data.movesThisTurn; //- unit.data.moveSpeed - unit.data.movesLeft;
+                    if (unit.data.movesLeft < 0) unit.data.movesLeft = 0;
+                } else {
+                    unit.data.movesLeft = unit.data.moveSpeed - unit.data.movesThisTurn; //(float)Math.floor(unit.data.moveSpeed * 0.5f - unit.data.movesLeft);
+                }
             }
             unit.data.modified = TimeUtils.millis();
         }

@@ -61,8 +61,8 @@ public class GameController {
 	
 	Player currentPlayer;
     int gameTurn = 0;
-	float turnLength = 30;
-    float turnAfterMoveReset = 15;
+	float turnLength = 60;
+    float turnAfterMoveReset = 0;
 
 	float turnTimer = 0;
 	boolean nextTurn = false;
