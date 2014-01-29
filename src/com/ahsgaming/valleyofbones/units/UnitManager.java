@@ -209,7 +209,8 @@ public class UnitManager {
 
     public void activateAbility(Unit unit) {
         if (unit.data.ability.equals("stealth")) {
-            if (unit.data.stealthEntered && !unit.data.stealthActive)
+            // cant re-enter stealth on the same turn or enter after firing or moving twice
+            if (!unit.data.stealthActive && (unit.data.stealthEntered || unit.data.attacksLeft != unit.data.attackSpeed || unit.data.movesThisTurn > Math.floor(unit.data.moveSpeed * 0.5f)))
                 return; // cant re-enter stealth this turn
 
             unit.data.stealthActive = !unit.data.stealthActive;
