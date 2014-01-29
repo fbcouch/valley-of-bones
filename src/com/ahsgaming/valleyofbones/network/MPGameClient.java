@@ -249,7 +249,7 @@ public class MPGameClient implements NetController {
 	
 	public void startGame() {
 		// OK, this should be called within an opengl context, so we can create everything
-		controller = new GameController(gameConfig.mapName, players);
+		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#MPClient";
 
         controller.setCurrentPlayer(firstTurnPid);

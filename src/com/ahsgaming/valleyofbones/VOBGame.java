@@ -245,7 +245,7 @@ public class VOBGame extends Game {
 	@Override
 	public void pause() {
 		super.pause();
-        Gdx.app.log(LOG, "pause");
+        Gdx.app.log(LOG, "gamePause");
 	}
 
 	@Override

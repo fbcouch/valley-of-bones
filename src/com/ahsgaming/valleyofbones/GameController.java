@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.map.MapData;
 import com.ahsgaming.valleyofbones.network.*;
+import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
 import com.ahsgaming.valleyofbones.units.Unit;
@@ -63,6 +64,7 @@ public class GameController {
     int gameTurn = 0;
 	float turnLength = 60;
     float turnAfterMoveReset = 0;
+    int maxPauses = 0;
 
 	float turnTimer = 0;
 	boolean nextTurn = false;
@@ -75,9 +77,10 @@ public class GameController {
 	 * Constructors
 	 */
 	
-	public GameController(String mapName, Array<Player> players) {
+	public GameController(GameSetupConfig config, Array<Player> players) {
 		// TODO load map
-		this.mapName = mapName;
+		this.mapName = config.mapName;
+        this.maxPauses = config.maxPauses;
 
         unitManager = new UnitManager(this);
 
@@ -300,7 +303,7 @@ public class GameController {
 		} else if (cmd instanceof Move) {
 			return validateMove((Move)cmd);
 		} else if (cmd instanceof Pause) {
-			return true;
+			return cmd.owner == -1 || maxPauses == 0 || ((Pause) cmd).isAuto || getPlayerById(cmd.owner).getPauses() < maxPauses;
 		} else if (cmd instanceof Unpause) {
 			return true;
 		} else if (cmd instanceof EndTurn) {
@@ -439,6 +442,9 @@ public class GameController {
 	
 	public void executePause(Pause cmd) {
 		state = GameStates.PAUSED;
+        if (cmd.owner != -1 && !cmd.isAuto) {
+            getPlayerById(cmd.owner).addPause();
+        }
 	}
 	
 	public void executeUnpause(Unpause cmd) {

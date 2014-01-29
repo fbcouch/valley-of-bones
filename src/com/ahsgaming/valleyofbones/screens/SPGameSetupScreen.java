@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.JsonValue;
  *
  */
 public class SPGameSetupScreen extends AbstractScreen {
-	public String LOG = "MPGameSetupScreen";
+	public String LOG = "SPGameSetupScreen";
 	GameSetupConfig config;
 
 	Array<Player> pList;
@@ -57,6 +57,7 @@ public class SPGameSetupScreen extends AbstractScreen {
 	public SPGameSetupScreen(VOBGame game, GameSetupConfig cfg) {
 		super(game);
 		config = cfg;
+        cfg.maxPauses = 0;
 		game.createGame(cfg);
         game.addAIPlayer(1);
 	}

@@ -17,4 +17,5 @@ public class GameSetupConfig {
     public String hostName = "localhost";
     public int hostPort = KryoCommon.tcpPort;
     public String playerName = "New Player";
+    public int maxPauses = 3;
 }

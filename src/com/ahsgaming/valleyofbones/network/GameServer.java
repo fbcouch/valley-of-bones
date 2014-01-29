@@ -359,7 +359,7 @@ public class GameServer implements NetController {
 	
 	public void startGame() {
 		// the host clicked startGame --> send out the StartGame message so that the clients load and report
-		controller = new GameController(gameConfig.mapName, players);
+		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#Server";
 
         // TODO allow configuration of who goes first?

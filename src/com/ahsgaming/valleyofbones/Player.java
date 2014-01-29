@@ -49,6 +49,7 @@ public class Player {
 	int playerId = -1;
 	Color playerColor = new Color(1, 1, 1, 1);
 	String name = "New Cadet";
+    int pauses = 0;
 	
 	float bankMoney = 0, upkeep = 0;
 	int curFood = 0, maxFood = 0;
@@ -271,8 +272,19 @@ public class Player {
 	public void setMaxFood(int maxFood) {
 		this.maxFood = maxFood;
 	}
-	
-	public int getTeam() {
+
+    public int getPauses() {
+        return pauses;
+    }
+
+    public void setPauses(int pauses) {
+        this.pauses = pauses;
+    }
+
+    public void addPause() { pauses++; }
+
+
+    public int getTeam() {
 		return teamId;
 	}
 	

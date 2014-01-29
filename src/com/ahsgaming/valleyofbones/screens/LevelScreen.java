@@ -33,7 +33,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -65,6 +64,7 @@ public class LevelScreen extends AbstractScreen {
 	protected GameController gController = null;
 
     long lastUpdate;
+    boolean wasPaused;
 
 	UnitBoxRenderer unitBoxRenderer;
 
@@ -200,6 +200,21 @@ public class LevelScreen extends AbstractScreen {
         }
     }
 
+    public void gamePause() {
+        if (isPaused()) {
+            Unpause up = new Unpause();
+            up.owner = game.getPlayer().getPlayerId();
+            up.turn = gController.getGameTurn();
+            game.sendCommand(up);
+        } else {
+            Pause p = new Pause();
+            p.owner = game.getPlayer().getPlayerId();
+            p.turn = gController.getGameTurn();
+            p.isAuto = false;
+            game.sendCommand(p);
+        }
+    }
+
 //    public boolean canRefund(Unit unit) {
 //        return gController.canPlayerRefundUnit(game.getPlayer(), unit);
 //    }
@@ -255,6 +270,10 @@ public class LevelScreen extends AbstractScreen {
         Gdx.app.log(LOG, "" + new Vector2(stage.getWidth() * 0.5f, stage.getHeight() * 0.5f));
         Gdx.app.log(LOG, "" + map);
         Gdx.app.log(LOG, "" + screen);
+    }
+
+    public boolean isPaused() {
+        return gController.getState() == GameStates.PAUSED;
     }
 	
 	public boolean getClickInterrupt() {
@@ -395,6 +414,17 @@ public class LevelScreen extends AbstractScreen {
         }
         lastTurnTick = gController.getTurnTimer();
 	}
+
+    public void pausePopup() {
+        if (wasPaused != isPaused()) {
+            if (!wasPaused) {
+                popupMessage("GAME PAUSED", "hazard-sign", 1);
+            } else {
+                popupMessage("GAME RESUMED", "hazard-sign", 1);
+            }
+        }
+        wasPaused = isPaused();
+    }
 	
 	@Override
 	public void render(float delta) {
@@ -448,6 +478,7 @@ public class LevelScreen extends AbstractScreen {
 
 //        gController.getMap().update(game.getPlayer());
 
+        pausePopup();
 		yourTurnPopup();
         buildPanel.update();
 
@@ -462,7 +493,7 @@ public class LevelScreen extends AbstractScreen {
             if (!isCurrentPlayer()) unsetBuildMode();
         }
 
-
+        menuPanel.update(delta);
 
         stage.act(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -498,7 +529,7 @@ public class LevelScreen extends AbstractScreen {
         popup.addActor(img);
         popup.addActor(lbl);
         lbl.setPosition(img.getRight(), (img.getHeight() - lbl.getHeight()) * 0.5f);
-        popup.setSize(lbl.getRight(), img.getTop());
+        popup.setSize(lbl.getX() + lbl.getWidth() * lbl.getFontScaleX(), img.getTop());
         popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, (stage.getHeight() - popup.getHeight()) * 0.5f);
         popup.setColor(popup.getColor().r, popup.getColor().g, popup.getColor().b, 0);
         stage.addActor(popup);
@@ -665,7 +696,7 @@ public class LevelScreen extends AbstractScreen {
         }
 
         public static class GameMenu extends SubPanel {
-            TextButton btnSurrender, btnUnitList, btnReturnToGame;
+            TextButton btnSurrender, btnUnitList, btnReturnToGame, btnPause;
 
             LevelScreen levelScreen;
 
@@ -685,6 +716,10 @@ public class LevelScreen extends AbstractScreen {
                 table.setFillParent(true);
                 addActor(table);
 
+                btnPause = new MedUIButton(levelScreen.isPaused() ? "Unpause" : "Pause", levelScreen.getSkin());
+                table.add(btnPause).pad(10 * VOBGame.SCALE);
+                table.row();
+
                 btnSurrender = new MedUIButton(VOBGame.instance.getPlayer() == null ? "Leave Game" : "Surrender", levelScreen.getSkin());
                 table.add(btnSurrender).pad(10 * VOBGame.SCALE);
                 table.row();
@@ -696,6 +731,14 @@ public class LevelScreen extends AbstractScreen {
                 btnReturnToGame = new MedUIButton("Return to Game", levelScreen.getSkin());
                 table.add(btnReturnToGame).pad(10 * VOBGame.SCALE);
                 table.row();
+
+                btnPause.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+                        levelScreen.gamePause();
+                    }
+                });
 
                 btnSurrender.addListener(new ClickListener() {
                     @Override
@@ -725,6 +768,7 @@ public class LevelScreen extends AbstractScreen {
 
             @Override
             public void update(float delta) {
+                btnPause.setText(levelScreen.isPaused() ? "Unpause" : "Pause");
             }
 
 

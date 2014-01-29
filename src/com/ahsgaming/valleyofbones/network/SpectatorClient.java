@@ -183,7 +183,7 @@ public class SpectatorClient implements NetController {
 
     @Override
     public void startGame() {
-        gameController = new GameController(gameConfig.mapName, players);
+        gameController = new GameController(gameConfig, players);
         gameController.LOG += "#Spectator";
         gameController.setCurrentPlayer(firstTurnPid);
     }

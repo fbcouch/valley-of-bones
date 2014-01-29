@@ -52,12 +52,19 @@ public class TurnPanel extends Group {
 
         imgIndicatorOverlay = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-indicator-overlay"));
 
-        player1 = gController.getPlayers().get(0);
+        if (thePlayer == null || thePlayer == gController.getPlayers().get(0)) {
+            player1 = gController.getPlayers().get(0);
+            player2 = gController.getPlayers().get(1);
+        } else {
+            player1 = gController.getPlayers().get(1);
+            player2 = gController.getPlayers().get(0);
+        }
+
         lblPlayer1 = new Label(player1.getPlayerName(), skin, "small-font", player1.getPlayerColor());
         lblPlayer1.setFontScale(VOBGame.SCALE);
         addActor(lblPlayer1);
 
-        player2 = gController.getPlayers().get(1);
+
         lblPlayer2 = new Label(player2.getPlayerName(), skin, "small-font", player2.getPlayerColor());
         lblPlayer2.setFontScale(VOBGame.SCALE);
         addActor(lblPlayer2);

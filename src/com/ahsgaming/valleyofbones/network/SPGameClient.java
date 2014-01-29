@@ -61,7 +61,7 @@ public class SPGameClient implements NetController {
 	
 	public void startGame() {
 		// OK, this should be called within an opengl context, so we can create everything
-		controller = new GameController(gameConfig.mapName, players);
+		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#SPClient";
         controller.setCurrentPlayer(player); // in SP, player always goes first
         Unpause up = new Unpause();
