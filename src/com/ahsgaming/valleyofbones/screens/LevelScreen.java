@@ -417,10 +417,13 @@ public class LevelScreen extends AbstractScreen {
 
     public void pausePopup() {
         if (wasPaused != isPaused()) {
-            if (!wasPaused) {
-                popupMessage("GAME PAUSED", "hazard-sign", 1);
-            } else {
-                popupMessage("GAME RESUMED", "hazard-sign", 1);
+            // iss2: Don't show pause/unpause notifications when the game begins
+            if (gController.getGameTurn() > 1 || (gController.getGameTurn() == 1 && gController.getTurnTimer() < gController.getTurnLength() )) {
+                if (!wasPaused) {
+                    popupMessage("GAME PAUSED", "hazard-sign", 1);
+                } else {
+                    popupMessage("GAME RESUMED", "hazard-sign", 1);
+                }
             }
         }
         wasPaused = isPaused();
@@ -530,7 +533,7 @@ public class LevelScreen extends AbstractScreen {
         popup.addActor(lbl);
         lbl.setPosition(img.getRight(), (img.getHeight() - lbl.getHeight()) * 0.5f);
         popup.setSize(lbl.getX() + lbl.getWidth() * lbl.getFontScaleX(), img.getTop());
-        popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, (stage.getHeight() - popup.getHeight()) * 0.5f);
+        popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, turnPanel.getY() - popup.getHeight() - 15 * VOBGame.SCALE);
         popup.setColor(popup.getColor().r, popup.getColor().g, popup.getColor().b, 0);
         stage.addActor(popup);
         popup.addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(duration), Actions.fadeOut(0.5f), Actions.removeActor()));
