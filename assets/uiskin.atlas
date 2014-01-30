@@ -5,42 +5,42 @@ filter: Nearest,Nearest
 repeat: none
 check-off
   rotate: false
-  xy: 472, 46
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 default-scroll
   rotate: false
-  xy: 472, 46
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 default-slider-knob
   rotate: false
-  xy: 472, 46
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 check-on
   rotate: false
-  xy: 472, 28
+  xy: 104, 30
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 490, 50
+  xy: 272, 110
   size: 6, 12
   orig: 6, 12
   offset: 0, 0
   index: -1
 default-pane
   rotate: false
-  xy: 2, 12
+  xy: 2, 72
   size: 100, 50
   split: 18, 18, 16, 16
   orig: 100, 50
@@ -48,7 +48,7 @@ default-pane
   index: -1
 default-rect
   rotate: false
-  xy: 2, 12
+  xy: 2, 72
   size: 100, 50
   split: 18, 18, 16, 16
   orig: 100, 50
@@ -56,7 +56,7 @@ default-rect
   index: -1
 textfield
   rotate: false
-  xy: 2, 12
+  xy: 2, 72
   size: 100, 50
   split: 18, 18, 16, 16
   orig: 100, 50
@@ -64,7 +64,7 @@ textfield
   index: -1
 default-window
   rotate: false
-  xy: 2, 12
+  xy: 2, 72
   size: 100, 50
   split: 18, 18, 16, 16
   orig: 100, 50
@@ -72,7 +72,7 @@ default-window
   index: -1
 default-round
   rotate: false
-  xy: 2, 12
+  xy: 2, 72
   size: 100, 50
   split: 18, 18, 16, 16
   pad: 35, 35, 16, 16
@@ -81,16 +81,16 @@ default-round
   index: -1
 default-rect-pad
   rotate: false
-  xy: 308, 30
+  xy: 104, 48
   size: 100, 32
-  split: 0, 0, 0, 0
+  split: 18, 18, 0, 0
   pad: 18, 18, 4, 4
   orig: 100, 32
   offset: 0, 0
   index: -1
 default-round-down
   rotate: false
-  xy: 104, 12
+  xy: 2, 20
   size: 100, 50
   split: 18, 18, 16, 16
   pad: 35, 35, 16, 16
@@ -99,7 +99,7 @@ default-round-down
   index: -1
 default-select
   rotate: false
-  xy: 206, 22
+  xy: 104, 82
   size: 100, 40
   split: 18, 22, 16, 16
   pad: 18, 26, 1, 1
@@ -108,8 +108,8 @@ default-select
   index: -1
 selection
   rotate: false
-  xy: 410, 2
-  size: 60, 60
-  orig: 60, 60
+  xy: 206, 58
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1

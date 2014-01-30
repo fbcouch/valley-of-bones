@@ -1,0 +1,90 @@
+{
+    title: "Choke points",
+    description: "Choke points and gaps make this a sniper's heaven",
+    width: 15,
+    height: 17,
+    tilewidth: 64,
+    tileheight: 64,
+    version: 1,
+    tiles: ["dirt-hex", "metal-hex"],
+    tilelayers:
+    [
+        {
+            visible: true,
+            collidable: false,
+            traversible: true,
+            name: "map",
+            opacity: 1,
+            data: 
+            [
+                0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+                  0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0,
+                0, 1, 1, 2, 1, 1, 0, 0, 0, 1, 1, 2, 1, 1, 0,
+                  0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0,
+                0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0,
+                  0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0,
+                0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
+                  1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0,
+                1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+                  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+                1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+                  1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0,
+                0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0,
+                  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+                0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 0, 0,
+                  0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            ]
+        }
+    ],
+    objects:
+    [
+        {
+            type: "spawn",
+            player: 0,
+            x: 3,
+            y: 2,
+        },
+        {
+            type: "spawn",
+            player: 1,
+            x: 11,
+            y: 2,
+        },
+        {
+            type: "unit",
+            proto: "tower-base",
+            player: -1,
+            x: 1,
+            y: 8,
+        },
+        {
+            type: "unit",
+            proto: "tower-base",
+            player: -1,
+            x: 7,
+            y: 8,
+        },
+        {
+            type: "unit",
+            proto: "tower-base",
+            player: -1,
+            x: 13,
+            y: 8,
+        },
+        {
+            type: "unit",
+            proto: "tower-base",
+            player: -1,
+            x: 3,
+            y: 14,
+        },
+        {
+            type: "unit",
+            proto: "tower-base",
+            player: -1,
+            x: 11,
+            y: 14,
+        }
+    ],
+}
