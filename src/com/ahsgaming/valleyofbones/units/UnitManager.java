@@ -2,6 +2,7 @@ package com.ahsgaming.valleyofbones.units;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
+import com.ahsgaming.valleyofbones.ai.AStar;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.badlogic.gdx.Gdx;
@@ -179,32 +180,34 @@ public class UnitManager {
     }
 
     public void moveUnit(Unit unit, Vector2 boardPosition) {
-        if (canUnitMove(unit, boardPosition)) {
-            int dist = HexMap.getMapDist(unit.view.boardPosition, boardPosition);
-            unit.data.movesLeft -= dist;
-            unit.data.movesThisTurn += dist;
+        AStar.AStarNode path = findPath(unit, boardPosition);
+        if (path != null && path.gx <= unit.data.movesLeft) {
+
+            unit.data.movesLeft -= path.gx;
+            unit.data.movesThisTurn += path.gx;
 
             unit.view.lastBoardPosition = unit.view.boardPosition;
             unit.view.boardPosition = boardPosition;
-            unit.view.addToPath(boardPosition);
-            // TODO add unit animation (need static ref to boardToMapCoords)
-            Vector2 pos = gameController.getMap().boardToMapCoords(boardPosition.x, boardPosition.y);
-            unit.view.addAction(UnitView.Actions.moveTo(pos.x, pos.y, dist / unit.data.moveSpeed));
+
+            Array<Vector2> nodes = new Array<Vector2>();
+            AStar.AStarNode cur = path;
+            while (cur.parent != null) {  // don't add the last node, it is the starting position
+                nodes.add(cur.location);
+                cur = cur.parent;
+            }
+
+            while (nodes.size > 0) {
+                Vector2 boardPos = nodes.pop();
+                unit.view.addToPath(boardPos);
+                Vector2 pos = gameController.getMap().boardToMapCoords(boardPos.x, boardPos.y);
+                unit.view.addAction(UnitView.Actions.moveTo(pos.x, pos.y, 1 / unit.data.moveSpeed));
+            }
             unit.data.modified = TimeUtils.millis();
         }
     }
 
-    public boolean canUnitMove(Unit unit, Vector2 boardPosition) {
-        // TODO perhaps A* this to find a real route?
-        if (HexMap.getMapDist(unit.view.boardPosition, boardPosition) > unit.data.moveSpeed)
-            return false;
-
-        for (Unit u: units.values()) {
-            if (u.view.boardPosition.epsilonEquals(boardPosition, 0.1f))
-                return false;
-        }
-
-        return true;
+    AStar.AStarNode findPath(Unit unit, Vector2 boardPosition) {
+        return AStar.getPath(unit.getView().getBoardPosition(), boardPosition, gameController, (int)unit.data.movesLeft);
     }
 
     public void activateAbility(Unit unit) {

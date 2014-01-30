@@ -193,65 +193,10 @@ public class UnitFSM {
         return null;
     }
 
-    public static class AStarNode {
-        AStarNode parent;
-        Vector2 location;
-        float gx, hx;
-
-        public static AStarNode createAStarNode(AStarNode parent, Vector2 location, float gx, float hx) {
-            AStarNode node = new AStarNode();
-            node.parent = parent;
-            node.location = location;
-            node.gx = gx;
-            node.hx = hx;
-            return node;
-        }
-    }
-
     Move moveToward(Vector2 boardPosition, GameController controller) {
-        Array<AStarNode> openList = new Array<AStarNode>();
-        Array<AStarNode> closedList = new Array<AStarNode>();
+        AStar.AStarNode target = AStar.getPath(unit.getView().getBoardPosition(), boardPosition, controller);
 
-        openList.add(AStarNode.createAStarNode(null, unit.getView().getBoardPosition(), 0, controller.getMap().getMapDist(unit.getView().getBoardPosition(), boardPosition)));
-
-        while (openList.size > 0) {
-            AStarNode least = null;
-            for (AStarNode node: openList) {
-                if (least == null || node.gx + node.hx < least.gx + least.hx) {
-                    least = node;
-                }
-            }
-
-            openList.removeValue(least, true);
-            closedList.add(least);
-
-            if (least.location.epsilonEquals(boardPosition, 0.1f)) {
-                break;
-            }
-
-            for(Vector2 loc: HexMap.getAdjacent((int) least.location.x, (int) least.location.y)) {
-                if (loc.epsilonEquals(boardPosition, 0.1f) || controller.getMap().getMapData().isBoardPositionTraversible((int)loc.x, (int)loc.y) && controller.isBoardPosEmpty(loc)) {
-                    for (AStarNode node: closedList) {
-                        if (node.location.epsilonEquals(loc, 0.1f))
-                            continue;
-                    }
-
-                    int openIndex = -1;
-                    for (int i = 0; i < openList.size; i++) {
-                        if (openList.get(i).location.epsilonEquals(loc, 0.1f)) {
-                            openIndex = i;
-                        }
-                    }
-
-                    if (openIndex == -1 || openList.get(openIndex).gx > least.gx + 1) {
-                        openList.add(AStarNode.createAStarNode(least, loc, least.gx + 1, controller.getMap().getMapDist(loc, boardPosition)));
-                    }
-                }
-            }
-        }
-
-        if (closedList.size > 0) {
-            AStarNode target = closedList.peek();
+        if (target != null) {
             while (target.gx > unit.getData().getMovesLeft() || !controller.isBoardPosEmpty(target.location)) {
                 target = target.parent;
             }
