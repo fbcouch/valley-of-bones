@@ -65,9 +65,9 @@
 + Sniper cloaking:
     + should not be able to enter cloak if has fired or moved twice
 + Pause/unpause
-- 3rd map
++ 3rd map
 + selected build item shows stats in info panel
-- hexagonal icons
++ hexagonal icons
 
 **Note: 0.1.x will be the last minor version that includes major gameplay changes, from now on, the rev # will only be bugfixes/artwork changes**
 
@@ -172,3 +172,7 @@
         - "Defense platform" --> grants extra attack/damage
         - "Research facility" --> allows upgrades
     - Rewards for kills --> also allows less income from base
+
+
+# BUG
+- can move through towers (move marine 2 spaces across, then can still move 1)
