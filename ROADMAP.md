@@ -62,9 +62,9 @@
 
 ### 0.1.x
 
-- Sniper cloaking:
++ Sniper cloaking:
     + should not be able to enter cloak if has fired or moved twice
-- Pause/unpause
++ Pause/unpause
 - 3rd map
 + selected build item shows stats in info panel
 - hexagonal icons

@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
@@ -162,6 +163,21 @@ public class InfoPanel extends Group {
             lblMove.setText(String.format(MOVE, (int) buildProto.getProperty("movespeed").asFloat()));
             lblAttacksLeft.setText(String.format(ATTACK_LEFT, (int)buildProto.getProperty("attackspeed").asFloat()));
             lblMovesLeft.setText(String.format(MOVE_LEFT, (int)buildProto.getProperty("movespeed").asFloat()));
+
+            bonusTable.clearChildren();
+            if (buildProto.hasProperty("bonus")) {
+                for (JsonValue val: buildProto.getProperty("bonus")) {
+                    String subtype = val.name();
+                    bonusTable.add(new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", subtype + "-small")));
+                    Label times = new Label("x", skin, "small");
+                    times.setFontScale(VOBGame.SCALE * 0.75f);
+                    bonusTable.add(times).bottom();
+                    Label label = new Label(String.format("%.1f", val.asFloat()), skin, "small");
+                    label.setFontScale(VOBGame.SCALE);
+                    bonusTable.add(label).bottom();
+                }
+            }
+
 
             grpAbility.removeActor(imgCheckOn);
             grpAbility.removeActor(imgCheckOff);
