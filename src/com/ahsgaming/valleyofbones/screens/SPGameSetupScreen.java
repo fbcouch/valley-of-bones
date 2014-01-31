@@ -93,21 +93,37 @@ public class SPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left();
             playerTable.add("Terran");
-            Image[] colors = new Image[Player.AUTOCOLORS.length];
-
-            for (int c = 0; c < colors.length; c++) {
-                colors[c] = new Image(getSkin().getDrawable("white-hex"));
-                colors[c].setColor(Player.AUTOCOLORS[c]);
-            }
-
-            ImageSelectBox color = new ImageSelectBox(colors, new ImageSelectBox.ImageSelectBoxStyle(
-                    getSkin().getDrawable("default-select"),
-                    getSkin().get("default", ScrollPane.ScrollPaneStyle.class),
-                    new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad"))
-            ));
+//            Image[] colors = new Image[Player.AUTOCOLORS.length];
+//
+//            for (int c = 0; c < colors.length; c++) {
+//                colors[c] = new Image(getSkin().getDrawable("white-hex"));
+//                colors[c].setColor(Player.AUTOCOLORS[c]);
+//            }
+//
+//            ImageSelectBox color = new ImageSelectBox(colors, new ImageSelectBox.ImageSelectBoxStyle(
+//                    getSkin().getDrawable("default-select"),
+//                    getSkin().get("default", ScrollPane.ScrollPaneStyle.class),
+//                    new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad"))
+//            ));
 //            ImageList color = new ImageList(colors, new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad")));
-
+            Image color = new Image(getSkin().getDrawable("white-hex"));
+            color.setColor(Player.AUTOCOLORS[pList.indexOf(p, true)]);
             playerTable.add(color);
+
+            color.addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    int i = 0;
+                    while (i < Player.AUTOCOLORS.length && !Player.AUTOCOLORS[i].equals(event.getTarget().getColor())) {
+                        i++;
+                    }
+                    i = (event.getButton() == 0 ? i + 1 : i - 1);
+                    i = Math.max(0, i);
+                    i = Math.min(i, Player.AUTOCOLORS.length - 1);
+                    event.getTarget().setColor(Player.AUTOCOLORS[i]);
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
 //            playerTable.add(colors[0]).size(colors[0].getWidth() / VOBGame.SCALE, colors[0].getHeight() / VOBGame.SCALE);
 //            if (pList.indexOf(p, true) == 0) {
 //                color.setSelectedIndex(0);
