@@ -28,7 +28,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -95,11 +94,22 @@ public class MPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left().expandX();
             playerTable.add("Terran").expandX();
-            if (pList.indexOf(p, true) == 0) {
-                playerTable.add(new Label("Red", getSkin(), "default-font", Player.COLOR_RED)).expandX();
-            } else {
-                playerTable.add(new Label("Blue", getSkin(), "default-font", Player.COLOR_BLUE)).expandX();
-            }
+//            Image[] colors = new Image[Player.AUTOCOLORS.length];
+//            for (int c = 0; c < colors.length; c++) {
+//                colors[c] = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "hud-bar"));
+//                colors[c].setColor(Player.AUTOCOLORS[c]);
+//            }
+//
+////            SelectBox color = new SelectBox(colors, getSkin());
+//            ImageList color = new ImageList(colors, new ImageList.ImageListStyle(getSkin().getDrawable("default-select")));
+//
+//            playerTable.add(color);
+//            playerTable.add(colors[0]).size(colors[0].getWidth() / VOBGame.SCALE, colors[0].getHeight() / VOBGame.SCALE);
+//            if (pList.indexOf(p, true) == 0) {
+//                color.setSelectedIndex(0);
+//            } else {
+//                color.setSelectedIndex(1);
+//            }
             playerTable.row().expandX().padBottom(5).padTop(5);
         }
 
@@ -193,7 +203,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                 }
 
             });
-            controlTable.add(start).size(150, 50).pad(4).right().bottom().colspan(2);
+            controlTable.add(start).padTop(4);
 
             controlTable.row();
         }
@@ -216,7 +226,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         });
 
-        controlTable.add(cancel).size(150, 50).pad(4).right().bottom().colspan(2);
+        controlTable.add(cancel).fillX().padTop(4);
 
         table.add(controlTable).fillX();
 	}

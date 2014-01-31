@@ -24,12 +24,13 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
-import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -92,11 +93,27 @@ public class SPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left();
             playerTable.add("Terran");
-            if (pList.indexOf(p, true) == 0) {
-                playerTable.add(new Label("Red", getSkin(), "default-font", Player.COLOR_RED));
-            } else {
-                playerTable.add(new Label("Blue", getSkin(), "default-font", Player.COLOR_BLUE));
+            Image[] colors = new Image[Player.AUTOCOLORS.length];
+
+            for (int c = 0; c < colors.length; c++) {
+                colors[c] = new Image(getSkin().getDrawable("white-hex"));
+                colors[c].setColor(Player.AUTOCOLORS[c]);
             }
+
+            ImageSelectBox color = new ImageSelectBox(colors, new ImageSelectBox.ImageSelectBoxStyle(
+                    getSkin().getDrawable("default-select"),
+                    getSkin().get("default", ScrollPane.ScrollPaneStyle.class),
+                    new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad"))
+            ));
+//            ImageList color = new ImageList(colors, new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad")));
+
+            playerTable.add(color);
+//            playerTable.add(colors[0]).size(colors[0].getWidth() / VOBGame.SCALE, colors[0].getHeight() / VOBGame.SCALE);
+//            if (pList.indexOf(p, true) == 0) {
+//                color.setSelectedIndex(0);
+//            } else {
+//                color.setSelectedIndex(1);
+//            }
             playerTable.row().expandX().padBottom(5).padTop(5);
         }
 
