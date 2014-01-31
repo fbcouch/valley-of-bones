@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
+import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
@@ -69,11 +70,6 @@ public class Player {
 	public Player(int id, Color color) {
 		playerId = id;
 		playerColor = color;
-	}
-	
-	public Player(int id, String name, Color color, int team) {
-		this(id, name, color);
-		this.teamId = team;
 	}
 
     public void startTurn(GameController controller) {
@@ -308,6 +304,18 @@ public class Player {
 		
 		return use;
 	}
+
+    public static int getUnusedColorId(Array<KryoCommon.RegisteredPlayer> players) {
+        boolean[] colorsUsed = new boolean[Player.AUTOCOLORS.length];
+        for (KryoCommon.RegisteredPlayer p: players) {
+            colorsUsed[p.color] = true;
+        }
+
+        int i = 0;
+        while (i < Player.AUTOCOLORS.length && colorsUsed[i]) { i++; }
+        i = Math.min(i, Player.AUTOCOLORS.length - 1);
+        return i;
+    }
 
 	/**
 	 * @return the baseUnit

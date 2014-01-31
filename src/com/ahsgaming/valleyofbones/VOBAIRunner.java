@@ -80,8 +80,8 @@ public class VOBAIRunner extends VOBGame {
                 client.removePlayer(client.getPlayer().getPlayerId());
                 gameClients.add(client);
 
-                client.addAIPlayer(0);
-                client.addAIPlayer(1);
+                client.addAIPlayer();
+                client.addAIPlayer();
 
                 ((AIPlayer)client.getPlayers().get(0)).setGenome(aiPlayers.get(i));
                 ((AIPlayer)client.getPlayers().get(1)).setGenome(aiPlayers.get(j));
@@ -90,8 +90,8 @@ public class VOBAIRunner extends VOBGame {
                 client.removePlayer(client.getPlayer().getPlayerId());
                 gameClients.add(client);
 
-                client.addAIPlayer(0);
-                client.addAIPlayer(1);
+                client.addAIPlayer();
+                client.addAIPlayer();
 
                 ((AIPlayer)client.getPlayers().get(1)).setGenome(aiPlayers.get(i));
                 ((AIPlayer)client.getPlayers().get(0)).setGenome(aiPlayers.get(j));

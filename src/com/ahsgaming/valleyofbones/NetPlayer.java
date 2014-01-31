@@ -52,17 +52,6 @@ public class NetPlayer extends Player {
 	}
 
 	/**
-	 * @param id
-	 * @param name
-	 * @param color
-	 * @param team
-	 */
-	public NetPlayer(int id, String name, Color color, int team) {
-		super(id, name, color, team);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @return the isReady
 	 */
 	public boolean isReady() {

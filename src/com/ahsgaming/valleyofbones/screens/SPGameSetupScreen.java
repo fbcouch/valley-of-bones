@@ -60,7 +60,7 @@ public class SPGameSetupScreen extends AbstractScreen {
 		config = cfg;
         cfg.maxPauses = 0;
 		game.createGame(cfg);
-        game.addAIPlayer(1);
+        game.addAIPlayer();
 	}
 	
 	public void setupScreen() {

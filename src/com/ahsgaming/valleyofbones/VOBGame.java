@@ -152,8 +152,8 @@ public class VOBGame extends Game {
 		if (netController != null) netController.sendCommand(cmd);
 	}
 	
-	public void addAIPlayer(int team) {
-		netController.addAIPlayer(team);
+	public void addAIPlayer() {
+		netController.addAIPlayer();
 	}
 	
 	public void removePlayer(int playerId) {
@@ -183,7 +183,7 @@ public class VOBGame extends Game {
                 cfg.isMulti = false;
                 cfg.playerName = profile.name;
                 createGame(cfg);
-                addAIPlayer(1);
+                addAIPlayer();
                 sendStartGame();
 //                setScreen(getGameSetupScreen());
 //                addAIPlayer(1);

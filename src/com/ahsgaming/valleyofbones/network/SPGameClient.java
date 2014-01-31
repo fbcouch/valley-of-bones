@@ -55,7 +55,7 @@ public class SPGameClient implements NetController {
 		this.game = g;
 		gameConfig = cfg;
 
-        player = new Player(getNextPlayerId(), cfg.playerName, Player.getUnusedColor(players), 0);
+        player = new Player(getNextPlayerId(), cfg.playerName, Player.getUnusedColor(players));
         players.add(player);
 	}
 	
@@ -102,9 +102,9 @@ public class SPGameClient implements NetController {
 		return true;
 	}
 	
-	public void addAIPlayer(int team) {
+	public void addAIPlayer() {
 		if (players.size < 4)
-            players.add(new FSMAIPlayer(this, getNextPlayerId(), "AI Player", Player.getUnusedColor(players), team));
+            players.add(new FSMAIPlayer(this, getNextPlayerId(), "AI Player", Player.getUnusedColor(players)));
 	}
 	
 	public void removePlayer(int playerId) {

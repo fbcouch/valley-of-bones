@@ -120,7 +120,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
 
-                    game.addAIPlayer(1);
+                    game.addAIPlayer();
                 }
             });
 

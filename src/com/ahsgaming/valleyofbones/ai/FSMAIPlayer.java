@@ -27,8 +27,8 @@ public class FSMAIPlayer extends AIPlayer {
     HashMap<Integer, UnitFSM> unitFSMs;
     Array<Directive> currentGoals;
 
-    public FSMAIPlayer(NetController netController, int id, String name, Color color, int team) {
-        super(netController, id, name, color, team);
+    public FSMAIPlayer(NetController netController, int id, String name, Color color) {
+        super(netController, id, name, color);
         initialize();
     }
 

@@ -131,7 +131,7 @@ public class MPGameClient implements NetController {
                         RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
                         players.clear();
                         for (int p=0;p<plist.length;p++) {
-                            Player pl = new Player(plist[p].id, plist[p].name, plist[p].color, plist[p].team);
+                            Player pl = new Player(plist[p].id, plist[p].name, Player.AUTOCOLORS[plist[p].color]);
                             players.add(pl);
                             if (pl.getPlayerId() == playerId) player = pl;
                         }
@@ -148,7 +148,7 @@ public class MPGameClient implements NetController {
 
                     if (obj instanceof KryoCommon.GameDetails) {
 
-                        gameConfig.mapName = ((KryoCommon.GameDetails) obj).mapName;
+                        gameConfig.mapName = ((KryoCommon.GameDetails) obj).map;
 
                     }
 
@@ -310,9 +310,8 @@ public class MPGameClient implements NetController {
 		return true;
 	}
 	
-	public void addAIPlayer(int team) {
+	public void addAIPlayer() {
 		AddAIPlayer add = new AddAIPlayer();
-		add.team = team;
 		client.sendTCP(add);
 	}
 	
@@ -372,7 +371,7 @@ public class MPGameClient implements NetController {
         if (gameConfig.isHost) {
             gameConfig.mapName = map;
             KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
-            gameDetails.mapName = map;
+            gameDetails.map = map;
             client.sendTCP(gameDetails);
         }
     }

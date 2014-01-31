@@ -27,6 +27,7 @@ import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.ai.AIPlayer;
+import com.ahsgaming.valleyofbones.ai.FSMAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.AddAIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisterPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon.RegisteredPlayer;
@@ -58,12 +59,19 @@ public class GameServer implements NetController {
 	
 	GameSetupConfig gameConfig;
 
+    Array<RegisteredPlayer> registeredPlayers = new Array<RegisteredPlayer>();
+    Array<RegisteredPlayer> registeredSpectators = new Array<RegisteredPlayer>();
+
+    ObjectMap<Connection, Integer> connMap = new ObjectMap<Connection, Integer>();
+
 	Array<Player> players = new Array<Player>();
     Array<Command> recdCommands = new Array<Command>();
-    HashMap<Integer, KryoCommon.Spectator> spectators = new HashMap<Integer, KryoCommon.Spectator>();
-	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
+//    HashMap<Integer, KryoCommon.Spectator> spectators = new HashMap<Integer, KryoCommon.Spectator>();
+//	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
+
+
 	int nextPlayerId = 0;
-	Connection host = null;
+	int hostId = -1;
 
     boolean loadGame = false;
 	
@@ -83,6 +91,8 @@ public class GameServer implements NetController {
     float awaitReconnectCountdown = 0;
     float awaitReconnectTime = 5;
     boolean awaitReconnect = false;
+
+    int maxPlayers = 2;
 	
 	/**
 	 * 
@@ -103,9 +113,12 @@ public class GameServer implements NetController {
         nextPlayerId = 0;
         players = new Array<Player>();
         recdCommands = new Array<Command>();
-        spectators = new HashMap<Integer, KryoCommon.Spectator>();
-        connMap = new ObjectMap<Connection, NetPlayer>();
-        host = null;
+//        spectators = new HashMap<Integer, KryoCommon.Spectator>();
+//        connMap = new ObjectMap<Connection, NetPlayer>();
+        registeredPlayers = new Array<RegisteredPlayer>();
+        registeredSpectators = new Array<RegisteredPlayer>();
+        connMap = new ObjectMap<Connection, Integer>();
+        hostId = -1;
         stopServer = false;
         gameResult = null;
         awaitReconnectCountdown = 0;
@@ -162,10 +175,10 @@ public class GameServer implements NetController {
 
                     if (gameStarted) {
                         for (Player p: players) {
-                            Gdx.app.log(LOG, p.getPlayerName() + ": " + connMap.findKey(p, true).isConnected());
-                            if (p instanceof NetPlayer && p.getPlayerName().equals(rp.name) && !connMap.findKey(p, true).isConnected()) {
-                                connMap.remove(connMap.findKey(p, true));
-                                connMap.put(c, (NetPlayer)p);
+                            Gdx.app.log(LOG, p.getPlayerName() + ": " + connMap.findKey(p.getPlayerId(), true).isConnected());
+                            if (p instanceof NetPlayer && p.getPlayerName().equals(rp.name) && !connMap.findKey(p.getPlayerId(), true).isConnected()) {
+                                connMap.remove(connMap.findKey(p.getPlayerId(), true));
+                                connMap.put(c, p.getPlayerId());
                                 Unpause up = new Unpause();
                                 up.owner = -1;
                                 up.turn = controller.getGameTurn();
@@ -178,43 +191,50 @@ public class GameServer implements NetController {
                         return;
                     }
 
-                    if (players.size >= Player.AUTOCOLORS.length) {
-                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
-                        return; // TODO should join as spectator?
-                    }
-					
-					int id = getNextPlayerId();
+//                    if (players.size >= Player.AUTOCOLORS.length) {
+//                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
+//                        return; // TODO should join as spectator?
+//                    }
+
+                    int id = getNextPlayerId();
 					Color use = new Color(1, 1, 1, 1);
-					int team = -1;
-					if (players.size <= Player.AUTOCOLORS.length) {
-						use = Player.getUnusedColor(players);
-						int cntTeam1 = 0, cntTeam2 = 0;
-						for (Player p: players) {
-							if (p.getTeam() == 0) cntTeam1++;
-							if (p.getTeam() == 1) cntTeam2++;
-						}
-						
-						if (cntTeam1 > cntTeam2) {
-							team = 1;
-						} else {
-							team = 0;
-						}
-					}
-
-					NetPlayer p = new NetPlayer(id, rp.name, use, team);
-					
-					players.add(p);
-					connMap.put(c, p);
-					
 					RegisteredPlayer reg = new RegisteredPlayer();
-					reg.id = p.getPlayerId();
-					reg.name = p.getPlayerName();
-					reg.color = p.getPlayerColor();
-					reg.team = p.getTeam();
-                    reg.host = (c == host);
+                    reg.id = id;
+                    reg.name = rp.name;
+                    if (players.size < maxPlayers && !rp.spectator) {
+                        reg.spectator = false;
+                        boolean found = false;
+                        boolean[] colorsUsed = new boolean[Player.AUTOCOLORS.length];
+                        for (RegisteredPlayer p: registeredPlayers) {
+                            colorsUsed[p.color] = true;
+                        }
+                        if (rp.prefColor < Player.AUTOCOLORS.length && rp.prefColor >= 0 && !colorsUsed[rp.prefColor]) {
+                            reg.color = rp.prefColor;
+                        } else {
+                            int i = 0;
+                            while (i < Player.AUTOCOLORS.length && colorsUsed[i]) { i++; }
+                            i = Math.min(i, Player.AUTOCOLORS.length - 1);
+                            reg.color = i;
+                        }
+                    } else {
+                        reg.spectator = true;
+                    }
 
-					server.sendToTCP(c.getID(), reg);
-					sendPlayerList();
+                    if (hostId == -1)
+                        hostId = reg.id;
+
+                    reg.host = (reg.id == hostId);
+
+                    if (reg.spectator) {
+                        registeredSpectators.add(reg);
+                    } else {
+                        registeredPlayers.add(reg);
+                    }
+
+                    connMap.put(c, reg.id);
+                    server.sendToTCP(c.getID(), reg);
+
+                    sendPlayerList();
 					sendSetupInfo();
 				}
 
@@ -226,10 +246,23 @@ public class GameServer implements NetController {
                         server.sendToTCP(c.getID(), new KryoCommon.VersionError());
                         return;
                     }
-
                     Gdx.app.log(LOG, "Spectator joined");
-                    spectators.put(c.getID(), sp);
-                    server.sendToTCP(c.getID(), sp);
+
+
+                    RegisteredPlayer reg = new RegisteredPlayer();
+                    reg.id = getNextPlayerId();
+                    reg.name = sp.name;
+                    reg.color = 0;
+
+                    if (hostId == -1)
+                        hostId = reg.id;
+
+                    reg.host = (reg.id == hostId);
+                    reg.spectator = true;
+
+                    registeredSpectators.add(reg);
+                    server.sendToTCP(c.getID(), reg);
+
                     sendPlayerList();
                     sendSetupInfo();
 
@@ -250,16 +283,16 @@ public class GameServer implements NetController {
 				if (obj instanceof AddAIPlayer) {
 					// TODO implement teams/player limits more robustly
 					// make sure this is from the host
-					if (c != host) return;
+					if (connMap.get(c) != hostId) return;
 					
-					addAIPlayer(((AddAIPlayer)obj).team);
+					addAIPlayer();
 					
 					sendPlayerList();
 				}
 				
 				if (obj instanceof RemovePlayer) {
 					// make sure this is from the host
-					if (c != host) return;
+                    if (connMap.get(c) != hostId) return;
 					
 					removePlayer(((RemovePlayer)obj).id);
 					
@@ -267,10 +300,10 @@ public class GameServer implements NetController {
 				}
 				
 				if (obj instanceof KryoCommon.GameDetails) {
-					if (c != host) return;
+                    if (connMap.get(c) != hostId) return;
 					
 					if (controller == null) {
-						gameConfig.mapName = ((KryoCommon.GameDetails)obj).mapName;
+						gameConfig.mapName = ((KryoCommon.GameDetails)obj).map;
 						sendSetupInfo();
 					}
 				}
@@ -279,27 +312,36 @@ public class GameServer implements NetController {
 				if (controller != null) {
 					// the player represented by this connection is ready
 					if (obj instanceof StartGame) {
-						connMap.get(c).setReady(true);
+                        int id = connMap.get(c);
+                        Player player = null;
+                        for (Player p: players) {
+                            if (p.getPlayerId() == id)
+                                player = p;
+                        }
+                        if (player instanceof NetPlayer) {
+                            ((NetPlayer)player).setReady(true);
+                        }
+
 					} else if (obj instanceof Command) {
 						Command cmd = (Command)obj;
-						if (cmd.owner != connMap.get(c).getPlayerId()) cmd.owner = connMap.get(c).getPlayerId();
+						if (cmd.owner != connMap.get(c)) cmd.owner = connMap.get(c);
 
                         recdCommands.add((Command)obj);
 					}
 				} else {
                     if (obj instanceof StartGame) {
-                        if (c == host) loadGame = true;
+                        if (connMap.get(c) == hostId) loadGame = true;
                     }
                 }
 			}
 			
 			public void connected (Connection c) {
-				if (host == null || !host.isConnected()) host = c;
 			}
 			
 			public void disconnected (Connection c) {
                 if (gameStarted) {
-                    Player player = connMap.get(c);
+                    Player player = findPlayerById(connMap.get(c));
+
                     if (player == null) return;
                     // wait for reconnect
                     Pause p = new Pause();
@@ -311,39 +353,58 @@ public class GameServer implements NetController {
                     awaitReconnectCountdown = awaitReconnectTime;
                     awaitReconnect = true;
                 } else {
+                    int id = connMap.get(c);
 
-                    Player p = connMap.get(c);
-                    if (players.contains(p, true)) {
-                        players.removeValue(p, true);
-                        connMap.remove(c);
+                    RegisteredPlayer player = null;
+                    for (RegisteredPlayer rp: registeredPlayers) {
+                        if (rp.id == id)
+                            player = rp;
                     }
-
-                    if (spectators.containsKey(c.getID())) {
-                        spectators.remove(c.getID());
-                    }
-
-                    if (host == c && !gameStarted) {
-                        // find a new host
-                        if (players.size > 0) {
-                            int i = 0;
-                            p = null;
-                            while (i < players.size && (p == null || p instanceof AIPlayer)) {
-                                p = players.get(i);
-                                i++;
+                    if (player != null) {
+                        registeredPlayers.removeValue(player, true);
+                    } else {
+                        for (RegisteredPlayer rp: registeredSpectators) {
+                            if (rp.id == id) {
+                                player = rp;
                             }
-                            if (p instanceof AIPlayer) {
-                                reset();
-                                return;
-                            }
-                            host = connMap.findKey(p, true);
-                            RegisteredPlayer reg = new RegisteredPlayer();
-                            reg.id = p.getPlayerId();
-                            reg.name = p.getPlayerName();
-                            reg.color = p.getPlayerColor();
-                            reg.team = p.getTeam();
-                            reg.host = true;
-                            server.sendToTCP(host.getID(), reg);
                         }
+
+                        if (player != null) {
+                            registeredSpectators.removeValue(player, true);
+                        }
+                    }
+
+                    connMap.remove(c);
+
+                    if (hostId == id) {
+                        // find a new host
+                        hostId = -1;
+
+                        for (RegisteredPlayer rp: registeredPlayers) {
+                            if (!rp.isAI) {
+                                player = rp;
+                                hostId = rp.id;
+                                break;
+                            }
+                        }
+
+                        if (hostId == -1) {
+                            for (RegisteredPlayer rp: registeredSpectators) {
+                                if (!rp.isAI) {
+                                    player = rp;
+                                    hostId = rp.id;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (hostId == -1) {
+                            reset();
+                            return;
+                        }
+
+                        player.host = true;
+                        server.sendToTCP(connMap.findKey(player.id, true).getID(), player);
                     }
 
                     if (controller == null || controller.getGameResult() == null) sendPlayerList();
@@ -356,9 +417,25 @@ public class GameServer implements NetController {
             serverPingTimeout = serverPing;
         }
 	}
+
+    public Player findPlayerById(int id) {
+        for (Player p: players) {
+            if (p.getPlayerId() == id)
+                return p;
+        }
+        return null;
+    }
 	
 	public void startGame() {
 		// the host clicked startGame --> send out the StartGame message so that the clients load and report
+        for (RegisteredPlayer rp: registeredPlayers) {
+            if (rp.isAI) {
+                players.add(new FSMAIPlayer(this, rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+            } else {
+                players.add(new NetPlayer(rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+            }
+        }
+
 		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#Server";
 
@@ -454,7 +531,7 @@ public class GameServer implements NetController {
                 awaitReconnectCountdown -= delta;
                 if (awaitReconnectCountdown < 0) {
                     for (int p = 0; p < players.size; p++) {
-                        if ((players.get(p) instanceof NetPlayer && connMap.findKey(players.get(p), true).isConnected()) || players.get(p) instanceof AIPlayer) {
+                        if ((players.get(p) instanceof NetPlayer && connMap.findKey(players.get(p).getPlayerId(), true).isConnected()) || players.get(p) instanceof AIPlayer) {
                             controller.declareWinner(players.get(p));
                             awaitReconnect = false;
                         }
@@ -484,31 +561,41 @@ public class GameServer implements NetController {
 	}
 	
 	public void sendPlayerList() {
-		RegisteredPlayer[] list = new RegisteredPlayer[players.size];
-		for (int p = 0; p < players.size; p++) {
-			RegisteredPlayer rp = new RegisteredPlayer();
-			Player pl = players.get(p);
-			rp.id = pl.getPlayerId();
-			rp.name = pl.getPlayerName();
-			rp.color = pl.getPlayerColor();
-			rp.team = pl.getTeam();
-			list[p] = rp;
-		}
+        RegisteredPlayer[] list = null;
+        if (!gameStarted) {
+            list = new RegisteredPlayer[registeredPlayers.size + registeredSpectators.size];
+            for (int p = 0; p < list.length; p++) {
+                if (p < registeredPlayers.size) {
+                    list[p] = registeredPlayers.get(p);
+                } else {
+                    list[p] = registeredSpectators.get(p - registeredPlayers.size);
+                }
+            }
+
+        } else {
+            list = new RegisteredPlayer[players.size];
+            for (int p = 0; p < players.size; p++) {
+                RegisteredPlayer rp = new RegisteredPlayer();
+                Player pl = players.get(p);
+                rp.id = pl.getPlayerId();
+                rp.name = pl.getPlayerName();
+                int c = 0;
+                while (!pl.getPlayerColor().equals(Player.AUTOCOLORS[c]) && c < Player.AUTOCOLORS.length - 1)
+                    c++;
+                rp.color = c;
+                list[p] = rp;
+            }
+        }
 		if (gameConfig.isPublic) sendPublicServerUpdate();
 		server.sendToAllTCP(list);
-
-        KryoCommon.Spectator[] spectatorList = new KryoCommon.Spectator[spectators.values().size()];
-        int i = 0;
-        for (KryoCommon.Spectator spectator: spectators.values()) {
-            spectatorList[i] = spectator;
-            i++;
-        }
-        server.sendToAllTCP(spectatorList);
 	}
 	
 	public void sendSetupInfo() {
 		KryoCommon.GameDetails si = new KryoCommon.GameDetails();
-		si.mapName = gameConfig.mapName;
+		si.map = gameConfig.mapName;
+        si.firstMove = -1;
+        si.hostId = hostId;
+        si.rules = 0;
 		server.sendToAllTCP(si);
 	}
 	
@@ -546,16 +633,19 @@ public class GameServer implements NetController {
 	}
 
 	@Override
-	public void addAIPlayer(int team) {
-		if (players.size < Player.AUTOCOLORS.length) {
-			int id = getNextPlayerId();
-			Color use = Player.getUnusedColor(players);
-//			if (id == 0) {
-			    players.add(new AIPlayer(this, id, "AI Player", use, team));
-//            } else if (id == 1) {
-//                players.add(new FSMAIPlayer(this, id, "FSMAI Player", use, team));
-//            }
-		}
+	public void addAIPlayer() {
+		if (registeredPlayers.size < maxPlayers) {
+            RegisteredPlayer reg = new RegisteredPlayer();
+            reg.id = getNextPlayerId();
+            reg.name = "AI Player";
+            reg.color = Player.getUnusedColorId(registeredPlayers);
+            reg.isAI = true;
+            reg.host = false;
+            reg.ready = true;
+            reg.spectator = false;
+            registeredPlayers.add(reg);
+            sendPlayerList();
+        }
 	}
 
 	@Override
@@ -798,7 +888,7 @@ public class GameServer implements NetController {
     @Override
     public Array<String> getSpectators() {
         Array<String> list = new Array<String>();
-        for (KryoCommon.Spectator spectator: spectators.values()) {
+        for (RegisteredPlayer spectator: registeredSpectators) {
             list.add(spectator.name);
         }
         return list;

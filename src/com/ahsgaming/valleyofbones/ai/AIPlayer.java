@@ -74,11 +74,6 @@ public class AIPlayer extends Player {
         this.netController = netController;
 	}
 	
-	public AIPlayer(NetController netController, int id, String name, Color color, int team) {
-		super(id, name, color, team);
-        this.netController = netController;
-	}
-	
 	@Override
 	public void update(GameController controller, float delta) {
 		super.update(controller, delta);

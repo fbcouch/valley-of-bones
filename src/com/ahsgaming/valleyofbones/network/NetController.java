@@ -17,7 +17,7 @@ public interface NetController {
 	
 	public boolean update(float delta);
 	
-	public void addAIPlayer(int team);
+	public void addAIPlayer();
 	public void removePlayer(int playerId);
 
 	public Array<Player> getPlayers();

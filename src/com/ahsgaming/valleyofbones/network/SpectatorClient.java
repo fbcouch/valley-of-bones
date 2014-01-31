@@ -104,7 +104,7 @@ public class SpectatorClient implements NetController {
                 if (gameController == null) {
                     if (obj instanceof KryoCommon.GameDetails) {
                         Gdx.app.log(LOG, "GameDetails rec'd");
-                        gameConfig.mapName = ((KryoCommon.GameDetails) obj).mapName;
+                        gameConfig.mapName = ((KryoCommon.GameDetails) obj).map;
                     }
 
                     if (obj instanceof KryoCommon.StartGame) {
@@ -118,7 +118,7 @@ public class SpectatorClient implements NetController {
                         KryoCommon.RegisteredPlayer[] plist = (KryoCommon.RegisteredPlayer[])obj;
                         players.clear();
                         for (KryoCommon.RegisteredPlayer rp: plist) {
-                            Player pl = new Player(rp.id, rp.name, rp.color, rp.team);
+                            Player pl = new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]);
                             players.add(pl);
                         }
                     }
@@ -272,7 +272,7 @@ public class SpectatorClient implements NetController {
     }
 
     @Override
-    public void addAIPlayer(int team) {
+    public void addAIPlayer() {
         // no-op
     }
 

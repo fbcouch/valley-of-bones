@@ -71,6 +71,7 @@ public class KryoCommon {
         kryo.register(Spectator.class);
         kryo.register(Spectator[].class);
         kryo.register(GameUpdate.class);
+        kryo.register(PlayerReady.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -84,13 +85,17 @@ public class KryoCommon {
 		public int id;
 		public String name;
 		public int color;
-		public int team;
         public boolean host;
         public boolean spectator;
+        public boolean ready;
+        public boolean isAI;
 	}
+
+    public static class PlayerReady {
+        public boolean ready;
+    }
 	
 	public static class AddAIPlayer {
-		public int team;
 	}
 	
 	public static class RemovePlayer {
@@ -102,8 +107,6 @@ public class KryoCommon {
     }
 	
 	public static class GameDetails {
-        public RegisteredPlayer[] players;
-        public RegisteredPlayer[] spectators;
         public int hostId;
         public String map;
         public int rules;
