@@ -93,19 +93,7 @@ public class SPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left();
             playerTable.add("Terran");
-//            Image[] colors = new Image[Player.AUTOCOLORS.length];
-//
-//            for (int c = 0; c < colors.length; c++) {
-//                colors[c] = new Image(getSkin().getDrawable("white-hex"));
-//                colors[c].setColor(Player.AUTOCOLORS[c]);
-//            }
-//
-//            ImageSelectBox color = new ImageSelectBox(colors, new ImageSelectBox.ImageSelectBoxStyle(
-//                    getSkin().getDrawable("default-select"),
-//                    getSkin().get("default", ScrollPane.ScrollPaneStyle.class),
-//                    new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad"))
-//            ));
-//            ImageList color = new ImageList(colors, new ImageList.ImageListStyle(getSkin().getDrawable("default-rect-pad")));
+
             Image color = new Image(getSkin().getDrawable("white-hex"));
             color.setColor(Player.AUTOCOLORS[pList.indexOf(p, true)]);
             playerTable.add(color);
@@ -124,12 +112,10 @@ public class SPGameSetupScreen extends AbstractScreen {
                     return super.touchDown(event, x, y, pointer, button);
                 }
             });
-//            playerTable.add(colors[0]).size(colors[0].getWidth() / VOBGame.SCALE, colors[0].getHeight() / VOBGame.SCALE);
-//            if (pList.indexOf(p, true) == 0) {
-//                color.setSelectedIndex(0);
-//            } else {
-//                color.setSelectedIndex(1);
-//            }
+
+            CheckBox chkReady = new CheckBox("", getSkin());
+            playerTable.add(chkReady);
+
             playerTable.row().expandX().padBottom(5).padTop(5);
         }
 
@@ -161,7 +147,25 @@ public class SPGameSetupScreen extends AbstractScreen {
             }
         });
 
-        setupTable.add(mapSelect).left();
+        setupTable.add(mapSelect).left().padBottom(4).padTop(4).fillX();
+        setupTable.row();
+
+        setupTable.add("Rules:").left();
+        SelectBox ruleSelect = new SelectBox(new String[]{ "Classic" }, getSkin());
+        setupTable.add(ruleSelect).left().padBottom(4).fillX();
+        setupTable.row();
+
+        setupTable.add("Spawns:").left();
+        SelectBox spawnSelect = new SelectBox(new String[]{ "Normal", "Inverted", "Random" }, getSkin());
+        setupTable.add(spawnSelect).left().padBottom(4).fillX();
+        setupTable.row();
+
+        setupTable.add("First Move:").left();
+        SelectBox moveSelect = new SelectBox(new String[]{ "Random", "P1", "P2" }, getSkin());
+        setupTable.add(moveSelect).left().padBottom(4).fillX();
+        setupTable.row();
+
+
 
         setupTable.row().expandX().expandY().top().left();
 

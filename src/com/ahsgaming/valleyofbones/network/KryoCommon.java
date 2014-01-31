@@ -30,6 +30,8 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
+import java.util.HashMap;
+
 /**
  * @author jami
  *
@@ -74,14 +76,17 @@ public class KryoCommon {
 	public static class RegisterPlayer {
 		public String name;
         public String version = VOBGame.VERSION;
+        public boolean spectator = false;
+        public int prefColor = 0;
 	}
 	
 	public static class RegisteredPlayer {
 		public int id;
 		public String name;
-		public Color color;
+		public int color;
 		public int team;
         public boolean host;
+        public boolean spectator;
 	}
 	
 	public static class AddAIPlayer {
@@ -97,7 +102,12 @@ public class KryoCommon {
     }
 	
 	public static class GameDetails {
-		public String mapName = "blank.tmx";
+        public RegisteredPlayer[] players;
+        public RegisteredPlayer[] spectators;
+        public int hostId;
+        public String map;
+        public int rules;
+        public int firstMove = -1;
 	}
 
     public static interface Error {}

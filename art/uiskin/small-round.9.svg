@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="41.999996"
+   height="41.999596"
+   id="svg4558"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="default-rect.9.svg"
+   inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/uiskin/drawable/default-round.9.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4560" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.2"
+     inkscape:cx="25.455292"
+     inkscape:cy="18.279043"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1024"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2987"
+       empspacing="5"
+       dotted="true"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="0.9999944px"
+       originy="0.9999944px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4563">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-190.42837,-467.71971)">
+    <path
+       style="color:#000000;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 229.92837,492.93361 -15,14.2857 -7,0 -15,-14.2857 0,-8.42845 15,-14.2857 7,0 15,14.2857 z"
+       id="rect3755-0-2-0-5-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/home/jami/Projects/java/valley-of-bones/art/exported/selection-hud-bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.99959439px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 209.92807,468.21951 3.0006,0"
+       id="path2983"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.99959439px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 190.92817,492.21982 0,-7.00062"
+       id="path2983-3-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.99959439px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 231.92857,497.21982 0,-17.00062"
+       id="path2983-3-1-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.99959439px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 195.92807,509.21951 31.0006,0"
+       id="path2983-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
