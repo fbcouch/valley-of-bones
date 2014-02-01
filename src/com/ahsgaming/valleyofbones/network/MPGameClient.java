@@ -37,6 +37,7 @@ import com.ahsgaming.valleyofbones.network.KryoCommon.StartGame;
 import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -130,6 +131,7 @@ public class MPGameClient implements NetController {
                         Gdx.app.log(LOG, "Playerlist rec'd");
                         RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
                         players.clear();
+                        spectators.clear();
                         for (int p=0;p<plist.length;p++) {
                             if (plist[p].spectator) {
                                 spectators.add(plist[p].name);
@@ -149,8 +151,15 @@ public class MPGameClient implements NetController {
                     }
 
                     if (obj instanceof KryoCommon.GameDetails) {
+                        Gdx.app.log(LOG, "GameDetails rec'd");
+                        KryoCommon.GameDetails details = (KryoCommon.GameDetails) obj;
+                        gameConfig.mapName = details.map;
+                        gameConfig.firstMove = details.firstMove;
+                        gameConfig.spawnType = details.spawn;
+                        gameConfig.ruleSet = details.rules;
 
-                        gameConfig.mapName = ((KryoCommon.GameDetails) obj).map;
+                        Json json = new Json();
+                        System.out.println(json.toJson(details, KryoCommon.GameDetails.class));
 
                     }
 
@@ -375,6 +384,16 @@ public class MPGameClient implements NetController {
             KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
             gameDetails.map = map;
             client.sendTCP(gameDetails);
+        }
+    }
+
+    public void sendGameDetails(KryoCommon.GameDetails gameDetails) {
+        if (gameConfig.isHost) {
+            client.sendTCP(gameDetails);
+            gameConfig.firstMove = gameDetails.firstMove;
+            gameConfig.mapName = gameDetails.map;
+            gameConfig.spawnType = gameDetails.spawn;
+            gameConfig.ruleSet = gameDetails.rules;
         }
     }
 

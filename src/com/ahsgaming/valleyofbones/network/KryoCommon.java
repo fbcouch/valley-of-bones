@@ -112,7 +112,8 @@ public class KryoCommon {
         public int hostId;
         public String map;
         public int rules;
-        public int firstMove = -1;
+        public int firstMove = 0;
+        public int spawn;
 	}
 
     public static interface Error {}

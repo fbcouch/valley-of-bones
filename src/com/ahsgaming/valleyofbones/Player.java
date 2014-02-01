@@ -43,8 +43,8 @@ public class Player {
 	public String LOG = "Player"; 
 	public static final Color COLOR_RED = new Color(1, 0.2f, 0.2f, 1);
 	public static final Color COLOR_BLUE = new Color(0.3f, 0.3f, 1, 1);
-	public static final Color COLOR_GREEN = new Color(0, 1, 0, 1);
-	public static final Color COLOR_PURPLE = new Color(1, 0, 1, 1);
+	public static final Color COLOR_GREEN = new Color(0, 0.8f, 0, 1);
+	public static final Color COLOR_PURPLE = new Color(0.6f, 0, 1, 1);
 	public static final Color[] AUTOCOLORS = {COLOR_RED, COLOR_BLUE, COLOR_GREEN, COLOR_PURPLE};
 
     boolean isLoaded = false;

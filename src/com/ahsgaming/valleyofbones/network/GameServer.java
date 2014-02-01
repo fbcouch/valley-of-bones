@@ -201,7 +201,8 @@ public class GameServer implements NetController {
 					RegisteredPlayer reg = new RegisteredPlayer();
                     reg.id = id;
                     reg.name = rp.name;
-                    if (players.size < maxPlayers && !rp.spectator) {
+                    if (registeredPlayers.size < maxPlayers && !rp.spectator) {
+                        Gdx.app.log(LOG, "player joined");
                         reg.spectator = false;
                         boolean found = false;
                         boolean[] colorsUsed = new boolean[Player.AUTOCOLORS.length];
@@ -217,6 +218,7 @@ public class GameServer implements NetController {
                             reg.color = i;
                         }
                     } else {
+                        Gdx.app.log(LOG, "player --> spectator");
                         reg.spectator = true;
                     }
 
@@ -282,7 +284,7 @@ public class GameServer implements NetController {
 
                 if (obj instanceof KryoCommon.UpdatePlayer) {
                     KryoCommon.UpdatePlayer update = (KryoCommon.UpdatePlayer)obj;
-                    if (connMap.get(c) != update.id) return;
+                    if (connMap.get(c) != update.id && !(connMap.get(c) == hostId && !connMap.containsValue(update.id, true))) return;
 
                     RegisteredPlayer player = null;
                     for (RegisteredPlayer rp: registeredPlayers) {
@@ -322,7 +324,11 @@ public class GameServer implements NetController {
                     if (connMap.get(c) != hostId) return;
 					
 					if (controller == null) {
-						gameConfig.mapName = ((KryoCommon.GameDetails)obj).map;
+                        KryoCommon.GameDetails details = (KryoCommon.GameDetails)obj;
+						gameConfig.mapName = details.map;
+                        gameConfig.firstMove = details.firstMove;
+                        gameConfig.ruleSet = details.rules;
+                        gameConfig.spawnType = details.spawn;
 						sendSetupInfo();
 					}
 				}
@@ -616,9 +622,10 @@ public class GameServer implements NetController {
 	public void sendSetupInfo() {
 		KryoCommon.GameDetails si = new KryoCommon.GameDetails();
 		si.map = gameConfig.mapName;
-        si.firstMove = -1;
+        si.firstMove = gameConfig.firstMove;
         si.hostId = hostId;
-        si.rules = 0;
+        si.rules = gameConfig.ruleSet;
+        si.spawn = gameConfig.spawnType;
 		server.sendToAllTCP(si);
 	}
 	
@@ -673,15 +680,21 @@ public class GameServer implements NetController {
 
 	@Override
 	public void removePlayer(int playerId) {
-		
-		Array<Player> remove = new Array<Player>();
-		for (Player p: players) {
-			if (p.getPlayerId() == playerId) {
-				remove.add(p);
-			}
-		}
-		
-		players.removeAll(remove, true);
+		if (!gameStarted) {
+            Array<RegisteredPlayer> remove = new Array<RegisteredPlayer>();
+            for (RegisteredPlayer p: registeredPlayers) {
+                if (p.id == playerId) {
+                    remove.add(p);
+                }
+            }
+
+            for (RegisteredPlayer rp: remove) {
+                if (!rp.isAI && connMap.containsValue(rp.id, true)) {
+                    connMap.findKey(rp.id, true).close();
+                }
+            }
+            registeredPlayers.removeAll(remove, true);
+        }
 	}
 
 	@Override

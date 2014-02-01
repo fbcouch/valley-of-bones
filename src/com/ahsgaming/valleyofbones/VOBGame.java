@@ -423,4 +423,15 @@ public class VOBGame extends Game {
         return soundManager;
     }
 
+    public Array<RuleSet> getRuleSets() {
+        // TODO implement
+        RuleSet rs = new RuleSet();
+        rs.name = "classic";
+        return new Array<RuleSet>(new RuleSet[]{rs});
+    }
+
+    public static class RuleSet {
+        public String name;
+    }
+
 }

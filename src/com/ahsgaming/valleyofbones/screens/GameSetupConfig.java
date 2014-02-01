@@ -10,6 +10,9 @@ import com.ahsgaming.valleyofbones.network.KryoCommon;
 */
 public class GameSetupConfig {
     public String mapName = "";
+    public int ruleSet = 0;
+    public int spawnType = 0;
+    public int firstMove = 0;
     public boolean isMulti = false;
     public boolean isHost = true;
     public boolean isSpectator = false;

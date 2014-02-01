@@ -24,7 +24,6 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
-import com.ahsgaming.valleyofbones.ai.AIPlayer;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.badlogic.gdx.Gdx;
@@ -51,10 +50,15 @@ public class MPGameSetupScreen extends AbstractScreen {
 
     boolean isHost = false;
 
-    SelectBox mapSelect;
-    Label mapSelection;
-	
-	/**
+    SelectBox mapSelect, spawnSelect, ruleSelect, moveSelect;
+    Label lblMap, lblSpawn, lblRule, lblMove;
+
+    boolean needsUpdate = false;
+
+    String[] spawnTypes = new String[]{ "Normal", "Inverted", "Random" };
+    String[] firstMoves = new String[]{ "Random", "P1", "P2" };
+
+    /**
 	 * @param game
 	 */
 	public MPGameSetupScreen(VOBGame game, GameSetupConfig cfg) {
@@ -106,14 +110,15 @@ public class MPGameSetupScreen extends AbstractScreen {
             if (p == client.getPlayer() || (config.isHost && p.isAI())) {
                 color.addListener(new ClickListener() {
                     @Override
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
                         int i = 0;
                         while (i < Player.AUTOCOLORS.length && !Player.AUTOCOLORS[i].equals(event.getTarget().getColor())) {
                             i++;
                         }
-                        i = (event.getButton() == 0 ? i + 1 : i - 1);
-                        i = Math.max(0, i);
-                        i = Math.min(i, Player.AUTOCOLORS.length - 1);
+                        i++;
+
+                        i %= Player.AUTOCOLORS.length;
                         event.getTarget().setColor(Player.AUTOCOLORS[i]);
 
                         KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
@@ -121,8 +126,6 @@ public class MPGameSetupScreen extends AbstractScreen {
                         update.color = i;
                         update.ready = p.isReady();
                         client.sendPlayerUpdate(update);
-
-                        return super.touchDown(event, x, y, pointer, button);
                     }
                 });
             }
@@ -142,7 +145,6 @@ public class MPGameSetupScreen extends AbstractScreen {
                     while (update.color < Player.AUTOCOLORS.length && !p.getPlayerColor().equals(Player.AUTOCOLORS[update.color])) {
                         update.color++;
                     }
-                    update.color = Math.min(update.color, Player.AUTOCOLORS.length - 1);
                     update.ready = !p.isReady();
                     client.sendPlayerUpdate(update);
                 }
@@ -192,6 +194,13 @@ public class MPGameSetupScreen extends AbstractScreen {
         Label mapLbl = new Label("Map:", getSkin());
         setupTable.add(mapLbl).left();
 
+        ChangeListener updateListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                needsUpdate = true;
+            }
+        };
+
         if (config.isHost) {
             JsonReader reader = new JsonReader();
             JsonValue val = reader.parse(Gdx.files.internal("maps/maps.json").readString());
@@ -205,33 +214,57 @@ public class MPGameSetupScreen extends AbstractScreen {
             mapSelect.setSelection(config.mapName);
             game.setMap(mapSelect.getSelection());
 
-            mapSelect.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    game.setMap(((SelectBox)actor).getSelection());
-                }
-            });
+            mapSelect.addListener(updateListener);
 
             setupTable.add(mapSelect).left().padTop(4).padBottom(4).fillX();
         } else {
-            mapSelection = new Label(config.mapName, getSkin());
-            setupTable.add(mapSelection).left();
+            lblMap = new Label(config.mapName, getSkin());
+            setupTable.add(lblMap).left();
         }
         setupTable.row();
 
         setupTable.add("Rules:").left();
-        SelectBox ruleSelect = new SelectBox(new String[]{ "Classic" }, getSkin());
-        setupTable.add(ruleSelect).left().padBottom(4).fillX();
+        if (config.isHost) {
+            Array<VOBGame.RuleSet> ruleSets = game.getRuleSets();
+            String[] items = new String[ruleSets.size];
+            for (int i = 0; i < ruleSets.size; i++) {
+                items[i] = ruleSets.get(i).name;
+            }
+            ruleSelect = new SelectBox(items, getSkin());
+            setupTable.add(ruleSelect).left().padBottom(4).fillX();
+            ruleSelect.setSelection(config.ruleSet);
+
+            ruleSelect.addListener(updateListener);
+        } else {
+            lblRule = new Label(game.getRuleSets().get(config.ruleSet).name, getSkin());
+            setupTable.add(lblRule).left();
+        }
         setupTable.row();
 
         setupTable.add("Spawns:").left();
-        SelectBox spawnSelect = new SelectBox(new String[]{ "Normal", "Inverted", "Random" }, getSkin());
-        setupTable.add(spawnSelect).left().padBottom(4).fillX();
+        if (config.isHost) {
+            spawnSelect = new SelectBox(spawnTypes, getSkin());
+            setupTable.add(spawnSelect).left().padBottom(4).fillX();
+            spawnSelect.setSelection(config.spawnType);
+
+            spawnSelect.addListener(updateListener);
+        } else {
+            lblSpawn = new Label(spawnTypes[config.spawnType], getSkin());
+            setupTable.add(lblSpawn).left();
+        }
         setupTable.row();
 
         setupTable.add("First Move:").left();
-        SelectBox moveSelect = new SelectBox(new String[]{ "Random", "P1", "P2" }, getSkin());
-        setupTable.add(moveSelect).left().padBottom(4).fillX();
+        if (config.isHost) {
+            moveSelect = new SelectBox(firstMoves, getSkin());
+            setupTable.add(moveSelect).left().padBottom(4).fillX();
+            moveSelect.setSelection(config.firstMove);
+
+            moveSelect.addListener(updateListener);
+        } else {
+            lblMove = new Label(firstMoves[config.firstMove], getSkin());
+            setupTable.add(lblMove).left();
+        }
         setupTable.row();
 
         setupTable.row().expandX().expandY().top().left();
@@ -245,18 +278,12 @@ public class MPGameSetupScreen extends AbstractScreen {
             isHost = true;
             TextButton start = new TextButton("Start Game",getSkin());
             start.addListener(new ClickListener() {
-
-                /* (non-Javadoc)
-                 * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
-                 */
                 @Override
-                public void touchUp(InputEvent event, float x, float y,
-                                    int pointer, int button) {
-                    super.touchUp(event, x, y, pointer, button);
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);
                     if (game.getPlayers().size >= 2)
                         game.sendStartGame();
                 }
-
             });
             controlTable.add(start).padTop(4);
 
@@ -265,20 +292,12 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         TextButton cancel = new TextButton("Cancel", getSkin(), "cancel");
         cancel.addListener(new ClickListener() {
-
-            /* (non-Javadoc)
-             * @see com.badlogic.gdx.scenes.scene2d.utils.ClickListener#touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent, float, float, int, int)
-             */
             @Override
-            public void touchUp(InputEvent event, float x, float y,
-                                int pointer, int button) {
-                super.touchUp(event, x, y, pointer, button);
-
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
                 game.setScreen(game.getMainMenuScreen());
                 game.closeGame();
-
             }
-
         });
 
         controlTable.add(cancel).fillX().padTop(4);
@@ -328,6 +347,16 @@ public class MPGameSetupScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) {
 		super.render(delta);
+
+        if (config.isHost && needsUpdate) {
+            needsUpdate = false;
+            KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
+            gameDetails.map = mapSelect.getSelection();
+            gameDetails.rules = ruleSelect.getSelectionIndex();
+            gameDetails.firstMove = moveSelect.getSelectionIndex();
+            gameDetails.spawn = spawnSelect.getSelectionIndex();
+            client.sendGameDetails(gameDetails);
+        }
 		
 		//Gdx.app.log(LOG, Integer.toString(game.getPlayers().size()));
 		Array<Player> players = game.getPlayers();
@@ -349,13 +378,17 @@ public class MPGameSetupScreen extends AbstractScreen {
         }
 
         if (!config.isMulti || config.isHost) {
-            if (!mapSelect.getSelection().equals(config.mapName)) {
-                mapSelect.setSelection(config.mapName);
-            }
+            if (!mapSelect.getSelection().equals(config.mapName)) mapSelect.setSelection(config.mapName);
+            if (moveSelect.getSelectionIndex() != config.firstMove) moveSelect.setSelection(config.firstMove);
+            if (spawnSelect.getSelectionIndex() != config.spawnType) moveSelect.setSelection(config.spawnType);
+            if (ruleSelect.getSelectionIndex() != config.ruleSet) moveSelect.setSelection(config.ruleSet);
+
         } else {
-            if (!mapSelection.getText().equals(config.mapName)) {
-                mapSelection.setText(config.mapName);
-            }
+            if (!lblMap.getText().equals(config.mapName)) lblMap.setText(config.mapName);
+            if (!lblSpawn.getText().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
+            if (!lblMove.getText().equals(firstMoves[config.firstMove])) lblMove.setText(firstMoves[config.firstMove]);
+            if (!lblRule.getText().equals(game.getRuleSets().get(config.spawnType).name)) lblRule.setText(game.getRuleSets().get(config.ruleSet).name);
+
         }
 	}
 
