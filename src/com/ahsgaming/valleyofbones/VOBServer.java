@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.network.GameServer;
+import com.ahsgaming.valleyofbones.network.NetController;
 import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.ahsgaming.valleyofbones.screens.ServerScreen;
 import com.badlogic.gdx.Gdx;
@@ -24,8 +25,10 @@ public class VOBServer extends VOBGame {
     }
 
     @Override
-    public void createGame(GameSetupConfig cfg) {
-        gameServers.add(new GameServer(this, cfg));
+    public NetController createGame(GameSetupConfig cfg) {
+        GameServer server = new GameServer(this, cfg);
+        gameServers.add(server);
+        return server;
     }
 
     @Override

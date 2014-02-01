@@ -46,6 +46,10 @@ public class Player {
 	public static final Color COLOR_GREEN = new Color(0, 1, 0, 1);
 	public static final Color COLOR_PURPLE = new Color(1, 0, 1, 1);
 	public static final Color[] AUTOCOLORS = {COLOR_RED, COLOR_BLUE, COLOR_GREEN, COLOR_PURPLE};
+
+    boolean isLoaded = false;
+    boolean isReady = false;
+    boolean isAI = false;
 	
 	int playerId = -1;
 	Color playerColor = new Color(1, 1, 1, 1);
@@ -339,4 +343,28 @@ public class Player {
 		if (baseUnit == null) return false;
 		return baseUnit.getData().getCurHP() > 0;
 	}
+
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(boolean ready) {
+        isReady = ready;
+    }
+
+    public boolean isAI() {
+        return isAI;
+    }
+
+    public void setAI(boolean AI) {
+        isAI = AI;
+    }
 }

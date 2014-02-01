@@ -176,7 +176,7 @@ public class GameServer implements NetController {
                     if (gameStarted) {
                         for (Player p: players) {
                             Gdx.app.log(LOG, p.getPlayerName() + ": " + connMap.findKey(p.getPlayerId(), true).isConnected());
-                            if (p instanceof NetPlayer && p.getPlayerName().equals(rp.name) && !connMap.findKey(p.getPlayerId(), true).isConnected()) {
+                            if (!(p instanceof AIPlayer) && p.getPlayerName().equals(rp.name) && !connMap.findKey(p.getPlayerId(), true).isConnected()) {
                                 connMap.remove(connMap.findKey(p.getPlayerId(), true));
                                 connMap.put(c, p.getPlayerId());
                                 Unpause up = new Unpause();
@@ -279,6 +279,25 @@ public class GameServer implements NetController {
                         server.sendToTCP(c.getID(), gameUpdate);
                     }
                 }
+
+                if (obj instanceof KryoCommon.UpdatePlayer) {
+                    KryoCommon.UpdatePlayer update = (KryoCommon.UpdatePlayer)obj;
+                    if (connMap.get(c) != update.id) return;
+
+                    RegisteredPlayer player = null;
+                    for (RegisteredPlayer rp: registeredPlayers) {
+                        if (rp.id == update.id) {
+                            player = rp;
+                        }
+                    }
+
+                    if (player != null) {
+                        player.color = update.color;
+                        player.ready = update.ready;
+                    }
+
+                    sendPlayerList();
+                }
 				
 				if (obj instanceof AddAIPlayer) {
 					// TODO implement teams/player limits more robustly
@@ -310,7 +329,7 @@ public class GameServer implements NetController {
 				
 				// TODO need to check this for validity
 				if (controller != null) {
-					// the player represented by this connection is ready
+					// the player represented by this connection has finished loading
 					if (obj instanceof StartGame) {
                         int id = connMap.get(c);
                         Player player = null;
@@ -318,9 +337,7 @@ public class GameServer implements NetController {
                             if (p.getPlayerId() == id)
                                 player = p;
                         }
-                        if (player instanceof NetPlayer) {
-                            ((NetPlayer)player).setReady(true);
-                        }
+                        player.setLoaded(true);
 
 					} else if (obj instanceof Command) {
 						Command cmd = (Command)obj;
@@ -330,7 +347,13 @@ public class GameServer implements NetController {
 					}
 				} else {
                     if (obj instanceof StartGame) {
-                        if (connMap.get(c) == hostId) loadGame = true;
+                        if (connMap.get(c) != hostId) return;
+                        for (RegisteredPlayer rp: registeredPlayers) {
+                            if (!(rp.ready || rp.isAI)) {
+                                return;
+                            }
+                        }
+                        loadGame = true;
                     }
                 }
 			}
@@ -432,7 +455,7 @@ public class GameServer implements NetController {
             if (rp.isAI) {
                 players.add(new FSMAIPlayer(this, rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
             } else {
-                players.add(new NetPlayer(rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+                players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
             }
         }
 
@@ -488,7 +511,7 @@ public class GameServer implements NetController {
 		if (!gameStarted) {
 			boolean allReady = true;
 			for (int p=0;p<players.size;p++) {
-				if (players.get(p) instanceof NetPlayer && !((NetPlayer)players.get(p)).isReady()) {
+				if (!players.get(p).isLoaded()) {
 					allReady = false;
 				}
 			}
@@ -531,7 +554,7 @@ public class GameServer implements NetController {
                 awaitReconnectCountdown -= delta;
                 if (awaitReconnectCountdown < 0) {
                     for (int p = 0; p < players.size; p++) {
-                        if ((players.get(p) instanceof NetPlayer && connMap.findKey(players.get(p).getPlayerId(), true).isConnected()) || players.get(p) instanceof AIPlayer) {
+                        if (players.get(p) instanceof AIPlayer || connMap.findKey(players.get(p).getPlayerId(), true).isConnected()) {
                             controller.declareWinner(players.get(p));
                             awaitReconnect = false;
                         }

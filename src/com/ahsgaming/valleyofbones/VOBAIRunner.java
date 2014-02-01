@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones;
 
 import com.ahsgaming.valleyofbones.ai.AIPlayer;
+import com.ahsgaming.valleyofbones.network.NetController;
 import com.ahsgaming.valleyofbones.network.SPGameClient;
 import com.ahsgaming.valleyofbones.screens.AIRunnerScreen;
 import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
@@ -36,8 +37,8 @@ public class VOBAIRunner extends VOBGame {
     }
 
     @Override
-    public void createGame(GameSetupConfig cfg) {
-        super.createGame(cfg);
+    public NetController createGame(GameSetupConfig cfg) {
+        return super.createGame(cfg);
     }
 
     @Override

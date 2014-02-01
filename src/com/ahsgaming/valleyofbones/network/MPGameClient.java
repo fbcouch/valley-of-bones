@@ -131,18 +131,20 @@ public class MPGameClient implements NetController {
                         RegisteredPlayer[] plist = (RegisteredPlayer[])obj;
                         players.clear();
                         for (int p=0;p<plist.length;p++) {
-                            Player pl = new Player(plist[p].id, plist[p].name, Player.AUTOCOLORS[plist[p].color]);
-                            players.add(pl);
-                            if (pl.getPlayerId() == playerId) player = pl;
-                        }
-                    }
-
-                    if (obj instanceof KryoCommon.Spectator[]) {
-                        Gdx.app.log(LOG, "Spectator list rec'd");
-                        KryoCommon.Spectator[] slist = (KryoCommon.Spectator[])obj;
-                        spectators.clear();
-                        for (KryoCommon.Spectator s: slist) {
-                            spectators.add(s.name);
+                            if (plist[p].spectator) {
+                                spectators.add(plist[p].name);
+                            } else {
+                                Player pl = new Player(plist[p].id, plist[p].name, Player.AUTOCOLORS[plist[p].color]);
+                                if (plist[p].isAI) {
+                                    pl.setReady(true);
+                                    pl.setAI(true);
+                                } else {
+                                    pl.setReady(plist[p].ready);
+                                }
+                                players.add(pl);
+                                if (pl.getPlayerId() == playerId) player = pl;
+                                Gdx.app.log(LOG, "Player ready: " + plist[p].ready);
+                            }
                         }
                     }
 
@@ -374,5 +376,9 @@ public class MPGameClient implements NetController {
             gameDetails.map = map;
             client.sendTCP(gameDetails);
         }
+    }
+
+    public void sendPlayerUpdate(KryoCommon.UpdatePlayer update) {
+        client.sendTCP(update);
     }
 }

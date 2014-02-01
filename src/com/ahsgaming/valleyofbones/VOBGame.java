@@ -105,7 +105,7 @@ public class VOBGame extends Game {
         TextureManager.defaultMaxFilter = profile.filter;
     }
 	
-	public void createGame(GameSetupConfig cfg) {
+	public NetController createGame(GameSetupConfig cfg) {
         if (cfg.isMulti) {
             if (cfg.isSpectator) {
                 netController = new SpectatorClient(this, cfg);
@@ -116,6 +116,7 @@ public class VOBGame extends Game {
             // TODO load settings from somewhere?
             netController = new SPGameClient(this, cfg);
         }
+        return netController;
 	}
 	
 	public void closeGame() {

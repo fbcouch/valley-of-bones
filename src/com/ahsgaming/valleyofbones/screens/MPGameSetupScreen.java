@@ -24,6 +24,9 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.ai.AIPlayer;
+import com.ahsgaming.valleyofbones.network.KryoCommon;
+import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -41,6 +44,7 @@ import com.badlogic.gdx.utils.JsonValue;
 public class MPGameSetupScreen extends AbstractScreen {
 	public String LOG = "MPGameSetupScreen";
 	GameSetupConfig config;
+    MPGameClient client;
 	
 	Array<Player> pList;
     Array<String> sList;
@@ -56,7 +60,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 	public MPGameSetupScreen(VOBGame game, GameSetupConfig cfg) {
 		super(game);
 		config = cfg;
-		game.createGame(cfg);
+		client = (MPGameClient)game.createGame(cfg);
 	}
 	
 	public void setupScreen() {
@@ -79,7 +83,7 @@ public class MPGameSetupScreen extends AbstractScreen {
         pList = new Array<Player>();
         pList.addAll(game.getPlayers());
 
-        for (Player p: pList) {
+        for (final Player p: pList) {
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
                 playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).expandX();
@@ -94,22 +98,57 @@ public class MPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left().expandX();
             playerTable.add("Terran").expandX();
-//            Image[] colors = new Image[Player.AUTOCOLORS.length];
-//            for (int c = 0; c < colors.length; c++) {
-//                colors[c] = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "hud-bar"));
-//                colors[c].setColor(Player.AUTOCOLORS[c]);
-//            }
-//
-////            SelectBox color = new SelectBox(colors, getSkin());
-//            ImageList color = new ImageList(colors, new ImageList.ImageListStyle(getSkin().getDrawable("default-select")));
-//
-//            playerTable.add(color);
-//            playerTable.add(colors[0]).size(colors[0].getWidth() / VOBGame.SCALE, colors[0].getHeight() / VOBGame.SCALE);
-//            if (pList.indexOf(p, true) == 0) {
-//                color.setSelectedIndex(0);
-//            } else {
-//                color.setSelectedIndex(1);
-//            }
+
+            Image color = new Image(getSkin().getDrawable("white-hex"));
+            color.setColor(p.getPlayerColor());
+            playerTable.add(color).expandX().width(color.getWidth());
+
+            if (p == client.getPlayer() || (config.isHost && p.isAI())) {
+                color.addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        int i = 0;
+                        while (i < Player.AUTOCOLORS.length && !Player.AUTOCOLORS[i].equals(event.getTarget().getColor())) {
+                            i++;
+                        }
+                        i = (event.getButton() == 0 ? i + 1 : i - 1);
+                        i = Math.max(0, i);
+                        i = Math.min(i, Player.AUTOCOLORS.length - 1);
+                        event.getTarget().setColor(Player.AUTOCOLORS[i]);
+
+                        KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
+                        update.id = p.getPlayerId();
+                        update.color = i;
+                        update.ready = p.isReady();
+                        client.sendPlayerUpdate(update);
+
+                        return super.touchDown(event, x, y, pointer, button);
+                    }
+                });
+            }
+
+            CheckBox chkReady = new CheckBox("", getSkin());
+            playerTable.add(chkReady).expandX();
+
+            chkReady.setChecked(p.isReady());
+            if (p != client.getPlayer()) chkReady.setDisabled(true);
+
+            chkReady.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
+                    update.id = p.getPlayerId();
+                    update.color = 0;
+                    while (update.color < Player.AUTOCOLORS.length && !p.getPlayerColor().equals(Player.AUTOCOLORS[update.color])) {
+                        update.color++;
+                    }
+                    update.color = Math.min(update.color, Player.AUTOCOLORS.length - 1);
+                    update.ready = !p.isReady();
+                    client.sendPlayerUpdate(update);
+                }
+            });
+
+
             playerTable.row().expandX().padBottom(5).padTop(5);
         }
 
@@ -124,7 +163,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                 }
             });
 
-            playerTable.add(addAI).colspan(4).left();
+            playerTable.add(addAI).colspan(5).left();
         }
 
         table.add(playerTable).fillX().colspan(2);
@@ -173,11 +212,27 @@ public class MPGameSetupScreen extends AbstractScreen {
                 }
             });
 
-            setupTable.add(mapSelect).left();
+            setupTable.add(mapSelect).left().padTop(4).padBottom(4).fillX();
         } else {
             mapSelection = new Label(config.mapName, getSkin());
             setupTable.add(mapSelection).left();
         }
+        setupTable.row();
+
+        setupTable.add("Rules:").left();
+        SelectBox ruleSelect = new SelectBox(new String[]{ "Classic" }, getSkin());
+        setupTable.add(ruleSelect).left().padBottom(4).fillX();
+        setupTable.row();
+
+        setupTable.add("Spawns:").left();
+        SelectBox spawnSelect = new SelectBox(new String[]{ "Normal", "Inverted", "Random" }, getSkin());
+        setupTable.add(spawnSelect).left().padBottom(4).fillX();
+        setupTable.row();
+
+        setupTable.add("First Move:").left();
+        SelectBox moveSelect = new SelectBox(new String[]{ "Random", "P1", "P2" }, getSkin());
+        setupTable.add(moveSelect).left().padBottom(4).fillX();
+        setupTable.row();
 
         setupTable.row().expandX().expandY().top().left();
 

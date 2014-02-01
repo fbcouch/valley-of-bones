@@ -402,6 +402,16 @@ public class AIPlayer extends Player {
         this.genome = genome;
     }
 
+    @Override
+    public boolean isLoaded() {
+        return true;
+    }
+
+    @Override
+    public boolean isReady() {
+        return true;
+    }
+
     public static class GenomicAI {
         public String id;
         public int wins, losses;

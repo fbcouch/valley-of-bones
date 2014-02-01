@@ -71,7 +71,7 @@ public class KryoCommon {
         kryo.register(Spectator.class);
         kryo.register(Spectator[].class);
         kryo.register(GameUpdate.class);
-        kryo.register(PlayerReady.class);
+        kryo.register(UpdatePlayer.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -80,6 +80,12 @@ public class KryoCommon {
         public boolean spectator = false;
         public int prefColor = 0;
 	}
+
+    public static class UpdatePlayer {
+        public int id;
+        public int color;
+        public boolean ready;
+    }
 	
 	public static class RegisteredPlayer {
 		public int id;
@@ -91,11 +97,7 @@ public class KryoCommon {
         public boolean isAI;
 	}
 
-    public static class PlayerReady {
-        public boolean ready;
-    }
-	
-	public static class AddAIPlayer {
+    public static class AddAIPlayer {
 	}
 	
 	public static class RemovePlayer {
