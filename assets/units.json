@@ -33,14 +33,14 @@
                 "curhp": 0,
                 "maxhp": 30,
                 "armor": 1,
-                "food": -2,
+                "food": [ -4, -3, -2, -1 ],
                 "requires": [],
                 "attackdamage": 5,
                 "attackspeed": 2,
                 "attackrange": 3,
                 "movespeed": 0,
                 "cost": -1,
-                "upkeep": -15,
+                "upkeep": [ -25, -20, -10, -5 ],
                 "subtype": "building",
                 "capturable": true
             }

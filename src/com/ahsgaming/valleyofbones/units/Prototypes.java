@@ -104,7 +104,7 @@ public class Prototypes {
             if (hasProperty("cost"))
                 cost = getProperty("cost").asInt();
 
-            if (hasProperty("food"))
+            if (hasProperty("food") && getProperty("food").isNumber())
                 food = getProperty("food").asInt();
 
             attackSound = json.getString("attacksound", null);

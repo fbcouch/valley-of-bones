@@ -35,6 +35,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.util.HashMap;
+
 /**
  * @author jami
  * TODO theoretically, this class should probably handle inputs for the player or something...
@@ -91,11 +93,31 @@ public class Player {
 	public void updateFoodAndUpkeep(GameController controller, boolean updateBank) {
 		float upkeep = 0;
 		int food = 0, mFood = 0;
-		for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
-			if (unit.getData().getFood() < 0) mFood -= unit.getData().getFood();
-			else food += unit.getData().getFood();
+        Array<Unit> units = controller.getUnitsByPlayerId(playerId);
+        HashMap<String, Integer> unitCount = new HashMap<String, Integer>();
+		for (Unit unit: units) {
+            if (!unitCount.containsKey(unit.getProto().id)) {
+                unitCount.put(unit.getProto().id, 0);
+            }
+            unitCount.put(unit.getProto().id, unitCount.get(unit.getProto().id) + 1);
+            int count = unitCount.get(unit.getProto().id);
+            int unitFood = 0;
+            float unitUpkeep = 0;
+            if (count > unit.getData().getFood().size) {
+                unitFood = unit.getData().getFood().peek();
+            } else {
+                unitFood = unit.getData().getFood().get(count - 1);
+            }
+			if (unitFood < 0) mFood -= unitFood;
+			else food += unitFood;
+
+            if (count > unit.getData().getUpkeep().size) {
+                unitUpkeep = unit.getData().getUpkeep().peek();
+            } else {
+                unitUpkeep = unit.getData().getUpkeep().get(count - 1);
+            }
 			
-			upkeep += unit.getData().getUpkeep();
+			upkeep += unitUpkeep;
 		}
 		curFood = food;
 		maxFood = mFood;

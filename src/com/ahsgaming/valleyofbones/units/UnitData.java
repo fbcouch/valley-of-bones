@@ -28,7 +28,7 @@ public class UnitData {
     boolean capturable = false;
     int cost = 0;
     int curHP = 0;
-    int food = 0;
+    Array<Integer> food;
     String image = "";
     int maxHP = 0;
     float moveSpeed = 0;
@@ -38,7 +38,7 @@ public class UnitData {
     float splashDamage = 0;
     String subtype = "";
     String type = "";
-    int upkeep = 0;
+    Array<Integer> upkeep;
 
     // Game Status
     boolean building = false;
@@ -75,7 +75,14 @@ public class UnitData {
         unitData.capturable = proto.properties.getBoolean("capturable", false);
         unitData.cost = proto.properties.getInt("cost", 0);
         unitData.curHP = proto.properties.getInt("curhp", 0);
-        unitData.food = proto.properties.getInt("food", 0);
+        unitData.food = new Array<Integer>();
+        if (proto.hasProperty("food") && proto.getProperty("food").isArray()) {
+            for (JsonValue v: proto.properties.get("food")) {
+                unitData.food.add(v.asInt());
+            }
+        } else {
+            unitData.food.add(proto.properties.getInt("food", 0));
+        }
         unitData.image = proto.image;
         unitData.maxHP = proto.properties.getInt("maxhp", 0);
         unitData.moveSpeed = proto.properties.getFloat("movespeed", 0);
@@ -88,7 +95,14 @@ public class UnitData {
         unitData.splashDamage = proto.properties.getFloat("splashdamage", 0);
         unitData.subtype = proto.properties.getString("subtype", "");
         unitData.type = proto.type;
-        unitData.upkeep = proto.properties.getInt("upkeep", 0);
+        unitData.upkeep = new Array<Integer>();
+        if (proto.hasProperty("upkeep") && proto.getProperty("upkeep").isArray()) {
+            for (JsonValue v: proto.properties.get("upkeep")) {
+                unitData.upkeep.add(v.asInt());
+            }
+        } else {
+            unitData.upkeep.add(proto.properties.getInt("upkeep", 0));
+        }
 
         return unitData;
     }
@@ -212,13 +226,13 @@ public class UnitData {
         modified = TimeUtils.millis();
     }
 
-    public int getFood() {
-        return food;
-    }
-
-    public void setFood(int food) {
+    public void setFood(Array<Integer> food) {
         this.food = food;
         modified = TimeUtils.millis();
+    }
+
+    public Array<Integer> getFood() {
+        return food;
     }
 
     public String getImage() {
@@ -302,11 +316,11 @@ public class UnitData {
         modified = TimeUtils.millis();
     }
 
-    public int getUpkeep() {
+    public Array<Integer> getUpkeep() {
         return upkeep;
     }
 
-    public void setUpkeep(int upkeep) {
+    public void setUpkeep(Array<Integer> upkeep) {
         this.upkeep = upkeep;
         modified = TimeUtils.millis();
     }
