@@ -120,8 +120,8 @@ public class UnitManager {
                 unit.data.attacksLeft = (unit.data.attacksLeft % 1) + unit.data.attackSpeed;
             }
 
-            if (unit.data.capturable && unit.data.uncontested == unit.owner)
-                unit.data.setCurHP(unit.data.curHP += 5 * unit.data.capUnitCount);
+            if (unit.data.capturable && (unit.data.uncontested == unit.owner || unit.data.uncontested == null))
+                unit.data.setCurHP(unit.data.curHP += 5 * (unit.data.capUnitCount + 1)); // +1 here so that it auto-builds
 
             unit.view.clearPath();
             unit.view.addToPath(unit.view.getBoardPosition());

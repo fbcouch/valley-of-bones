@@ -73,19 +73,27 @@
 
 ### 0.2.0
 
-- Multiplayer/Game Setup improvements
-    - Ready/not-ready
-    - lobby chat
-    - select color
-    - select spawn
-    - 1st move
-    - map thumbs
-    - timing rules
++ Multiplayer/Game Setup improvements
+    + Ready/not-ready
+    + lobby chat
+    + select color
+    + select spawn
+    + 1st move
+    + map thumbs
+    + timing rules
 
-- Tower/Castle +1 attack speed?
-- Diminishing returns:
-    - Instead of all (15/2), towers give (25/4, 20/3, 10/2, 5/1) - alternatively, how about (20/2, 15/2, 10/2, 5/2) - only $50 total
-- Increasing returns: base gives +$/turn as game goes on (ie: +$5 every 3 turns, will need a cap)
+- Game balance changes
+    - Diminishing returns:
+        - Instead of all (15/2), towers give (25/4, 20/3, 10/2, 5/1) - alternatively, how about (20/2, 15/2, 10/2, 5/2) - only $50 total
+    - Increasing returns: base gives +$/turn as game goes on (ie: +$5 every 3 turns, will need a cap)
+    + Unit changes
+        + Bazooka to 20hp, x1.5 vs Buildings
+        + Artillery AD 20, x1.5 vs buildings, x1.5 vs mech, range 6, vision 3?
+        + Tank x1.5 vs buildings, mech
+        + Light mech AS 4
+        + Castle Armor 2, AS 2
+        + Tower AS 2, auto-builds +5hp/turn
+
 
 ### 0.3.0
 

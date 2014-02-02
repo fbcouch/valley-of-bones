@@ -10,11 +10,11 @@
             "properties": {
                 "curhp": 100,
                 "maxhp": 100,
-                "armor": 1,
+                "armor": 2,
                 "food": -15,
                 "requires": [],
                 "attackdamage": 10,
-                "attackspeed": 1,
+                "attackspeed": 2,
                 "attackrange": 3,
                 "movespeed": 0,
                 "cost": -1,
@@ -36,7 +36,7 @@
                 "food": -2,
                 "requires": [],
                 "attackdamage": 5,
-                "attackspeed": 1,
+                "attackspeed": 2,
                 "attackrange": 3,
                 "movespeed": 0,
                 "cost": -1,
@@ -104,8 +104,8 @@
             "desc": "Uses high explosives",
             "attacksound": "laser_shot",
             "properties": {
-                "curhp": 25,
-                "maxhp": 25,
+                "curhp": 20,
+                "maxhp": 20,
                 "armor": 0,
                 "food": 2,
                 "requires": [ "castle-base" ],
@@ -117,7 +117,7 @@
                 "subtype": "light",
                 "bonus": {
                     "armored": 2,
-                    "building": 2
+                    "building": 1.5
                 },
                 "buildtime": 1
             }
@@ -166,7 +166,11 @@
                 "movespeed": 1,
                 "cost": 130,
                 "subtype": "armored",
-                "buildtime": 1
+                "buildtime": 1,
+                "bonus": {
+                    "armored": 1.5,
+                    "building": 1.5
+                }
             }
         },
 
@@ -184,7 +188,7 @@
                 "food": 3,
                 "requires": [ "castle-base" ],
                 "attackdamage": 5,
-                "attackspeed": 3,
+                "attackspeed": 4,
                 "attackrange": 3,
                 "movespeed": 2,
                 "cost": 120,
@@ -206,16 +210,20 @@
                 "armor": 1,
                 "food": 4,
                 "requires": [ "castle-base" ],
-                "attackdamage": 25,
+                "attackdamage": 20,
                 "attackspeed": 1,
-                "attackrange": 5,
-                "sightrange": 2,
+                "attackrange": 6,
+                "sightrange": 3,
                 "movespeed": 1,
                 "cost": 150,
                 "subtype": "armored",
                 "buildtime": 1,
                 "splashdistance": 1,
-                "splashdamage": 0.3
+                "splashdamage": 0.5,
+                "bonus": {
+                    "armored": 1.5,
+                    "building": 1.5
+                }
             }
         },
 
