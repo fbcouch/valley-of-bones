@@ -24,6 +24,7 @@ package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -83,7 +84,7 @@ public class SPGameSetupScreen extends AbstractScreen {
         pList = new Array<Player>();
 		pList.addAll(game.getPlayers());
 
-		for (Player p: pList) {
+		for (final Player p: pList) {
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
                 playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE);
@@ -100,21 +101,19 @@ public class SPGameSetupScreen extends AbstractScreen {
 
             color.addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);
                     int i = 0;
                     while (i < Player.AUTOCOLORS.length && !Player.AUTOCOLORS[i].equals(event.getTarget().getColor())) {
                         i++;
                     }
-                    i = (event.getButton() == 0 ? i + 1 : i - 1);
-                    i = Math.max(0, i);
-                    i = Math.min(i, Player.AUTOCOLORS.length - 1);
+                    i++;
+
+                    i %= Player.AUTOCOLORS.length;
                     event.getTarget().setColor(Player.AUTOCOLORS[i]);
-                    return super.touchDown(event, x, y, pointer, button);
+                    p.setPlayerColor(Player.AUTOCOLORS[i]);
                 }
             });
-
-            CheckBox chkReady = new CheckBox("", getSkin());
-            playerTable.add(chkReady);
 
             playerTable.row().expandX().padBottom(5).padTop(5);
         }
@@ -152,16 +151,43 @@ public class SPGameSetupScreen extends AbstractScreen {
 
         setupTable.add("Rules:").left();
         SelectBox ruleSelect = new SelectBox(new String[]{ "Classic" }, getSkin());
+
+        ruleSelect.setSelection(config.ruleSet);
+        ruleSelect.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                config.ruleSet = ((SelectBox)actor).getSelectionIndex();
+            }
+        });
+
         setupTable.add(ruleSelect).left().padBottom(4).fillX();
         setupTable.row();
 
         setupTable.add("Spawns:").left();
         SelectBox spawnSelect = new SelectBox(new String[]{ "Normal", "Inverted", "Random" }, getSkin());
+
+        spawnSelect.setSelection(config.spawnType);
+        spawnSelect.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                config.spawnType = ((SelectBox)actor).getSelectionIndex();
+            }
+        });
+
         setupTable.add(spawnSelect).left().padBottom(4).fillX();
         setupTable.row();
 
         setupTable.add("First Move:").left();
         SelectBox moveSelect = new SelectBox(new String[]{ "Random", "P1", "P2" }, getSkin());
+
+        moveSelect.setSelection(config.firstMove);
+        moveSelect.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                config.firstMove = ((SelectBox)actor).getSelectionIndex();
+            }
+        });
+
         setupTable.add(moveSelect).left().padBottom(4).fillX();
         setupTable.row();
 

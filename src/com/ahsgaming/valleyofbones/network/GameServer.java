@@ -468,8 +468,17 @@ public class GameServer implements NetController {
 		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#Server";
 
-        // TODO allow configuration of who goes first?
-        controller.setCurrentPlayer(players.get((MathUtils.random(players.size - 1))));
+        switch(GameSetupConfig.FirstMoveType.values()[gameConfig.firstMove]) {
+            case MOVE_RANDOM:
+                controller.setCurrentPlayer(players.get(MathUtils.random(players.size - 1)));
+                break;
+            case MOVE_P1:
+                controller.setCurrentPlayer(players.get(0));
+                break;
+            case MOVE_P2:
+                controller.setCurrentPlayer(players.get(1));
+                break;
+        }
         loadGame = false;
 
 		// don't need to broadcast on UDP anymore - thats just confusing

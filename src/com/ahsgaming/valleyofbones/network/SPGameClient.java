@@ -63,7 +63,17 @@ public class SPGameClient implements NetController {
 		// OK, this should be called within an opengl context, so we can create everything
 		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#SPClient";
-        controller.setCurrentPlayer(player); // in SP, player always goes first
+        switch(GameSetupConfig.FirstMoveType.values()[gameConfig.firstMove]) {
+            case MOVE_RANDOM:
+                controller.setCurrentPlayer(players.get((int)(Math.random() * players.size)));
+                break;
+            case MOVE_P1:
+                controller.setCurrentPlayer(players.get(0));
+                break;
+            case MOVE_P2:
+                controller.setCurrentPlayer(players.get(1));
+                break;
+        }
         Unpause up = new Unpause();
         up.owner = -1;
         controller.queueCommand(up);

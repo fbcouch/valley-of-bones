@@ -21,4 +21,8 @@ public class GameSetupConfig {
     public int hostPort = KryoCommon.tcpPort;
     public String playerName = "New Player";
     public int maxPauses = 3;
+
+    public enum FirstMoveType {
+        MOVE_RANDOM, MOVE_P1, MOVE_P2
+    }
 }

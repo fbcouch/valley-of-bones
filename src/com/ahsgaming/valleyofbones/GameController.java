@@ -73,14 +73,22 @@ public class GameController {
 	
 	GameResult gameResult = null;
 
+    SpawnTypes spawnType = SpawnTypes.SPAWN_NORMAL;
+
+    public enum SpawnTypes {
+        SPAWN_NORMAL, SPAWN_INVERTED, SPAWN_RANDOM
+    }
+
 	/**
 	 * Constructors
 	 */
 	
 	public GameController(GameSetupConfig config, Array<Player> players) {
-		// TODO load map
 		this.mapName = config.mapName;
         this.maxPauses = config.maxPauses;
+        this.spawnType = SpawnTypes.values()[config.spawnType];
+
+        // TODO - set ruleset here
 
         unitManager = new UnitManager(this);
 
@@ -110,11 +118,29 @@ public class GameController {
 	}
 	
 	private void loadMapObjects() {
+        Array<Player> playersToSpawn = new Array<Player>();
+        switch(spawnType) {
+            case SPAWN_NORMAL:
+                playersToSpawn.addAll(players);
+                break;
+            case SPAWN_INVERTED:
+                for (int i = players.size - 1; i >= 0; i--) {
+                    playersToSpawn.add(players.get(i));
+                }
+                break;
+            case SPAWN_RANDOM:
+                Array<Player> p = new Array<Player>(players);
+                while (p.size > 0) {
+                    playersToSpawn.add(p.removeIndex((int)Math.floor(Math.random() * p.size)));
+                }
+                break;
+        }
+
 		for (MapData.MapObject spawn : map.getPlayerSpawns()) {
 			Unit unit;
 			if (spawn.player >= 0 && spawn.player < players.size) {
-                unit = Unit.createUnit(getNextObjectId(), "castle-base", players.get(spawn.player));
-				players.get(spawn.player).setBaseUnit(unit);
+                unit = Unit.createUnit(getNextObjectId(), "castle-base", playersToSpawn.get(spawn.player));
+				playersToSpawn.get(spawn.player).setBaseUnit(unit);
 			} else {
                 unit = Unit.createUnit(getNextObjectId(), "castle-base", null);
                 Gdx.app.log(VOBGame.LOG, "Map Error: player spawn index out of range");
@@ -125,11 +151,10 @@ public class GameController {
 			unitManager.addUnit(unit);
 			
 			if (spawn.player >= 0 && spawn.player < players.size) {
-				addSpawnPoint(players.get(spawn.player).getPlayerId(), new Vector2(unit.getView().getX() + unit.getView().getWidth() * 0.5f, unit.getView().getY() + unit.getView().getHeight() * 0.5f));
+				addSpawnPoint(playersToSpawn.get(spawn.player).getPlayerId(), new Vector2(unit.getView().getX() + unit.getView().getWidth() * 0.5f, unit.getView().getY() + unit.getView().getHeight() * 0.5f));
 			}
 		}
-		
-		// TODO load capture points
+
         for (MapData.MapObject obj : map.getControlPoints()) {
             Unit unit;
             unit = Unit.createUnit(getNextObjectId(), obj.proto, obj.player == -1 ? null : players.get(obj.player));
