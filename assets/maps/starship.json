@@ -6,7 +6,7 @@
     tilewidth: 64,
     tileheight: 64,
     version: 1,
-    tiles: ["metal-hex", "dirt-hex"],
+    tiles: ["metal-hex", "dark-metal-hex"],
     tilelayers:
     [
         {
