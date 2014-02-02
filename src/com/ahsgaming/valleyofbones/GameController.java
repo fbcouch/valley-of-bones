@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Json;
  *
  */
 public class GameController {
-	public static final String DEFAULT_MAP = "valley.json"; // TODO get default map from map list?
+	public static final String DEFAULT_MAP = "valley"; // TODO get default map from map list?
 	public static final String MAP_DIRECTORY = "maps";
 	
 	public String LOG = "GameController";
@@ -123,7 +123,7 @@ public class GameController {
 		if (mapName == null || mapName.length() == 0) mapName = DEFAULT_MAP;
 		// TODO implement loading of maps
 		//map = new HexMap(this, 19, 13, 2, 4);
-		map = new HexMap(this, Gdx.files.internal("maps/" + mapName));
+		map = new HexMap(this, Gdx.files.internal("maps/" + mapName + ".json"));
 		return map;
 	}
 	

@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -49,9 +50,10 @@ public class SPGameSetupScreen extends AbstractScreen {
 	Array<Player> pList;
 
     boolean isHost = false;
+    boolean needsUpdate = false;
 
     SelectBox mapSelect;
-    Label mapSelection;
+    Image mapThumb;
 
 	/**
 	 * @param game
@@ -143,8 +145,11 @@ public class SPGameSetupScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 config.mapName = ((SelectBox)actor).getSelection();
+                needsUpdate = true;
             }
         });
+
+        mapThumb = new Image(game.getTextureManager().getSpriteFromAtlas("assets", config.mapName));
 
         setupTable.add(mapSelect).left().padBottom(4).padTop(4).fillX();
         setupTable.row();
@@ -235,6 +240,8 @@ public class SPGameSetupScreen extends AbstractScreen {
 
         Table controlTable = new Table(getSkin());
 
+        controlTable.add(mapThumb).colspan(2).row();
+
         isHost = true;
         TextButton start = new TextButton("Start Game",getSkin());
         start.addListener(new ClickListener() {
@@ -251,7 +258,8 @@ public class SPGameSetupScreen extends AbstractScreen {
             }
 
         });
-		controlTable.add(start).padTop(4).colspan(2);
+        controlTable.add().expand();
+		controlTable.add(start).padTop(4).right();
 
 		controlTable.row();
 
@@ -272,10 +280,13 @@ public class SPGameSetupScreen extends AbstractScreen {
 			}
 			
 		});
-		
-		controlTable.add(cancel).fillX().padTop(4).colspan(2);
+
+        controlTable.add();
+		controlTable.add(cancel).fillX().padTop(4);
 		
 		table.add(controlTable).fillX();
+
+        table.row();
 	}
 
 	/**
@@ -306,9 +317,15 @@ public class SPGameSetupScreen extends AbstractScreen {
 		
 		synchronized (players) {
 			if (!pList.equals(players) || isHost != config.isHost) {
-				stage.clear();
-				setupScreen();
+				needsUpdate = true;
+
 			}
 		}
+
+        if (needsUpdate) {
+            stage.clear();
+            setupScreen();
+            needsUpdate = false;
+        }
 	}
 }

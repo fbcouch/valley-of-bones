@@ -27,6 +27,7 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -310,6 +311,12 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         Table controlTable = new Table(getSkin());
 
+        Gdx.app.log("Setup", config.mapName);
+        Sprite mapThumb = game.getTextureManager().getSpriteFromAtlas("assets", config.mapName);
+        if (mapThumb != null) {
+            controlTable.add(new Image(mapThumb)).colspan(2).row();
+        }
+
         if (config.isHost) {
             isHost = true;
             TextButton start = new TextButton("Start Game",getSkin());
@@ -321,7 +328,8 @@ public class MPGameSetupScreen extends AbstractScreen {
                         game.sendStartGame();
                 }
             });
-            controlTable.add(start).padTop(4);
+            controlTable.add().expand();
+            controlTable.add(start).padTop(4).right();
 
             controlTable.row();
         }
@@ -336,9 +344,10 @@ public class MPGameSetupScreen extends AbstractScreen {
             }
         });
 
-        controlTable.add(cancel).fillX().padTop(4);
+        controlTable.add();
+        controlTable.add(cancel).fillX().padTop(4).right();
 
-        table.add(controlTable).fillX();
+        table.add(controlTable).fillX().row();
 	}
 	
 	private Image getRemovePlayerButton(final Player p) {
@@ -394,6 +403,13 @@ public class MPGameSetupScreen extends AbstractScreen {
             gameDetails.baseTimer = Integer.parseInt(baseTime.getSelection());
             gameDetails.actionBonusTime = Integer.parseInt(actionTime.getSelection());
             gameDetails.unitBonusTime = Integer.parseInt(unitTime.getSelection());
+            if (!config.mapName.equals(mapSelect.getSelection())) {
+                stage.clear();
+                config.setDetails(gameDetails);
+                setupScreen();
+            } else {
+                config.setDetails(gameDetails);
+            }
             client.sendGameDetails(gameDetails);
         }
 		
@@ -427,7 +443,12 @@ public class MPGameSetupScreen extends AbstractScreen {
             unitTime.setSelection(Integer.toString(config.unitBonusTime));
 
         } else {
-            if (!lblMap.getText().equals(config.mapName)) lblMap.setText(config.mapName);
+            if (!lblMap.getText().equals(config.mapName)) {
+                lblMap.setText(config.mapName);
+                stage.clear();
+                setupScreen();
+                return;
+            }
             if (!lblSpawn.getText().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
             if (!lblMove.getText().equals(firstMoves[config.firstMove])) lblMove.setText(firstMoves[config.firstMove]);
             if (!lblRule.getText().equals(game.getRuleSets().get(config.spawnType).name)) lblRule.setText(game.getRuleSets().get(config.ruleSet).name);
