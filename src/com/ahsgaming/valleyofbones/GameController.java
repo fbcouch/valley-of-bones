@@ -34,7 +34,6 @@ import com.ahsgaming.valleyofbones.units.UnitView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
@@ -75,20 +74,16 @@ public class GameController {
 	
 	GameResult gameResult = null;
 
-    SpawnTypes spawnType = SpawnTypes.SPAWN_NORMAL;
+    GameSetupConfig.SpawnTypes spawnType = GameSetupConfig.SpawnTypes.SPAWN_NORMAL;
 
-    public enum SpawnTypes {
-        SPAWN_NORMAL, SPAWN_INVERTED, SPAWN_RANDOM
-    }
-
-	/**
+    /**
 	 * Constructors
 	 */
 	
 	public GameController(GameSetupConfig config, Array<Player> players) {
 		this.mapName = config.mapName;
         this.maxPauses = config.maxPauses;
-        this.spawnType = SpawnTypes.values()[config.spawnType];
+        this.spawnType = GameSetupConfig.SpawnTypes.values()[config.spawnType];
 
         this.baseTimer = config.baseTimer;
         this.actionBonusTime = config.actionBonusTime;

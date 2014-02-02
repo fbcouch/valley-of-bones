@@ -469,6 +469,10 @@ public class GameServer implements NetController {
             }
         }
 
+        gameConfig.spawnType = (gameConfig.spawnType == GameSetupConfig.SpawnTypes.SPAWN_RANDOM.ordinal() ?
+                MathUtils.random(1, GameSetupConfig.SpawnTypes.values().length) :
+                gameConfig.spawnType);
+
 		controller = new GameController(gameConfig, players);
 		controller.LOG = controller.LOG + "#Server";
 
@@ -668,6 +672,7 @@ public class GameServer implements NetController {
 	public void sendStartGame() {
 		StartGame startGame = new StartGame();
         startGame.currentPlayer = controller.getCurrentPlayer().getPlayerId();
+        startGame.spawnType = gameConfig.spawnType;
         server.sendToAllTCP(startGame);
 	}
 

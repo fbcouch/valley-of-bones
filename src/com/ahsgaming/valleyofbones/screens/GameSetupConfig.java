@@ -52,4 +52,8 @@ public class GameSetupConfig {
         details.unitBonusTime = unitBonusTime;
         return details;
     }
+
+    public enum SpawnTypes {
+        SPAWN_NORMAL, SPAWN_INVERTED, SPAWN_RANDOM
+    }
 }

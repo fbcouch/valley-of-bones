@@ -107,6 +107,7 @@ public class KryoCommon {
 	
 	public static class StartGame {
         public int currentPlayer;
+        public int spawnType;
     }
 	
 	public static class GameDetails {

@@ -172,6 +172,7 @@ public class MPGameClient implements NetController {
                         // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
                         game.setLoadGame();
                         firstTurnPid = ((StartGame)obj).currentPlayer;
+                        gameConfig.spawnType = ((StartGame)obj).spawnType;
                     }
                     return;
                 }
