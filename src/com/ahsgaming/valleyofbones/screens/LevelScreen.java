@@ -144,7 +144,7 @@ public class LevelScreen extends AbstractScreen {
             bld.building = buildProto.id;
             bld.location = boardPos;
             game.sendCommand(bld);
-            if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
+//            if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
         }
     }
 

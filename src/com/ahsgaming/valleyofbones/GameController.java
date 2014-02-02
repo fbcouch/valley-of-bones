@@ -296,7 +296,8 @@ public class GameController {
 
 		if (cmd instanceof Attack) {
             Unit u = unitManager.getUnit(((Attack)cmd).unit);
-            return u != null && u.getData().getAttacksLeft() >= 1;
+            Unit o = unitManager.getUnit(((Attack)cmd).target);
+            return u != null && u.getData().getAttacksLeft() >= 1 && o != null && o.getData().getCurHP() > 0;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));

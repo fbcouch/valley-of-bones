@@ -29,54 +29,31 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets-ldpi.png" afterPath="$PROJECT_DIR$/assets/assets-ldpi.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets-mdpi.png" afterPath="$PROJECT_DIR$/assets/assets-mdpi.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/assets-xhdpi.png" afterPath="$PROJECT_DIR$/assets/assets-xhdpi.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/hazard-sign-small.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/hazard-sign-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/hazard-sign-small.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/hazard-sign-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/hazard-sign-small.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/hazard-sign-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/hazard-sign-small.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/hazard-sign-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/hazard-sign.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/hazard-sign.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/hazard-sign.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/hazard-sign.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/hazard-sign.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/hazard-sign.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/hazard-sign.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/hazard-sign.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/king-small.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/king-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/king-small.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/king-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/king-small.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/king-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/king-small.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/king-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/king.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/king.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/king.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/king.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/king.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/king.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/king.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/king.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/reticule-small.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/reticule-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/reticule-small.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/reticule-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/reticule-small.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/reticule-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/reticule-small.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/reticule-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/reticule.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/reticule.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/reticule.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/reticule.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/reticule.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/reticule.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/reticule.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/reticule.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/supply-small.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/supply-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/supply-small.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/supply-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/supply-small.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/supply-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/supply-small.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/supply-small.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/supply.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/supply.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/supply.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/supply.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/supply.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/supply.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/supply.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/supply.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/icons/hazard-sign.svg" afterPath="$PROJECT_DIR$/art/icons/hazard-sign.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/icons/king.svg" afterPath="$PROJECT_DIR$/art/icons/king.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/icons/reticule.svg" afterPath="$PROJECT_DIR$/art/icons/reticule.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/icons/supply.svg" afterPath="$PROJECT_DIR$/art/icons/supply.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/castle-overlay.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/castle-overlay.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/castle-overlay.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/castle-overlay.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/castle-overlay.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/castle-overlay.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/castle-overlay.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/castle-overlay.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/hdpi/castle.png" afterPath="$PROJECT_DIR$/art/exported/hdpi/castle.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/ldpi/castle.png" afterPath="$PROJECT_DIR$/art/exported/ldpi/castle.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/mdpi/castle.png" afterPath="$PROJECT_DIR$/art/exported/mdpi/castle.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/exported/xhdpi/castle.png" afterPath="$PROJECT_DIR$/art/exported/xhdpi/castle.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" afterPath="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/units/castle-overlay.svg" afterPath="$PROJECT_DIR$/art/units/castle-overlay.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/units/castle.svg" afterPath="$PROJECT_DIR$/art/units/castle.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/art/qm.sh" afterPath="$PROJECT_DIR$/art/qm.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1391133534652" ignored="false" />
+    <file path="/Dummy.txt" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1391319883112" ignored="false" />
     <file path="/fragment.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1391123998223" ignored="false" />
     <file path="/KryoCommon.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390962059607" ignored="false" />
     <file path="/GameClient.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367105013238" ignored="false" />
     <file path="/VOBGame.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390689124218" ignored="false" />
     <file path="/GameServer.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390691181575" ignored="false" />
     <file path="/NetController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1390691129213" ignored="false" />
-    <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1391122620571" ignored="false" />
+    <file path="/GameController.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1391320180714" ignored="false" />
     <file path="/EndTurn.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1367090717362" ignored="false" />
     <file path="/LevelScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1391123058913" ignored="false" />
     <file path="/MainMenuScreen.java" changelist="158f7e3e-4279-4ad7-b3f4-7deb523413fc" time="1386077042249" ignored="false" />
@@ -202,6 +179,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -238,7 +216,6 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
-    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
@@ -249,11 +226,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LevelScreen.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="LevelScreen.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="487" column="41" selection-start="16781" selection-end="16781" vertical-scroll-proportion="0.6352584">
+            <state line="63" column="22" selection-start="2235" selection-end="2235" vertical-scroll-proportion="-7.851852">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameController.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="305" column="39" selection-start="9287" selection-end="9287" vertical-scroll-proportion="0.6530612">
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -299,13 +287,13 @@
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/VOBGame.java" />
         <option value="$PROJECT_DIR$/assets/maps/starship.json" />
         <option value="$PROJECT_DIR$/ROADMAP.md" />
-        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/network/MPGameClient.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/AStarNode.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/UnitFSM.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/ai/AStar.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/units/UnitManager.java" />
         <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java" />
       </list>
     </option>
   </component>
@@ -314,7 +302,7 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
+    <option name="x" value="1919" />
     <option name="y" value="27" />
     <option name="width" value="1922" />
     <option name="height" value="1054" />
@@ -361,6 +349,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Tests" />
       </pane>
@@ -602,22 +591,21 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GenerateAntBuildDialog.generateIdeaHomeProperty" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="OverrideImplement.combined" value="false" />
     <property name="project.structure.proportion" value="0.15" />
+    <property name="OverrideImplement.combined" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="MemberChooser.sorted" value="false" />
-    <property name="recentsLimit" value="5" />
-    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
     <property name="ExportedApkPath" value="$PROJECT_DIR$/android/valleyofbones.apk" />
+    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
+    <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.sorted" value="false" />
     <property name="ExportedModule" value="android" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/build.xml" />
     <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/build.xml" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="build.xml" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
@@ -630,15 +618,15 @@
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="options.lastSelected" value="preferences.pluginManager" />
     <property name="AndroidLayoutSelectedEditor" value="text-editor" />
-    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="emulator-5554" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="AndroidRunProguardForReleaseBuild" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="dynamic.classpath" value="false" />
     <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -733,6 +721,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
@@ -759,19 +760,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -990,7 +978,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="27" width="1922" height="1054" extended-state="6" />
+    <frame x="1919" y="27" width="1922" height="1054" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1004,14 +992,14 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.7" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32777777" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32743362" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32668883" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24946466" sideWeight="0.6972789" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922912" sideWeight="0.7022222" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1964668" sideWeight="0.78" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19604701" sideWeight="0.7818383" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21816169" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -1119,6 +1107,13 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="328" column="21" selection-start="10194" selection-end="10194" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
@@ -1187,15 +1182,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="420" column="19" selection-start="14177" selection-end="14177" vertical-scroll-proportion="0.35854766">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/map/HexMap.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="328" column="21" selection-start="10194" selection-end="10194" vertical-scroll-proportion="0.0">
@@ -1225,8 +1211,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/screens/LevelScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="487" column="41" selection-start="16781" selection-end="16781" vertical-scroll-proportion="0.6352584">
+        <state line="63" column="22" selection-start="2235" selection-end="2235" vertical-scroll-proportion="-7.851852">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ahsgaming/valleyofbones/GameController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="305" column="39" selection-start="9287" selection-end="9287" vertical-scroll-proportion="0.6530612">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
