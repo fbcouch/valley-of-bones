@@ -19,6 +19,7 @@ import java.util.HashMap;
 public class UnitData {
     // Unit Stats
     String ability = "";
+    HashMap<String, Integer> abilityArgs;
     int armor = 0;
     int attackDamage = 0;
     int attackRange = 0;
@@ -62,7 +63,20 @@ public class UnitData {
     public static UnitData createUnitData(Prototypes.JsonProto proto) {
         UnitData unitData = new UnitData();
 
-        unitData.ability = proto.properties.getString("ability", "");
+        unitData.abilityArgs = new HashMap<String, Integer>();
+        JsonValue ability = proto.properties.get("ability");
+        if (ability != null) {
+            if (ability.isString()) {
+                unitData.ability = ability.asString();
+            } else {
+                unitData.ability = ability.getString("name", "");
+                for (JsonValue v: ability) {
+                    if (!v.name.equals("name"))
+                        unitData.abilityArgs.put(v.name, v.asInt());
+                }
+            }
+        }
+
         unitData.armor = proto.properties.getInt("armor", 0);
         unitData.attackDamage = proto.properties.getInt("attackdamage", 0);
         unitData.attackRange = proto.properties.getInt("attackrange", 0);
@@ -118,8 +132,7 @@ public class UnitData {
     }
 
     public boolean isAbilityActive() {
-        return ((ability.equals("stealth") && stealthActive) ||
-                ability.equals("detect") || ability.equals("sabotage"));
+        return ((!ability.equals("stealth") || stealthActive)); // right now, stealth is the only activatable ability
     }
 
     public int getRefund() {

@@ -19,7 +19,13 @@
                 "movespeed": 0,
                 "cost": -1,
                 "upkeep": -75,
-                "subtype": "building"
+                "subtype": "building",
+                "ability": {
+                    "name": "increasing-returns",
+                    "interval": 3,
+                    "bonus": -5,
+                    "max": -100
+                }
             }
         },
         {

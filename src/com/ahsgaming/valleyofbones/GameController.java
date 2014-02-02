@@ -239,10 +239,8 @@ public class GameController {
             turnTimer += getUnitsByPlayerId(currentPlayer.getPlayerId()).size * unitBonusTime;
         }
 
-        currentPlayer.startTurn(this);
-
         unitManager.startTurn(currentPlayer);
-
+        currentPlayer.startTurn(this);
         map.invalidateViews();
 	}
 	

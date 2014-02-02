@@ -112,6 +112,20 @@ public class UnitManager {
 
     public void startTurn(Player player) {
         for (Unit unit: units.values()) {
+            if (unit.data.ability.equals("increasing-returns")) {
+                for (int i = 0; i < unit.data.upkeep.size; i++) {
+                    if (gameController.getGameTurn() % unit.data.abilityArgs.get("interval") == 0) {
+                        unit.data.upkeep.set(
+                                i,
+                                Math.max(
+                                        unit.data.abilityArgs.get("max"),
+                                        unit.data.upkeep.get(i) + unit.data.abilityArgs.get("bonus")
+                                )
+                        );
+                    }
+                }
+
+            }
             if (unit.owner != player) continue;
 
             if (!unit.data.building) {

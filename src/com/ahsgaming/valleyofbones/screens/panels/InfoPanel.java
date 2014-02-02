@@ -47,6 +47,7 @@ public class InfoPanel extends Group {
     LevelScreen levelScreen;
     Group grpAbility, grpUnit;
     Image imgCheckOn, imgCheckOff;
+    Label lblIncome;
     Unit selected, lastSelected;
     Prototypes.JsonProto lastBuildProto, buildProto;
 
@@ -103,6 +104,9 @@ public class InfoPanel extends Group {
         lblMovesLeft.setFontScale(VOBGame.SCALE);
         lblRefund = new Label(String.format(REFUND, 0), skin, "small");
         lblRefund.setFontScale(VOBGame.SCALE);
+
+        lblIncome = new Label(String.format(REFUND, 0), skin, "small");
+        lblIncome.setFontScale(VOBGame.SCALE);
 
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
@@ -229,9 +233,15 @@ public class InfoPanel extends Group {
             if (iconAbility != null) {
                 grpAbility.removeActor(iconAbility);
                 grpAbility.removeActor(imgCheckOn);
+                grpAbility.removeActor(lblIncome);
             }
 
-            grpAbility.addActor(imgCheckOff);
+            if (selected.getData().getAbility().equals("stealth")) grpAbility.addActor(imgCheckOff);
+
+            if (selected.getData().getAbility().equals("increasing-returns")) {
+                grpAbility.addActor(lblIncome);
+                lblIncome.setText(String.format(REFUND, -1 * selected.getData().getUpkeep().first()));
+            }
 
             if (!selected.getData().getAbility().equals("")) {
                 Gdx.app.log(LOG, selected.getData().getAbility());
@@ -239,18 +249,21 @@ public class InfoPanel extends Group {
                 if (selected.getData().isAbilityActive()) {
                     iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
                     grpAbility.removeActor(imgCheckOff);
-                    grpAbility.addActor(imgCheckOn);
 
-                    if (imgCheckOn.getListeners().size > 0)
-                        imgCheckOn.removeListener(imgCheckOn.getListeners().first());
-                    imgCheckOn.addListener(new ClickListener(){
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            super.clicked(event, x, y);
+                    if (selected.getData().getAbility().equals("stealth")) {
+                        grpAbility.addActor(imgCheckOn);
 
-                            levelScreen.activateAbility(selected.getId());
-                        }
-                    });
+                        if (imgCheckOn.getListeners().size > 0)
+                            imgCheckOn.removeListener(imgCheckOn.getListeners().first());
+                        imgCheckOn.addListener(new ClickListener(){
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                super.clicked(event, x, y);
+
+                                levelScreen.activateAbility(selected.getId());
+                            }
+                        });
+                    }
                 } else {
                     if (imgCheckOff.getListeners().size > 0)
                         imgCheckOff.removeListener(imgCheckOff.getListeners().first());
