@@ -27,9 +27,11 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -58,6 +60,11 @@ public class MPGameSetupScreen extends AbstractScreen {
 
     String[] spawnTypes = new String[]{ "Normal", "Inverted", "Random" };
     String[] firstMoves = new String[]{ "Random", "P1", "P2" };
+
+    Table chatTable;
+    Array<String> chatHistory;
+    InputListener chatListener;
+    ScrollPane chatScroll;
 
     /**
 	 * @param game
@@ -311,7 +318,6 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         Table controlTable = new Table(getSkin());
 
-        Gdx.app.log("Setup", config.mapName);
         Sprite mapThumb = game.getTextureManager().getSpriteFromAtlas("assets", config.mapName);
         if (mapThumb != null) {
             controlTable.add(new Image(mapThumb)).colspan(2).row();
@@ -348,6 +354,50 @@ public class MPGameSetupScreen extends AbstractScreen {
         controlTable.add(cancel).fillX().padTop(4).right();
 
         table.add(controlTable).fillX().row();
+
+        chatTable = new Table(getSkin());
+        chatScroll = new ScrollPane(chatTable, getSkin());
+        chatScroll.setFadeScrollBars(false);
+
+        table.add(chatScroll).colspan(2).fillX().height(100);
+
+        table.row();
+
+        Table chatBox = new Table(getSkin());
+        final TextField chatMsgText = new TextField("", getSkin());
+        if (chatListener != null) {
+            stage.removeListener(chatListener);
+        }
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if (stage.getKeyboardFocus() == chatMsgText && keycode == Input.Keys.ENTER && chatMsgText.getText().length() > 0) {
+                    Gdx.app.log(LOG, "Chat: " + chatMsgText.getText());
+                    client.sendChat(chatMsgText.getText());
+                    chatMsgText.setText("");
+                    return false;
+                }
+                return super.keyUp(event, keycode);
+            }
+        });
+
+        chatBox.add(chatMsgText).expandX().fillX();
+        TextButton chatMsgSend = new TextButton("Send", getSkin(), "small");
+        chatMsgSend.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
+
+                if (chatMsgText.getText().length() > 0) {
+                    Gdx.app.log(LOG, "Chat: " + chatMsgText.getText());
+                    client.sendChat(chatMsgText.getText());
+                    chatMsgText.setText("");
+                }
+            }
+        });
+        chatBox.add(chatMsgSend).fillY().fillX();
+        table.add(chatBox).colspan(2).fillX();
+        chatHistory = new Array<String>();
 	}
 	
 	private Image getRemovePlayerButton(final Player p) {
@@ -432,6 +482,21 @@ public class MPGameSetupScreen extends AbstractScreen {
             }
         }
 
+        synchronized(client.getChatLog()) {
+            if (!chatHistory.equals(client.getChatLog())) {
+                chatHistory.clear();
+                chatHistory.addAll(client.getChatLog());
+                chatTable.clearChildren();
+                for (String msg: chatHistory) {
+                    Label message = new Label(msg, getSkin());
+                    message.setWrap(true);
+                    chatTable.add(message).fillX().expandX().left().row();
+                }
+                chatScroll.layout();
+                chatScroll.setScrollPercentY(100);
+            }
+        }
+
         if (!config.isMulti || config.isHost) {
             if (!mapSelect.getSelection().equals(config.mapName)) mapSelect.setSelection(config.mapName);
             if (moveSelect.getSelectionIndex() != config.firstMove) moveSelect.setSelection(config.firstMove);
@@ -443,15 +508,15 @@ public class MPGameSetupScreen extends AbstractScreen {
             unitTime.setSelection(Integer.toString(config.unitBonusTime));
 
         } else {
-            if (!lblMap.getText().equals(config.mapName)) {
-                lblMap.setText(config.mapName);
+            Gdx.app.log(lblMap.getText() + " =? " + config.mapName, "" + (lblMap.getText().toString().equals(config.mapName)));
+            if (!lblMap.getText().toString().equals(config.mapName)) {
                 stage.clear();
                 setupScreen();
                 return;
             }
-            if (!lblSpawn.getText().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
-            if (!lblMove.getText().equals(firstMoves[config.firstMove])) lblMove.setText(firstMoves[config.firstMove]);
-            if (!lblRule.getText().equals(game.getRuleSets().get(config.spawnType).name)) lblRule.setText(game.getRuleSets().get(config.ruleSet).name);
+            if (!lblSpawn.getText().toString().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
+            if (!lblMove.getText().toString().equals(firstMoves[config.firstMove])) lblMove.setText(firstMoves[config.firstMove]);
+            if (!lblRule.getText().toString().equals(game.getRuleSets().get(config.ruleSet).name)) lblRule.setText(game.getRuleSets().get(config.ruleSet).name);
 
             lblBaseTime.setText(Integer.toString(config.baseTimer));
             lblActionTime.setText(Integer.toString(config.actionBonusTime));

@@ -332,6 +332,10 @@ public class GameServer implements NetController {
 						sendSetupInfo();
 					}
 				}
+
+                if (obj instanceof KryoCommon.ChatMessage) {
+                    server.sendToAllTCP(obj);
+                }
 				
 				// TODO need to check this for validity
 				if (controller != null) {

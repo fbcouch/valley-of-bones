@@ -72,6 +72,7 @@ public class KryoCommon {
         kryo.register(Spectator[].class);
         kryo.register(GameUpdate.class);
         kryo.register(UpdatePlayer.class);
+        kryo.register(ChatMessage.class);
 	}
 	
 	public static class RegisterPlayer {
@@ -136,5 +137,10 @@ public class KryoCommon {
         public int currentPlayer;
         public int turn;
         public float timer;
+    }
+
+    public static class ChatMessage {
+        public String name;
+        public String message;
     }
 }

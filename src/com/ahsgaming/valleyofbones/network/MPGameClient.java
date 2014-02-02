@@ -79,6 +79,8 @@ public class MPGameClient implements NetController {
     boolean isReconnect = false;
 
     KryoCommon.Error error;
+
+    Array<String> chatLog = new Array<String>();
 	
 	/**
 	 * 
@@ -126,6 +128,12 @@ public class MPGameClient implements NetController {
                     return;
                 }
 
+                if (obj instanceof KryoCommon.ChatMessage) {
+                    Gdx.app.log(LOG, "ChatMessage rec'd");
+                    KryoCommon.ChatMessage chatMessage = (KryoCommon.ChatMessage)obj;
+                    chatLog.add(chatMessage.name + ": " + chatMessage.message);
+                }
+
                 if (controller == null) {
                     if (obj instanceof RegisteredPlayer[]) {
                         Gdx.app.log(LOG, "Playerlist rec'd");
@@ -167,7 +175,6 @@ public class MPGameClient implements NetController {
                     }
                     return;
                 }
-
 
                 if (obj instanceof Command) {
                     Command cmd = (Command)obj;
@@ -386,5 +393,16 @@ public class MPGameClient implements NetController {
 
     public void sendPlayerUpdate(KryoCommon.UpdatePlayer update) {
         client.sendTCP(update);
+    }
+
+    public void sendChat(String message) {
+        KryoCommon.ChatMessage chat = new KryoCommon.ChatMessage();
+        chat.name = player.getPlayerName();
+        chat.message = message;
+        client.sendTCP(chat);
+    }
+
+    public Array<String> getChatLog() {
+        return chatLog;
     }
 }
