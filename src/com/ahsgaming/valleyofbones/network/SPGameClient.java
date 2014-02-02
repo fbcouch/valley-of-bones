@@ -169,11 +169,6 @@ public class SPGameClient implements NetController {
 	}
 
     @Override
-    public void setMap(String map) {
-        gameConfig.mapName = map;
-    }
-
-    @Override
     public Array<String> getSpectators() {
         return new Array<String>();
     }

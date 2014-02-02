@@ -114,6 +114,9 @@ public class KryoCommon {
         public int rules;
         public int firstMove = 0;
         public int spawn;
+        public int baseTimer;
+        public int actionBonusTime;
+        public int unitBonusTime;
 	}
 
     public static interface Error {}

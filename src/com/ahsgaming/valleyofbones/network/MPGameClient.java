@@ -153,10 +153,7 @@ public class MPGameClient implements NetController {
                     if (obj instanceof KryoCommon.GameDetails) {
                         Gdx.app.log(LOG, "GameDetails rec'd");
                         KryoCommon.GameDetails details = (KryoCommon.GameDetails) obj;
-                        gameConfig.mapName = details.map;
-                        gameConfig.firstMove = details.firstMove;
-                        gameConfig.spawnType = details.spawn;
-                        gameConfig.ruleSet = details.rules;
+                        gameConfig.setDetails(details);
 
                         Json json = new Json();
                         System.out.println(json.toJson(details, KryoCommon.GameDetails.class));
@@ -376,16 +373,6 @@ public class MPGameClient implements NetController {
 	public GameController getGameController() {
 		return controller;
 	}
-
-    @Override
-    public void setMap(String map) {
-        if (gameConfig.isHost) {
-            gameConfig.mapName = map;
-            KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
-            gameDetails.map = map;
-            client.sendTCP(gameDetails);
-        }
-    }
 
     public void sendGameDetails(KryoCommon.GameDetails gameDetails) {
         if (gameConfig.isHost) {

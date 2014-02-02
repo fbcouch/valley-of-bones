@@ -10,14 +10,14 @@ check-off
   orig: 16, 16
   offset: 0, 0
   index: -1
-default-slider-knob
+default-scroll
   rotate: false
   xy: 224, 106
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-default-scroll
+default-slider-knob
   rotate: false
   xy: 224, 106
   size: 16, 16
@@ -47,7 +47,7 @@ default-pane
   orig: 40, 40
   offset: 0, 0
   index: -1
-small-round
+textfield
   rotate: false
   xy: 104, 16
   size: 40, 40
@@ -57,6 +57,15 @@ small-round
   offset: 0, 0
   index: -1
 default-rect
+  rotate: false
+  xy: 104, 16
+  size: 40, 40
+  split: 18, 18, 16, 16
+  pad: 4, 4, 11, 11
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+small-round
   rotate: false
   xy: 104, 16
   size: 40, 40
@@ -84,14 +93,6 @@ default-round
   offset: 0, 0
   index: -1
 default-window
-  rotate: false
-  xy: 2, 20
-  size: 100, 50
-  split: 18, 18, 16, 16
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-textfield
   rotate: false
   xy: 2, 20
   size: 100, 50

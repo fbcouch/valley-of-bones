@@ -418,7 +418,7 @@ public class LevelScreen extends AbstractScreen {
     public void pausePopup() {
         if (wasPaused != isPaused()) {
             // iss2: Don't show pause/unpause notifications when the game begins
-            if (gController.getGameTurn() > 1 || (gController.getGameTurn() == 1 && gController.getTurnTimer() < gController.getTurnLength() )) {
+            if (gController.getGameTurn() > 1 || (gController.getGameTurn() == 1 && gController.getTurnTimer() < gController.getBaseTimer() )) {
                 if (!wasPaused) {
                     popupMessage("GAME PAUSED", "hazard-sign", 1);
                 } else {

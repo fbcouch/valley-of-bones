@@ -160,10 +160,6 @@ public class VOBGame extends Game {
 	public void removePlayer(int playerId) {
 		netController.removePlayer(playerId);
 	}
-
-    public void setMap(String map) {
-        netController.setMap(map);
-    }
 	
 	/**
 	 * Implemented methods

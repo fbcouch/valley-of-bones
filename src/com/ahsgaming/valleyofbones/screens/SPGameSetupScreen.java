@@ -137,12 +137,12 @@ public class SPGameSetupScreen extends AbstractScreen {
 
         mapSelect = new SelectBox(maps.toArray(), getSkin());
         mapSelect.setSelection(config.mapName);
-        game.setMap(mapSelect.getSelection());
+        config.mapName = mapSelect.getSelection();
 
         mapSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setMap(((SelectBox)actor).getSelection());
+                config.mapName = ((SelectBox)actor).getSelection();
             }
         });
 
@@ -191,7 +191,43 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.add(moveSelect).left().padBottom(4).fillX();
         setupTable.row();
 
+        setupTable.add("Timing Rules:").colspan(2).left().row();
 
+        Table timingTable = new Table(getSkin());
+        setupTable.add(timingTable).colspan(2).fillX();
+
+        timingTable.add("Base:").left().expandX();
+        SelectBox baseTime = new SelectBox(new String[]{"30", "60", "90"}, getSkin());
+        timingTable.add(baseTime).expandX();
+        baseTime.setSelection(Integer.toString(config.baseTimer));
+        baseTime.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                config.baseTimer = Integer.parseInt(((SelectBox)actor).getSelection());
+            }
+        });
+
+        timingTable.add("Action:").left().expandX();
+        SelectBox actionTime = new SelectBox(new String[]{"0", "15", "30"}, getSkin());
+        timingTable.add(actionTime).expandX();
+        actionTime.setSelection(Integer.toString(config.actionBonusTime));
+        actionTime.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                config.actionBonusTime = Integer.parseInt(((SelectBox)actor).getSelection());
+            }
+        });
+
+        timingTable.add("Unit:").left().expandX();
+        SelectBox unitTime = new SelectBox(new String[]{"0", "3", "5"}, getSkin());
+        timingTable.add(unitTime).expandX();
+        unitTime.setSelection(Integer.toString(config.unitBonusTime));
+        unitTime.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                config.unitBonusTime = Integer.parseInt(((SelectBox)actor).getSelection());
+            }
+        });
 
         setupTable.row().expandX().expandY().top().left();
 

@@ -34,13 +34,14 @@ import com.ahsgaming.valleyofbones.units.UnitView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
  *
  */
 public class GameController {
-	public static final String DEFAULT_MAP = "blank.tmx";
+	public static final String DEFAULT_MAP = "valley.json"; // TODO get default map from map list?
 	public static final String MAP_DIRECTORY = "maps";
 	
 	public String LOG = "GameController";
@@ -62,8 +63,9 @@ public class GameController {
 	
 	Player currentPlayer;
     int gameTurn = 0;
-	float turnLength = 60;
-    float turnAfterMoveReset = 0;
+	float baseTimer = 60;
+    float actionBonusTime = 0;
+    float unitBonusTime = 0;
     int maxPauses = 0;
 
 	float turnTimer = 0;
@@ -87,6 +89,14 @@ public class GameController {
 		this.mapName = config.mapName;
         this.maxPauses = config.maxPauses;
         this.spawnType = SpawnTypes.values()[config.spawnType];
+
+        this.baseTimer = config.baseTimer;
+        this.actionBonusTime = config.actionBonusTime;
+        this.unitBonusTime = config.unitBonusTime;
+
+        Gdx.app.log(LOG, "baseTimer: " + baseTimer);
+        Gdx.app.log(LOG, "actionTimer: " + actionBonusTime);
+        Gdx.app.log(LOG, "unitTimer: " + unitBonusTime);
 
         // TODO - set ruleset here
 
@@ -131,7 +141,7 @@ public class GameController {
             case SPAWN_RANDOM:
                 Array<Player> p = new Array<Player>(players);
                 while (p.size > 0) {
-                    playersToSpawn.add(p.removeIndex((int)Math.floor(Math.random() * p.size)));
+                    playersToSpawn.add(p.removeIndex((int) Math.floor(Math.random() * p.size)));
                 }
                 break;
         }
@@ -221,13 +231,17 @@ public class GameController {
         }
 
 		gameTurn += 1;
-        turnTimer = turnLength;
+        turnTimer = baseTimer;
         nextTurn = false;
 
         if (players.size > 0 && (gameTurn > 1 || currentPlayer == null)) {    // this way when the NetController sets currentPlayer, that player goes first (doTurn is called at the beginning of the game)
             int i = players.indexOf(currentPlayer, true);
             i = (i + 1) % players.size;
             currentPlayer = players.get(i);
+        }
+
+        if (unitBonusTime > 0) {
+            turnTimer += getUnitsByPlayerId(currentPlayer.getPlayerId()).size * unitBonusTime;
         }
 
         currentPlayer.startTurn(this);
@@ -354,17 +368,17 @@ public class GameController {
 		if (!validate(cmd)) return;
 		if (cmd instanceof Attack) {
 			executeAttack((Attack)cmd);
-            if (turnTimer < turnAfterMoveReset)
-                turnTimer = turnAfterMoveReset;
+            if (turnTimer < actionBonusTime)
+                turnTimer = actionBonusTime;
 		} else if (cmd instanceof Build) {
 //			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.turn));
 			executeBuild((Build)cmd);
-            if (turnTimer < turnAfterMoveReset)
-                turnTimer = turnAfterMoveReset;
+            if (turnTimer < actionBonusTime)
+                turnTimer = actionBonusTime;
 		} else if (cmd instanceof Move) {
 			executeMove((Move)cmd);
-            if (turnTimer < turnAfterMoveReset)
-                turnTimer = turnAfterMoveReset;
+            if (turnTimer < actionBonusTime)
+                turnTimer = actionBonusTime;
 		} else if (cmd instanceof Pause) {
 			executePause((Pause)cmd);
 		} else if (cmd instanceof Unpause) {
@@ -374,14 +388,14 @@ public class GameController {
         } else if (cmd instanceof Refund) {
             Refund r = (Refund)cmd;
             refundUnit(getPlayerById(r.owner), unitManager.getUnit(r.unit));
-            if (turnTimer < turnAfterMoveReset)
-                turnTimer = turnAfterMoveReset;
+            if (turnTimer < actionBonusTime)
+                turnTimer = actionBonusTime;
         } else if (cmd instanceof ActivateAbility) {
             ActivateAbility ab = (ActivateAbility)cmd;
             Unit u = unitManager.getUnit(ab.unit);
             unitManager.activateAbility(u);
-            if (turnTimer < turnAfterMoveReset)
-                turnTimer = turnAfterMoveReset;
+            if (turnTimer < actionBonusTime)
+                turnTimer = actionBonusTime;
         } else if (cmd instanceof Surrender) {
             Player p = getPlayerById(cmd.owner);
             p.getBaseUnit().getData().setCurHP(0);
@@ -560,8 +574,8 @@ public class GameController {
 		return turnTimer;
 	}
 
-    public float getTurnLength() {
-        return turnLength;
+    public float getBaseTimer() {
+        return baseTimer;
     }
 
     public void setTurnTimer(float timer) {

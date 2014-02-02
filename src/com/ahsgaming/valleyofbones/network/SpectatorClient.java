@@ -314,11 +314,6 @@ public class SpectatorClient implements NetController {
     }
 
     @Override
-    public void setMap(String map) {
-        // TODO
-    }
-
-    @Override
     public Array<String> getSpectators() {
         return spectators;
     }

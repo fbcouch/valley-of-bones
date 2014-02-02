@@ -29,6 +29,4 @@ public interface NetController {
 	
 	public boolean isConnected();
 	public boolean isConnecting();
-
-    public void setMap(String map);
 }

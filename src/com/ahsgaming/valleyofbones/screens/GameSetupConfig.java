@@ -22,7 +22,34 @@ public class GameSetupConfig {
     public String playerName = "New Player";
     public int maxPauses = 3;
 
+    public int baseTimer = 30;
+    public int actionBonusTime = 15;
+    public int unitBonusTime = 0;
+
     public enum FirstMoveType {
         MOVE_RANDOM, MOVE_P1, MOVE_P2
+    }
+
+    public GameSetupConfig setDetails(KryoCommon.GameDetails details) {
+        mapName = details.map;
+        ruleSet = details.rules;
+        spawnType = details.spawn;
+        firstMove = details.firstMove;
+        baseTimer = details.baseTimer;
+        actionBonusTime = details.actionBonusTime;
+        unitBonusTime = details.unitBonusTime;
+        return this;
+    }
+
+    public KryoCommon.GameDetails getDetails() {
+        KryoCommon.GameDetails details = new KryoCommon.GameDetails();
+        details.map = mapName;
+        details.rules = ruleSet;
+        details.spawn = spawnType;
+        details.firstMove = firstMove;
+        details.baseTimer = baseTimer;
+        details.actionBonusTime = actionBonusTime;
+        details.unitBonusTime = unitBonusTime;
+        return details;
     }
 }

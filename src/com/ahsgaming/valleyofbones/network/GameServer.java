@@ -325,10 +325,10 @@ public class GameServer implements NetController {
 					
 					if (controller == null) {
                         KryoCommon.GameDetails details = (KryoCommon.GameDetails)obj;
-						gameConfig.mapName = details.map;
-                        gameConfig.firstMove = details.firstMove;
-                        gameConfig.ruleSet = details.rules;
-                        gameConfig.spawnType = details.spawn;
+						gameConfig.setDetails(details);
+
+                        Json json = new Json();
+                        System.out.println(json.prettyPrint(json.toJson(details, KryoCommon.GameDetails.class)));
 						sendSetupInfo();
 					}
 				}
@@ -629,13 +629,9 @@ public class GameServer implements NetController {
 	}
 	
 	public void sendSetupInfo() {
-		KryoCommon.GameDetails si = new KryoCommon.GameDetails();
-		si.map = gameConfig.mapName;
-        si.firstMove = gameConfig.firstMove;
-        si.hostId = hostId;
-        si.rules = gameConfig.ruleSet;
-        si.spawn = gameConfig.spawnType;
-		server.sendToAllTCP(si);
+		KryoCommon.GameDetails si = gameConfig.getDetails();
+		si.hostId = hostId;
+        server.sendToAllTCP(si);
 	}
 	
 	protected int getNextPlayerId() {
@@ -923,11 +919,6 @@ public class GameServer implements NetController {
                 Gdx.app.log(LOG, "Update failed");
             }
         });
-    }
-
-    @Override
-    public void setMap(String map) {
-        // TODO
     }
 
     @Override

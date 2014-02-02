@@ -50,8 +50,8 @@ public class MPGameSetupScreen extends AbstractScreen {
 
     boolean isHost = false;
 
-    SelectBox mapSelect, spawnSelect, ruleSelect, moveSelect;
-    Label lblMap, lblSpawn, lblRule, lblMove;
+    SelectBox mapSelect, spawnSelect, ruleSelect, moveSelect, baseTime, actionTime, unitTime;
+    Label lblMap, lblSpawn, lblRule, lblMove, lblBaseTime, lblActionTime, lblUnitTime;
 
     boolean needsUpdate = false;
 
@@ -202,6 +202,8 @@ public class MPGameSetupScreen extends AbstractScreen {
         };
 
         if (config.isHost) {
+            needsUpdate = true;  // always send an update on setup, just so we're all on the same page
+
             JsonReader reader = new JsonReader();
             JsonValue val = reader.parse(Gdx.files.internal("maps/maps.json").readString());
 
@@ -212,7 +214,6 @@ public class MPGameSetupScreen extends AbstractScreen {
 
             mapSelect = new SelectBox(maps.toArray(), getSkin());
             mapSelect.setSelection(config.mapName);
-            game.setMap(mapSelect.getSelection());
 
             mapSelect.addListener(updateListener);
 
@@ -267,10 +268,45 @@ public class MPGameSetupScreen extends AbstractScreen {
         }
         setupTable.row();
 
-        setupTable.row().expandX().expandY().top().left();
+        setupTable.add("Timing Rules:").colspan(2).left().row();
 
-        table.add(setupTable).fill();
+        Table timingTable = new Table(getSkin());
+        setupTable.add(timingTable).colspan(2).fillX();
 
+        timingTable.add("Base:").left().expandX();
+        if (config.isHost) {
+            baseTime = new SelectBox(new String[]{"30", "60", "90"}, getSkin());
+            timingTable.add(baseTime).expandX().padLeft(4);
+            baseTime.setSelection(Integer.toString(config.baseTimer));
+            baseTime.addListener(updateListener);
+        } else {
+            lblBaseTime = new Label(Integer.toString(config.baseTimer), getSkin());
+            timingTable.add(lblBaseTime).expandX().padLeft(4);
+        }
+
+        timingTable.add("Action:").left().expandX().padLeft(4);
+        if (config.isHost) {
+            actionTime = new SelectBox(new String[]{"0", "15", "30"}, getSkin());
+            timingTable.add(actionTime).expandX().padLeft(4);
+            actionTime.setSelection(Integer.toString(config.actionBonusTime));
+            actionTime.addListener(updateListener);
+        } else {
+            lblActionTime = new Label(Integer.toString(config.actionBonusTime), getSkin());
+            timingTable.add(lblActionTime).expandX().padLeft(4);
+        }
+
+        timingTable.add("Unit:").left().expandX().padLeft(4);
+        if (config.isHost) {
+            unitTime = new SelectBox(new String[]{"0", "3", "5"}, getSkin());
+            timingTable.add(unitTime).expandX().padLeft(4);
+            unitTime.setSelection(Integer.toString(config.unitBonusTime));
+            unitTime.addListener(updateListener);
+        } else {
+            lblUnitTime = new Label(Integer.toString(config.unitBonusTime), getSkin());
+            timingTable.add(lblUnitTime).expandX().padLeft(4);
+        }
+
+        table.add(setupTable).fillX();
 
         Table controlTable = new Table(getSkin());
 
@@ -355,6 +391,9 @@ public class MPGameSetupScreen extends AbstractScreen {
             gameDetails.rules = ruleSelect.getSelectionIndex();
             gameDetails.firstMove = moveSelect.getSelectionIndex();
             gameDetails.spawn = spawnSelect.getSelectionIndex();
+            gameDetails.baseTimer = Integer.parseInt(baseTime.getSelection());
+            gameDetails.actionBonusTime = Integer.parseInt(actionTime.getSelection());
+            gameDetails.unitBonusTime = Integer.parseInt(unitTime.getSelection());
             client.sendGameDetails(gameDetails);
         }
 		
@@ -383,12 +422,19 @@ public class MPGameSetupScreen extends AbstractScreen {
             if (spawnSelect.getSelectionIndex() != config.spawnType) moveSelect.setSelection(config.spawnType);
             if (ruleSelect.getSelectionIndex() != config.ruleSet) moveSelect.setSelection(config.ruleSet);
 
+            baseTime.setSelection(Integer.toString(config.baseTimer));
+            actionTime.setSelection(Integer.toString(config.actionBonusTime));
+            unitTime.setSelection(Integer.toString(config.unitBonusTime));
+
         } else {
             if (!lblMap.getText().equals(config.mapName)) lblMap.setText(config.mapName);
             if (!lblSpawn.getText().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
             if (!lblMove.getText().equals(firstMoves[config.firstMove])) lblMove.setText(firstMoves[config.firstMove]);
             if (!lblRule.getText().equals(game.getRuleSets().get(config.spawnType).name)) lblRule.setText(game.getRuleSets().get(config.ruleSet).name);
 
+            lblBaseTime.setText(Integer.toString(config.baseTimer));
+            lblActionTime.setText(Integer.toString(config.actionBonusTime));
+            lblUnitTime.setText(Integer.toString(config.unitBonusTime));
         }
 	}
 
