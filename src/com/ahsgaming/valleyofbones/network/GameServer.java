@@ -470,7 +470,7 @@ public class GameServer implements NetController {
         }
 
         gameConfig.spawnType = (gameConfig.spawnType == GameSetupConfig.SpawnTypes.SPAWN_RANDOM.ordinal() ?
-                MathUtils.random(1, GameSetupConfig.SpawnTypes.values().length) :
+                MathUtils.random(0, GameSetupConfig.SpawnTypes.values().length - 2) :
                 gameConfig.spawnType);
 
 		controller = new GameController(gameConfig, players);

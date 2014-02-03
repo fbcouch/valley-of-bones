@@ -443,6 +443,13 @@ public class MPGameSetupScreen extends AbstractScreen {
 	public void render(float delta) {
 		super.render(delta);
 
+        if (!isHost && config.isHost) {
+            isHost = true;
+            stage.clear();
+            setupScreen();
+            return;
+        }
+
         if (config.isHost && needsUpdate) {
             needsUpdate = false;
             KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();

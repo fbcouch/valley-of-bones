@@ -60,11 +60,11 @@ public class OptionsScreen extends AbstractScreen {
         temp.scale = game.profile.scale;
 
         txtName = new TextField(game.profile.name, getSkin());
-        btnAuto = new TextButton("Auto", getSkin());
-        btnLDPI = new TextButton("LDPI", getSkin());
-        btnMDPI = new TextButton("MDPI", getSkin());
-        btnHDPI = new TextButton("HDPI", getSkin());
-        btnXHDPI = new TextButton("XHDPI", getSkin());
+        btnAuto = new TextButton("Auto", getSkin(), "toggle");
+        btnLDPI = new TextButton("LDPI", getSkin(), "toggle");
+        btnMDPI = new TextButton("MDPI", getSkin(), "toggle");
+        btnHDPI = new TextButton("HDPI", getSkin(), "toggle");
+        btnXHDPI = new TextButton("XHDPI", getSkin(), "toggle");
         bgScale = new ButtonGroup(btnAuto, btnLDPI, btnMDPI, btnHDPI, btnXHDPI);
         bgScale.setMaxCheckCount(1);
         bgScale.setUncheckLast(true);
@@ -81,8 +81,8 @@ public class OptionsScreen extends AbstractScreen {
             bgScale.setChecked("XHDPI");
         }
 
-        btnNearest = new TextButton("Nearest", getSkin());
-        btnLinear = new TextButton("Linear", getSkin());
+        btnNearest = new TextButton("Nearest", getSkin(), "toggle");
+        btnLinear = new TextButton("Linear", getSkin(), "toggle");
         bgFilter = new ButtonGroup(btnNearest, btnLinear);
         bgFilter.setMaxCheckCount(1);
         bgFilter.setUncheckLast(true);

@@ -152,7 +152,11 @@ public class MPGameClient implements NetController {
                                     pl.setReady(plist[p].ready);
                                 }
                                 players.add(pl);
-                                if (pl.getPlayerId() == playerId) player = pl;
+                                if (pl.getPlayerId() == playerId) {
+                                    player = pl;
+                                    gameConfig.isHost = plist[p].host;
+                                }
+
                                 Gdx.app.log(LOG, "Player ready: " + plist[p].ready);
                             }
                         }
