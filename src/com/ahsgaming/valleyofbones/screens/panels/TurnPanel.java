@@ -181,8 +181,8 @@ public class TurnPanel extends Group {
     }
 
     public void update(boolean isCurrent) {
-        if (lastTick != Math.floor(gController.getTurnTimer())) {
-            lastTick = (int)Math.floor(gController.getTurnTimer());
+        if (lastTick != Math.ceil(gController.getTurnTimer())) {
+            lastTick = (int)Math.ceil(gController.getTurnTimer());
             lblTime.setText(String.format(TIME, lastTick / 60, (lastTick % 60)));
 
             if (gController.getTurnTimer() <= 5 && isCurrent) {
