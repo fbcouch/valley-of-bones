@@ -179,5 +179,17 @@ public class OptionsScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         super.render(delta);    //To change body of overridden methods use File | Settings | File Templates.
+
+        if (bgFilter.getChecked() == btnLinear) {
+            btnLDPI.setDisabled(true);
+            btnMDPI.setDisabled(true);
+            if (bgScale.getChecked() == btnLDPI || bgScale.getChecked() == btnMDPI) {
+                bgScale.setChecked("HDPI");
+            }
+        } else {
+            btnLDPI.setDisabled(false);
+            btnMDPI.setDisabled(false);
+
+        }
     }
 }
