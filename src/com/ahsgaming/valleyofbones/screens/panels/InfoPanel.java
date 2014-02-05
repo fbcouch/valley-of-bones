@@ -185,6 +185,7 @@ public class InfoPanel extends Group {
 
             grpAbility.removeActor(imgCheckOn);
             grpAbility.removeActor(imgCheckOff);
+            grpAbility.removeActor(lblIncome);
 
             if (iconAbility != null) {
                 grpAbility.removeActor(iconAbility);

@@ -25,16 +25,17 @@ public class TurnPanel extends Group {
     GameController gController;
 
     static String TIME = "%d:%02d";
+    static String TURN = "TURN: %d";
 
-    Image imgBackground, imgP1Indicator, imgP2Indicator, imgIndicatorOverlay;
-    Label lblPlayer1, lblPlayer2, lblTime;
+    Image imgBackground, imgP1Indicator, imgP2Indicator, imgIndicatorOverlay, imgTurn;
+    Label lblPlayer1, lblPlayer2, lblTime, lblTurn;
     Player player1, player2, lastPlayer, thePlayer;
     Skin skin;
 
     InfoPanel infoPanel, infoPanel2;
     Group endTurn;
 
-    int lastTick;
+    int lastTick, lastTurn;
 
     public TurnPanel(GameController controller, Player player, Skin skin) {
         this.gController = controller;
@@ -113,6 +114,14 @@ public class TurnPanel extends Group {
             });
         }
 
+        imgTurn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "turn-hud-bg-small"));
+        lblTurn = new Label(String.format(TURN, 0), skin, "small-font", new Color(0.8f, 0.8f, 0.8f, 1));
+        lblTurn.setFontScale(VOBGame.SCALE);
+        addActor(imgTurn);
+        addActor(lblTurn);
+        lblTurn.setZIndex(0);
+        imgTurn.setZIndex(0);
+
         layout();
     }
 
@@ -178,6 +187,11 @@ public class TurnPanel extends Group {
             }
             endTurn.setY(imgBackground.getHeight() - endTurn.getHeight());
         }
+
+        imgTurn.setPosition(
+                (imgBackground.getWidth() - imgTurn.getWidth()) * 0.5f,
+                -imgTurn.getHeight() + 3 * VOBGame.SCALE
+        );
     }
 
     public void update(boolean isCurrent) {
@@ -188,6 +202,16 @@ public class TurnPanel extends Group {
             if (gController.getTurnTimer() <= 5 && isCurrent) {
                 lblTime.addAction(Actions.sequence(Actions.color(new Color(1.0f, 0, 0, 1.0f)), Actions.delay(0.2f), Actions.color(new Color(0.8f, 0.8f, 0.8f, 1f))));
             }
+        }
+
+        if (lastTurn != gController.getGameTurn()) {
+            lastTurn = gController.getGameTurn();
+            lblTurn.setText(String.format(TURN, lastTurn));
+
+            lblTurn.setPosition(
+                    (imgBackground.getWidth() - lblTurn.getWidth() * lblTurn.getFontScaleX()) * 0.5f,
+                    imgTurn.getY() + 12 * VOBGame.SCALE
+            );
         }
 
         if (lastPlayer != gController.getCurrentPlayer()) {
