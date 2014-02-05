@@ -216,19 +216,19 @@
                 "armor": 1,
                 "food": 4,
                 "requires": [ "castle-base" ],
-                "attackdamage": 20,
+                "attackdamage": 15,
                 "attackspeed": 1,
-                "attackrange": 6,
-                "sightrange": 3,
+                "attackrange": 5,
+                "sightrange": 2,
                 "movespeed": 1,
                 "cost": 150,
                 "subtype": "armored",
                 "buildtime": 1,
                 "splashdistance": 1,
-                "splashdamage": 0.5,
+                "splashdamage": 0.3,
                 "bonus": {
                     "armored": 1.5,
-                    "building": 1.5
+                    "building": 2
                 }
             }
         },
