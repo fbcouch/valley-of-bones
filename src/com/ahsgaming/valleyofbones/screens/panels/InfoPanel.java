@@ -7,6 +7,7 @@ import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.ProgressBar;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
+import com.ahsgaming.valleyofbones.units.UnitData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -40,19 +41,18 @@ public class InfoPanel extends Group {
     final String REFUND = "$%d";
 
     Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft, lblRefund;
-    Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit, iconAbility, imgAbilityBg;
+    Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit;
     Image iconSubtype;
     Skin skin;
     VOBGame game;
     LevelScreen levelScreen;
-    Group grpAbility, grpUnit;
-    Image imgCheckOn, imgCheckOff;
-    Label lblIncome;
+    Group grpUnit;
     Unit selected, lastSelected;
     Prototypes.JsonProto lastBuildProto, buildProto;
 
     Table bonusTable, mainTable, statTable;
 
+    AbilityIndicator abilityIndicator;
     ProgressBar healthBar;
 
     long lastUpdated = 0;
@@ -72,13 +72,7 @@ public class InfoPanel extends Group {
         iconAttacksLeft = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword-small"));
         iconRefund = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "skull-crossed-bones-small"));
         imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "selection-hud-bg"));
-        imgAbilityBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
-        imgCheckOff = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-off"));
-        imgCheckOn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-on"));
         imgUnit = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
-
-        grpAbility = new Group();
-        grpAbility.addActor(imgAbilityBg);
 
         grpUnit = new Group();
         grpUnit.addActor(imgUnit);
@@ -104,9 +98,6 @@ public class InfoPanel extends Group {
         lblMovesLeft.setFontScale(VOBGame.SCALE);
         lblRefund = new Label(String.format(REFUND, 0), skin, "small");
         lblRefund.setFontScale(VOBGame.SCALE);
-
-        lblIncome = new Label(String.format(REFUND, 0), skin, "small");
-        lblIncome.setFontScale(VOBGame.SCALE);
 
         healthBar = new ProgressBar();
         healthBar.setSize(lblHealth.getWidth(), 4);
@@ -144,7 +135,9 @@ public class InfoPanel extends Group {
 
         statTable.add(bonusTable).colspan(8).expandX();
 
-        mainTable.add(grpAbility).padRight(20 * VOBGame.SCALE);
+        abilityIndicator = new AbilityIndicator(skin, levelScreen);
+
+        mainTable.add(abilityIndicator).padRight(20 * VOBGame.SCALE);
 
 
         layout();
@@ -181,22 +174,7 @@ public class InfoPanel extends Group {
                     bonusTable.add(label).bottom();
                 }
             }
-
-
-            grpAbility.removeActor(imgCheckOn);
-            grpAbility.removeActor(imgCheckOff);
-            grpAbility.removeActor(lblIncome);
-
-            if (iconAbility != null) {
-                grpAbility.removeActor(iconAbility);
-            }
-
-            if (buildProto.hasProperty("ability") && !buildProto.getProperty("ability").asString().equals("")) {
-                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", buildProto.getProperty("ability").asString() + "-small"));
-                grpAbility.addActor(iconAbility);
-            } else {
-                iconAbility = null;
-            }
+            abilityIndicator.update(buildProto);
 
             healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
             healthBar.setCurrent(buildProto.getProperty("curhp").asFloat() / buildProto.getProperty("maxhp").asFloat());
@@ -231,59 +209,7 @@ public class InfoPanel extends Group {
                 bonusTable.add(label).bottom();
             }
 
-            if (iconAbility != null) {
-                grpAbility.removeActor(iconAbility);
-                grpAbility.removeActor(imgCheckOn);
-                grpAbility.removeActor(lblIncome);
-            }
-
-            if (selected.getData().getAbility().equals("stealth")) grpAbility.addActor(imgCheckOff);
-
-            if (selected.getData().getAbility().equals("increasing-returns")) {
-                grpAbility.addActor(lblIncome);
-                lblIncome.setText(String.format(REFUND, -1 * selected.getData().getUpkeep().first()));
-            }
-
-            if (!selected.getData().getAbility().equals("")) {
-                Gdx.app.log(LOG, selected.getData().getAbility());
-                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", selected.getData().getAbility() + "-small"));
-                if (selected.getData().isAbilityActive()) {
-                    iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
-                    grpAbility.removeActor(imgCheckOff);
-
-                    if (selected.getData().getAbility().equals("stealth")) {
-                        grpAbility.addActor(imgCheckOn);
-
-                        if (imgCheckOn.getListeners().size > 0)
-                            imgCheckOn.removeListener(imgCheckOn.getListeners().first());
-                        imgCheckOn.addListener(new ClickListener(){
-                            @Override
-                            public void clicked(InputEvent event, float x, float y) {
-                                super.clicked(event, x, y);
-
-                                levelScreen.activateAbility(selected.getId());
-                            }
-                        });
-                    }
-                } else {
-                    if (imgCheckOff.getListeners().size > 0)
-                        imgCheckOff.removeListener(imgCheckOff.getListeners().first());
-                    imgCheckOff.addListener(new ClickListener(){
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            super.clicked(event, x, y);
-
-                            levelScreen.activateAbility(selected.getId());
-                        }
-                    });
-                }
-
-                grpAbility.addActor(iconAbility);
-
-
-            } else {
-                iconAbility = null;
-            }
+            abilityIndicator.update(selected);
 
             healthBar.setSize(iconMovesLeft.getX() - iconHealth.getRight(), 4);
             healthBar.setCurrent((float)selected.getData().getCurHP() / (float)selected.getData().getMaxHP());
@@ -324,23 +250,8 @@ public class InfoPanel extends Group {
             grpUnit.setSize(imgUnit.getWidth(), imgUnit.getHeight());
         }
 
-        imgCheckOff.setPosition(0, 0);
-        imgCheckOn.setPosition(0, 0);
-        imgAbilityBg.setPosition(0, imgCheckOff.getTop() + 5 * VOBGame.SCALE);
-        grpAbility.setSize(imgAbilityBg.getRight(), imgAbilityBg.getTop());
-//        grpAbility.setPosition(Math.max(lblTitle.getRight(), Math.max(lblAttacksLeft.getRight(), lblArmor.getRight())) + 5 * VOBGame.SCALE, lblArmor.getY());
-        if (iconAbility != null) {
-            iconAbility.setPosition(
-                    (imgAbilityBg.getWidth() - iconAbility.getWidth()) * 0.5f,
-                    imgAbilityBg.getY() + (imgAbilityBg.getHeight() - iconAbility.getHeight()) * 0.5f
-            );
-        }
 
-        healthBar.setSize( iconMovesLeft.getX() - iconHealth.getX()
-//                AbstractScreen.localToGlobal(new Vector2(0, 0), iconMovesLeft).x
-//                        - AbstractScreen.localToGlobal(new Vector2(0, 0), iconHealth).x
-                , 4 * VOBGame.SCALE
-        );
+        healthBar.setSize(iconMovesLeft.getX() - iconHealth.getX(), 4 * VOBGame.SCALE);
     }
 
     public void setSelected(Unit unit) {
@@ -350,5 +261,117 @@ public class InfoPanel extends Group {
 
     public void setBuildProto(Prototypes.JsonProto proto) {
         buildProto = proto;
+    }
+
+    public static class AbilityIndicator extends Table {
+        Group grpAbilityIcon, grpAbilityText;
+        Image imgAbilityBg, imgCheckOn, imgCheckOff, imgCheckBg, iconMoney, iconAbility;
+        Label lblIncome;
+
+        LevelScreen levelScreen;
+
+        public AbilityIndicator(Skin skin, LevelScreen levelScreen) {
+            super(skin);
+
+            this.levelScreen = levelScreen;
+
+            imgAbilityBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "ability-bg"));
+            imgCheckOff = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-off"));
+            imgCheckOn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-on"));
+            imgCheckBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-bg"));
+            iconMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money-small"));
+            iconMoney.setScale(0.65f);
+            lblIncome = new Label("+0", skin, "small");
+            lblIncome.setFontScale(VOBGame.SCALE * 0.75f);
+
+            grpAbilityIcon = new Group();
+            grpAbilityIcon.addActor(imgAbilityBg);
+            grpAbilityIcon.setSize(imgAbilityBg.getWidth(), imgAbilityBg.getHeight());
+
+            grpAbilityText = new Group();
+            grpAbilityText.addActor(imgCheckBg);
+            grpAbilityText.setSize(imgCheckBg.getWidth(), imgCheckBg.getHeight());
+
+            add(grpAbilityIcon).fillX().padBottom(5 * VOBGame.SCALE).row();
+            add(grpAbilityText).fillX().row();
+        }
+
+        public void update(final Unit unit) {
+            removeAll();
+
+            if (!unit.getData().getAbility().equals("")) {
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", unit.getData().getAbility() + "-small"));
+                grpAbilityIcon.addActor(iconAbility);
+                iconAbility.setPosition((grpAbilityIcon.getWidth() - iconAbility.getWidth()) * 0.5f, (grpAbilityIcon.getHeight() - iconAbility.getHeight()) * 0.5f);
+                if (unit.getData().isAbilityActive()) {
+                    iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
+
+                    if (unit.getData().getAbility().equals("increasing-returns")) {
+                        grpAbilityText.addActor(iconMoney);
+                        iconMoney.setPosition(2 * VOBGame.SCALE, 1 * VOBGame.SCALE);
+                        lblIncome.setText("" + (- unit.getData().getUpkeep().get(0)));
+                        grpAbilityText.addActor(lblIncome);
+                        if (unit.getData().getUpkeep().get(0) < unit.getProto().getProperty("upkeep").asInt()) {
+                            lblIncome.setColor(0, 0.8f, 1.0f, 1.0f);
+                            iconMoney.setColor(0, 0.8f, 1.0f, 1.0f);
+                        } else {
+                            lblIncome.setColor(1, 1, 1, 1);
+                            iconMoney.setColor(1, 1, 1, 1);
+                        }
+                        lblIncome.setPosition(15 * VOBGame.SCALE, 6 * VOBGame.SCALE);
+                    } else {
+                        grpAbilityText.addActor(imgCheckOn);
+
+                        if (unit.getData().getAbility().equals("stealth")) {
+                            if (imgCheckOn.getListeners().size > 0)
+                                imgCheckOn.removeListener(imgCheckOn.getListeners().first());
+                            imgCheckOn.addListener(new ClickListener(){
+                                @Override
+                                public void clicked(InputEvent event, float x, float y) {
+                                    super.clicked(event, x, y);
+
+                                    levelScreen.activateAbility(unit.getId());
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    grpAbilityText.addActor(imgCheckOff);
+                    if (imgCheckOff.getListeners().size > 0)
+                        imgCheckOff.removeListener(imgCheckOff.getListeners().first());
+                    imgCheckOff.addListener(new ClickListener(){
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            super.clicked(event, x, y);
+
+                            levelScreen.activateAbility(unit.getId());
+                        }
+                    });
+                }
+            }
+
+
+        }
+
+        public void update(Prototypes.JsonProto proto) {
+            removeAll();
+
+            if (proto.hasProperty("ability") && !proto.getProperty("ability").asString().equals("")) {
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.getProperty("ability").asString() + "-small"));
+                grpAbilityIcon.addActor(iconAbility);
+                iconAbility.setPosition((grpAbilityIcon.getWidth() - iconAbility.getWidth()) * 0.5f, (grpAbilityIcon.getHeight() - iconAbility.getHeight()) * 0.5f);
+
+            }
+        }
+
+        void removeAll() {
+            if (iconAbility != null) {
+                iconAbility.remove();
+            }
+            imgCheckOn.remove();
+            imgCheckOff.remove();
+            iconMoney.remove();
+            lblIncome.remove();
+        }
     }
 }

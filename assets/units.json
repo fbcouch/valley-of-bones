@@ -157,7 +157,7 @@
             "id": "tank-base",
             "type": "unit",
             "image": "tank",
-            "title": "Light Tank",
+            "title": "Hover Tank",
             "desc": "Tank with light armor",
             "attacksound": "laser_shot",
             "properties": {
@@ -184,7 +184,7 @@
             "id": "light-mech",
             "type": "unit",
             "image": "light-mech",
-            "title": "Light Mech",
+            "title": "Mech Walker",
             "desc": "Mech walker",
             "attacksound": "laser_shot",
             "properties": {
@@ -219,15 +219,15 @@
                 "attackdamage": 15,
                 "attackspeed": 1,
                 "attackrange": 5,
-                "sightrange": 2,
+                "sightrange": 3,
                 "movespeed": 1,
                 "cost": 150,
                 "subtype": "armored",
                 "buildtime": 1,
                 "splashdistance": 1,
-                "splashdamage": 0.3,
+                "splashdamage": 0.34,
                 "bonus": {
-                    "armored": 1.5,
+                    "armored": 2,
                     "building": 2
                 }
             }

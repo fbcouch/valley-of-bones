@@ -115,16 +115,23 @@ castle-overlay
   orig: 64, 64
   offset: 0, 0
   index: -1
-check-off
+check-bg
   rotate: false
   xy: 669, 116
   size: 40, 16
   orig: 40, 16
   offset: 0, 0
   index: -1
-check-on
+check-off
   rotate: false
   xy: 536, 101
+  size: 40, 16
+  orig: 40, 16
+  offset: 0, 0
+  index: -1
+check-on
+  rotate: false
+  xy: 1913, 442
   size: 40, 16
   orig: 40, 16
   offset: 0, 0
