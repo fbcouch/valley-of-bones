@@ -40,8 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  */
 public class MainMenuScreen extends AbstractScreen {
 	public static final float BUTTON_WIDTH = 300f, BUTTON_HEIGHT = 45f, BUTTON_SPACING = 30f;
-	
-	
+
 	/**
 	 * @param game
 	 */
@@ -121,6 +120,9 @@ public class MainMenuScreen extends AbstractScreen {
 		table.add(btnExit).uniform().size(BUTTON_WIDTH, BUTTON_HEIGHT).spaceBottom(BUTTON_SPACING).colspan(2);
 		
 		table.row();
+
+        Label lblVersion = new Label("Version: " + VOBGame.VERSION, getSkin());
+        stage.addActor(lblVersion);
 	}
 
 }

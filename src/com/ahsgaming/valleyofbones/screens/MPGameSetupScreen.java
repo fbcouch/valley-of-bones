@@ -92,6 +92,12 @@ public class MPGameSetupScreen extends AbstractScreen {
         Table playerTable = new Table(getSkin());
         playerTable.setBackground(getSkin().getDrawable("default-pane"));
 
+        playerTable.add().padBottom(10);
+        playerTable.add(new Label("Name", getSkin(), "small-grey")).padBottom(10);
+        playerTable.add(new Label("Race", getSkin(), "small-grey")).padBottom(10);
+        playerTable.add(new Label("Color", getSkin(), "small-grey")).padBottom(10);
+        playerTable.add(new Label("Ready", getSkin(), "small-grey")).padBottom(10).row();
+
         pList = new Array<Player>();
         pList.addAll(game.getPlayers());
 
