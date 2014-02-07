@@ -77,14 +77,11 @@ public class SPGameSetupScreen extends AbstractScreen {
 		table.add(gameTypeLbl).colspan(2).center();
 		table.row().minWidth(600);
 
-        table.add("Players").colspan(2).left();
-        table.row();
-
         Table playerTable = new Table(getSkin());
         playerTable.setBackground(getSkin().getDrawable("default-pane"));
 
-        playerTable.add().padBottom(10);
-        playerTable.add().padBottom(10);
+        playerTable.add().padBottom(10).width(30);
+        playerTable.add().padBottom(10).width(30);
         playerTable.add(new Label("Name", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Race", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Color", getSkin(), "small-grey")).padBottom(10).row();
@@ -96,9 +93,9 @@ public class SPGameSetupScreen extends AbstractScreen {
             playerTable.add("P" + ((pList.indexOf(p, true) + 1))).padLeft(10);
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
-                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10);
+                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10).padRight(10);
             } else {
-                playerTable.add().padLeft(10);
+                playerTable.add().padLeft(10).padRight(10);
             }
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).expandX().left();
@@ -124,7 +121,7 @@ public class SPGameSetupScreen extends AbstractScreen {
                 }
             });
 
-            playerTable.row().expandX().padBottom(5).padTop(5);
+            playerTable.row().padBottom(5).padTop(5);
         }
 
         table.add(playerTable).fillX().colspan(2);

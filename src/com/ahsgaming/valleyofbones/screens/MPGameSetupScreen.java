@@ -89,8 +89,8 @@ public class MPGameSetupScreen extends AbstractScreen {
         Table playerTable = new Table(getSkin());
         playerTable.setBackground(getSkin().getDrawable("default-pane"));
 
-        playerTable.add().padBottom(10);
-        playerTable.add().padBottom(10);
+        playerTable.add().padBottom(10).width(30);
+        playerTable.add().padBottom(10).width(30);
         playerTable.add(new Label("Name", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Race", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Color", getSkin(), "small-grey")).padBottom(10);
@@ -103,13 +103,13 @@ public class MPGameSetupScreen extends AbstractScreen {
             playerTable.add("P" + ((pList.indexOf(p, true) + 1))).padLeft(10);
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
-                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10);
+                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10).padRight(10);
             } else {
                 if (config.isHost) {
                     Image btn = getRemovePlayerButton(p);
-                    playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).padLeft(10);
+                    playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).padLeft(10).padRight(10);
                 } else {
-                    playerTable.add().padLeft(10);
+                    playerTable.add().padLeft(10).padRight(10);
                 }
             }
 
@@ -164,7 +164,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             });
 
 
-            playerTable.row().expandX().padBottom(5).padTop(5);
+            playerTable.row().padBottom(5).padTop(5);
         }
 
         if (pList.size < 2 && config.isHost) {

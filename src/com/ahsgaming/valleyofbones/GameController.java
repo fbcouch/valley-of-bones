@@ -89,10 +89,6 @@ public class GameController {
         this.actionBonusTime = config.actionBonusTime;
         this.unitBonusTime = config.unitBonusTime;
 
-        Gdx.app.log(LOG, "baseTimer: " + baseTimer);
-        Gdx.app.log(LOG, "actionTimer: " + actionBonusTime);
-        Gdx.app.log(LOG, "unitTimer: " + unitBonusTime);
-
         // TODO - set ruleset here
 
         unitManager = new UnitManager(this);

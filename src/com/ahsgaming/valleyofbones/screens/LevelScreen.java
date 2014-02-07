@@ -78,7 +78,7 @@ public class LevelScreen extends AbstractScreen {
     protected Vector2 posCamera = new Vector2();
 	
 	// UX stuff
-    float lastTurnTick;
+    int lastTurn;
 	
 	Group grpPreviews = new Group();
 
@@ -409,10 +409,10 @@ public class LevelScreen extends AbstractScreen {
 	}
 
 	public void yourTurnPopup() {
-        if (gController.getTurnTimer() > gController.getBaseTimer() - 1 && isCurrentPlayer() && lastTurnTick < gController.getTurnTimer()) {
+        if (lastTurn != gController.getGameTurn() && isCurrentPlayer()) {
             popupMessage("YOUR TURN!", "hazard-sign", 1);
         }
-        lastTurnTick = gController.getTurnTimer();
+        lastTurn = gController.getGameTurn();
 	}
 
     public void pausePopup() {

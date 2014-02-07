@@ -135,7 +135,7 @@ public class SPGameClient implements NetController {
 	public void sendCommand(Command cmd) {
         // only queue if its your turn!
         cmd.turn = controller.getGameTurn();
-		if (cmd.owner == controller.getCurrentPlayer().getPlayerId()) controller.queueCommand(cmd);
+		if (cmd.owner == controller.getCurrentPlayer().getPlayerId() || cmd instanceof Surrender) controller.queueCommand(cmd);  // allow surrendering on either turn
 	}
 
     public void sendAICommand(Command cmd) {
