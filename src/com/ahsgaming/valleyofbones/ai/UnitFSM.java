@@ -181,8 +181,9 @@ public class UnitFSM {
         if (unit.getData().getMovesLeft() > 0
                 && controller.getMap().getMapDist(unit.getView().getBoardPosition(), directive.target.getView().getBoardPosition()) > unit.getData().getAttackRange() + unit.getData().getMoveSpeed() - directive.target.getData().getMoveSpeed()) {
             Move mv = moveToward(directive.target.getView().getBoardPosition(), controller);
-            if (mv != null)
+            if (mv != null) {
                 return mv;
+            }
         }
 
         return null;
@@ -195,16 +196,17 @@ public class UnitFSM {
 
     Move moveToward(Vector2 boardPosition, GameController controller) {
         AStar.AStarNode target = AStar.getPath(unit.getView().getBoardPosition(), boardPosition, controller);
-
         if (target != null) {
-            while (target.gx > unit.getData().getMovesLeft() || !controller.isBoardPosEmpty(target.location)) {
+            while (target.parent != null && (target.gx > unit.getData().getMovesLeft() || !controller.isBoardPosEmpty(target.location))) {
                 target = target.parent;
             }
 
-            Move mv = new Move();
-            mv.unit = unit.getId();
-            mv.toLocation = target.location;
-            return mv;
+            if (!target.location.epsilonEquals(unit.getView().getBoardPosition(), 0.1f)) {
+                Move mv = new Move();
+                mv.unit = unit.getId();
+                mv.toLocation = target.location;
+                return mv;
+            }
         }
         return null;
     }

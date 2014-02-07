@@ -409,7 +409,7 @@ public class LevelScreen extends AbstractScreen {
 	}
 
 	public void yourTurnPopup() {
-        if (gController.getTurnTimer() > 59 && isCurrentPlayer() && lastTurnTick < gController.getTurnTimer()) {
+        if (gController.getTurnTimer() > gController.getBaseTimer() - 1 && isCurrentPlayer() && lastTurnTick < gController.getTurnTimer()) {
             popupMessage("YOUR TURN!", "hazard-sign", 1);
         }
         lastTurnTick = gController.getTurnTimer();
@@ -533,7 +533,7 @@ public class LevelScreen extends AbstractScreen {
         popup.addActor(lbl);
         lbl.setPosition(img.getRight(), (img.getHeight() - lbl.getHeight()) * 0.5f);
         popup.setSize(lbl.getX() + lbl.getWidth() * lbl.getFontScaleX(), img.getTop());
-        popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, turnPanel.getY() - popup.getHeight() - 15 * VOBGame.SCALE);
+        popup.setPosition((stage.getWidth() - popup.getWidth()) * 0.5f, turnPanel.getY() - popup.getHeight() - 20 * VOBGame.SCALE);
         popup.setColor(popup.getColor().r, popup.getColor().g, popup.getColor().b, 0);
         stage.addActor(popup);
         popup.addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(duration), Actions.fadeOut(0.5f), Actions.removeActor()));

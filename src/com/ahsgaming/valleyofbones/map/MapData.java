@@ -25,7 +25,7 @@ public class MapData {
     Vector2 tileSize, bounds;
 
     public boolean isBoardPositionTraversible(int x, int y) {
-        if (y * (int)bounds.x + x >= 0 && y * (int)bounds.x + x < bounds.x * bounds.y) {
+        if (x >= 0 && x < bounds.x && y >= 0 && y < bounds.y) {
             boolean traversible = false;
             for (TileLayer tl: tileLayers) {
                 if (tl.collidable && tl.data.get(y * (int)bounds.x + x) != 0) {

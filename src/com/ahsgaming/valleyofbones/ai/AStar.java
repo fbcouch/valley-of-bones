@@ -2,6 +2,7 @@ package com.ahsgaming.valleyofbones.ai;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.map.HexMap;
+import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -36,11 +37,14 @@ public class AStar {
             }
 
             for(Vector2 loc: HexMap.getAdjacent((int) least.location.x, (int) least.location.y)) {
-                if (loc.epsilonEquals(to, 0.1f) || controller.getMap().getMapData().isBoardPositionTraversible((int)loc.x, (int)loc.y) && controller.isBoardPosEmpty(loc)) {
+                if (loc.epsilonEquals(to, 0.1f) || (controller.getMap().getMapData().isBoardPositionTraversible((int)loc.x, (int)loc.y) && controller.isBoardPosEmpty(loc))) {
+                    boolean found = false;
                     for (AStar.AStarNode node: closedList) {
                         if (node.location.epsilonEquals(loc, 0.1f))
-                            continue;
+                            found = true;
                     }
+                    if (found)
+                        continue;
 
                     int openIndex = -1;
                     for (int i = 0; i < openList.size; i++) {
@@ -50,7 +54,9 @@ public class AStar {
                     }
 
                     if (openIndex == -1 || openList.get(openIndex).gx > least.gx + 1) {
-                        if (limit == -1 || least.gx + 1 <= limit) {
+                        if (openIndex != -1) {
+                            openList.get(openIndex).gx = least.gx + 1;
+                        } else if (limit == -1 || least.gx + 1 <= limit) {
                             openList.add(AStar.AStarNode.createAStarNode(least, loc, least.gx + 1, controller.getMap().getMapDist(loc, to)));
                         }
                     }
@@ -58,7 +64,16 @@ public class AStar {
             }
         }
 
-        return (closedList.size > 0 && closedList.peek().location.epsilonEquals(to, 0.1f) ? closedList.peek() : null);
+        AStarNode returnVal = null;
+        if (closedList.size > 0 && closedList.peek().location.epsilonEquals(to, 0.1f)) {
+            returnVal = closedList.pop();
+        } else {
+            for (AStarNode node: closedList) {
+                if (returnVal == null || node.hx < returnVal.hx)
+                    returnVal = node;
+            }
+        }
+        return returnVal;
     }
 
     public static AStarNode getPath(Vector2 from, Vector2 to, GameController controller) {

@@ -54,7 +54,6 @@ public class FSMAIPlayer extends AIPlayer {
 
             if (sendCommand(updateUnitFSMs(myUnits, controller), controller)) return;
 
-
             // TODO this will need a lot of cleanup, right now I just want a prototype that builds marines as close as possible to goals
             // TODO for the moment, the enemy's gate is down - build marines at the first tower and let them wander
 
@@ -73,6 +72,9 @@ public class FSMAIPlayer extends AIPlayer {
 
         cmd.owner = getPlayerId();
         cmd.turn = controller.getGameTurn();
+        if (!controller.validate(cmd)) {
+            return true;            // JC: leave this here as a safeguard, even though I think we're good
+        }
         netController.sendAICommand(cmd);
         countdown = timer;
         visibilityMatrix = null;
