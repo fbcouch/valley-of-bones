@@ -84,6 +84,7 @@ public class SPGameSetupScreen extends AbstractScreen {
         playerTable.setBackground(getSkin().getDrawable("default-pane"));
 
         playerTable.add().padBottom(10);
+        playerTable.add().padBottom(10);
         playerTable.add(new Label("Name", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Race", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Color", getSkin(), "small-grey")).padBottom(10).row();
@@ -92,19 +93,20 @@ public class SPGameSetupScreen extends AbstractScreen {
 		pList.addAll(game.getPlayers());
 
 		for (final Player p: pList) {
+            playerTable.add("P" + ((pList.indexOf(p, true) + 1))).padLeft(10);
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
-                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE);
+                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10);
             } else {
-                playerTable.add();
+                playerTable.add().padLeft(10);
             }
 
-            playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left();
-            playerTable.add("Terran");
+            playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).expandX().left();
+            playerTable.add("Terran").expandX();
 
             Image color = new Image(getSkin().getDrawable("white-hex"));
             color.setColor(Player.AUTOCOLORS[pList.indexOf(p, true)]);
-            playerTable.add(color);
+            playerTable.add(color).expandX();
 
             color.addListener(new ClickListener() {
                 @Override

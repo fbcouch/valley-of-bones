@@ -86,12 +86,10 @@ public class MPGameSetupScreen extends AbstractScreen {
         table.add(gameTypeLbl).colspan(2).center();
         table.row().minWidth(600);
 
-        table.add("Players").colspan(2).left();
-        table.row();
-
         Table playerTable = new Table(getSkin());
         playerTable.setBackground(getSkin().getDrawable("default-pane"));
 
+        playerTable.add().padBottom(10);
         playerTable.add().padBottom(10);
         playerTable.add(new Label("Name", getSkin(), "small-grey")).padBottom(10);
         playerTable.add(new Label("Race", getSkin(), "small-grey")).padBottom(10);
@@ -102,15 +100,16 @@ public class MPGameSetupScreen extends AbstractScreen {
         pList.addAll(game.getPlayers());
 
         for (final Player p: pList) {
+            playerTable.add("P" + ((pList.indexOf(p, true) + 1))).padLeft(10);
             if (pList.indexOf(p, true) == 0) {
                 Image host = new Image(game.getTextureManager().getSpriteFromAtlas("assets", "king-small"));
-                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).expandX();
+                playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10);
             } else {
                 if (config.isHost) {
                     Image btn = getRemovePlayerButton(p);
-                    playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).expandX();
+                    playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).padLeft(10);
                 } else {
-                    playerTable.add().expandX();
+                    playerTable.add().padLeft(10);
                 }
             }
 
@@ -169,7 +168,7 @@ public class MPGameSetupScreen extends AbstractScreen {
         }
 
         if (pList.size < 2 && config.isHost) {
-            TextButton addAI = new TextButton("Add AI Player", getSkin());
+            TextButton addAI = new TextButton(" Add AI Player ", getSkin(), "small");
             addAI.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -178,7 +177,8 @@ public class MPGameSetupScreen extends AbstractScreen {
                     game.addAIPlayer();
                 }
             });
-
+            playerTable.add();
+            playerTable.add();
             playerTable.add(addAI).colspan(5).left();
         }
 

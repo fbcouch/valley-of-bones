@@ -23,7 +23,7 @@ public class GameSetupConfig {
     public int maxPauses = 3;
 
     public int baseTimer = 30;
-    public int actionBonusTime = 15;
+    public int actionBonusTime = 30;
     public int unitBonusTime = 0;
 
     public enum FirstMoveType {
