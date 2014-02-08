@@ -82,10 +82,10 @@
     + map thumbs
     + timing rules
 
-- Game balance changes
-    - Diminishing returns:
-        - Instead of all (15/2), towers give (25/4, 20/3, 10/2, 5/1) - alternatively, how about (20/2, 15/2, 10/2, 5/2) - only $50 total
-    - Increasing returns: base gives +$/turn as game goes on (ie: +$5 every 3 turns, will need a cap)
++ Game balance changes
+    + Diminishing returns:
+        + Instead of all (15/2), towers give (25/4, 20/3, 10/2, 5/1) - alternatively, how about (20/2, 15/2, 10/2, 5/2) - only $50 total
+    + Increasing returns: base gives +$/turn as game goes on (ie: +$5 every 3 turns, will need a cap)
     + Unit changes
         + Bazooka to 20hp, x1.5 vs Buildings
         + Artillery AD 20, x1.5 vs buildings, x1.5 vs mech, range 6, vision 3?

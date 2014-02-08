@@ -8,7 +8,7 @@ fbcouch 'at' gmail 'dot' com
 
 Full source code available from:
 	
-	www.ahsgaming.com
+	github.com/fbcouch/valley-of-bones
 
 ## RUNNING THE GAME ##
 
@@ -23,9 +23,9 @@ Alternatively, you may use the following command in a CLI:
 
     java -jar ValleyOfBonesServer.jar
 
-The latest nightly build can be found at 
+The latest information and builds of the game can be found at:
 
-	http://ahsgaming.com/downloads/nightlies/ValleyOfBones-latest.zip
+    jamicouch.com
 
 ## LICENSE ##
 
