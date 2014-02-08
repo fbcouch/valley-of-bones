@@ -158,7 +158,7 @@
             "type": "unit",
             "image": "tank",
             "title": "Hover Tank",
-            "desc": "The hover tank is the workhorse of the mech corps, with high hp, armor, and damage output.",
+            "desc": "The Hover Tank is the workhorse of the mech corps. With high HP, armor, and damage output it is an all round unit good against almost anything. However, its slow movement speed makes it vulnerable to fast moving attacks.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 45,
@@ -185,7 +185,7 @@
             "type": "unit",
             "image": "light-mech",
             "title": "Mech Walker",
-            "desc": "The mech walker is the mech counter to infantry.",
+            "desc": "The Mech Walker is a fast moving mechanical unit and is designed to counter large quantities of infantry, especially Marines.\n\nThe Mech Walker is a powerful offensive unit against infantry but because of its lower HP and Armor it is more vulnerable to the Bazooka Guy. An escort of Marines is recommended.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 30,
@@ -208,7 +208,7 @@
             "type": "unit",
             "image": "artillery",
             "title": "Artillery",
-            "desc": "With a long range and splash damage, the artillery can rain down destruction upon your enemy.",
+            "desc": "With a long range and splash damage ability, the Artillery can rain down destruction upon your enemy. Due to its poor sight range, the Artillery works best in tandem with a spotter. The Artillery has low HP and should be used behind frontline troops.",
             "attacksound": "cannon_fire",
             "properties": {
                 "curhp": 15,
