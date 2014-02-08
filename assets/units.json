@@ -4,8 +4,8 @@
             "id": "castle-base",
             "type": "building",
             "image": "castle",
-            "title": "Castle",
-            "desc": "This is your home base.",
+            "title": "Base",
+            "desc": "This is your home base - defend it at all costs.\n\n**Increasing Returns**\n\nYour base provides income, 75 per turn, and this amount increased by 3 every 5 turns, up to a maximum of 120 per turn.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 100,
@@ -33,7 +33,7 @@
             "type": "building",
             "image": "tower",
             "title": "Tower",
-            "desc": "Capture these to gain extra income and supply",
+            "desc": "Towers are checkpoints that provide a little additional income and supply room according to the following schedule:\n\n * 1st tower: 25 income, 4 supply\n * 2nd tower: 20 income, 3 supply\n * 3rd tower: 10 income, 2 supply\n * Add'l: 5 income, 1 supply",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 0,
@@ -56,7 +56,7 @@
             "type": "unit",
             "image": "marine",
             "title": "Space Marine",
-            "desc": "Basic attacking unit",
+            "desc": "Marines form the core of any good army.\n\n **Detect:**\n\nMarines can see and shoot cloaked units, such as snipers and saboteurs.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 15,
@@ -80,7 +80,7 @@
             "type": "unit",
             "image": "sniper",
             "title": "Sniper",
-            "desc": "Light unit with long range",
+            "desc": "With a 4x bonus vs infantry and the stealth ability, snipers are the ultimate anti-infantry weapon.\n\n**Stealth:**\n\nWhile cloaked, only detectors can see or fire at snipers. Movement speed is reduced by half. Cannot enter cloak on any turn when the sniper has already cloaked, fired, or moved more than once.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 15,
@@ -107,7 +107,7 @@
             "type": "unit",
             "image": "bazooka",
             "title": "Bazooka Guy",
-            "desc": "Uses high explosives",
+            "desc": "The bazooka guy is the infantry's answer to mech.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 20,
@@ -134,7 +134,7 @@
             "type": "unit",
             "image": "saboteur",
             "title": "Saboteur",
-            "desc": "Uses high explosives",
+            "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 5,
@@ -158,7 +158,7 @@
             "type": "unit",
             "image": "tank",
             "title": "Hover Tank",
-            "desc": "Tank with light armor",
+            "desc": "The hover tank is the workhorse of the mech corps, with high hp, armor, and damage output.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 45,
@@ -185,7 +185,7 @@
             "type": "unit",
             "image": "light-mech",
             "title": "Mech Walker",
-            "desc": "Mech walker",
+            "desc": "The mech walker is the mech counter to infantry.",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 30,
@@ -208,7 +208,7 @@
             "type": "unit",
             "image": "artillery",
             "title": "Artillery",
-            "desc": "Artillery",
+            "desc": "With a long range and splash damage, the artillery can rain down destruction upon your enemy.",
             "attacksound": "cannon_fire",
             "properties": {
                 "curhp": 15,

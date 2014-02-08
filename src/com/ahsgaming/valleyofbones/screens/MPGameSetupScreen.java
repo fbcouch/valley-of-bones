@@ -256,7 +256,7 @@ public class MPGameSetupScreen extends AbstractScreen {
         }
         setupTable.row();
 
-        setupTable.add("Spawns:").left();
+        setupTable.add("Starting Locations:").left();
         if (config.isHost) {
             spawnSelect = new SelectBox(spawnTypes, getSkin());
             setupTable.add(spawnSelect).left().padBottom(4).fillX();

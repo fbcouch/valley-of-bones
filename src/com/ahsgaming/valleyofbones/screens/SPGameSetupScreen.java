@@ -102,7 +102,7 @@ public class SPGameSetupScreen extends AbstractScreen {
             playerTable.add("Terran").expandX();
 
             Image color = new Image(getSkin().getDrawable("white-hex"));
-            color.setColor(Player.AUTOCOLORS[pList.indexOf(p, true)]);
+            color.setColor(p.getPlayerColor());
             playerTable.add(color).expandX();
 
             color.addListener(new ClickListener() {
@@ -172,7 +172,7 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.add(ruleSelect).left().padBottom(4).fillX();
         setupTable.row();
 
-        setupTable.add("Spawns:").left();
+        setupTable.add("Starting Locations:").left();
         SelectBox spawnSelect = new SelectBox(new String[]{ "Normal", "Inverted", "Random" }, getSkin());
 
         spawnSelect.setSelection(config.spawnType);

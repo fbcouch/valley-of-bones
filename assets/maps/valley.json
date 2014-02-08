@@ -1,6 +1,6 @@
 {
-    title: "Valley of Bones",
-    description: "The original valley of bones.",
+    title: "Valley",
+    description: "The valley of bones is a wide open desert waste.",
     width: 19,
     height: 13,
     tilewidth: 64,

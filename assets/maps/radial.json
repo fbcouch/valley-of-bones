@@ -1,6 +1,6 @@
 {
     title: "Radial Map",
-    description: "Testing radial symmetry in a map",
+    description: "Prepare for attacks on all sides on this radially symmetric map set in an arctic wasteland.",
     width: 19,
     height: 13,
     tilewidth: 64,

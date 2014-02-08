@@ -47,7 +47,14 @@ public class Player {
 	public static final Color COLOR_BLUE = new Color(0.3f, 0.3f, 1, 1);
 	public static final Color COLOR_GREEN = new Color(0, 0.8f, 0, 1);
 	public static final Color COLOR_PURPLE = new Color(0.6f, 0, 1, 1);
-	public static final Color[] AUTOCOLORS = {COLOR_RED, COLOR_BLUE, COLOR_GREEN, COLOR_PURPLE};
+	public static final Color[] AUTOCOLORS = {
+            COLOR_RED,
+            COLOR_BLUE,
+            COLOR_GREEN,
+            COLOR_PURPLE,
+            new Color(0.0f, 0.5f, 0.5f, 1.0f), // teal
+            new Color(1f, 0.4f, 0f, 1.0f) // orange
+    };
 
     boolean isLoaded = false;
     boolean isReady = false;
