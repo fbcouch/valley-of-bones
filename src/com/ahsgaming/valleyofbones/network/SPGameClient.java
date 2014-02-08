@@ -172,4 +172,7 @@ public class SPGameClient implements NetController {
     public Array<String> getSpectators() {
         return new Array<String>();
     }
+
+    public void sendChat(String message) {}
+    public Array<String> getChatLog() { return null; }
 }

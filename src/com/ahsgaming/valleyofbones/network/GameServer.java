@@ -66,8 +66,6 @@ public class GameServer implements NetController {
 
 	Array<Player> players = new Array<Player>();
     Array<Command> recdCommands = new Array<Command>();
-//    HashMap<Integer, KryoCommon.Spectator> spectators = new HashMap<Integer, KryoCommon.Spectator>();
-//	ObjectMap<Connection, NetPlayer> connMap = new ObjectMap<Connection, NetPlayer>();
 
 
 	int nextPlayerId = 0;
@@ -174,20 +172,25 @@ public class GameServer implements NetController {
                     }
 
                     if (gameStarted) {
-                        for (Player p: players) {
-                            Gdx.app.log(LOG, p.getPlayerName() + ": " + connMap.findKey(p.getPlayerId(), true).isConnected());
-                            if (!(p instanceof AIPlayer) && p.getPlayerName().equals(rp.name) && !connMap.findKey(p.getPlayerId(), true).isConnected()) {
-                                connMap.remove(connMap.findKey(p.getPlayerId(), true));
-                                connMap.put(c, p.getPlayerId());
-                                Unpause up = new Unpause();
-                                up.owner = -1;
-                                up.turn = controller.getGameTurn();
-                                Gdx.app.log(LOG, "Queuing unpause");
-                                controller.queueCommand(up);
-                                sendCommand(up);
-                                awaitReconnect = false;
+                        synchronized(players) {
+                            for (Player p: players) {
+//                                Gdx.app.log(LOG, "" + p);
+//                                Gdx.app.log(LOG, p.getPlayerName() + ": " + connMap.findKey(p.getPlayerId(), true).isConnected());
+                                if (!(p instanceof AIPlayer) && p.getPlayerName().equals(rp.name) && !connMap.findKey(p.getPlayerId(), true).isConnected()) {
+                                    connMap.remove(connMap.findKey(p.getPlayerId(), true));
+                                    connMap.put(c, p.getPlayerId());
+                                    Unpause up = new Unpause();
+                                    up.owner = -1;
+                                    up.turn = controller.getGameTurn();
+                                    Gdx.app.log(LOG, "Queuing unpause");
+                                    controller.queueCommand(up);
+                                    sendCommand(up);
+                                    awaitReconnect = false;
+                                    return;
+                                }
                             }
                         }
+                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
                         return;
                     }
 
@@ -263,6 +266,7 @@ public class GameServer implements NetController {
                     reg.spectator = true;
 
                     registeredSpectators.add(reg);
+                    connMap.put(c, reg.id);
                     server.sendToTCP(c.getID(), reg);
 
                     sendPlayerList();
@@ -347,7 +351,8 @@ public class GameServer implements NetController {
                             if (p.getPlayerId() == id)
                                 player = p;
                         }
-                        player.setLoaded(true);
+                        if (player != null)
+                            player.setLoaded(true);
 
 					} else if (obj instanceof Command) {
 						Command cmd = (Command)obj;
@@ -373,7 +378,7 @@ public class GameServer implements NetController {
 			
 			public void disconnected (Connection c) {
                 if (gameStarted) {
-                    Player player = findPlayerById(connMap.get(c));
+                    Player player = (connMap.containsKey(c) ? findPlayerById(connMap.get(c)) : null);
 
                     if (player == null) return;
                     // wait for reconnect
@@ -385,7 +390,7 @@ public class GameServer implements NetController {
                     sendCommand(p);
                     awaitReconnectCountdown = awaitReconnectTime;
                     awaitReconnect = true;
-                } else {
+                } else if (connMap.containsKey(c)) {
                     int id = connMap.get(c);
 
                     RegisteredPlayer player = null;
@@ -440,9 +445,9 @@ public class GameServer implements NetController {
                         server.sendToTCP(connMap.findKey(player.id, true).getID(), player);
                     }
 
-                    if (controller == null || controller.getGameResult() == null) sendPlayerList();
                 }
-			}
+                if (controller == null || controller.getGameResult() == null) sendPlayerList();
+            }
 		});
 
         if (gameConfig.isPublic) {
@@ -938,4 +943,7 @@ public class GameServer implements NetController {
         }
         return list;
     }
+
+    public void sendChat(String message) {}
+    public Array<String> getChatLog() { return null; }
 }

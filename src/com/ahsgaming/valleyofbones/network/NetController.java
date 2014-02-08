@@ -29,4 +29,7 @@ public interface NetController {
 	
 	public boolean isConnected();
 	public boolean isConnecting();
+
+    public void sendChat(String message);
+    public Array<String> getChatLog();
 }

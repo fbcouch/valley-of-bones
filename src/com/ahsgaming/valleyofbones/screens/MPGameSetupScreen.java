@@ -26,6 +26,7 @@ import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
+import com.ahsgaming.valleyofbones.network.NetController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -46,7 +47,7 @@ import com.badlogic.gdx.utils.JsonValue;
 public class MPGameSetupScreen extends AbstractScreen {
 	public String LOG = "MPGameSetupScreen";
 	GameSetupConfig config;
-    MPGameClient client;
+    NetController client;
 	
 	Array<Player> pList;
     Array<String> sList;
@@ -72,7 +73,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 	public MPGameSetupScreen(VOBGame game, GameSetupConfig cfg) {
 		super(game);
 		config = cfg;
-		client = (MPGameClient)game.createGame(cfg);
+		client = game.createGame(cfg);
 	}
 	
 	public void setupScreen() {
@@ -138,7 +139,8 @@ public class MPGameSetupScreen extends AbstractScreen {
                         update.id = p.getPlayerId();
                         update.color = i;
                         update.ready = p.isReady();
-                        client.sendPlayerUpdate(update);
+                        if (client instanceof MPGameClient)
+                            ((MPGameClient)client).sendPlayerUpdate(update);
                     }
                 });
             }
@@ -159,7 +161,8 @@ public class MPGameSetupScreen extends AbstractScreen {
                         update.color++;
                     }
                     update.ready = !p.isReady();
-                    client.sendPlayerUpdate(update);
+                    if (client instanceof MPGameClient)
+                        ((MPGameClient)client).sendPlayerUpdate(update);
                 }
             });
 
@@ -473,7 +476,8 @@ public class MPGameSetupScreen extends AbstractScreen {
             } else {
                 config.setDetails(gameDetails);
             }
-            client.sendGameDetails(gameDetails);
+            if (client instanceof MPGameClient)
+                ((MPGameClient)client).sendGameDetails(gameDetails);
         }
 		
 		//Gdx.app.log(LOG, Integer.toString(game.getPlayers().size()));

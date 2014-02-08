@@ -27,6 +27,8 @@ public class SpectatorClient implements NetController {
     Array<Command> commandQueue;
     KryoCommon.GameUpdate gameUpdate;
 
+    Array<String> chatLog;
+
     Client client;
     boolean isConnecting = false;
     boolean isReconnect = false;
@@ -49,6 +51,7 @@ public class SpectatorClient implements NetController {
 
         players = new Array<Player>();
         spectators = new Array<String>();
+        chatLog = new Array<String>();
 
         KryoCommon.register(client);
 
@@ -117,9 +120,14 @@ public class SpectatorClient implements NetController {
                         Gdx.app.log(LOG, "PlayerList rec'd");
                         KryoCommon.RegisteredPlayer[] plist = (KryoCommon.RegisteredPlayer[])obj;
                         players.clear();
+                        spectators.clear();
                         for (KryoCommon.RegisteredPlayer rp: plist) {
-                            Player pl = new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]);
-                            players.add(pl);
+                            if (rp.spectator) {
+                                spectators.add(rp.name);
+                            } else {
+                                Player pl = new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]);
+                                players.add(pl);
+                            }
                         }
                     }
 
@@ -316,5 +324,16 @@ public class SpectatorClient implements NetController {
     @Override
     public Array<String> getSpectators() {
         return spectators;
+    }
+
+    public void sendChat(String message) {
+        KryoCommon.ChatMessage chat = new KryoCommon.ChatMessage();
+        chat.name = gameConfig.playerName;
+        chat.message = message;
+        client.sendTCP(chat);
+    }
+
+    public Array<String> getChatLog() {
+        return chatLog;
     }
 }
