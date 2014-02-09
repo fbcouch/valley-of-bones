@@ -4,5 +4,6 @@ out/artifacts
 out/production
 android/local.properties
 temp
-
+profile
 __*
+auth.json

@@ -50,6 +50,7 @@ public class VOBGame extends Game {
 
     public static class Profile {
         public String name;
+        public String token;
         public float scale;
         public Texture.TextureFilter filter;
     }
@@ -74,6 +75,7 @@ public class VOBGame extends Game {
                 profile.name = text;
                 profile.filter = Texture.TextureFilter.Linear;
                 profile.scale = VOBGame.SCALE;
+                profile.token = "";
                 return false;
             }
 
@@ -84,12 +86,14 @@ public class VOBGame extends Game {
             VOBGame.SCALE = profile.scale;
             TextureManager.defaultMinFilter = profile.filter;
             TextureManager.defaultMaxFilter = profile.filter;
+            if (profile.token == null) profile.token = "";
             return true;
         }
         profile = new Profile();
         profile.name = "Player";
         profile.filter = Texture.TextureFilter.Linear;
         profile.scale = VOBGame.SCALE;
+        profile.token = "";
         return false;
     }
 

@@ -104,6 +104,7 @@ public class MPGameClient implements NetController {
                 RegisterPlayer rp = new RegisterPlayer();
                 rp.name = cfg.playerName;
                 rp.spectator = cfg.isSpectator;
+                rp.key = cfg.playerKey;
                 client.sendTCP(rp);
 			}
 			

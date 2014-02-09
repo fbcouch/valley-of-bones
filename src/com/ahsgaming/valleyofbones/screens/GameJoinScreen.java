@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones.screens;
 import java.net.InetAddress;
 
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.network.Auth;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.badlogic.gdx.Gdx;
@@ -59,33 +60,56 @@ public class GameJoinScreen extends AbstractScreen {
 	TextButton btnConnect;
 	TextButton btnCancel;
     TextButton btnSpectate;
+
+    CheckBox chkAuth;
 	
 	Label lblStatus;
 	
 	MPGameSetupScreen gsScreen = null;
     Array<ServerObj> servers;
     List listNames, listServers, listPlayers, listStatus;
+
+    Auth.AuthPlayer authPlayer = null;
+    Auth.AuthError authError = null;
 	
 	/**
 	 * @param game
 	 */
 	public GameJoinScreen(VOBGame game) {
 		super(game);
-		
+		Auth.authenticate(game.profile.name, game.profile.token, new Auth.Callback() {
+
+            @Override
+            public void result(Object result) {
+                if (result instanceof Auth.AuthPlayer) authPlayer = (Auth.AuthPlayer)result;
+            }
+
+            @Override
+            public void error(Object error) {
+                if (error instanceof Auth.AuthError) authError = (Auth.AuthError)error;
+            }
+        });
 	}
 	
 	public void setupScreen() {
 		Table table = new Table(getSkin());
 		table.setFillParent(true);
 		stage.addActor(table);
-		
-		lblNickname = new Label("Nickname:", getSkin());
+
+        table.add("Name:").pad(4).left();
+        lblNickname = new Label(game.profile.name, getSkin());
 		table.add(lblNickname).pad(4).left();
-		
-		txtNickname = new TextField(game.profile.name, getSkin());
-		table.add(txtNickname).pad(4).left();
+
+        chkAuth = new CheckBox(" Authenticating...", getSkin());
+        table.add(chkAuth).colspan(2).left();
 		
 		table.row();
+
+        table.add("Server Name", "small-grey");
+        table.add("Address", "small-grey");
+        table.add("Players", "small-grey");
+        table.add("Status", "small-grey");
+        table.row();
 
         listNames = new List(new Object[]{}, getSkin());
         listServers = new List(new Object[]{}, getSkin());
@@ -171,7 +195,8 @@ public class GameJoinScreen extends AbstractScreen {
                 cfg.isHost = false;
                 cfg.isMulti = true;
                 cfg.hostPort = (host.indexOf(':') > -1 ? Integer.parseInt(host.split(":")[1]) : KryoCommon.tcpPort);
-                cfg.playerName = txtNickname.getText();
+                cfg.playerName = game.profile.name;
+                cfg.playerKey = (authPlayer != null ? authPlayer.key : "");
                 gsScreen = game.getGameSetupScreenMP(cfg);
                 lblStatus.setText(String.format("Connecting to host %s", cfg.hostName));
                 Gdx.app.log(LOG, String.format("Attempting connection to host %s", cfg.hostName));
@@ -194,7 +219,8 @@ public class GameJoinScreen extends AbstractScreen {
                 cfg.isMulti = true;
                 cfg.isSpectator = true;
                 cfg.hostPort = (host.indexOf(':') > -1 ? Integer.parseInt(host.split(":")[1]) : KryoCommon.tcpPort);
-                cfg.playerName = txtNickname.getText();
+                cfg.playerName = game.profile.name;
+                cfg.playerKey = (authPlayer != null ? authPlayer.key : "");
                 gsScreen = game.getGameSetupScreenMP(cfg);
                 lblStatus.setText(String.format("Connecting to host %s", cfg.hostName));
                 Gdx.app.log(LOG, String.format("Attempting connection to host %s", cfg.hostName));
@@ -329,7 +355,15 @@ public class GameJoinScreen extends AbstractScreen {
 				game.closeGame();
 
 			}
-		}
+		} else {
+            if (authPlayer != null) {
+                chkAuth.setChecked(true);
+                chkAuth.setText(" Looks Good!");
+            } else if (authError != null) {
+                chkAuth.setChecked(false);
+                chkAuth.setText(" Auth Error");
+            }
+        }
 	}
 	
 	public static class ServerObj {

@@ -23,6 +23,10 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.network.Auth;
+import com.ahsgaming.valleyofbones.network.GameServer;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -35,7 +39,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  */
 public class OptionsScreen extends AbstractScreen {
 
-	TextField txtName;
+	TextField txtName, txtToken;
+    Button btnAuth;
+    CheckBox chkAuthenticated;
     ButtonGroup bgScale;
     Button btnAuto, btnLDPI, btnMDPI, btnHDPI, btnXHDPI;
     ButtonGroup bgFilter;
@@ -56,10 +62,15 @@ public class OptionsScreen extends AbstractScreen {
         super.show();    //To change body of overridden methods use File | Settings | File Templates.
 
         temp.name = game.profile.name;
+        temp.token = game.profile.token;
         temp.filter = game.profile.filter;
         temp.scale = game.profile.scale;
 
         txtName = new TextField(game.profile.name, getSkin());
+        txtToken = new TextField(game.profile.token, getSkin());
+        btnAuth = new TextButton(" Check: ", getSkin(), "small");
+        chkAuthenticated = new CheckBox(" NOT AUTHENTICATED", getSkin());
+        chkAuthenticated.setDisabled(true);
         btnAuto = new TextButton("Auto", getSkin(), "toggle");
         btnLDPI = new TextButton("LDPI", getSkin(), "toggle");
         btnMDPI = new TextButton("MDPI", getSkin(), "toggle");
@@ -113,6 +124,13 @@ public class OptionsScreen extends AbstractScreen {
 
         table.row();
 
+        table.add(new Label("GameJolt Token:", getSkin(), "small")).spaceBottom(15);
+        table.add(txtToken).space(5).spaceBottom(15).colspan(2).width(205).align(Align.left);
+        table.add(btnAuth).space(5).spaceBottom(15);
+        table.add(chkAuthenticated).colspan(2).space(5).spaceBottom(15);
+
+        table.row();
+
         table.add(new Label("Textures:", getSkin(), "small")).spaceBottom(15);
         table.add(btnAuto).space(5).spaceBottom(15).size(100, 40);
         table.add(btnLDPI).space(5).spaceBottom(15).size(100, 40);
@@ -143,6 +161,7 @@ public class OptionsScreen extends AbstractScreen {
 
                 if (txtName.getText().trim().length() > 0) {
                     game.profile.name = txtName.getText().trim();
+                    game.profile.token = txtToken.getText().trim();
 
                     game.profile.filter = (bgFilter.getChecked() == btnLinear ? Texture.TextureFilter.Linear : Texture.TextureFilter.Nearest);
 
@@ -173,7 +192,36 @@ public class OptionsScreen extends AbstractScreen {
             }
         });
 
+        btnAuth.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                temp.name = txtName.getText().trim();
+                temp.token = txtToken.getText().trim();
 
+                chkAuthenticated.setText(" Authenticating...");
+                chkAuthenticated.setChecked(false);
+
+                Auth.authenticate(temp.name, temp.token, new Auth.Callback() {
+
+                    @Override
+                    public void result(Object result) {
+                        chkAuthenticated.setText(" Looks Good!");
+                        chkAuthenticated.setChecked(true);
+                    }
+
+                    @Override
+                    public void error(Object error) {
+                        if (((Auth.AuthError)error).message.equals("Http Error")) {
+                            chkAuthenticated.setText(" Http Error");
+                        } else {
+                            chkAuthenticated.setText(" Invalid name/token");
+                        }
+                        chkAuthenticated.setChecked(false);
+                    }
+                });
+            }
+        });
     }
 
     @Override
