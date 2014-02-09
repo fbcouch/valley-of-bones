@@ -63,6 +63,7 @@ public class Player {
 	int playerId = -1;
 	Color playerColor = new Color(1, 1, 1, 1);
 	String name = "New Cadet";
+    String key = "";
     int pauses = 0;
 	
 	float bankMoney = 0, upkeep = 0;
@@ -79,6 +80,11 @@ public class Player {
 		this(id, color);
 		this.name = name;
 	}
+
+    public Player(int id, String name, Color color, String key) {
+        this(id, name, color);
+        this.key = key;
+    }
 	
 	public Player(int id, Color color) {
 		playerId = id;
@@ -395,5 +401,17 @@ public class Player {
 
     public void setAI(boolean AI) {
         isAI = AI;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKeyString() {
+        return String.format("{ \"username\": \"%s\", \"key\": \"%s\" }", getPlayerName(), getKey());
     }
 }

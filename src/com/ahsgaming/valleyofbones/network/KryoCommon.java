@@ -80,6 +80,7 @@ public class KryoCommon {
         public String version = VOBGame.VERSION;
         public boolean spectator = false;
         public int prefColor = 0;
+        public String key;
 	}
 
     public static class UpdatePlayer {

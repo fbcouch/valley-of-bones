@@ -60,6 +60,7 @@ public class GameServer implements NetController {
 	GameSetupConfig gameConfig;
 
     Array<RegisteredPlayer> registeredPlayers = new Array<RegisteredPlayer>();
+    HashMap<Integer, String> playerIdKeyMap = new HashMap<Integer, String>();
     Array<RegisteredPlayer> registeredSpectators = new Array<RegisteredPlayer>();
 
     ObjectMap<Connection, Integer> connMap = new ObjectMap<Connection, Integer>();
@@ -116,6 +117,7 @@ public class GameServer implements NetController {
 //        connMap = new ObjectMap<Connection, NetPlayer>();
         registeredPlayers = new Array<RegisteredPlayer>();
         registeredSpectators = new Array<RegisteredPlayer>();
+        playerIdKeyMap = new HashMap<Integer, String>();
         connMap = new ObjectMap<Connection, Integer>();
         hostId = -1;
         stopServer = false;
@@ -277,6 +279,8 @@ public class GameServer implements NetController {
                         registeredPlayers.add(reg);
                     }
 
+                    if (rp.key != null)
+                        playerIdKeyMap.put(reg.id, rp.key);
                     connMap.put(c, reg.id);
                     server.sendToTCP(c.getID(), reg);
 
@@ -480,7 +484,11 @@ public class GameServer implements NetController {
             if (rp.isAI) {
                 players.add(new FSMAIPlayer(this, rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
             } else {
-                players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+                if (playerIdKeyMap.containsKey(rp.id)) {
+                    players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color], playerIdKeyMap.get(rp.id)));
+                } else {
+                    players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+                }
             }
         }
 
@@ -869,11 +877,11 @@ public class GameServer implements NetController {
             HashMap parameters = new HashMap();
             String playersString = "{}";
             if (controller.getPlayers().size >= 2) {
-                playersString = String.format("{ \"%d\": \"%s\", \"%d\": \"%s\" }",
+                playersString = String.format("{ \"%d\": %s, \"%d\": %s }",
                                     controller.getPlayers().get(0).getPlayerId(),
-                                    controller.getPlayers().get(0).getPlayerName(),
+                                    controller.getPlayers().get(0).getKeyString(),//"\"" + controller.getPlayers().get(0).getPlayerName() + "\"",
                                     controller.getPlayers().get(1).getPlayerId(),
-                                    controller.getPlayers().get(1).getPlayerName());
+                                    controller.getPlayers().get(1).getKeyString());
             }
             String historyString = "[";
             boolean first = true;

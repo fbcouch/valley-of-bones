@@ -10,20 +10,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
-import java.util.HashMap;
-
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
     public static final boolean DEBUG_ATTACK = false;
     public static final boolean DEBUG_LOCK_SCREEN = true;
-    public static final boolean DEBUG_GLOBAL_SERVER = false;
+    public static final boolean DEBUG_GLOBAL_SERVER = true;
     public static boolean DEBUG_AI = false;
     public static boolean DEBUG_PATHS = false;
 	public static final String LOG = "VOBGame";
 
     public static float SCALE = -1.0f; // 0.75f = ldpi; 1.0f = mdpi; 2.0f = hdpi; 4.0f = xhdpi; -1 = auto
 
-    public static final String VERSION = "0.2.3";
+    public static final String VERSION = "0.3.0";
 
     FPSLogger fpsLogger = new FPSLogger();
 	
@@ -109,8 +107,13 @@ public class VOBGame extends Game {
 	
 	public NetController createGame(GameSetupConfig cfg) {
         if (cfg.isMulti) {
-            netController = new MPGameClient(this, cfg);
+            if (cfg.isSpectator) {
+                netController = new SpectatorClient(this, cfg);
+            } else {
+                netController = new MPGameClient(this, cfg);
+            }
         } else {
+            // TODO load settings from somewhere?
             netController = new SPGameClient(this, cfg);
         }
         return netController;
@@ -319,11 +322,11 @@ public class VOBGame extends Game {
 		return new Array<Player>();
 	}
 
-    public HashMap<Integer, String> getSpectators() {
+    public Array<String> getSpectators() {
         if (netController != null) {
-            return new HashMap<Integer, String>(netController.getSpectators());
+            return new Array<String>(netController.getSpectators());
         }
-        return new HashMap<Integer, String>();
+        return new Array<String>();
     }
 	
 	public void setLoadGame() {
