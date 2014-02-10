@@ -77,7 +77,7 @@ public class ServerScreen extends AbstractScreen {
             names[i] = server.getGameConfig().hostName;
             ports[i] = Integer.toString(server.getGameConfig().hostPort);
             publics[i] = (server.getGameConfig().isPublic ? "Y" : " ");
-            players[i] = String.format("%d/2", server.getPlayers().size);
+            players[i] = String.format("%d/2", (server.isGameStarted() ? server.getPlayers().size : server.getRegisteredPlayers().size));
             statuses[i] = (server.isGameStarted() ? "PLAY" : "WAIT");
             i++;
         }

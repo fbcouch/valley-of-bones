@@ -452,6 +452,10 @@ public class MPGameSetupScreen extends AbstractScreen {
 	public void render(float delta) {
 		super.render(delta);
 
+        if (!client.isConnected() && !client.isConnecting()) {
+            game.setScreen(game.getGameJoinScreen());
+        }
+
         if (!isHost && config.isHost) {
             isHost = true;
             stage.clear();

@@ -721,6 +721,10 @@ public class GameServer implements NetController {
 		return this.players;
 	}
 
+    public Array<RegisteredPlayer> getRegisteredPlayers() {
+        return registeredPlayers;
+    }
+
     @Override
     public Player getPlayer() {
         return null;
@@ -907,7 +911,7 @@ public class GameServer implements NetController {
         Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.POST);
         req.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
         HashMap parameters = new HashMap();
-        parameters.put("players", "" + players.size);
+        parameters.put("players", "" + (gameStarted ? players.size : registeredPlayers.size));
         Gdx.app.log("GameStarted", "" + gameStarted);
         parameters.put("status", "" + (gameStarted ? 1 : 0));
         req.setContent(HttpParametersUtils.convertHttpParameters(parameters));
