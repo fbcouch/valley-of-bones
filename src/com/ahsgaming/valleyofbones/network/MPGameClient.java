@@ -82,6 +82,9 @@ public class MPGameClient implements NetController {
     KryoCommon.Error error;
 
     Array<String> chatLog = new Array<String>();
+
+    KryoCommon.GameUpdate gameUpdate;
+    Array<Command> commandQueue = new Array<Command>();
 	
 	/**
 	 * 
@@ -125,6 +128,7 @@ public class MPGameClient implements NetController {
                         gameConfig.isHost = reg.host;
                         Gdx.app.log(LOG, String.format("RegisteredPlayer rec'd (id: %d)", playerId));
                         recdRegisterPlayer = true;
+                        gameConfig.isSpectator = reg.spectator;
                     }
                     isConnecting = false;
                     return;
@@ -134,6 +138,16 @@ public class MPGameClient implements NetController {
                     Gdx.app.log(LOG, "ChatMessage rec'd");
                     KryoCommon.ChatMessage chatMessage = (KryoCommon.ChatMessage)obj;
                     chatLog.add(chatMessage.name + ": " + chatMessage.message);
+                }
+
+                if (obj instanceof Command[]) {
+                    Gdx.app.log(LOG, "Game history rec'd: " + ((Command[])obj).length);
+                    commandQueue.addAll((Command[])obj);
+                }
+
+                if (obj instanceof KryoCommon.GameUpdate) {
+                    Gdx.app.log(LOG, "Game update rec'd");
+                    gameUpdate = (KryoCommon.GameUpdate)obj;
                 }
 
                 if (controller == null) {
@@ -176,6 +190,7 @@ public class MPGameClient implements NetController {
 
                     if (obj instanceof StartGame) {
                         // we want to start the game, but we need to load our objects on the other thread, where we have an OpenGL context
+                        Gdx.app.log(LOG, "StartGame rec'd");
                         game.setLoadGame();
                         firstTurnPid = ((StartGame)obj).currentPlayer;
                         gameConfig.spawnType = ((StartGame)obj).spawnType;
@@ -187,8 +202,15 @@ public class MPGameClient implements NetController {
                     Command cmd = (Command)obj;
                     if (cmd instanceof Unpause) System.out.println("Unpause " + Integer.toString(cmd.turn));
                     if (cmd instanceof Pause) System.out.println("Pause " + Integer.toString(cmd.turn));
+//                    if (cmd instanceof Move) System.out.println("Move recd");
                     if (!(obj instanceof StartTurn || obj instanceof EndTurn)) {
-                        controller.queueCommand(cmd);
+                        if (commandQueue.size > 0) {
+//                            System.out.println("cmd to commandQueue");
+                            commandQueue.add(cmd);
+                        } else {
+                            controller.queueCommand(cmd);
+//                            System.out.println("cmd to controller");
+                        }
                     }
                 }
 
@@ -319,14 +341,44 @@ public class MPGameClient implements NetController {
             reconnect();
         }
 
+        while (commandQueue.size > 0) {
+            Gdx.app.log(LOG, "turn: " + controller.getGameTurn());
+            if (commandQueue.first().turn > controller.getGameTurn()) {
+                controller.setNextTurn(true);
+                controller.doTurn();
+            } else {
+                Command cmd = commandQueue.removeIndex(0);
+                if (cmd instanceof EndTurn) {
+                    controller.setNextTurn(true);
+                    controller.doTurn();
+                } else {
+                    controller.queueCommand(cmd);
+                }
+            }
+            controller.update(0);
+        }
+
+        if (gameUpdate != null) {
+            while (gameUpdate.turn > controller.getGameTurn()) {
+                controller.setNextTurn(true);
+                controller.doTurn();
+                controller.update(0);
+            }
+            controller.setCurrentPlayer(gameUpdate.currentPlayer);
+            controller.setTurnTimer(gameUpdate.timer);
+            gameUpdate = null;
+        }
+
         if (recdEndTurn) {
             controller.setNextTurn(true);
             controller.doTurn();
             recdEndTurn = false;
         }
 
-        if (controller.isNextTurn() || controller.getTurnTimer() <= 0) {
-            sendEndTurn();
+        if (!gameConfig.isSpectator) {
+            if (controller.isNextTurn() || controller.getTurnTimer() <= 0) {
+                sendEndTurn();
+            }
         }
 
 		return true;

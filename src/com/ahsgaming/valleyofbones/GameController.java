@@ -34,6 +34,7 @@ import com.ahsgaming.valleyofbones.units.UnitView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 
 /**
  * @author jami
@@ -302,7 +303,6 @@ public class GameController {
 //            Gdx.app.log(LOG, "Current turn: " + gameTurn);
 			if (command.turn < gameTurn) {
 				// remove commands in the past without executing
-
 			} else if (command.turn == gameTurn) {
 				// execute current commands and remove
 				if (state == GameStates.RUNNING || command instanceof Unpause) { 
@@ -311,8 +311,7 @@ public class GameController {
 
 			} else {
 				// future commands are left alone
-
-				toKeep.add(command);
+                cmdsToAdd.add(command);
 			}
 		}
 		
@@ -328,6 +327,12 @@ public class GameController {
             return u != null && u.getData().getAttacksLeft() >= 1 && o != null && o.getData().getCurHP() > 0;
 		} else if (cmd instanceof Build) {
 			Build b = (Build)cmd;
+//            if (!getPlayerById(b.owner).canBuild(b.building, this)) {
+//                Gdx.app.log(LOG, "build failed: cant build");
+//            }
+//            if (!isBoardPosEmpty(b.location)) {
+//                Gdx.app.log(LOG, "build failed: position not empty");
+//            }
 			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
 		} else if (cmd instanceof Move) {
 			return validateMove((Move)cmd);
@@ -354,7 +359,12 @@ public class GameController {
 	}
 	
 	public void executeCommand(Command cmd) {
-		if (!validate(cmd)) return;
+//        Json json = new Json();
+//        System.out.println(json.prettyPrint(json.toJson(cmd)));
+		if (!validate(cmd)) {
+//            Gdx.app.log(LOG, "invalid command");
+            return;
+        }
 		if (cmd instanceof Attack) {
 			executeAttack((Attack)cmd);
             if (turnTimer < actionBonusTime)
@@ -452,7 +462,17 @@ public class GameController {
 
         Unit u = unitManager.getUnit(m.unit);
 
-        if (u.getOwner() == null || u.getOwner().getPlayerId() != m.owner) return false;
+        // TODO seems like the AI is sometimes passing an invalid unit id?
+        if (u == null || u.getOwner() == null || u.getOwner().getPlayerId() != m.owner) {
+//            if (u == null) {
+//                Gdx.app.log(LOG, "move failed: invalid unit");
+//            } else if (u.getOwner() == null) {
+//                Gdx.app.log(LOG, "move failed: no owner");
+//            } else if (u.getOwner().getPlayerId() != m.owner) {
+//                Gdx.app.log(LOG, "move failed: wrong owner");
+//            }
+            return false;
+        }
 
         boolean[] notavailable = new boolean[map.getWidth() * map.getHeight()];
         for (Unit unit: getUnits()) {
@@ -600,10 +620,8 @@ public class GameController {
 	public void queueCommand(Command cmd) {
 //		Gdx.app.log(LOG, state.toString());
 		if (state == GameStates.RUNNING || cmd instanceof Unpause) {
-			//if (!(cmdsToAdd.contains(cmd, false) || commandQueue.contains(cmd, false))) {
-				cmdsToAdd.add(cmd);
-//				Gdx.app.log(LOG, String.format("queued command (turn: %d)", cmd.turn));
-			//}
+//            if (cmd instanceof Move) Gdx.app.log(LOG, "queue MOVE");
+            cmdsToAdd.add(cmd);
 		}
 	}
 	

@@ -74,10 +74,10 @@ public class UnitFSM {
 
     public Command capture(GameController controller) {
         Directive directive = directives.peek();
-        Gdx.app.log(LOG, "Capture " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
+//        Gdx.app.log(LOG, "Capture " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
         if (directive.target.getOwner() == unit.getOwner() && directive.target.getData().getCurHP() > 0) {
             directives.pop();
-            Gdx.app.log(LOG, "Captured, defending...");
+//            Gdx.app.log(LOG, "Captured, defending...");
             order(new Directive(Directive.DirectiveType.DEFEND, directive.target));
             return null;
         }
@@ -126,7 +126,7 @@ public class UnitFSM {
 
     public Command defend(GameController controller) {
         Directive directive = directives.peek();
-        Gdx.app.log(LOG, "Defend " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
+//        Gdx.app.log(LOG, "Defend " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
 
         Array<Unit> threats = new Array<Unit>();
         Array<Unit> threatsInRange = new Array<Unit>();
@@ -144,7 +144,7 @@ public class UnitFSM {
             threats = threatsInRange;
         }
 
-        Gdx.app.log(LOG, "Threats: " + threats.size);
+//        Gdx.app.log(LOG, "Threats: " + threats.size);
 
         Unit lowhp = null;
         for (Unit u: threats) {
@@ -164,7 +164,7 @@ public class UnitFSM {
 
     public Command hunt(GameController controller) {
         Directive directive = directives.peek();
-        Gdx.app.log(LOG, "Hunt " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
+//        Gdx.app.log(LOG, "Hunt " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
 
         if (directive.target.getData().getCurHP() <= 0 || !controller.playerCanSee(unit.getOwner(), directive.target)) {
             directives.pop();

@@ -91,6 +91,7 @@ public class GameServer implements NetController {
     boolean awaitReconnect = false;
 
     int maxPlayers = 2;
+    int firstPid = -1;
 	
 	/**
 	 * 
@@ -208,7 +209,11 @@ public class GameServer implements NetController {
                                 sendPlayerList();
                                 sendSetupInfo();
 
-                                server.sendToTCP(c.getID(), new StartGame());
+                                StartGame startGame = new StartGame();
+                                startGame.currentPlayer = firstPid;
+                                startGame.spawnType = gameConfig.spawnType;
+
+                                server.sendToTCP(c.getID(), startGame);
                                 Command[] cmds = new Command[controller.getCommandHistory().size];
                                 for (int i = 0; i < cmds.length; i++) cmds[i] = controller.getCommandHistory().get(i);
                                 server.sendToTCP(c.getID(), cmds);
@@ -682,6 +687,7 @@ public class GameServer implements NetController {
 	public void sendStartGame() {
 		StartGame startGame = new StartGame();
         startGame.currentPlayer = controller.getCurrentPlayer().getPlayerId();
+        firstPid = controller.getCurrentPlayer().getPlayerId();
         startGame.spawnType = gameConfig.spawnType;
         server.sendToAllTCP(startGame);
 	}
