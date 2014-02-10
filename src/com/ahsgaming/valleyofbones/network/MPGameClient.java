@@ -99,6 +99,7 @@ public class MPGameClient implements NetController {
 			public void connected (Connection c) {
                 RegisterPlayer rp = new RegisterPlayer();
                 rp.name = cfg.playerName;
+                rp.spectator = cfg.isSpectator;
                 client.sendTCP(rp);
 			}
 			
@@ -402,7 +403,7 @@ public class MPGameClient implements NetController {
 
     public void sendChat(String message) {
         KryoCommon.ChatMessage chat = new KryoCommon.ChatMessage();
-        chat.name = player.getPlayerName();
+        chat.name = gameConfig.playerName;//player.getPlayerName();
         chat.message = message;
         client.sendTCP(chat);
     }

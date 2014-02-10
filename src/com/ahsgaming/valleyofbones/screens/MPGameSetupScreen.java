@@ -525,10 +525,11 @@ public class MPGameSetupScreen extends AbstractScreen {
             unitTime.setSelection(Integer.toString(config.unitBonusTime));
 
         } else {
-            Gdx.app.log(lblMap.getText() + " =? " + config.mapName, "" + (lblMap.getText().toString().equals(config.mapName)));
             if (!lblMap.getText().toString().equals(config.mapName)) {
                 stage.clear();
                 setupScreen();
+                chatScroll.layout();
+                chatScroll.setScrollPercentY(100);
                 return;
             }
             if (!lblSpawn.getText().toString().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
