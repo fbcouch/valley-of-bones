@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.network.KryoCommon;
+import com.badlogic.gdx.Gdx;
 
 /**
 * valley-of-bones
@@ -21,6 +22,7 @@ public class GameSetupConfig {
     public int hostPort = KryoCommon.tcpPort;
     public String playerName = "New Player";
     public int maxPauses = 3;
+    public boolean allowSpectate = true;
 
     public int baseTimer = 30;
     public int actionBonusTime = 30;
@@ -38,6 +40,7 @@ public class GameSetupConfig {
         baseTimer = details.baseTimer;
         actionBonusTime = details.actionBonusTime;
         unitBonusTime = details.unitBonusTime;
+        allowSpectate = details.allowSpectate;
         return this;
     }
 
@@ -50,6 +53,7 @@ public class GameSetupConfig {
         details.baseTimer = baseTimer;
         details.actionBonusTime = actionBonusTime;
         details.unitBonusTime = unitBonusTime;
+        details.allowSpectate = allowSpectate;
         return details;
     }
 

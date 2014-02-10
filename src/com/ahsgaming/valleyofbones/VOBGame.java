@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
+import java.util.HashMap;
+
 public class VOBGame extends Game {
 	public static final boolean DEBUG = true;
     public static final boolean DEBUG_ATTACK = false;
@@ -317,11 +319,11 @@ public class VOBGame extends Game {
 		return new Array<Player>();
 	}
 
-    public Array<String> getSpectators() {
+    public HashMap<Integer, String> getSpectators() {
         if (netController != null) {
-            return new Array<String>(netController.getSpectators());
+            return new HashMap<Integer, String>(netController.getSpectators());
         }
-        return new Array<String>();
+        return new HashMap<Integer, String>();
     }
 	
 	public void setLoadGame() {

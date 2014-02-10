@@ -171,6 +171,7 @@ public class GameServer implements NetController {
                         return;
                     }
 
+                    boolean playerFound = false;
                     if (gameStarted) {
                         synchronized(players) {
                             for (Player p: players) {
@@ -186,11 +187,40 @@ public class GameServer implements NetController {
                                     controller.queueCommand(up);
                                     sendCommand(up);
                                     awaitReconnect = false;
-                                    return;
+                                    playerFound = true;
                                 }
                             }
+
+                            if (!playerFound) {
+                                if (!gameConfig.allowSpectate) {
+                                    server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
+                                    return;
+                                }
+                                RegisteredPlayer reg = new RegisteredPlayer();
+                                reg.id = getNextPlayerId();
+                                reg.spectator = true;
+                                reg.name = rp.name;
+                                registeredSpectators.add(reg);
+
+                                connMap.put(c, reg.id);
+                                server.sendToTCP(c.getID(), reg);
+
+                                sendPlayerList();
+                                sendSetupInfo();
+
+                                server.sendToTCP(c.getID(), new StartGame());
+                                Command[] cmds = new Command[controller.getCommandHistory().size];
+                                for (int i = 0; i < cmds.length; i++) cmds[i] = controller.getCommandHistory().get(i);
+                                server.sendToTCP(c.getID(), cmds);
+
+                                KryoCommon.GameUpdate gameUpdate = new KryoCommon.GameUpdate();
+                                gameUpdate.currentPlayer = controller.getCurrentPlayer().getPlayerId();
+                                gameUpdate.turn = controller.getGameTurn();
+                                gameUpdate.timer = controller.getTurnTimer();
+                                server.sendToTCP(c.getID(), gameUpdate);
+                            }
                         }
-                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
+//                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
                         return;
                     }
 
@@ -225,6 +255,12 @@ public class GameServer implements NetController {
                         reg.spectator = true;
                     }
 
+                    if (reg.spectator && !gameConfig.allowSpectate) {
+                        Gdx.app.log(LOG, "No spectators!");
+                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
+                        return;
+                    }
+
                     if (hostId == -1)
                         hostId = reg.id;
 
@@ -242,49 +278,6 @@ public class GameServer implements NetController {
                     sendPlayerList();
 					sendSetupInfo();
 				}
-
-                if (obj instanceof KryoCommon.Spectator) {
-                    Gdx.app.log(LOG, "Spectator rec'd");
-                    KryoCommon.Spectator sp = (KryoCommon.Spectator)obj;
-
-                    if (!sp.version.equals(VOBGame.VERSION)) {
-                        server.sendToTCP(c.getID(), new KryoCommon.VersionError());
-                        return;
-                    }
-                    Gdx.app.log(LOG, "Spectator joined");
-
-
-                    RegisteredPlayer reg = new RegisteredPlayer();
-                    reg.id = getNextPlayerId();
-                    reg.name = sp.name;
-                    reg.color = 0;
-
-                    if (hostId == -1)
-                        hostId = reg.id;
-
-                    reg.host = (reg.id == hostId);
-                    reg.spectator = true;
-
-                    registeredSpectators.add(reg);
-                    connMap.put(c, reg.id);
-                    server.sendToTCP(c.getID(), reg);
-
-                    sendPlayerList();
-                    sendSetupInfo();
-
-                    if (gameStarted) {
-                        server.sendToTCP(c.getID(), new StartGame());
-                        Command[] cmds = new Command[controller.getCommandHistory().size];
-                        for (int i = 0; i < cmds.length; i++) cmds[i] = controller.getCommandHistory().get(i);
-                        server.sendToTCP(c.getID(), cmds);
-
-                        KryoCommon.GameUpdate gameUpdate = new KryoCommon.GameUpdate();
-                        gameUpdate.currentPlayer = controller.getCurrentPlayer().getPlayerId();
-                        gameUpdate.turn = controller.getGameTurn();
-                        gameUpdate.timer = controller.getTurnTimer();
-                        server.sendToTCP(c.getID(), gameUpdate);
-                    }
-                }
 
                 if (obj instanceof KryoCommon.UpdatePlayer) {
                     KryoCommon.UpdatePlayer update = (KryoCommon.UpdatePlayer)obj;
@@ -334,6 +327,18 @@ public class GameServer implements NetController {
                         Json json = new Json();
                         System.out.println(json.prettyPrint(json.toJson(details, KryoCommon.GameDetails.class)));
 						sendSetupInfo();
+
+                        if (!gameConfig.allowSpectate && registeredSpectators.size > 0) {
+                            // remove all spectators
+
+                            for (int i = 0; i < registeredSpectators.size; i++) {
+                                Connection conn = connMap.findKey(registeredSpectators.get(i).id, true);
+                                if (conn != null && conn.isConnected()) conn.close();
+                            }
+                            registeredSpectators.clear();
+
+                            sendPlayerList();
+                        }
 					}
 				}
 
@@ -707,6 +712,11 @@ public class GameServer implements NetController {
                 }
             }
 
+            for (RegisteredPlayer p: registeredSpectators) {
+                if (p.id == playerId)
+                    remove.add(p);
+            }
+
             for (RegisteredPlayer rp: remove) {
                 if (!rp.isAI && connMap.containsValue(rp.id, true)) {
                     connMap.findKey(rp.id, true).close();
@@ -940,10 +950,10 @@ public class GameServer implements NetController {
     }
 
     @Override
-    public Array<String> getSpectators() {
-        Array<String> list = new Array<String>();
+    public HashMap<Integer, String> getSpectators() {
+        HashMap<Integer, String> list = new HashMap<Integer, String>();
         for (RegisteredPlayer spectator: registeredSpectators) {
-            list.add(spectator.name);
+            list.put(spectator.id, spectator.name);
         }
         return list;
     }

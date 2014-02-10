@@ -4,6 +4,8 @@ import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.HashMap;
+
 public interface NetController {
 	public void setGameController(GameController controller);
 	public GameController getGameController();
@@ -21,7 +23,7 @@ public interface NetController {
 	public void removePlayer(int playerId);
 
 	public Array<Player> getPlayers();
-    public Array<String> getSpectators();
+    public HashMap<Integer, String> getSpectators();
     public Player getPlayer();
 	
 	public void sendCommand(Command cmd);

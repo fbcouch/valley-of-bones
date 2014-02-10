@@ -40,6 +40,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
+import java.util.HashMap;
+
 /**
  * @author jami
  *
@@ -50,12 +52,13 @@ public class MPGameSetupScreen extends AbstractScreen {
     NetController client;
 	
 	Array<Player> pList;
-    Array<String> sList;
+    HashMap<Integer, String> sList;
 
     boolean isHost = false;
 
     SelectBox mapSelect, spawnSelect, ruleSelect, moveSelect, baseTime, actionTime, unitTime;
     Label lblMap, lblSpawn, lblRule, lblMove, lblBaseTime, lblActionTime, lblUnitTime;
+    CheckBox chkSpectators;
 
     boolean needsUpdate = false;
 
@@ -107,7 +110,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                 playerTable.add(host).size(host.getWidth() / VOBGame.SCALE, host.getHeight() / VOBGame.SCALE).padLeft(10).padRight(10);
             } else {
                 if (config.isHost) {
-                    Image btn = getRemovePlayerButton(p);
+                    Image btn = getRemovePlayerButton(p.getPlayerId());
                     playerTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).padLeft(10).padRight(10);
                 } else {
                     playerTable.add().padLeft(10).padRight(10);
@@ -189,16 +192,20 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         table.row();
 
-        sList = new Array<String>(game.getSpectators());
-        if (sList.size > 0) {
+        sList = game.getSpectators();
+        if (sList.keySet().size() > 0) {
             table.add("Spectators").colspan(2).left();
             table.row();
 
             Table spectatorTable = new Table(getSkin());
             spectatorTable.setBackground(getSkin().getDrawable("default-pane"));
 
-            for (String name: sList) {
-                spectatorTable.add(name).expandX().left();
+            for (Integer id: sList.keySet()) {
+                if (config.isHost) {
+                    Image btn = getRemovePlayerButton(id);
+                    spectatorTable.add(btn).size(btn.getWidth() / VOBGame.SCALE, btn.getHeight() / VOBGame.SCALE).padLeft(10).padRight(10);
+                }
+                spectatorTable.add(sList.get(id)).expandX().left();
                 spectatorTable.row().expandX().padBottom(5).padTop(5);
             }
 
@@ -206,17 +213,23 @@ public class MPGameSetupScreen extends AbstractScreen {
             table.row();
         }
 
-        Table setupTable = new Table(getSkin());
-
-        Label mapLbl = new Label("Map:", getSkin());
-        setupTable.add(mapLbl).left();
-
         ChangeListener updateListener = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 needsUpdate = true;
             }
         };
+
+        Table setupTable = new Table(getSkin());
+
+        chkSpectators = new CheckBox(" Allow Spectators?", getSkin());
+        chkSpectators.setChecked(config.allowSpectate);
+        chkSpectators.setDisabled(!config.isHost);
+        chkSpectators.addListener(updateListener);
+        setupTable.add(chkSpectators).colspan(2).left().padTop(4).row();
+
+        Label mapLbl = new Label("Map:", getSkin());
+        setupTable.add(mapLbl).left();
 
         if (config.isHost) {
             needsUpdate = true;  // always send an update on setup, just so we're all on the same page
@@ -409,7 +422,7 @@ public class MPGameSetupScreen extends AbstractScreen {
         chatHistory = new Array<String>();
 	}
 	
-	private Image getRemovePlayerButton(final Player p) {
+	private Image getRemovePlayerButton(final int pid) {
 		Image remove = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "walking-boot-small"));
 
 		remove.addListener(new ClickListener() {
@@ -420,8 +433,8 @@ public class MPGameSetupScreen extends AbstractScreen {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				Gdx.app.log(LOG, String.format("remove (%d)", p.getPlayerId()));
-				game.removePlayer(p.getPlayerId());
+				Gdx.app.log(LOG, String.format("remove (%d)", pid));
+				game.removePlayer(pid);
 			}
 			
 		});
@@ -473,6 +486,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             gameDetails.baseTimer = Integer.parseInt(baseTime.getSelection());
             gameDetails.actionBonusTime = Integer.parseInt(actionTime.getSelection());
             gameDetails.unitBonusTime = Integer.parseInt(unitTime.getSelection());
+            gameDetails.allowSpectate = chkSpectators.isChecked();
             if (!config.mapName.equals(mapSelect.getSelection())) {
                 stage.clear();
                 config.setDetails(gameDetails);

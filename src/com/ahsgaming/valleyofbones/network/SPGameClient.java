@@ -27,6 +27,8 @@ import com.ahsgaming.valleyofbones.ai.FSMAIPlayer;
 import com.ahsgaming.valleyofbones.screens.GameSetupConfig;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.HashMap;
+
 /**
  * @author jami
  *
@@ -169,8 +171,8 @@ public class SPGameClient implements NetController {
 	}
 
     @Override
-    public Array<String> getSpectators() {
-        return new Array<String>();
+    public HashMap<Integer, String> getSpectators() {
+        return new HashMap<Integer, String>();
     }
 
     public void sendChat(String message) {}

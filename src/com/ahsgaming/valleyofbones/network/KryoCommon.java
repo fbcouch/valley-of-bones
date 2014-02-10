@@ -119,6 +119,7 @@ public class KryoCommon {
         public int baseTimer;
         public int actionBonusTime;
         public int unitBonusTime;
+        public boolean allowSpectate = true;
 	}
 
     public static interface Error {}

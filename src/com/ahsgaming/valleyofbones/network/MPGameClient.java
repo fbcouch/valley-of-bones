@@ -23,6 +23,7 @@
 package com.ahsgaming.valleyofbones.network;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.GameResult;
@@ -60,7 +61,7 @@ public class MPGameClient implements NetController {
 	GameSetupConfig gameConfig;
 	
 	Array<Player> players = new Array<Player>();
-    Array<String> spectators = new Array<String>();
+    HashMap<Integer, String> spectators = new HashMap<Integer, String>();
 
     int firstTurnPid = -1;
 	
@@ -143,7 +144,7 @@ public class MPGameClient implements NetController {
                         spectators.clear();
                         for (int p=0;p<plist.length;p++) {
                             if (plist[p].spectator) {
-                                spectators.add(plist[p].name);
+                                spectators.put(plist[p].id, plist[p].name);
                             } else {
                                 Player pl = new Player(plist[p].id, plist[p].name, Player.AUTOCOLORS[plist[p].color]);
                                 if (plist[p].isAI) {
@@ -359,7 +360,7 @@ public class MPGameClient implements NetController {
 		return player;
 	}
 
-    public Array<String> getSpectators() {
+    public HashMap<Integer, String> getSpectators() {
         return spectators;
     }
 	
