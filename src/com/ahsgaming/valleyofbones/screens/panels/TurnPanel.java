@@ -144,19 +144,16 @@ public class TurnPanel extends Group {
                 (imgBackground.getHeight() - imgP2Indicator.getHeight()) * 0.5f
         );
 
-        if (lblPlayer1.getWidth() > imgP1Indicator.getX() - 25 * VOBGame.SCALE)
-            lblPlayer1.setFontScale((imgP1Indicator.getX() - 25 * VOBGame.SCALE) / lblPlayer1.getWidth());
+        if (lblPlayer1.getWidth() * lblPlayer1.getFontScaleX() > imgP1Indicator.getX() - 25 * VOBGame.SCALE)
+            lblPlayer1.setFontScale((imgP1Indicator.getX() - 25 * VOBGame.SCALE) / (lblPlayer1.getWidth() * lblPlayer1.getFontScaleX()) * VOBGame.SCALE);
 
         lblPlayer1.setPosition(
                 25 * VOBGame.SCALE,
                 (imgBackground.getHeight() - lblPlayer1.getHeight()) * 0.5f
         );
 
-        Gdx.app.log("width", Float.toString(lblPlayer2.getWidth()));
-        Gdx.app.log("max", Float.toString((getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE)));
-        if (lblPlayer2.getWidth() > getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE)
-            lblPlayer2.setFontScale((getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE) / lblPlayer2.getWidth());
-        Gdx.app.log("scale", Float.toString(lblPlayer2.getFontScaleX()));
+        if (lblPlayer2.getWidth() * lblPlayer2.getFontScaleX() > getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE)
+            lblPlayer2.setFontScale((getWidth() - imgP2Indicator.getRight() - 25 * VOBGame.SCALE) / (lblPlayer2.getWidth() * lblPlayer2.getFontScaleX()) * VOBGame.SCALE);
 
         lblPlayer2.setPosition(
                 imgBackground.getWidth() - lblPlayer2.getWidth() * lblPlayer2.getFontScaleX() - 25 * VOBGame.SCALE,
