@@ -145,6 +145,7 @@ public class Player {
         if (controller.getGameTurn() == 1 && upkeep < 0) {
             upkeep *= 0.5f;
             if (upkeep > -45) upkeep = -45;
+//            if (race.equals("psion") && upkeep > -75) upkeep = -75;
         }
 
 		if (updateBank) bankMoney -= upkeep;

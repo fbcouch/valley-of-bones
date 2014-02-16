@@ -131,7 +131,7 @@ public class UnitData {
     }
 
     public boolean isInvisible() {
-        return stealthActive || ability.equals("sabotage");
+        return stealthActive || ability.equals("sabotage") || ability.equals("mind-control");
     }
 
     public boolean isAbilityActive() {
