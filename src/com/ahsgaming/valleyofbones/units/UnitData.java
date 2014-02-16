@@ -56,8 +56,8 @@ public class UnitData {
 
     long modified;
 
-    public static UnitData createUnitData(String protoId) {
-        return createUnitData(Prototypes.getProto(protoId));
+    public static UnitData createUnitData(String race, String protoId) {
+        return createUnitData(Prototypes.getProto(race, protoId));
     }
 
     public static UnitData createUnitData(Prototypes.JsonProto proto) {

@@ -88,9 +88,10 @@ public class Unit {
 
         unit.id = id;
         unit.owner = owner;
-        unit.data = UnitData.createUnitData(protoId);
+        unit.proto = Prototypes.getProto((owner != null ? owner.getRace() : "terran"), protoId);
+        unit.data = UnitData.createUnitData(unit.proto);
         unit.view = UnitView.createUnitView(unit);
-        unit.proto = Prototypes.getProto(protoId);
+
 
         if (unit.data.buildTime > 0) {
             unit.data.building = true;

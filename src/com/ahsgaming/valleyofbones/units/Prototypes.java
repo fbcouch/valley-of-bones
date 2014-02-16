@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.*;
 import com.badlogic.gdx.Gdx;
@@ -10,20 +11,27 @@ import com.badlogic.gdx.utils.*;
 
 
 public class Prototypes {
-	static final String UNIT_FILE = "units.json";
-	static ObjectMap<String, JsonProto> protos = null; 
+	static final String UNIT_FILE = "rules/classic.json"; // TODO pass this in
+    static HashMap<String, Array<JsonProto>> protos = null;
 	
-	public static JsonProto getProto(String id) {
+	public static JsonProto getProto(String race, String id) {
 		if (protos == null) loadUnits(UNIT_FILE);
-		
-		return protos.get(id);
+		if (!protos.containsKey(race)) return null;
+
+        JsonProto proto = null;
+        for (JsonProto p: protos.get(race)) {
+            if (p.id.equals(id)) proto = p;
+        }
+
+		return proto;
 	}
 
-    public static Array<JsonProto> getPlayerCanBuild() {
+    public static Array<JsonProto> getPlayerCanBuild(String race) {
         if (protos == null) loadUnits(UNIT_FILE);
+        if (!protos.containsKey(race)) return null;
 
         Array<JsonProto> returnVal = new Array<JsonProto>();
-        for (JsonProto jp: protos.values()) {
+        for (JsonProto jp: protos.get(race)) {
             int cost = 0;
             if (jp.hasProperty("cost"))
                 cost = jp.getProperty("cost").asInt();
@@ -55,15 +63,25 @@ public class Prototypes {
         return returnVal;
     }
 
-    public static Array<JsonProto> getAll() {
+    public static Array<JsonProto> getAll(String race) {
         if (protos == null) loadUnits(UNIT_FILE);
+        if (!protos.containsKey(race)) return null;
 
         Array<JsonProto> array = new Array<JsonProto>();
-        for(JsonProto proto: protos.values()) {
+        for(JsonProto proto: protos.get(race)) {
             if (proto.type.equals("building") || proto.type.equals("unit"))
                 array.add(proto);
         }
         return array;
+    }
+
+    public static Array<String> getRaces() {
+        if (protos == null) loadUnits(UNIT_FILE);
+        Array<String> races = new Array<String>();
+        for (String race: protos.keySet()) {
+            races.add(race);
+        }
+        return races;
     }
 	
 	public static class JsonProto {
@@ -133,17 +151,27 @@ public class Prototypes {
 	}
 	
 	public static void loadUnits(String file) {
-		if (protos == null) protos = new ObjectMap<String, JsonProto>();
+		if (protos == null) protos = new HashMap<String, Array<JsonProto>>();
 		
 		JsonReader reader = new JsonReader();
 		JsonValue json = reader.parse(Gdx.files.internal(file));
+
+        for (JsonValue race: json) {
+            Array<JsonProto> raceProtos = new Array<JsonProto>();
+
+            for (JsonValue unit: race) {
+                raceProtos.add(new JsonProto(unit));
+            }
+
+            protos.put(race.name, raceProtos);
+        }
 		
-		if (json.get("entities") != null) {
-			JsonValue jsonArray = json.get("entities");
-			for (JsonValue child: jsonArray) {
-				JsonProto jp = new JsonProto(child);
-				protos.put(jp.id, jp);
-			}
-		}
+//		if (json.get("entities") != null) {
+//			JsonValue jsonArray = json.get("entities");
+//			for (JsonValue child: jsonArray) {
+//				JsonProto jp = new JsonProto(child);
+//				protos.put(jp.id, jp);
+//			}
+//		}
 	}
 }

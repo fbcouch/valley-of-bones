@@ -788,7 +788,7 @@ public class LevelScreen extends AbstractScreen {
                 super();
                 this.levelScreen = levelScreen;
 
-                itemProtos = Prototypes.getPlayerCanBuild();
+//                itemProtos = Prototypes.getPlayerCanBuild();
 
                 textureManager = VOBGame.instance.getTextureManager();
             }

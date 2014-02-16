@@ -62,6 +62,7 @@ public class Player {
 	
 	int playerId = -1;
 	Color playerColor = new Color(1, 1, 1, 1);
+    String race = "terran";
 	String name = "New Cadet";
     String key = "";
     int pauses = 0;
@@ -81,8 +82,13 @@ public class Player {
 		this.name = name;
 	}
 
-    public Player(int id, String name, Color color, String key) {
-        this(id, name, color);
+    public Player(int id, String name, Color color, String race) {
+		this(id, name, color);
+		this.race = race;
+	}
+
+    public Player(int id, String name, Color color, String race, String key) {
+        this(id, name, color, race);
         this.key = key;
     }
 	
@@ -145,7 +151,7 @@ public class Player {
 	}
 	
 	public boolean canBuild(String protoId, GameController controller) {
-		JsonProto proto = Prototypes.getProto(protoId);
+		JsonProto proto = Prototypes.getProto(race, protoId);
 
 		if (!checkRequirements(proto, controller)) return false; // TODO speed this up?
 
@@ -155,7 +161,7 @@ public class Player {
 	}
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
-		JsonProto proto = Prototypes.getProto(protoId);
+		JsonProto proto = Prototypes.getProto(race, protoId);
 		
 		// TODO check if the upgrade can apply to this unit
 		
@@ -190,10 +196,10 @@ public class Player {
 
 			proto = null;
 			if (c instanceof Build) {
-				proto = Prototypes.getProto(((Build)c).building);
+				proto = Prototypes.getProto(race, ((Build)c).building);
 
 			} else if (c instanceof Upgrade) {
-				proto = Prototypes.getProto(((Upgrade)c).upgrade);
+				proto = Prototypes.getProto(race, ((Upgrade)c).upgrade);
 			}
 
 			if (proto != null && proto.hasProperty("food")) {
@@ -318,6 +324,13 @@ public class Player {
 
     public void addPause() { pauses++; }
 
+    public String getRace() {
+        return race;
+    }
+
+    public void setRace(String race) {
+        this.race = race;
+    }
 
     public int getTeam() {
 		return teamId;

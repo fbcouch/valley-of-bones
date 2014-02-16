@@ -224,7 +224,7 @@ public class AIPlayer extends Player {
                     Vector2 buildPosition = new Vector2(positionToBuild % controller.getMap().getWidth(), positionToBuild / controller.getMap().getWidth());
                     Array<String> protoIds = new Array<String>();
                     HashMap<String, Float> buildScores = new HashMap<String, Float>();
-                    for (Prototypes.JsonProto proto: Prototypes.getAll()) {
+                    for (Prototypes.JsonProto proto: Prototypes.getAll(getRace())) {
                         protoIds.add(proto.id);
                         if (proto.cost > 0) {
                             buildScores.put(proto.id, 0f);
@@ -253,8 +253,8 @@ public class AIPlayer extends Player {
                             }
                         }
 
-                        if (!maxScore.equals("saboteur") && buildScores.get(maxScore) > 0 && buildScores.get(maxScore) >= maxBuildScore - (Float)genome.chromosomes.get(10).genes.get("wait") && getBankMoney() >= Prototypes.getProto(maxScore).cost) {
-                            unitToBuild = Prototypes.getProto(maxScore);
+                        if (!maxScore.equals("saboteur") && buildScores.get(maxScore) > 0 && buildScores.get(maxScore) >= maxBuildScore - (Float)genome.chromosomes.get(10).genes.get("wait") && getBankMoney() >= Prototypes.getProto(getRace(), maxScore).cost) {
+                            unitToBuild = Prototypes.getProto(getRace(), maxScore);
                         } else {
                             buildScores.remove(maxScore);
                             maxScore = null;
@@ -383,7 +383,7 @@ public class AIPlayer extends Player {
         float total = 0;
         for (Unit unit: units) {
             if (unit.getOwner() == this) {
-                int i = Prototypes.getAll().indexOf(Prototypes.getProto(unit.getProto().id), true);
+                int i = Prototypes.getAll(getRace()).indexOf(Prototypes.getProto(getRace(), unit.getProto().id), true);
                 total += calc_value(
                         (Float)genome.chromosomes.get(i).genes.get((threat ? "threat" : "value")),   // TODO this is a horrible way to look this up
                         map.getMapDist(unit.getView().getBoardPosition(), new Vector2(x, y)),
@@ -449,7 +449,7 @@ public class AIPlayer extends Player {
 
             float range = 10f;
 
-            for (Prototypes.JsonProto proto: Prototypes.getAll()) {
+            for (Prototypes.JsonProto proto: Prototypes.getAll("terran")) {
                 Chromosome chromo = new Chromosome();
 
                 chromo.genes.put("threat", (float)Math.random() * range - (range / 2));
@@ -503,7 +503,7 @@ public class AIPlayer extends Player {
 
             Chromosome build_chromo = new Chromosome();
 
-            Array<Prototypes.JsonProto> protoArray = Prototypes.getAll();
+            Array<Prototypes.JsonProto> protoArray = Prototypes.getAll("terran");
 
             for (Prototypes.JsonProto proto: protoArray) {
                 if (proto.cost > 0) {

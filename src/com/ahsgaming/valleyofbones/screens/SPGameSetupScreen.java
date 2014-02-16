@@ -25,6 +25,7 @@ package com.ahsgaming.valleyofbones.screens;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
+import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -99,7 +100,17 @@ public class SPGameSetupScreen extends AbstractScreen {
             }
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).expandX().left();
-            playerTable.add("Terran").expandX();
+
+            SelectBox raceSelect = new SelectBox(Prototypes.getRaces().toArray(), getSkin());
+            playerTable.add(raceSelect).expandX();
+            raceSelect.setSelection(p.getRace());
+
+            raceSelect.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    p.setRace(((SelectBox)actor).getSelection());
+                }
+            });
 
             Image color = new Image(getSkin().getDrawable("white-hex"));
             color.setColor(p.getPlayerColor());

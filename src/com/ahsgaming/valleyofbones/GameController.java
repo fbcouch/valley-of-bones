@@ -435,9 +435,10 @@ public class GameController {
 	
 	public void executeBuild(Build cmd) {
 		// check that this can be built
-		JsonProto junit = Prototypes.getProto(cmd.building);
+        Player owner = getPlayerById(cmd.owner);
+        JsonProto junit = Prototypes.getProto(owner.getRace(), cmd.building);
 		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
-		Player owner = getPlayerById(cmd.owner);
+
 			
 		// TODO place builder
 		// for now, just add the unit
