@@ -188,6 +188,7 @@ public class GameJoinScreen extends AbstractScreen {
                 Gdx.app.log(LOG, "btnConnect touched");
                 String host = txtJoinHostname.getText();
                 if (host.equals("")) {
+                    if (servers.size == 0) return;
                     host = String.format("%s:%d", servers.get(listServers.getSelectedIndex()).ipAddr, servers.get(listServers.getSelectedIndex()).port);
                 }
                 GameSetupConfig cfg = new GameSetupConfig();
@@ -211,6 +212,7 @@ public class GameJoinScreen extends AbstractScreen {
                 Gdx.app.log(LOG, "btnSpectate touched");
                 String host = txtJoinHostname.getText();
                 if (host.equals("")) {
+                    if (servers.size == 0) return;
                     host = String.format("%s:%d", servers.get(listServers.getSelectedIndex()).ipAddr, servers.get(listServers.getSelectedIndex()).port);
                 }
                 GameSetupConfig cfg = new GameSetupConfig();

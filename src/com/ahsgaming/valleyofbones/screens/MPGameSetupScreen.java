@@ -134,7 +134,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                     while (update.color < Player.AUTOCOLORS.length && !p.getPlayerColor().equals(Player.AUTOCOLORS[update.color])) {
                         update.color++;
                     }
-                    update.ready = !p.isReady();
+                    update.ready = p.isReady();
                     if (client instanceof MPGameClient)
                         ((MPGameClient)client).sendPlayerUpdate(update);
                 }
