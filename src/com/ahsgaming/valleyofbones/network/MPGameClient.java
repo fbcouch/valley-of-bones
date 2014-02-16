@@ -104,6 +104,7 @@ public class MPGameClient implements NetController {
                 RegisterPlayer rp = new RegisterPlayer();
                 rp.name = cfg.playerName;
                 rp.spectator = cfg.isSpectator;
+                rp.race = cfg.playerRace;
                 rp.key = cfg.playerKey;
                 client.sendTCP(rp);
 			}
@@ -161,7 +162,7 @@ public class MPGameClient implements NetController {
                             if (plist[p].spectator) {
                                 spectators.put(plist[p].id, plist[p].name);
                             } else {
-                                Player pl = new Player(plist[p].id, plist[p].name, Player.AUTOCOLORS[plist[p].color]);
+                                Player pl = new Player(plist[p].id, plist[p].name, Player.AUTOCOLORS[plist[p].color], plist[p].race);
                                 if (plist[p].isAI) {
                                     pl.setReady(true);
                                     pl.setAI(true);

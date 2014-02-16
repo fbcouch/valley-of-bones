@@ -6,6 +6,7 @@ import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.NetController;
+import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -208,7 +209,7 @@ public class FSMAIPlayer extends AIPlayer {
             }
             if (minDistLoc != null) {
                 Build bld = new Build();
-                bld.building = "marine-base";
+                bld.building = (getRace().equals("terran") ? "marine-base" : "warrior");
                 bld.location = minDistLoc;
                 return bld;
             }

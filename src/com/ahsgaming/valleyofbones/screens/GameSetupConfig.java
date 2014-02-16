@@ -22,6 +22,7 @@ public class GameSetupConfig {
     public int hostPort = KryoCommon.tcpPort;
     public String playerName = "New Player";
     public String playerKey = "";
+    public String playerRace = "terran";
     public int maxPauses = 3;
     public boolean allowSpectate = true;
 

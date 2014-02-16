@@ -233,7 +233,7 @@
             }
         }
     ],
-    "psions": [
+    "psion": [
         {
             "id": "castle-base",
             "type": "building",
@@ -288,7 +288,7 @@
         {
             "id": "warrior",
             "type": "unit",
-            "image": "marine",
+            "image": "warrior",
             "title": "Warrior",
             "desc": "Marines form the core of any good army.\n\n **Detect:**\n\nMarines can see and shoot cloaked units, such as snipers and saboteurs.",
             "attacksound": "laser_shot",
@@ -311,7 +311,7 @@
         {
             "id": "spectre",
             "type": "unit",
-            "image": "sniper",
+            "image": "spectre",
             "title": "Spectre",
             "desc": "With a 4x bonus vs infantry and the stealth ability, snipers are the ultimate anti-infantry weapon.\n\n**Stealth:**\n\nWhile cloaked, only detectors can see or fire at snipers. Movement speed is reduced by half. Cannot enter cloak on any turn when the sniper has already cloaked, fired, or moved more than once.",
             "attacksound": "laser_shot",
@@ -335,7 +335,7 @@
         {
             "id": "monk",
             "type": "unit",
-            "image": "bazooka",
+            "image": "monk",
             "title": "Monk",
             "desc": "The bazooka guy is the infantry's answer to mech.",
             "attacksound": "laser_shot",

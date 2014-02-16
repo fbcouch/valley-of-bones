@@ -27,6 +27,7 @@ import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.ahsgaming.valleyofbones.network.NetController;
+import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -118,7 +119,26 @@ public class MPGameSetupScreen extends AbstractScreen {
             }
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left().expandX();
-            playerTable.add("Terran").expandX();
+
+            SelectBox raceSelect = new SelectBox(Prototypes.getRaces().toArray(), getSkin());
+            playerTable.add(raceSelect).expandX();
+            raceSelect.setSelection(p.getRace());
+
+            raceSelect.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
+                    update.id = p.getPlayerId();
+                    update.race = ((SelectBox)actor).getSelection();
+                    update.color = 0;
+                    while (update.color < Player.AUTOCOLORS.length && !p.getPlayerColor().equals(Player.AUTOCOLORS[update.color])) {
+                        update.color++;
+                    }
+                    update.ready = !p.isReady();
+                    if (client instanceof MPGameClient)
+                        ((MPGameClient)client).sendPlayerUpdate(update);
+                }
+            });
 
             Image color = new Image(getSkin().getDrawable("white-hex"));
             color.setColor(p.getPlayerColor());
@@ -140,6 +160,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 
                         KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
                         update.id = p.getPlayerId();
+                        update.race = p.getRace();
                         update.color = i;
                         update.ready = p.isReady();
                         if (client instanceof MPGameClient)
@@ -159,6 +180,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                 public void changed(ChangeEvent event, Actor actor) {
                     KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
                     update.id = p.getPlayerId();
+                    update.race = p.getRace();
                     update.color = 0;
                     while (update.color < Player.AUTOCOLORS.length && !p.getPlayerColor().equals(Player.AUTOCOLORS[update.color])) {
                         update.color++;

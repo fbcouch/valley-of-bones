@@ -78,6 +78,7 @@ public class KryoCommon {
 	public static class RegisterPlayer {
 		public String name;
         public String version = VOBGame.VERSION;
+        public String race = "terran";
         public boolean spectator = false;
         public int prefColor = 0;
         public String key;
@@ -86,12 +87,14 @@ public class KryoCommon {
     public static class UpdatePlayer {
         public int id;
         public int color;
+        public String race;
         public boolean ready;
     }
 	
 	public static class RegisteredPlayer {
 		public int id;
 		public String name;
+        public String race;
 		public int color;
         public boolean host;
         public boolean spectator;

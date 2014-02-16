@@ -203,6 +203,7 @@ public class GameServer implements NetController {
                                 reg.id = getNextPlayerId();
                                 reg.spectator = true;
                                 reg.name = rp.name;
+                                reg.race = rp.race;
                                 registeredSpectators.add(reg);
 
                                 connMap.put(c, reg.id);
@@ -227,20 +228,15 @@ public class GameServer implements NetController {
                                 server.sendToTCP(c.getID(), gameUpdate);
                             }
                         }
-//                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
                         return;
                     }
-
-//                    if (players.size >= Player.AUTOCOLORS.length) {
-//                        server.sendToTCP(c.getID(), new KryoCommon.GameFullError());
-//                        return; // TODO should join as spectator?
-//                    }
 
                     int id = getNextPlayerId();
 					Color use = new Color(1, 1, 1, 1);
 					RegisteredPlayer reg = new RegisteredPlayer();
                     reg.id = id;
                     reg.name = rp.name;
+                    reg.race = rp.race;
                     if (registeredPlayers.size < maxPlayers && !rp.spectator) {
                         Gdx.app.log(LOG, "player joined");
                         reg.spectator = false;
@@ -301,6 +297,7 @@ public class GameServer implements NetController {
 
                     if (player != null) {
                         player.color = update.color;
+                        player.race = update.race;
                         player.ready = update.ready;
                     }
 
@@ -485,9 +482,9 @@ public class GameServer implements NetController {
                 players.add(new FSMAIPlayer(this, rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
             } else {
                 if (playerIdKeyMap.containsKey(rp.id)) {
-                    players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color], playerIdKeyMap.get(rp.id)));
+                    players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color], rp.race, playerIdKeyMap.get(rp.id)));
                 } else {
-                    players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+                    players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color], rp.race));
                 }
             }
         }
@@ -648,6 +645,7 @@ public class GameServer implements NetController {
                 Player pl = players.get(p);
                 rp.id = pl.getPlayerId();
                 rp.name = pl.getPlayerName();
+                rp.race = pl.getRace();
                 int c = 0;
                 while (!pl.getPlayerColor().equals(Player.AUTOCOLORS[c]) && c < Player.AUTOCOLORS.length - 1)
                     c++;
@@ -707,6 +705,7 @@ public class GameServer implements NetController {
             reg.id = getNextPlayerId();
             reg.name = "AI Player";
             reg.color = Player.getUnusedColorId(registeredPlayers);
+            reg.race = "terran";
             reg.isAI = true;
             reg.host = false;
             reg.ready = true;
