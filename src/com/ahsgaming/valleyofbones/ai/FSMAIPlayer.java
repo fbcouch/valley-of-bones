@@ -92,7 +92,7 @@ public class FSMAIPlayer extends AIPlayer {
         Array<Integer> toRemove = new Array<Integer>();
         for (Integer id: unitFSMs.keySet()) {
             UnitFSM fsm = unitFSMs.get(id);
-            if (!fsm.unit.getData().isAlive()) {
+            if (!fsm.unit.getData().isAlive() || fsm.unit.getOwner() != this) {
                 toRemove.add(id);
             } else {
                 if (fsm.directives.size() == 0 && currentGoals.size > 0) {

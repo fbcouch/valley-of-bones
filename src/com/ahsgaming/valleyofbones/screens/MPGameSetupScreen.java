@@ -377,10 +377,12 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         table.add(controlTable).fillX().row();
 
-        chatTable = new Table(getSkin());
-        chatScroll = new ScrollPane(chatTable, getSkin());
-        chatScroll.setFadeScrollBars(false);
-
+        if (chatTable == null) {
+            chatTable = new Table(getSkin());
+            chatScroll = new ScrollPane(chatTable, getSkin());
+            chatScroll.setFadeScrollBars(false);
+            chatTable.padLeft(20);
+        }
         table.add(chatScroll).colspan(2).fillX().height(100);
 
         table.row();

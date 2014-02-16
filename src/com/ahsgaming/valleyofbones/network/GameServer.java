@@ -400,6 +400,7 @@ public class GameServer implements NetController {
                     sendCommand(p);
                     awaitReconnectCountdown = awaitReconnectTime;
                     awaitReconnect = true;
+                    if (controller.getGameResult() == null) sendPlayerList();
                 } else if (connMap.containsKey(c)) {
                     int id = connMap.get(c);
 
@@ -454,9 +455,8 @@ public class GameServer implements NetController {
                         player.host = true;
                         server.sendToTCP(connMap.findKey(player.id, true).getID(), player);
                     }
-
+                    sendPlayerList();
                 }
-                if (controller == null || controller.getGameResult() == null) sendPlayerList();
             }
 		});
 
