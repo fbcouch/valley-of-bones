@@ -105,6 +105,9 @@ public class UnitManager {
                 unit.data.attacksLeft = 0;
                 unit.data.movesLeft = 0;
             }
+            if (unit.data.mindControlUnit != null && unit.data.mindControlUnit.data.curHP > 0) {
+                applyDamage(unit.data.mindControlUnit, unit.data.mindControlUnit.data.curHP + unit.data.mindControlUnit.data.armor);
+            }
         }
 
         unit.view.act(delta);
@@ -141,6 +144,12 @@ public class UnitManager {
             unit.view.addToPath(unit.view.getBoardPosition());
 
             unit.data.stealthEntered = false;
+            unit.data.mindControlUsed = false;
+
+            if (unit.data.mindControlUnit != null) {
+                if (unit.data.mindControlUnit.data.curHP <= 0)
+                    unit.data.mindControlUnit = null;
+            }
 
             unit.data.modified = TimeUtils.millis();
         }
@@ -174,6 +183,17 @@ public class UnitManager {
                     applyDamage(defender, defender.data.curHP + defender.data.armor - 1);
                 }
                 applyDamage(attacker, attacker.data.curHP + attacker.data.armor);
+            } else if (attacker.data.ability.equals("mind-control")) {
+                if (!defender.data.type.equals("building") && !defender.data.ability.equals("sabotage")
+                        && !attacker.data.mindControlUsed && attacker.data.mindControlUnit == null) {
+                    defender.owner = attacker.owner;
+                    defender.data.movesLeft = 0;
+                    defender.data.attacksLeft = 0;
+                    defender.data.modified = TimeUtils.millis();
+                    attacker.data.mindControlUsed = true;
+                    attacker.data.mindControlUnit = defender;
+                    attacker.data.attacksLeft--;
+                }
             } else {
                 attacker.data.attacksLeft--;
                 applyDamage(defender, attacker.data.attackDamage * attacker.data.getBonus(defender.data.subtype));
@@ -242,6 +262,14 @@ public class UnitManager {
                 }
             }
             unit.data.modified = TimeUtils.millis();
+        } else if (unit.data.ability.equals("mind-control")) {
+            if (!unit.data.mindControlUsed && unit.data.mindControlUnit != null) {
+                applyDamage(unit.data.mindControlUnit, unit.data.mindControlUnit.data.curHP + unit.data.mindControlUnit.data.armor);
+                unit.data.mindControlUnit = null;
+                unit.data.modified = TimeUtils.millis();
+                unit.data.mindControlUsed = true;
+                unit.data.attacksLeft = 0;
+            }
         }
     }
 

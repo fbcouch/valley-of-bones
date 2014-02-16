@@ -96,7 +96,7 @@ building
   index: -1
 building-small
   rotate: false
-  xy: 2026, 564
+  xy: 2156, 564
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -145,7 +145,7 @@ checked-shield
   index: -1
 checked-shield-small
   rotate: false
-  xy: 2108, 564
+  xy: 2022, 434
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -159,7 +159,7 @@ crossed-swords
   index: -1
 crossed-swords-small
   rotate: false
-  xy: 2190, 564
+  xy: 2286, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -187,7 +187,7 @@ detect
   index: -1
 detect-small
   rotate: false
-  xy: 2286, 635
+  xy: 2368, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -236,7 +236,7 @@ hazard-sign
   index: -1
 hazard-sign-small
   rotate: false
-  xy: 2368, 635
+  xy: 2450, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -250,7 +250,7 @@ hospital-cross
   index: -1
 hospital-cross-small
   rotate: false
-  xy: 2450, 635
+  xy: 2532, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -271,7 +271,7 @@ increasing-returns
   index: -1
 increasing-returns-small
   rotate: false
-  xy: 2532, 635
+  xy: 2614, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -285,7 +285,7 @@ king
   index: -1
 king-small
   rotate: false
-  xy: 2614, 635
+  xy: 2696, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -313,7 +313,7 @@ light-mech-overlay
   index: -1
 light-small
   rotate: false
-  xy: 2696, 635
+  xy: 2778, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -360,16 +360,30 @@ metal-hex-depth
   orig: 260, 152
   offset: 0, 0
   index: -1
-money
+mind-control
   rotate: false
   xy: 3946, 1035
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+mind-control-small
+  rotate: false
+  xy: 2860, 635
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+money
+  rotate: false
+  xy: 3946, 905
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 money-small
   rotate: false
-  xy: 2778, 635
+  xy: 2942, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -411,56 +425,56 @@ radial
   index: -1
 radial-balance
   rotate: false
-  xy: 3946, 905
+  xy: 1892, 388
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 radial-balance-small
   rotate: false
-  xy: 2860, 635
+  xy: 3024, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 reticule
   rotate: false
-  xy: 1892, 388
+  xy: 1896, 258
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 reticule-small
   rotate: false
-  xy: 2942, 635
+  xy: 3106, 635
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 rune-sword
   rotate: false
-  xy: 1896, 258
+  xy: 1946, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 rune-sword-small
   rotate: false
-  xy: 3024, 635
+  xy: 2104, 434
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 sabotage
   rotate: false
-  xy: 1946, 128
+  xy: 1896, 648
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 sabotage-small
   rotate: false
-  xy: 3106, 635
+  xy: 4004, 1393
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -488,14 +502,14 @@ selection-hud-bg
   index: -1
 skull-crossed-bones
   rotate: false
-  xy: 1896, 648
+  xy: 1896, 518
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 skull-crossed-bones-small
   rotate: false
-  xy: 2272, 553
+  xy: 4004, 1311
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -558,28 +572,28 @@ starship
   index: -1
 stealth
   rotate: false
-  xy: 1896, 518
+  xy: 2026, 646
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 stealth-small
   rotate: false
-  xy: 2354, 553
+  xy: 3972, 1229
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 supply
   rotate: false
-  xy: 2026, 646
+  xy: 2156, 646
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 supply-small
   rotate: false
-  xy: 2436, 553
+  xy: 2026, 352
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -670,14 +684,14 @@ valley
   index: -1
 walking-boot
   rotate: false
-  xy: 2156, 646
+  xy: 2026, 516
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 walking-boot-small
   rotate: false
-  xy: 2518, 553
+  xy: 2026, 270
   size: 80, 80
   orig: 80, 80
   offset: 0, 0

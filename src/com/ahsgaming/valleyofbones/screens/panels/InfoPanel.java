@@ -322,7 +322,7 @@ public class InfoPanel extends Group {
                     } else {
                         grpAbilityText.addActor(imgCheckOn);
 
-                        if (unit.getData().getAbility().equals("stealth")) {
+                        if (unit.getData().getAbility().equals("stealth") || unit.getData().getAbility().equals("mind-control")) {
                             if (imgCheckOn.getListeners().size > 0)
                                 imgCheckOn.removeListener(imgCheckOn.getListeners().first());
                             imgCheckOn.addListener(new ClickListener(){
@@ -339,14 +339,17 @@ public class InfoPanel extends Group {
                     grpAbilityText.addActor(imgCheckOff);
                     if (imgCheckOff.getListeners().size > 0)
                         imgCheckOff.removeListener(imgCheckOff.getListeners().first());
-                    imgCheckOff.addListener(new ClickListener(){
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            super.clicked(event, x, y);
 
-                            levelScreen.activateAbility(unit.getId());
-                        }
-                    });
+                    if (unit.getData().getAbility().equals("stealth")) {
+                        imgCheckOff.addListener(new ClickListener(){
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                super.clicked(event, x, y);
+
+                                levelScreen.activateAbility(unit.getId());
+                            }
+                        });
+                    }
                 }
             }
 

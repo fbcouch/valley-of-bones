@@ -48,6 +48,9 @@ public class UnitData {
     boolean stealthEntered = false;
     boolean stealthActive = false;
 
+    boolean mindControlUsed = false;
+    Unit mindControlUnit;
+
     float movesLeft = 0, attacksLeft = 0;
     int movesThisTurn = 0;
 
@@ -132,7 +135,9 @@ public class UnitData {
     }
 
     public boolean isAbilityActive() {
-        return ((!ability.equals("stealth") || stealthActive)); // right now, stealth is the only activatable ability
+        return (
+                (!ability.equals("stealth") && !ability.equals("mind-control")) || stealthActive || mindControlUnit != null
+        );
     }
 
     public int getRefund() {

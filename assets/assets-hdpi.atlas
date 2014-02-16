@@ -96,7 +96,7 @@ building
   index: -1
 building-small
   rotate: false
-  xy: 1271, 323
+  xy: 1976, 670
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -145,7 +145,7 @@ checked-shield
   index: -1
 checked-shield-small
   rotate: false
-  xy: 84, 7
+  xy: 1976, 628
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -159,7 +159,7 @@ crossed-swords
   index: -1
 crossed-swords-small
   rotate: false
-  xy: 649, 2
+  xy: 1976, 586
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -187,7 +187,7 @@ detect
   index: -1
 detect-small
   rotate: false
-  xy: 691, 2
+  xy: 1976, 544
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -236,7 +236,7 @@ hazard-sign
   index: -1
 hazard-sign-small
   rotate: false
-  xy: 1261, 281
+  xy: 1271, 323
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -250,7 +250,7 @@ hospital-cross
   index: -1
 hospital-cross-small
   rotate: false
-  xy: 1261, 239
+  xy: 84, 7
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -271,7 +271,7 @@ increasing-returns
   index: -1
 increasing-returns-small
   rotate: false
-  xy: 1261, 197
+  xy: 649, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -285,7 +285,7 @@ king
   index: -1
 king-small
   rotate: false
-  xy: 733, 12
+  xy: 691, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -313,7 +313,7 @@ light-mech-overlay
   index: -1
 light-small
   rotate: false
-  xy: 775, 12
+  xy: 1261, 281
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -360,16 +360,30 @@ metal-hex-depth
   orig: 130, 76
   offset: 0, 0
   index: -1
-money
+mind-control
   rotate: false
   xy: 847, 54
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
+mind-control-small
+  rotate: false
+  xy: 1261, 239
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+money
+  rotate: false
+  xy: 913, 104
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 money-small
   rotate: false
-  xy: 817, 12
+  xy: 1261, 197
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -411,56 +425,56 @@ radial
   index: -1
 radial-balance
   rotate: false
-  xy: 913, 104
+  xy: 979, 104
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 radial-balance-small
   rotate: false
-  xy: 859, 12
+  xy: 733, 12
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 reticule
   rotate: false
-  xy: 979, 104
+  xy: 1045, 104
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 reticule-small
   rotate: false
-  xy: 1976, 736
+  xy: 775, 12
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 rune-sword
   rotate: false
-  xy: 1045, 104
+  xy: 1111, 104
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 rune-sword-small
   rotate: false
-  xy: 1976, 694
+  xy: 817, 12
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 sabotage
   rotate: false
-  xy: 1111, 104
+  xy: 1077, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sabotage-small
   rotate: false
-  xy: 1976, 652
+  xy: 859, 12
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -488,14 +502,14 @@ selection-hud-bg
   index: -1
 skull-crossed-bones
   rotate: false
-  xy: 1077, 38
+  xy: 1143, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 skull-crossed-bones-small
   rotate: false
-  xy: 1976, 610
+  xy: 1303, 263
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -558,28 +572,28 @@ starship
   index: -1
 stealth
   rotate: false
-  xy: 1143, 38
+  xy: 1177, 104
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stealth-small
   rotate: false
-  xy: 1976, 568
+  xy: 1303, 221
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 supply
   rotate: false
-  xy: 1177, 104
+  xy: 1209, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 supply-small
   rotate: false
-  xy: 1976, 526
+  xy: 1345, 263
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -670,14 +684,14 @@ valley
   index: -1
 walking-boot
   rotate: false
-  xy: 1209, 38
+  xy: 1976, 712
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 walking-boot-small
   rotate: false
-  xy: 1303, 263
+  xy: 1345, 221
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
