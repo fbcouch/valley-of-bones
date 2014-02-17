@@ -87,6 +87,7 @@ public class UnitManager {
         }
         for (int i: toRemove) {
             units.remove(i);
+            gameController.getMap().invalidateViews();
         }
     }
 
@@ -180,7 +181,12 @@ public class UnitManager {
                 } else {
                     if (defender.data.protoId.equals("castle-base"))
                         return false; // saboteur can't attack castle
-                    applyDamage(defender, defender.data.curHP + defender.data.armor - 1);
+                    if (defender.data.ability.equals("mind-control")) {
+                        // saboteur instagibs dreamwalker
+                        applyDamage(defender, defender.data.curHP + defender.data.armor);
+                    } else {
+                        applyDamage(defender, defender.data.curHP + defender.data.armor - 1);
+                    }
                 }
                 applyDamage(attacker, attacker.data.curHP + attacker.data.armor);
             } else if (attacker.data.ability.equals("mind-control")) {
