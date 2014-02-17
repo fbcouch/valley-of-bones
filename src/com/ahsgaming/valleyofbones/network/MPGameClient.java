@@ -79,6 +79,8 @@ public class MPGameClient implements NetController {
 
     boolean isReconnect = false;
 
+    float reconCountdown = 5;
+
     KryoCommon.Error error;
 
     Array<String> chatLog = new Array<String>();
@@ -239,7 +241,9 @@ public class MPGameClient implements NetController {
 			}
 			
 			public void disconnected (Connection c) {
-                if (gameResult != null) {
+                Gdx.app.log(LOG, "Disconnected!");
+                if (gameResult == null && controller != null) {
+                    Gdx.app.log(LOG, "Reconnect");
                     isReconnect = true;
                     Pause p = new Pause();
                     p.isAuto = true;
@@ -339,8 +343,13 @@ public class MPGameClient implements NetController {
         controller.update(delta);
 
         if (isReconnect && !isConnecting) {
-            Gdx.app.log(LOG, "" + isReconnect);
-            reconnect();
+            if (reconCountdown > 0) {
+                Gdx.app.log(LOG, "Reconnect in: " + reconCountdown);
+                reconCountdown -= delta;
+            } else {
+                Gdx.app.log(LOG, "" + isReconnect);
+                reconnect();
+            }
         }
 
         while (commandQueue.size > 0) {

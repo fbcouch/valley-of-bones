@@ -88,7 +88,7 @@ public class GameServer implements NetController {
     float serverPingTimeout = 0;
 
     float awaitReconnectCountdown = 0;
-    float awaitReconnectTime = 5;
+    float awaitReconnectTime = 30;
     boolean awaitReconnect = false;
 
     int maxPlayers = 2;
