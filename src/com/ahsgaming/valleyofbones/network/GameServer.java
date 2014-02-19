@@ -50,7 +50,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class GameServer implements NetController {
 	public String LOG = "GameServer";
-    public static String globalServerUrl = (VOBGame.DEBUG_GLOBAL_SERVER ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
+    public static String globalServerUrl = (VOBGame.DEBUG_GLOBAL_SERVER ? "http://localhost/jami/vob-api-v1/" : "http://secure-caverns-9874.herokuapp.com");
 
     final VOBGame game;
 
@@ -84,7 +84,7 @@ public class GameServer implements NetController {
 
     int publicServerId = -1;
 
-    float serverPing = 1800;
+    float serverPing = 30;
     float serverPingTimeout = 0;
 
     float awaitReconnectCountdown = 0;
@@ -806,14 +806,19 @@ public class GameServer implements NetController {
 
     public void registerPublicServer() {
         Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.POST);
-        httpGet.setUrl(String.format("%s/server", globalServerUrl));
+        httpGet.setUrl(String.format("%s/servers", globalServerUrl));
 
-        HashMap parameters = new HashMap();
-        parameters.put("name", gameConfig.hostName);
-        parameters.put("port", Integer.toString(gameConfig.hostPort));
-//        parameters.put("ip", Utils.getIPAddress(true));
+        String content =
+                String.format("{ \"name\": \"%s\", \"port\": \"%s\", \"version\": \"%s\" }",
+                        gameConfig.hostName, Integer.toString(gameConfig.hostPort), VOBGame.VERSION
+                );
 
-        httpGet.setContent(HttpParametersUtils.convertHttpParameters(parameters));
+//        HashMap parameters = new HashMap();
+//        parameters.put("name", gameConfig.hostName);
+//        parameters.put("port", Integer.toString(gameConfig.hostPort));
+////        parameters.put("ip", Utils.getIPAddress(true));
+        httpGet.setContent(content);
+//        System.out.println(HttpParametersUtils.convertHttpParameters(parameters));
 
         Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
             @Override
@@ -851,7 +856,7 @@ public class GameServer implements NetController {
     public void removePublicServer() {
         if (publicServerId >= 0) {
             Net.HttpRequest httpDelete = new Net.HttpRequest(Net.HttpMethods.DELETE);
-            httpDelete.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
+            httpDelete.setUrl(String.format("%s/servers/%d", globalServerUrl, publicServerId));
             Gdx.net.sendHttpRequest(httpDelete, new Net.HttpResponseListener() {
                 @Override
                 public void handleHttpResponse(Net.HttpResponse httpResponse) {
@@ -871,9 +876,7 @@ public class GameServer implements NetController {
     public void sendPublicServerResult() {
         if (publicServerId >= 0) {
             Net.HttpRequest httpPost = new Net.HttpRequest(Net.HttpMethods.POST);
-//            httpPost.setHeader("Content-Type", "application/json");
-            httpPost.setUrl(String.format("%s/game", globalServerUrl));
-            HashMap parameters = new HashMap();
+            httpPost.setUrl(String.format("%s/games", globalServerUrl));
             String playersString = "{}";
             if (controller.getPlayers().size >= 2) {
                 playersString = String.format("{ \"%d\": %s, \"%d\": %s }",
@@ -893,11 +896,15 @@ public class GameServer implements NetController {
                 historyString += command.toJson();
             }
             historyString += "]";
-            parameters.put("game", "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + ", \"map\": \"" + controller.getMapName() + "\", \"players\": " + playersString + "}");
-            parameters.put("version", VOBGame.VERSION);
-            parameters.put("map", controller.getMapName());
 
-            httpPost.setContent(HttpParametersUtils.convertHttpParameters(parameters));
+            String content = String.format(
+                    "{ \"game\": %s, \"version\": \"%s\", \"map\": \"%s\" }",
+                    "{ \"history\": " + historyString + ", \"result\": " + gameResult.winner + ", \"map\": \"" + controller.getMapName() + "\", \"players\": " + playersString + "}",
+                    VOBGame.VERSION,
+                    controller.getMapName()
+            );
+
+            httpPost.setContent(content);
 
             Gdx.net.sendHttpRequest(httpPost, new Net.HttpResponseListener() {
                 @Override
@@ -931,14 +938,17 @@ public class GameServer implements NetController {
     }
 
     public void sendPublicServerUpdate() {
-        Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.POST);
-        req.setUrl(String.format("%s/server/%d", globalServerUrl, publicServerId));
-        HashMap parameters = new HashMap();
-        parameters.put("players", "" + (gameStarted ? players.size : registeredPlayers.size));
-        Gdx.app.log("GameStarted", "" + gameStarted);
-        parameters.put("status", "" + (gameStarted ? 1 : 0));
-        req.setContent(HttpParametersUtils.convertHttpParameters(parameters));
-        Gdx.app.log("LOG", req.getContent());
+        Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.PUT);
+        req.setUrl(String.format("%s/servers/%d", globalServerUrl, publicServerId));
+
+        String content = String.format(
+                "{ \"players\": %d, \"status\": %d }",
+                (gameStarted ? players.size : registeredPlayers.size),
+                (gameStarted ? 1 : 0)
+        );
+
+        Gdx.app.log("LOG", content);
+        req.setContent(content);
         Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {

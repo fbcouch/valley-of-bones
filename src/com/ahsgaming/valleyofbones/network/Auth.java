@@ -27,7 +27,7 @@ public class Auth {
 
     public static void authenticate(final String username, String token, final Callback callback) {
         Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-        httpGet.setUrl(String.format("%s/player/auth/%s/%s", GameServer.globalServerUrl, username, token));
+        httpGet.setUrl(String.format("%s/users/auth/%s/%s", GameServer.globalServerUrl, username, token));
 
         Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
 
@@ -49,7 +49,7 @@ public class Auth {
                         p.username = username;
                         JsonReader jsonReader = new JsonReader();
                         JsonValue result = jsonReader.parse(response);
-                        p.key = result.getString("key");
+                        p.key = result.getString("user_key");
                         callback.result(p);
                         break;
                 }

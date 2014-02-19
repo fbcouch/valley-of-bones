@@ -426,6 +426,6 @@ public class Player {
     }
 
     public String getKeyString() {
-        return String.format("{ \"username\": \"%s\", \"key\": \"%s\" }", getPlayerName(), getKey());
+        return String.format("{ \"username\": \"%s\", \"race\": \"%s\", \"user_key\": \"%s\" }", getPlayerName(), getRace(), getKey());
     }
 }
