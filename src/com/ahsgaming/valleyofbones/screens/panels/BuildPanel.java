@@ -67,7 +67,7 @@ public class BuildPanel extends Group {
             }
         });
 
-        itemProtos = Prototypes.getPlayerCanBuild(player.getRace());
+        itemProtos = Prototypes.getPlayerCanBuild((player != null ? player.getRace() : "terran"));
         infantryItems = new Array<BuildItem>();
         mechItems = new Array<BuildItem>();
 

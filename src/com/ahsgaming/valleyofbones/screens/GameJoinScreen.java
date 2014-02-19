@@ -26,6 +26,7 @@ import java.net.InetAddress;
 
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.network.Auth;
+import com.ahsgaming.valleyofbones.network.GameServer;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.MPGameClient;
 import com.badlogic.gdx.Gdx;
@@ -49,7 +50,7 @@ import com.esotericsoftware.kryonet.Client;
 public class GameJoinScreen extends AbstractScreen {
 	public String LOG = "GameJoinScreen";
     public static final boolean DEBUG = false;
-    String globalServerUrl = (VOBGame.DEBUG_GLOBAL_SERVER ? "http://localhost:4730" : "http://secure-caverns-9874.herokuapp.com");
+    String globalServerUrl = GameServer.globalServerUrl;
 
     Label lblNickname;
 	TextField txtNickname;
@@ -249,8 +250,10 @@ public class GameJoinScreen extends AbstractScreen {
                         Gdx.app.log(LOG, "Got server list");
                         JsonReader reader = new JsonReader();
                         JsonValue result = reader.parse(response);
+                        Gdx.app.log(LOG, response);
                         for (JsonValue server: result) {
-                            servers.add(new ServerObj(server));
+                            if (server.getString("version", "").equals(VOBGame.VERSION))
+                                servers.add(new ServerObj(server));
                         }
                         break;
                     default:
