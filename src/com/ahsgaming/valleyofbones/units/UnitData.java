@@ -127,7 +127,7 @@ public class UnitData {
     // special things
 
     public boolean isDetector() {
-        return ability.equals("detect");
+        return ability.equals("detect") || ability.equals("sabotage");
     }
 
     public boolean isInvisible() {
