@@ -175,20 +175,20 @@ public class UnitManager {
         if (canAttack(attacker, defender)) {
             if (attacker.data.ability.equals("sabotage")) {
                 if (defender.data.capturable) {
-                    defender.owner = attacker.owner;
                     defender.data.movesLeft = 0;
                     defender.data.attacksLeft = 0;
+                    applyDamage(defender, defender.data.curHP + defender.data.armor);
                 } else {
                     if (defender.data.protoId.equals("castle-base"))
                         return false; // saboteur can't attack castle
-                    if (defender.data.ability.equals("mind-control")) {
-                        // saboteur instagibs dreamwalker
+                    if (defender.data.subtype.equals("light")) {
+                        // saboteur 'assassinates' light units
                         applyDamage(defender, defender.data.curHP + defender.data.armor);
                     } else {
-                        applyDamage(defender, defender.data.curHP + defender.data.armor - 1);
+                        applyDamage(defender, (int)Math.floor(defender.data.curHP * 0.5f) + defender.data.armor);
                     }
                 }
-                applyDamage(attacker, attacker.data.curHP + attacker.data.armor);
+                attacker.data.attacksLeft--;
             } else if (attacker.data.ability.equals("mind-control")) {
                 if (!defender.data.type.equals("building") && !defender.data.ability.equals("sabotage")
                         && !attacker.data.mindControlUsed && attacker.data.mindControlUnit == null) {
