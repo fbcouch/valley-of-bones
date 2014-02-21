@@ -5,735 +5,770 @@ filter: Nearest,Nearest
 repeat: none
 ability-bg
   rotate: false
-  xy: 1189, 317
+  xy: 1189, 304
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 archery-target
   rotate: false
-  xy: 1143, 104
+  xy: 1455, 228
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 archery-target-small
   rotate: false
-  xy: 1271, 357
+  xy: 1271, 344
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 armored
   rotate: false
-  xy: 1143, 38
+  xy: 1455, 162
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 armored-small
   rotate: false
-  xy: 1271, 315
+  xy: 1669, 87
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 artillery
   rotate: false
-  xy: 1456, 697
+  xy: 1456, 684
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 artillery-overlay
   rotate: false
-  xy: 1324, 565
+  xy: 1324, 552
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 bazooka
   rotate: false
-  xy: 1730, 779
+  xy: 1730, 766
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 bazooka-overlay
   rotate: false
-  xy: 1600, 779
+  xy: 1600, 766
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 build-hud-bg
   rotate: false
-  xy: 623, 437
+  xy: 623, 424
   size: 265, 411
   orig: 265, 411
   offset: 0, 0
   index: -1
 build-infantry-tab
   rotate: false
-  xy: 623, 186
+  xy: 623, 173
   size: 154, 78
   orig: 154, 78
   offset: 0, 0
   index: -1
 build-mech-tab
   rotate: false
-  xy: 779, 186
+  xy: 779, 173
   size: 154, 78
   orig: 154, 78
   offset: 0, 0
   index: -1
 building
   rotate: false
-  xy: 1195, 251
+  xy: 1273, 96
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 building-small
   rotate: false
-  xy: 1311, 11
+  xy: 1720, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 castle
   rotate: false
-  xy: 1586, 649
+  xy: 1586, 636
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 castle-overlay
   rotate: false
-  xy: 1860, 779
+  xy: 1860, 766
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 check-bg
   rotate: false
-  xy: 84, 23
+  xy: 84, 10
   size: 80, 32
   orig: 80, 32
   offset: 0, 0
   index: -1
 check-off
   rotate: false
-  xy: 166, 23
+  xy: 166, 10
   size: 80, 32
   orig: 80, 32
   offset: 0, 0
   index: -1
 check-on
   rotate: false
-  xy: 2, 22
+  xy: 2, 9
   size: 80, 33
   orig: 80, 33
   offset: 0, 0
   index: -1
 checked-shield
   rotate: false
-  xy: 1195, 185
+  xy: 1273, 30
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 checked-shield-small
   rotate: false
-  xy: 1353, 11
+  xy: 1762, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 crossed-swords
   rotate: false
-  xy: 1209, 119
+  xy: 1339, 96
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 crossed-swords-small
   rotate: false
-  xy: 1407, 143
+  xy: 1804, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 dark-metal-hex
   rotate: false
-  xy: 1204, 827
+  xy: 1204, 814
   size: 130, 130
   orig: 130, 130
   offset: 0, 0
   index: -1
 dark-metal-hex-depth
   rotate: false
-  xy: 925, 300
+  xy: 925, 287
   size: 130, 76
   orig: 130, 76
   offset: 0, 0
   index: -1
 detect
   rotate: false
-  xy: 1209, 53
+  xy: 1339, 30
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 detect-small
   rotate: false
-  xy: 1407, 101
+  xy: 1846, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 dirt-hex
   rotate: false
-  xy: 1336, 827
+  xy: 1336, 814
   size: 130, 130
   orig: 130, 130
   offset: 0, 0
   index: -1
 dirt-hex-depth
   rotate: false
-  xy: 1057, 300
+  xy: 1057, 287
   size: 130, 76
   orig: 130, 76
   offset: 0, 0
   index: -1
 dirt-hex2
   rotate: false
-  xy: 1192, 695
+  xy: 1192, 682
   size: 130, 130
   orig: 130, 130
   offset: 0, 0
   index: -1
 dirt-hex2-depth
   rotate: false
-  xy: 1468, 827
+  xy: 1468, 814
   size: 130, 80
   orig: 130, 80
   offset: 0, 0
   index: -1
 game-menu-bg
   rotate: false
-  xy: 2, 375
+  xy: 2, 362
   size: 619, 647
   orig: 619, 647
   offset: 0, 0
   index: -1
 hazard-sign
   rotate: false
-  xy: 1976, 713
+  xy: 1405, 96
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 hazard-sign-small
   rotate: false
-  xy: 1407, 59
+  xy: 1888, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 hospital-cross
   rotate: false
-  xy: 1976, 647
+  xy: 1405, 30
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 hospital-cross-small
   rotate: false
-  xy: 248, 15
+  xy: 1930, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 hud-bar
   rotate: false
-  xy: 1933, 912
+  xy: 1933, 899
   size: 64, 8
   orig: 64, 8
   offset: 0, 0
   index: -1
 increasing-returns
   rotate: false
-  xy: 1976, 581
+  xy: 1471, 96
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 increasing-returns-small
   rotate: false
-  xy: 290, 15
+  xy: 1271, 302
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 king
   rotate: false
-  xy: 1976, 515
+  xy: 1471, 30
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 king-small
   rotate: false
-  xy: 332, 15
+  xy: 1669, 45
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 light
   rotate: false
-  xy: 1974, 449
+  xy: 1521, 177
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 light-mech
   rotate: false
-  xy: 1846, 649
+  xy: 1846, 636
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 light-mech-overlay
   rotate: false
-  xy: 1716, 649
+  xy: 1716, 636
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 light-small
   rotate: false
-  xy: 374, 15
+  xy: 248, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 marine
   rotate: false
-  xy: 1055, 378
+  xy: 1055, 365
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 marine-overlay
   rotate: false
-  xy: 925, 378
+  xy: 925, 365
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 med-btn-dn
   rotate: false
-  xy: 623, 850
+  xy: 623, 837
   size: 579, 107
   orig: 579, 107
   offset: 0, 0
   index: -1
 med-btn-up
   rotate: false
-  xy: 2, 57
+  xy: 2, 44
   size: 579, 107
   orig: 579, 107
   offset: 0, 0
   index: -1
 metal-hex
   rotate: false
-  xy: 1192, 563
+  xy: 1192, 550
   size: 130, 130
   orig: 130, 130
   offset: 0, 0
   index: -1
 metal-hex-depth
   rotate: false
-  xy: 1192, 485
+  xy: 1192, 472
   size: 130, 76
   orig: 130, 76
   offset: 0, 0
   index: -1
 mind-control
   rotate: false
-  xy: 1974, 383
+  xy: 1587, 180
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 mind-control-small
   rotate: false
-  xy: 416, 15
+  xy: 290, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 mindwalker
   rotate: false
-  xy: 1065, 170
+  xy: 1065, 157
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 mindwalker-overlay
   rotate: false
-  xy: 935, 170
+  xy: 935, 157
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 money
   rotate: false
-  xy: 1974, 317
+  xy: 1653, 180
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 money-small
   rotate: false
-  xy: 458, 15
+  xy: 332, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 monk
   rotate: false
-  xy: 1456, 567
+  xy: 1456, 554
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 monk-overlay
   rotate: false
-  xy: 1324, 435
+  xy: 1324, 422
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 path-edge
   rotate: false
-  xy: 1185, 399
+  xy: 1185, 386
   size: 128, 6
   orig: 128, 6
   offset: 0, 0
   index: -1
 path-node
   rotate: false
-  xy: 1261, 251
+  xy: 890, 473
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
+psion-builder
+  rotate: false
+  xy: 1586, 506
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+psion-builder
+  rotate: false
+  xy: 1716, 506
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+psion-builder-overlay
+  rotate: false
+  xy: 1454, 424
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+psion-builder-overlay
+  rotate: false
+  xy: 1454, 424
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
 radial
   rotate: false
-  xy: 890, 679
+  xy: 890, 666
   size: 300, 169
   orig: 300, 169
   offset: 0, 0
   index: -1
 radial-balance
   rotate: false
-  xy: 1974, 251
+  xy: 1719, 180
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 radial-balance-small
   rotate: false
-  xy: 500, 15
+  xy: 374, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 reticule
   rotate: false
-  xy: 1261, 185
+  xy: 1785, 180
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 reticule-small
   rotate: false
-  xy: 542, 15
+  xy: 416, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 rune-sword
   rotate: false
-  xy: 1275, 119
+  xy: 1851, 180
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 rune-sword-small
   rotate: false
-  xy: 1261, 273
+  xy: 458, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 sabotage
   rotate: false
-  xy: 1275, 53
+  xy: 1917, 180
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sabotage-small
   rotate: false
-  xy: 1303, 263
+  xy: 500, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 saboteur
   rotate: false
-  xy: 1586, 519
+  xy: 1584, 376
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 saboteur-overlay
   rotate: false
-  xy: 1454, 437
+  xy: 1846, 506
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 selection-hud-bg
   rotate: false
-  xy: 2, 166
+  xy: 2, 153
   size: 619, 207
   orig: 619, 207
   offset: 0, 0
   index: -1
 skull-crossed-bones
   rotate: false
-  xy: 1327, 185
+  xy: 1537, 111
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 skull-crossed-bones-small
   rotate: false
-  xy: 1345, 263
+  xy: 542, 2
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 small-btn-up
   rotate: false
-  xy: 1489, 909
+  xy: 1489, 896
   size: 442, 55
   orig: 442, 55
   offset: 0, 0
   index: -1
 sniper
   rotate: false
-  xy: 1846, 519
+  xy: 1844, 376
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 sniper-overlay
   rotate: false
-  xy: 1716, 519
+  xy: 1714, 376
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 snow-hex
   rotate: false
-  xy: 1324, 695
+  xy: 1324, 682
   size: 130, 130
   orig: 130, 130
   offset: 0, 0
   index: -1
 snow-hex-depth
   rotate: false
-  xy: 1185, 407
+  xy: 1185, 394
   size: 130, 76
   orig: 130, 76
   offset: 0, 0
   index: -1
 spectre
   rotate: false
-  xy: 1714, 389
+  xy: 1584, 246
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 spectre-overlay
   rotate: false
-  xy: 1584, 389
+  xy: 1454, 294
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 starship
   rotate: false
-  xy: 890, 508
+  xy: 890, 495
   size: 300, 169
   orig: 300, 169
   offset: 0, 0
   index: -1
 stealth
   rotate: false
-  xy: 1341, 119
+  xy: 1537, 45
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stealth-small
   rotate: false
-  xy: 1387, 263
+  xy: 1537, 3
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 supply
   rotate: false
-  xy: 1341, 53
+  xy: 1603, 114
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 supply-small
   rotate: false
-  xy: 1429, 263
+  xy: 1579, 3
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 tank
   rotate: false
-  xy: 1454, 307
+  xy: 1844, 246
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 tank-overlay
   rotate: false
-  xy: 1844, 389
+  xy: 1714, 246
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-tower
+terran-builder
   rotate: false
-  xy: 1714, 259
+  xy: 623, 43
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-tower-overlay
+terran-builder-overlay
   rotate: false
-  xy: 1584, 259
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-turn-hud-bg
-  rotate: false
-  xy: 623, 959
-  size: 864, 63
-  orig: 864, 63
-  offset: 0, 0
-  index: -1
-turn-hud-bg-small
-  rotate: false
-  xy: 1489, 966
-  size: 442, 56
-  orig: 442, 56
-  offset: 0, 0
-  index: -1
-turn-indicator-base
-  rotate: false
-  xy: 1209, 2
-  size: 49, 49
-  orig: 49, 49
-  offset: 0, 0
-  index: -1
-turn-indicator-overlay
-  rotate: false
-  xy: 1260, 2
-  size: 49, 49
-  orig: 49, 49
-  offset: 0, 0
-  index: -1
-unit-builder
-  rotate: false
-  xy: 1317, 305
+  xy: 1317, 292
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 unit-builder-overlay
   rotate: false
-  xy: 1844, 259
+  xy: 1317, 292
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+tower
+  rotate: false
+  xy: 883, 27
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+tower-overlay
+  rotate: false
+  xy: 753, 43
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+turn-hud-bg
+  rotate: false
+  xy: 623, 946
+  size: 864, 63
+  orig: 864, 63
+  offset: 0, 0
+  index: -1
+turn-hud-bg-small
+  rotate: false
+  xy: 1489, 953
+  size: 442, 56
+  orig: 442, 56
+  offset: 0, 0
+  index: -1
+turn-indicator-base
+  rotate: false
+  xy: 1521, 243
+  size: 49, 49
+  orig: 49, 49
+  offset: 0, 0
+  index: -1
+turn-indicator-overlay
+  rotate: false
+  xy: 1669, 129
+  size: 49, 49
+  orig: 49, 49
+  offset: 0, 0
+  index: -1
 unit-highlight
   rotate: false
-  xy: 1933, 922
+  xy: 1933, 909
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 valley
   rotate: false
-  xy: 623, 266
+  xy: 623, 253
   size: 300, 169
   orig: 300, 169
   offset: 0, 0
   index: -1
 walking-boot
   rotate: false
-  xy: 1393, 185
+  xy: 1603, 48
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 walking-boot-small
   rotate: false
-  xy: 1471, 265
+  xy: 1621, 6
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 warrior
   rotate: false
-  xy: 753, 56
+  xy: 1143, 27
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 warrior-overlay
   rotate: false
-  xy: 623, 56
+  xy: 1013, 27
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 wraith
   rotate: false
-  xy: 1013, 40
+  xy: 1325, 162
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 wraith-overlay
   rotate: false
-  xy: 883, 40
+  xy: 1195, 162
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

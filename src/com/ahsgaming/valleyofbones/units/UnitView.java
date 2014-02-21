@@ -20,8 +20,11 @@ public class UnitView {
     ProgressBar healthBar;
     Sprite image;
     Sprite overlay;
-    Sprite buildImage;
-    Sprite buildImageOverlay;
+    Array<Sprite> buildImages;
+    int buildImage;
+    Array<Sprite> buildOverlayImages;
+    int buildOverlayImage;
+    float buildAnimTimer = 0.3f;
     Vector2 boardPosition = new Vector2();
     Vector2 lastBoardPosition;
     Array<Vector2> path = new Array<Vector2>();
@@ -38,8 +41,11 @@ public class UnitView {
         view.image = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", unit.data.image);
         view.overlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", unit.data.image + "-overlay");
 
-        view.buildImage = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-builder");
-        view.buildImageOverlay = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-builder-overlay");
+        view.buildImages = VOBGame.instance.getTextureManager().getSpritesFromAtlas("assets", (unit.getOwner() != null ? unit.getOwner().getRace() : "terran") + "-builder");
+        view.buildOverlayImages = VOBGame.instance.getTextureManager().getSpritesFromAtlas("assets", (unit.getOwner() != null ? unit.getOwner().getRace() : "terran") + "-builder-overlay");
+
+        view.buildImage = 0;
+        view.buildOverlayImage = 0;
 
         view.setSize(view.image.getRegionWidth(), view.image.getRegionHeight());
 
@@ -177,13 +183,20 @@ public class UnitView {
             if (actions.first().isDone())
                 actions.removeIndex(0);
         }
+
+        buildAnimTimer -= delta;
+        if (buildAnimTimer <= 0) {
+            buildAnimTimer += 0.3f;
+            buildImage = (buildImage + 1) % buildImages.size;
+            buildOverlayImage = (buildOverlayImage + 1) % buildOverlayImages.size;
+        }
     }
 
     public void draw(SpriteBatch batch, float offsetX, float offsetY, float parentAlpha, boolean isTurn) {
 
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * (unit.getData().isInvisible() ? 0.5f : 1));
 
-        batch.draw(unit.data.building ? buildImage : image, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
+        batch.draw(unit.data.building ? buildImages.get(buildImage) : image, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
 
         if (overlay != null) {
 
@@ -192,7 +205,7 @@ public class UnitView {
             else
                 batch.setColor(color);
 
-            batch.draw(unit.data.building? buildImageOverlay : overlay, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
+            batch.draw(unit.data.building? buildOverlayImages.get(buildOverlayImage) : overlay, offsetX + getX(), offsetY + getY(), getWidth() * 0.5f, getHeight() * 0.5f, getWidth(), getHeight(), 1, 1, 0);
 
         }
 

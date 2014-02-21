@@ -443,10 +443,14 @@ public class GameController {
 		// TODO place builder
 		// for now, just add the unit
         Unit unit = Unit.createUnit(getNextObjectId(), cmd.building, this.getPlayerById(cmd.owner));
-		unit.getView().setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
-		unit.getView().setBoardPosition((int) cmd.location.x, (int) cmd.location.y);
-        unit.getView().addAction(UnitView.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
-		
+        if (owner.getRace().equals("terran")) {
+            unit.getView().setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
+            unit.getView().addAction(UnitView.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
+        } else {
+            unit.getView().setPosition(levelPos.x, levelPos.y);
+        }
+        unit.getView().setBoardPosition((int) cmd.location.x, (int) cmd.location.y);
+
 		unitManager.addUnit(unit);
 		owner.setBankMoney(owner.getBankMoney() - unit.getData().getCost());
 		owner.updateFood(this);
