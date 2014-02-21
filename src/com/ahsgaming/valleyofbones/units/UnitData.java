@@ -388,6 +388,14 @@ public class UnitData {
         modified = TimeUtils.millis();
     }
 
+    public int getMovesThisTurn() {
+        return movesThisTurn;
+    }
+
+    public void setMovesThisTurn(int movesThisTurn) {
+        this.movesThisTurn = movesThisTurn;
+    }
+
     public float getAttacksLeft() {
         return attacksLeft;
     }

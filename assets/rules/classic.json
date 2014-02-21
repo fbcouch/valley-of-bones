@@ -322,13 +322,17 @@
                 "armor": 0,
                 "food": 2,
                 "requires": [ "castle-base" ],
-                "attackdamage": 20,
+                "attackdamage": 10,
                 "attackspeed": 1,
                 "attackrange": 4,
                 "sightrange": 5,
                 "movespeed": 2,
                 "cost": 120,
                 "subtype": "light",
+                "bonus": {
+                    "armored": 2.0,
+                    "building": 2.0
+                },
                 "ability": "detect",
                 "buildtime": 1
             }
@@ -353,8 +357,11 @@
                 "movespeed": 2,
                 "cost": 100,
                 "subtype": "light",
-                "splashdistance":1,
-                "splashdamage":1,
+                "bonus": {
+                    "light": 2.0
+                },
+                "splashdistance": 1,
+                "splashdamage": 0.5,
                 "buildtime": 1
             }
         },
@@ -392,9 +399,9 @@
             "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
             "attacksound": "laser_shot",
             "properties": {
-                "curhp": 8,
-                "maxhp": 8,
-                "armor": 1,
+                "curhp": 10,
+                "maxhp": 10,
+                "armor": 0,
                 "food": 1,
                 "requires": [ "castle-base" ],
                 "attackdamage": 0,
@@ -403,8 +410,37 @@
                 "sightrange": 4,
                 "movespeed": 4,
                 "cost": 25,
-                "subtype": "armored",
+                "subtype": "light",
                 "ability": "stealth",
+                "buildtime": 1
+            }
+        },
+
+        {
+            "id": "wraith",
+            "type": "unit",
+            "image": "wraith",
+            "title": "Wraith",
+            "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
+            "attacksound": "laser_shot",
+            "properties": {
+                "curhp": 30,
+                "maxhp": 30,
+                "armor": 2,
+                "food": 3,
+                "requires": [ "castle-base" ],
+                "attackdamage": 10,
+                "attackspeed": 2,
+                "attackrange": 3,
+                "sightrange": 3,
+                "movespeed": 0,
+                "cost": 125,
+                "bonus": {
+                    "armored": 1.5,
+                    "building": 1.5
+                },
+                "subtype": "armored",
+                "ability": "shift",
                 "buildtime": 1
             }
         }

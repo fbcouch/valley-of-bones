@@ -479,6 +479,10 @@ public class GameController {
             return false;
         }
 
+        if (u.getData().getAbility().equals("shift")) {
+            return u.getData().getMovesThisTurn() == 0 && isBoardPosEmpty(m.toLocation) && map.isBoardPositionVisible(u.getOwner(), m.toLocation);
+        }
+
         boolean[] notavailable = new boolean[map.getWidth() * map.getHeight()];
         for (Unit unit: getUnits()) {
             if (unit.getId() != u.getId())

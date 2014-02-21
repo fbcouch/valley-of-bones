@@ -220,6 +220,22 @@ public class UnitManager {
     }
 
     public void moveUnit(Unit unit, Vector2 boardPosition) {
+        if (unit.data.ability.equals("shift")) {
+            if (unit.data.movesThisTurn > 0) return;
+
+            unit.view.lastBoardPosition = unit.view.boardPosition;
+            unit.view.boardPosition = boardPosition;
+            unit.data.movesThisTurn++;
+
+            Vector2 pos = gameController.getMap().boardToMapCoords(boardPosition.x, boardPosition.y);
+            unit.view.addAction(UnitView.Actions.sequence(
+                    UnitView.Actions.colorTo(new Color(1, 1, 1, 0), 0.4f),
+                    UnitView.Actions.moveTo(pos.x, pos.y, 0.2f),
+                    UnitView.Actions.colorTo(new Color(1, 1, 1, 1), 0.4f)
+            ));
+            return;
+        }
+
         AStar.AStarNode path = findPath(unit, boardPosition);
         if (path != null && path.gx <= unit.data.movesLeft) {
 

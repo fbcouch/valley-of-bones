@@ -19,7 +19,7 @@ archery-target
   index: -1
 archery-target-small
   rotate: false
-  xy: 1904, 135
+  xy: 1930, 161
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -33,7 +33,7 @@ armored
   index: -1
 armored-small
   rotate: false
-  xy: 1930, 161
+  xy: 1956, 187
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -96,7 +96,7 @@ building
   index: -1
 building-small
   rotate: false
-  xy: 1956, 187
+  xy: 1878, 83
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -145,7 +145,7 @@ checked-shield
   index: -1
 checked-shield-small
   rotate: false
-  xy: 1878, 83
+  xy: 1904, 109
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -159,7 +159,7 @@ crossed-swords
   index: -1
 crossed-swords-small
   rotate: false
-  xy: 1904, 118
+  xy: 1930, 144
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -187,7 +187,7 @@ detect
   index: -1
 detect-small
   rotate: false
-  xy: 1904, 101
+  xy: 1930, 127
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -542,16 +542,30 @@ selection-hud-bg
   orig: 232, 78
   offset: 0, 0
   index: -1
-skull-crossed-bones
+shift
   rotate: false
   xy: 1904, 152
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
-skull-crossed-bones-small
+shift-small
   rotate: false
   xy: 1446, 60
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+skull-crossed-bones
+  rotate: false
+  xy: 1930, 178
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+skull-crossed-bones-small
+  rotate: false
+  xy: 1463, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -614,28 +628,28 @@ starship
   index: -1
 stealth
   rotate: false
-  xy: 1930, 178
+  xy: 1956, 204
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 stealth-small
   rotate: false
-  xy: 1463, 60
+  xy: 1480, 63
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 supply
   rotate: false
-  xy: 1956, 204
+  xy: 1878, 100
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 supply-small
   rotate: false
-  xy: 1480, 63
+  xy: 1497, 63
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -733,14 +747,14 @@ valley
   index: -1
 walking-boot
   rotate: false
-  xy: 1878, 100
+  xy: 1904, 126
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 walking-boot-small
   rotate: false
-  xy: 1497, 63
+  xy: 1947, 161
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
