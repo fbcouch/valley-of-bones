@@ -394,7 +394,7 @@
         {
             "id": "scout",
             "type": "unit",
-            "image": "wraith",
+            "image": "scout",
             "title": "Scout",
             "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
             "attacksound": "laser_shot",
@@ -434,7 +434,7 @@
                 "attackrange": 3,
                 "sightrange": 3,
                 "movespeed": 0,
-                "cost": 125,
+                "cost": 175,
                 "bonus": {
                     "armored": 1.5,
                     "building": 1.5
