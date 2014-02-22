@@ -322,17 +322,13 @@
                 "armor": 0,
                 "food": 2,
                 "requires": [ "castle-base" ],
-                "attackdamage": 10,
+                "attackdamage": 15,
                 "attackspeed": 1,
                 "attackrange": 4,
                 "sightrange": 5,
                 "movespeed": 2,
                 "cost": 120,
                 "subtype": "light",
-                "bonus": {
-                    "armored": 2.0,
-                    "building": 2.0
-                },
                 "ability": "detect",
                 "buildtime": 1
             }
@@ -358,7 +354,7 @@
                 "cost": 100,
                 "subtype": "light",
                 "bonus": {
-                    "light": 2.0
+                    "light": 1.5
                 },
                 "splashdistance": 1,
                 "splashdamage": 0.5,
@@ -409,9 +405,9 @@
                 "attackrange": 0,
                 "sightrange": 4,
                 "movespeed": 4,
-                "cost": 25,
+                "cost": 35,
                 "subtype": "light",
-                "ability": "stealth",
+                "ability": "detect",
                 "buildtime": 1
             }
         },
@@ -424,8 +420,8 @@
             "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
             "attacksound": "laser_shot",
             "properties": {
-                "curhp": 30,
-                "maxhp": 30,
+                "curhp": 45,
+                "maxhp": 45,
                 "armor": 2,
                 "food": 3,
                 "requires": [ "castle-base" ],
@@ -434,7 +430,7 @@
                 "attackrange": 3,
                 "sightrange": 3,
                 "movespeed": 0,
-                "cost": 175,
+                "cost": 150,
                 "bonus": {
                     "armored": 1.5,
                     "building": 1.5

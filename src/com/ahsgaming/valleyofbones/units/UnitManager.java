@@ -146,6 +146,7 @@ public class UnitManager {
 
             unit.data.stealthEntered = false;
             unit.data.mindControlUsed = false;
+            unit.data.virginUnit = false;
 
             if (unit.data.mindControlUnit != null) {
                 if (unit.data.mindControlUnit.data.curHP <= 0)
@@ -328,6 +329,17 @@ public class UnitManager {
 
         for (Unit u: units.values()) {
             if (u.owner == player && canUnitSee(u, unit)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canPlayerDetect(Player player, Unit unit) {
+        if (unit.owner == player || player == null) return true;
+
+        for (Unit u: units.values()) {
+            if (u.owner == player && unit.data.isDetector() && canUnitSee(u, unit)) {
                 return true;
             }
         }

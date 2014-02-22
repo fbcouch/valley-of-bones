@@ -48,6 +48,8 @@ public class UnitData {
     boolean stealthEntered = false;
     boolean stealthActive = false;
 
+    boolean virginUnit = true;
+
     boolean mindControlUsed = false;
     Unit mindControlUnit;
 
@@ -131,7 +133,7 @@ public class UnitData {
     }
 
     public boolean isInvisible() {
-        return stealthActive || ability.equals("sabotage") || ability.equals("mind-control");
+        return stealthActive || (ability.equals("sabotage") && (attacksLeft > 0 || virginUnit)) || ability.equals("mind-control");
     }
 
     public boolean isAbilityActive() {
