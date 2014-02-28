@@ -339,7 +339,7 @@ public class UnitManager {
         if (unit.owner == player || player == null) return true;
 
         for (Unit u: units.values()) {
-            if (u.owner == player && unit.data.isDetector() && canUnitSee(u, unit)) {
+            if (u.owner == player && u.data.isDetector() && canUnitSee(u, unit)) {
                 return true;
             }
         }
