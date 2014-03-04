@@ -80,7 +80,7 @@ public class LevelScreenInputListener extends ActorGestureListener {
             Unit target = levelScreen.gController.getUnitAtBoardPos(boardPos);
             Unit unit = levelScreen.selected;
 
-            if (target != null && (!target.getData().isInvisible() || unit.getData().isDetector())) {
+            if (target != null && (!target.getData().isInvisible() || levelScreen.gController.playerCanDetect(levelScreen.game.getPlayer(), unit))) {
                 if (target.getOwner() == null || target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
                     levelScreen.attack(unit.getId(), target.getId());
                 }

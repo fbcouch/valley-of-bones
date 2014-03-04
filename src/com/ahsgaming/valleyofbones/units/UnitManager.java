@@ -320,7 +320,7 @@ public class UnitManager {
         return (
                 attacker.data.attacksLeft > 0
                 && HexMap.getMapDist(attacker.view.boardPosition, defender.view.boardPosition) <= attacker.data.attackRange
-                && canPlayerSee(attacker.owner, defender)
+                && (!defender.getData().isInvisible() && canPlayerSee(attacker.owner, defender)) || canPlayerDetect(attacker.owner, defender)
         );
     }
 
@@ -339,7 +339,7 @@ public class UnitManager {
         if (unit.owner == player || player == null) return true;
 
         for (Unit u: units.values()) {
-            if (u.owner == player && u.data.isDetector() && canUnitSee(u, unit)) {
+            if (u.owner == player && u.data.isDetector() && !u.data.building && canUnitSee(u, unit)) {
                 return true;
             }
         }

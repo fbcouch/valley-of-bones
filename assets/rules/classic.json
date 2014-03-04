@@ -405,7 +405,7 @@
                 "attackrange": 0,
                 "sightrange": 4,
                 "movespeed": 4,
-                "cost": 35,
+                "cost": 25,
                 "subtype": "light",
                 "ability": "detect",
                 "buildtime": 1

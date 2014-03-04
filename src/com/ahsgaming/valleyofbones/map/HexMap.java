@@ -234,7 +234,7 @@ public class HexMap {
     public boolean detectorCanSee(Player player, Array<Unit> units, Vector2 boardPosition) {
         for (int u = 0; u < units.size; u++) {
             Unit unit = units.get(u);
-            if (unit.getOwner() == player && unit.getData().isDetector() && getMapDist(unit.getView().getBoardPosition(), boardPosition) <= unit.getData().getSightRange()) return true;
+            if (unit.getOwner() == player && unit.getData().isDetector() && !unit.getData().isBuilding() && getMapDist(unit.getView().getBoardPosition(), boardPosition) <= unit.getData().getSightRange()) return true;
         }
         return false;
     }
