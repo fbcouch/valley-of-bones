@@ -19,7 +19,7 @@ archery-target
   index: -1
 archery-target-small
   rotate: false
-  xy: 1283, 67
+  xy: 1309, 67
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -33,7 +33,7 @@ armored
   index: -1
 armored-small
   rotate: false
-  xy: 1300, 67
+  xy: 1326, 67
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -96,7 +96,7 @@ building
   index: -1
 building-small
   rotate: false
-  xy: 1317, 67
+  xy: 1309, 50
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -145,7 +145,7 @@ checked-shield
   index: -1
 checked-shield-small
   rotate: false
-  xy: 1283, 50
+  xy: 1326, 50
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -159,7 +159,7 @@ crossed-swords
   index: -1
 crossed-swords-small
   rotate: false
-  xy: 1300, 50
+  xy: 1343, 57
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -187,7 +187,7 @@ detect
   index: -1
 detect-small
   rotate: false
-  xy: 1317, 50
+  xy: 1360, 57
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -236,7 +236,7 @@ hazard-sign
   index: -1
 hazard-sign-small
   rotate: false
-  xy: 555, 42
+  xy: 1377, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -250,7 +250,7 @@ hospital-cross
   index: -1
 hospital-cross-small
   rotate: false
-  xy: 555, 25
+  xy: 1394, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -271,7 +271,7 @@ increasing-returns
   index: -1
 increasing-returns-small
   rotate: false
-  xy: 555, 8
+  xy: 1411, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -285,7 +285,7 @@ king
   index: -1
 king-small
   rotate: false
-  xy: 572, 45
+  xy: 1428, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -313,7 +313,7 @@ light-mech-overlay
   index: -1
 light-small
   rotate: false
-  xy: 589, 45
+  xy: 1445, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -369,7 +369,7 @@ mind-control
   index: -1
 mind-control-small
   rotate: false
-  xy: 572, 28
+  xy: 1462, 60
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -397,7 +397,7 @@ money
   index: -1
 money-small
   rotate: false
-  xy: 606, 45
+  xy: 1479, 63
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -474,7 +474,7 @@ radial-balance
   index: -1
 radial-balance-small
   rotate: false
-  xy: 572, 11
+  xy: 1496, 63
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -488,7 +488,7 @@ reticule
   index: -1
 reticule-small
   rotate: false
-  xy: 589, 28
+  xy: 555, 42
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -502,7 +502,7 @@ rune-sword
   index: -1
 rune-sword-small
   rotate: false
-  xy: 623, 45
+  xy: 555, 25
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -516,7 +516,7 @@ sabotage
   index: -1
 sabotage-small
   rotate: false
-  xy: 589, 11
+  xy: 555, 8
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -565,7 +565,7 @@ shift
   index: -1
 shift-small
   rotate: false
-  xy: 606, 28
+  xy: 572, 45
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -579,7 +579,7 @@ skull-crossed-bones
   index: -1
 skull-crossed-bones-small
   rotate: false
-  xy: 640, 45
+  xy: 589, 45
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -633,6 +633,20 @@ spectre-overlay
   orig: 48, 48
   offset: 0, 0
   index: -1
+splash
+  rotate: false
+  xy: 2021, 178
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+splash-small
+  rotate: false
+  xy: 572, 28
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
 starship
   rotate: false
   xy: 538, 85
@@ -642,28 +656,28 @@ starship
   index: -1
 stealth
   rotate: false
-  xy: 2021, 178
+  xy: 1231, 57
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 stealth-small
   rotate: false
-  xy: 606, 11
+  xy: 606, 45
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 supply
   rotate: false
-  xy: 1231, 57
+  xy: 1257, 58
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 supply-small
   rotate: false
-  xy: 623, 28
+  xy: 572, 11
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -761,14 +775,14 @@ valley
   index: -1
 walking-boot
   rotate: false
-  xy: 1257, 58
+  xy: 1283, 58
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 walking-boot-small
   rotate: false
-  xy: 657, 45
+  xy: 589, 28
   size: 15, 15
   orig: 15, 15
   offset: 0, 0

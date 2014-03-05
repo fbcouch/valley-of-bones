@@ -286,7 +286,7 @@ public class GameServer implements NetController {
 
                 if (obj instanceof KryoCommon.UpdatePlayer) {
                     KryoCommon.UpdatePlayer update = (KryoCommon.UpdatePlayer)obj;
-                    if (connMap.get(c) != update.id && !(connMap.get(c) == hostId && !connMap.containsValue(update.id, true))) return;
+                    if (connMap.get(c) != update.id && connMap.get(c) != hostId) return;
 
                     RegisteredPlayer player = null;
                     for (RegisteredPlayer rp: registeredPlayers) {
@@ -295,7 +295,7 @@ public class GameServer implements NetController {
                         }
                     }
 
-                    if (player != null) {
+                    if (player != null && (connMap.get(c) == update.id || player.isAI)) {
                         player.color = update.color;
                         player.race = update.race;
                         player.ready = update.ready;
@@ -480,6 +480,7 @@ public class GameServer implements NetController {
         for (RegisteredPlayer rp: registeredPlayers) {
             if (rp.isAI) {
                 players.add(new FSMAIPlayer(this, rp.id, rp.name, Player.AUTOCOLORS[rp.color]));
+                players.get(players.size - 1).setRace(rp.race);
             } else {
                 if (playerIdKeyMap.containsKey(rp.id)) {
                     players.add(new Player(rp.id, rp.name, Player.AUTOCOLORS[rp.color], rp.race, playerIdKeyMap.get(rp.id)));

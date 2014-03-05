@@ -228,10 +228,11 @@ public class UnitView {
                 }
 
                 if (unit.data.getAttacksLeft() > 0) {
-                    TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "rune-sword");
-
-                    batch.draw(tex, offsetX + getX() + getWidth() - tex.getRegionWidth() * 0.5f, offsetY + getY() + healthBar.getHeight() + 12 * VOBGame.SCALE, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, 0);
-                    x += tex.getRegionWidth() * 0.5f;
+                    TextureRegion tex = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", (unit.data.ability.equals("mind-control") ? "mind-control" : "rune-sword"));
+                    if (!unit.data.ability.equals("mind-control") || unit.data.mindControlUnit == null) {
+                        batch.draw(tex, offsetX + getX() + getWidth() - tex.getRegionWidth() * 0.5f, offsetY + getY() + healthBar.getHeight() + 12 * VOBGame.SCALE, 0, 0,  tex.getRegionWidth(), tex.getRegionHeight(), 0.5f, 0.5f, 0);
+                        x += tex.getRegionWidth() * 0.5f;
+                    }
                 }
             }
         }
