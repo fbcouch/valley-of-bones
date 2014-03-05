@@ -53,8 +53,9 @@ public class FSMAIPlayer extends AIPlayer {
                 visibilityMatrix = createVisibilityMatrix(controller.getMap(), myUnits);
             }
 
+            Gdx.app.log(LOG, "1");
             if (sendCommand(updateUnitFSMs(myUnits, controller), controller)) return;
-
+            Gdx.app.log(LOG, "2");
             // TODO this will need a lot of cleanup, right now I just want a prototype that builds marines as close as possible to goals
             // TODO for the moment, the enemy's gate is down - build marines at the first tower and let them wander
 
@@ -188,7 +189,8 @@ public class FSMAIPlayer extends AIPlayer {
     }
 
     Command buildUnits(GameController controller) {
-        if (currentGoals.size > 0 && getBankMoney() > 45 && getCurFood() < getMaxFood()) {
+        int cost = getProtoCost(Prototypes.getProto(getRace(), (getRace().equals("terran") ? "marine-base" : "warrior")), controller);
+        if (currentGoals.size > 0 && getBankMoney() >= cost && getCurFood() < getMaxFood()) {
             Vector2 targetPos = getBaseUnit().getView().getBoardPosition(); //currentGoals.get(0).target.getBoardPosition();
             Vector2 minDistLoc = null;
             int minDist = 0;

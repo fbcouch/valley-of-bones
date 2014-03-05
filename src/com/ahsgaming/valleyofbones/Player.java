@@ -158,8 +158,18 @@ public class Player {
 
         // TODO took out checkFoodAndCost for now because it is very expensive
 
-		return (proto.cost > 0 && proto.cost <= bankMoney && curFood + proto.food <= maxFood);
+		return (proto.cost > 0 && getProtoCost(proto, controller) <= bankMoney && curFood + proto.food <= maxFood);
 	}
+
+    public int getProtoCost(JsonProto proto, GameController controller) {
+        int cost = proto.cost;
+        for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
+            if (unit.getProto().id.equals(proto.id)) {
+                cost += 3; // TODO: magic number
+            }
+        }
+        return cost;
+    }
 	
 	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
 		JsonProto proto = Prototypes.getProto(race, protoId);

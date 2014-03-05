@@ -320,7 +320,7 @@ public class UnitManager {
         return (
                 attacker.data.attacksLeft > 0
                 && HexMap.getMapDist(attacker.view.boardPosition, defender.view.boardPosition) <= attacker.data.attackRange
-                && (!defender.getData().isInvisible() && canPlayerSee(attacker.owner, defender)) || canPlayerDetect(attacker.owner, defender)
+                && ((!defender.getData().isInvisible() && canPlayerSee(attacker.owner, defender)) || canPlayerDetect(attacker.owner, defender))
         );
     }
 

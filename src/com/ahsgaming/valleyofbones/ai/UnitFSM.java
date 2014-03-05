@@ -164,7 +164,7 @@ public class UnitFSM {
 
     public Command hunt(GameController controller) {
         Directive directive = directives.peek();
-//        Gdx.app.log(LOG, "Hunt " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
+        Gdx.app.log(LOG, "Hunt " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
 
         if (directive.target.getData().getCurHP() <= 0 || !controller.playerCanSee(unit.getOwner(), directive.target)) {
             directives.pop();

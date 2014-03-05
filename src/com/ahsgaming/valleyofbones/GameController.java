@@ -454,11 +454,10 @@ public class GameController {
             unit.getView().setPosition(levelPos.x, levelPos.y);
         }
         unit.getView().setBoardPosition((int) cmd.location.x, (int) cmd.location.y);
-
-		unitManager.addUnit(unit);
-		owner.setBankMoney(owner.getBankMoney() - unit.getData().getCost());
+		owner.setBankMoney(owner.getBankMoney() - owner.getProtoCost(unit.getProto(), this));
 		owner.updateFood(this);
         cmd.unitId = unit.getId();
+        unitManager.addUnit(unit);
 	}
 	
 	public void executeMove(Move cmd) {

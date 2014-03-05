@@ -145,6 +145,9 @@ public class BuildPanel extends Group {
             } else {
                 item.icon.setColor(0.8f, 0.4f, 0.4f, 1);
             }
+            if (player != null) {
+                item.setCost(player.getProtoCost(item.proto, gController));
+            }
             item.setHighlight(levelScreen.isBuildMode() && levelScreen.getBuildProto() == item.proto);
         }
     }
@@ -201,6 +204,10 @@ public class BuildPanel extends Group {
             addActor(lblMoney);
 
             setSize(Math.max(lblSupply.getRight(), lblMoney.getRight()), icon.getHeight() * icon.getScaleY());
+        }
+
+        public void setCost(int cost) {
+            lblMoney.setText(Integer.toString(cost));
         }
 
         public void setHighlight(boolean highlight) {
