@@ -153,6 +153,7 @@ public class UnitData {
     // getters & setters
 
     public String getAbility() {
+        if (ability.equals("") && splashDamage > 0) return "splash";
         return ability;
     }
 

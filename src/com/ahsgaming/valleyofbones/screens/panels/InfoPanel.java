@@ -39,6 +39,7 @@ public class InfoPanel extends Group {
     final String ATTACK_LEFT = "%d";
     final String MOVE_LEFT = "%d";
     final String REFUND = "$%d";
+    final String SPLASH = "%.0f%%";
 
     Label lblTitle, lblHealth, lblAttack, lblRange, lblArmor, lblMove, lblAttacksLeft, lblMovesLeft, lblRefund;
     Image imgBackground, iconHealth, iconAttack, iconRange, iconArmor, iconMove, iconAttacksLeft, iconMovesLeft, iconRefund, imgUnit;
@@ -162,6 +163,7 @@ public class InfoPanel extends Group {
             lblMovesLeft.setText(String.format(MOVE_LEFT, (int)buildProto.getProperty("movespeed").asFloat()));
 
             bonusTable.clearChildren();
+
             if (buildProto.hasProperty("bonus")) {
                 for (JsonValue val: buildProto.getProperty("bonus")) {
                     String subtype = val.name();
@@ -265,8 +267,8 @@ public class InfoPanel extends Group {
 
     public static class AbilityIndicator extends Table {
         Group grpAbilityIcon, grpAbilityText;
-        Image imgAbilityBg, imgCheckOn, imgCheckOff, imgCheckBg, iconMoney, iconAbility;
-        Label lblIncome;
+        Image imgAbilityBg, imgCheckOn, imgCheckOff, imgCheckBg, iconMoney, iconAbility, iconSplash;
+        Label lblIncome, lblSplash;
 
         LevelScreen levelScreen;
 
@@ -280,6 +282,8 @@ public class InfoPanel extends Group {
             imgCheckOn = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-on"));
             imgCheckBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "check-bg"));
             iconMoney = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "money-small"));
+            iconSplash = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "splash-small"));
+
             iconMoney.setScale(0.65f);
             lblIncome = new Label("+0", skin, "small");
             lblIncome.setFontScale(VOBGame.SCALE * 0.75f);
@@ -306,19 +310,30 @@ public class InfoPanel extends Group {
                 if (unit.getData().isAbilityActive()) {
                     iconAbility.setColor(0.0f, 0.8f, 1.0f, 1.0f);
 
-                    if (unit.getData().getAbility().equals("increasing-returns")) {
-                        grpAbilityText.addActor(iconMoney);
-                        iconMoney.setPosition(2 * VOBGame.SCALE, 1 * VOBGame.SCALE);
-                        lblIncome.setText("" + (- unit.getData().getUpkeep().get(0)));
-                        grpAbilityText.addActor(lblIncome);
-                        if (unit.getData().getUpkeep().get(0) < unit.getProto().getProperty("upkeep").asInt()) {
+                    if (unit.getData().getAbility().equals("increasing-returns") || unit.getData().getAbility().equals("splash")) {
+                        if (unit.getData().getAbility().equals("splash")) {
+                            lblIncome.setText(String.format("%.2f", unit.getData().getSplashDamage()));
                             lblIncome.setColor(0, 0.8f, 1.0f, 1.0f);
-                            iconMoney.setColor(0, 0.8f, 1.0f, 1.0f);
+                            lblIncome.setPosition(5 * VOBGame.SCALE, 6 * VOBGame.SCALE);
+
                         } else {
-                            lblIncome.setColor(1, 1, 1, 1);
-                            iconMoney.setColor(1, 1, 1, 1);
+                            lblIncome.setText("" + (- unit.getData().getUpkeep().get(0)));
+                            lblIncome.setPosition(15 * VOBGame.SCALE, 6 * VOBGame.SCALE);
+
+                            grpAbilityText.addActor(iconMoney);
+                            iconMoney.setPosition(2 * VOBGame.SCALE, 1 * VOBGame.SCALE);
+                            if (unit.getData().getUpkeep().get(0) < unit.getProto().getProperty("upkeep").asInt()) {
+                                lblIncome.setColor(0, 0.8f, 1.0f, 1.0f);
+                                iconMoney.setColor(0, 0.8f, 1.0f, 1.0f);
+                            } else {
+                                lblIncome.setColor(1, 1, 1, 1);
+                                iconMoney.setColor(1, 1, 1, 1);
+                            }
                         }
-                        lblIncome.setPosition(15 * VOBGame.SCALE, 6 * VOBGame.SCALE);
+
+                        grpAbilityText.addActor(lblIncome);
+
+
                     } else {
                         grpAbilityText.addActor(imgCheckOn);
 
@@ -359,8 +374,10 @@ public class InfoPanel extends Group {
         public void update(Prototypes.JsonProto proto) {
             removeAll();
 
-            if (proto.hasProperty("ability") && !proto.getProperty("ability").asString().equals("")) {
-                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.getProperty("ability").asString() + "-small"));
+            String ability = (proto.hasProperty("ability") && !proto.getProperty("ability").asString().equals("") ? proto.getProperty("ability").asString() : (proto.hasProperty("splashdamage") && proto.getProperty("splashdamage").asFloat() > 0 ? "splash" : null));
+
+            if (ability != null) {
+                iconAbility = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", ability + "-small"));
                 grpAbilityIcon.addActor(iconAbility);
                 iconAbility.setPosition((grpAbilityIcon.getWidth() - iconAbility.getWidth()) * 0.5f, (grpAbilityIcon.getHeight() - iconAbility.getHeight()) * 0.5f);
 
