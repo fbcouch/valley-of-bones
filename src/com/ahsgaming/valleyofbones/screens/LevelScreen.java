@@ -739,6 +739,9 @@ public class LevelScreen extends AbstractScreen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         super.clicked(event, x, y);
+                        if (levelScreen.isPaused()) {
+                            levelScreen.toggleMenu();
+                        }
                         levelScreen.gamePause();
                     }
                 });
