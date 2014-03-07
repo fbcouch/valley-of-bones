@@ -191,7 +191,7 @@ public class UnitManager {
                 }
                 attacker.data.attacksLeft--;
             } else if (attacker.data.ability.equals("mind-control")) {
-                if (!defender.data.type.equals("building") && !defender.data.ability.equals("sabotage")
+                if (!defender.data.type.equals("building") && !defender.data.subtype.equals("armored") && !defender.data.ability.equals("sabotage")
                         && !attacker.data.mindControlUsed && attacker.data.mindControlUnit == null) {
                     defender.owner = attacker.owner;
                     defender.data.movesLeft = 0;

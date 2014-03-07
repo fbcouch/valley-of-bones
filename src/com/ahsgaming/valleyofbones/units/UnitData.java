@@ -28,6 +28,7 @@ public class UnitData {
     int buildTime = 0;
     boolean capturable = false;
     int cost = 0;
+    int costPerUnit = 0;
     int curHP = 0;
     Array<Integer> food;
     String image = "";
@@ -93,6 +94,7 @@ public class UnitData {
         unitData.buildTime = proto.properties.getInt("buildtime", 0);
         unitData.capturable = proto.properties.getBoolean("capturable", false);
         unitData.cost = proto.properties.getInt("cost", 0);
+        unitData.costPerUnit = proto.properties.getInt("costPerUnit", 0);
         unitData.curHP = proto.properties.getInt("curhp", 0);
         unitData.food = new Array<Integer>();
         if (proto.hasProperty("food") && proto.getProperty("food").isArray()) {
@@ -236,6 +238,14 @@ public class UnitData {
     public void setCost(int cost) {
         this.cost = cost;
         modified = TimeUtils.millis();
+    }
+
+    public int getCostPerUnit() {
+        return costPerUnit;
+    }
+
+    public void setCostPerUnit(int costPerUnit) {
+        this.costPerUnit = costPerUnit;
     }
 
     public int getCurHP() {

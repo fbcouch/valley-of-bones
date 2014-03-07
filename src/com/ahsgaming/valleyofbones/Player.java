@@ -163,9 +163,12 @@ public class Player {
 
     public int getProtoCost(JsonProto proto, GameController controller) {
         int cost = proto.cost;
+        int costPerUnit = (proto.hasProperty("costperunit") ? proto.getProperty("costperunit").asInt() : 0);
+        if (costPerUnit == 0) return cost;
+
         for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
             if (unit.getProto().id.equals(proto.id)) {
-                cost += 3; // TODO: magic number
+                cost += costPerUnit;
             }
         }
         return cost;

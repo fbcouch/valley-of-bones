@@ -69,6 +69,7 @@
                 "attackrange": 3,
                 "movespeed": 3,
                 "cost": 45,
+                "costperunit": 2,
                 "subtype": "light",
                 "ability": "detect",
                 "buildtime": 1
@@ -93,6 +94,7 @@
                 "attackrange": 5,
                 "movespeed": 2,
                 "cost": 100,
+                "costperunit": 3,
                 "subtype": "light",
                 "bonus": {
                     "light": 4
@@ -120,6 +122,7 @@
                 "attackrange": 3,
                 "movespeed": 2,
                 "cost": 75,
+                "costperunit": 3,
                 "subtype": "light",
                 "bonus": {
                     "armored": 2,
@@ -148,6 +151,7 @@
                 "sightrange": 3,
                 "movespeed": 4,
                 "cost": 90,
+                "costperunit": 3,
                 "subtype": "light",
                 "buildtime": 1,
                 "ability": "sabotage"
@@ -172,6 +176,7 @@
                 "attackrange": 3,
                 "movespeed": 1,
                 "cost": 130,
+                "costperunit": 3,
                 "subtype": "armored",
                 "buildtime": 1,
                 "bonus": {
@@ -199,6 +204,7 @@
                 "attackrange": 3,
                 "movespeed": 2,
                 "cost": 120,
+                "costperunit": 3,
                 "subtype": "armored",
                 "buildtime": 1
             }
@@ -223,6 +229,7 @@
                 "sightrange": 3,
                 "movespeed": 1,
                 "cost": 150,
+                "costperunit": 3,
                 "subtype": "armored",
                 "buildtime": 1,
                 "splashdistance": 1,
@@ -305,6 +312,7 @@
                 "movespeed": 4,
                 "sightrange": 2,
                 "cost": 75,
+                "costperunit": 3,
                 "subtype": "armored",
                 "buildtime": 1
             }
@@ -328,6 +336,7 @@
                 "sightrange": 5,
                 "movespeed": 2,
                 "cost": 120,
+                "costperunit": 3,
                 "subtype": "light",
                 "ability": "detect",
                 "buildtime": 1
@@ -352,6 +361,7 @@
                 "sightrange": 4,
                 "movespeed": 2,
                 "cost": 100,
+                "costperunit": 3,
                 "subtype": "light",
                 "bonus": {
                     "light": 1.5
@@ -381,6 +391,7 @@
                 "sightrange": 3,
                 "movespeed": 2,
                 "cost": 140,
+                "costperunit": 3,
                 "subtype": "light",
                 "ability": "mind-control",
                 "buildtime": 1
@@ -406,6 +417,7 @@
                 "sightrange": 4,
                 "movespeed": 4,
                 "cost": 25,
+                "costperunit": 3,
                 "subtype": "light",
                 "ability": "detect",
                 "buildtime": 1
@@ -431,6 +443,7 @@
                 "sightrange": 3,
                 "movespeed": 0,
                 "cost": 150,
+                "costperunit": 3,
                 "bonus": {
                     "armored": 1.5,
                     "building": 1.5
