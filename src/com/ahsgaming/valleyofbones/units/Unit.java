@@ -53,6 +53,7 @@ public class Unit {
     UnitView view;
     UnitFSM fsm;
     Player owner;
+    Player originalOwner;
     int id;
 
     public int getId() {
@@ -83,11 +84,15 @@ public class Unit {
         return owner;
     }
 
+    public Player getOriginalOwner() {
+        return originalOwner;
+    }
+
     public static Unit createUnit(int id, String protoId, Player owner) {
         Unit unit = new Unit();
 
         unit.id = id;
-        unit.owner = owner;
+        unit.originalOwner = unit.owner = owner;
         unit.proto = Prototypes.getProto((owner != null ? owner.getRace() : "terran"), protoId);
         unit.data = UnitData.createUnitData(unit.proto);
         unit.view = UnitView.createUnitView(unit);

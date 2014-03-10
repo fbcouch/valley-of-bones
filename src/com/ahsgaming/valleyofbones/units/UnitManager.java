@@ -107,7 +107,10 @@ public class UnitManager {
                 unit.data.movesLeft = 0;
             }
             if (unit.data.mindControlUnit != null && unit.data.mindControlUnit.data.curHP > 0) {
-                applyDamage(unit.data.mindControlUnit, unit.data.mindControlUnit.data.curHP + unit.data.mindControlUnit.data.armor);
+//                applyDamage(unit.data.mindControlUnit, unit.data.mindControlUnit.data.curHP + unit.data.mindControlUnit.data.armor);
+                unit.data.mindControlUnit.owner = unit.data.mindControlUnit.originalOwner;
+                unit.data.mindControlUnit.data.attacksLeft = 0;
+                unit.data.mindControlUnit.data.movesLeft = 0;
             }
         }
 
@@ -191,7 +194,7 @@ public class UnitManager {
                 }
                 attacker.data.attacksLeft--;
             } else if (attacker.data.ability.equals("mind-control")) {
-                if (!defender.data.type.equals("building") && !defender.data.subtype.equals("armored") && !defender.data.ability.equals("sabotage")
+                if (!defender.data.type.equals("building") && !defender.data.ability.equals("sabotage")
                         && !attacker.data.mindControlUsed && attacker.data.mindControlUnit == null) {
                     defender.owner = attacker.owner;
                     defender.data.movesLeft = 0;
