@@ -7,7 +7,7 @@ package com.ahsgaming.valleyofbones.units;
  * Date: 3/15/14
  * Time: 9:03 AM
  */
-public interface TurnListener extends EventListener {
-    public void startTurn();
-    public void endTurn();
+public interface TurnListener {
+    public void startTurn(int turn);
+    public void endTurn(int turn);
 }

@@ -36,8 +36,8 @@ public class AbstractUnit implements EventEmitter {
         listeners = new Array<EventListener>();
     }
 
-    public boolean attack(AbstractUnit target) {
-        return attackBehavior.attack(target);
+    public boolean attack(UnitManager unitManager, AbstractUnit target) {
+        return attackBehavior.attack(unitManager, target);
     }
 
     public void move(GameController gameController, Vector2 boardPosition) {
@@ -76,6 +76,14 @@ public class AbstractUnit implements EventEmitter {
         return owner;
     }
 
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public void setOriginalOwner(Player originalOwner) {
+        this.originalOwner = originalOwner;
+    }
+
     public Player getOriginalOwner() {
         return originalOwner;
     }
@@ -99,15 +107,15 @@ public class AbstractUnit implements EventEmitter {
         }
     }
 
-    public void startTurn() {
-        turnBehavior.startTurn();
+    public void startTurn(int turn) {
+        turnBehavior.startTurn(turn);
     }
 
-    public void endTurn() {
-        turnBehavior.endTurn();
+    public void endTurn(int turn) {
+        turnBehavior.endTurn(turn);
     }
 
-    public void update() {
-       turnBehavior.update();
+    public void update(UnitManager unitManager, float delta) {
+       turnBehavior.update(unitManager, delta);
     }
 }

@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
+import com.ahsgaming.valleyofbones.units.UnitManager;
 
 /**
  * valley-of-bones
@@ -10,5 +11,5 @@ import com.ahsgaming.valleyofbones.units.AbstractUnit;
  * Time: 9:18 AM
  */
 public interface AttackBehavior {
-    public boolean attack(AbstractUnit unit);
+    public boolean attack(UnitManager unitManager, AbstractUnit unit);
 }

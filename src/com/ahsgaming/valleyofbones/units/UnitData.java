@@ -47,6 +47,10 @@ public class UnitData {
     boolean stealthEntered = false;
     boolean stealthActive = false;
 
+    boolean invisible = false;     // can this unit be seen by non-detectors?
+    boolean detector = false;      // can this unit see invisible units?
+    boolean controllable = true;   // does mind-control affect this unit?
+
     boolean virginUnit = true;
 
     boolean mindControlUsed = false;
@@ -129,14 +133,32 @@ public class UnitData {
     // special things
 
     public boolean isDetector() {
-        return ability.equals("detect") || ability.equals("sabotage");
+//        return ability.equals("detect") || ability.equals("sabotage");
+        return detector;
+    }
+
+    public void setDetector(boolean detector) {
+        this.detector = detector;
     }
 
     public boolean isInvisible() {
-        return stealthActive || (ability.equals("sabotage") && (attacksLeft > 0 || virginUnit)) || ability.equals("mind-control");
+//        return stealthActive || (ability.equals("sabotage") && (attacksLeft > 0 || virginUnit)) || ability.equals("mind-control");
+        return invisible;
     }
 
-    public boolean isAbilityActive() {
+    public void setInvisible(boolean invisible) {
+        this.invisible = invisible;
+    }
+
+    public boolean isControllable() {
+        return controllable;
+    }
+
+    public void setControllable(boolean controllable) {
+        this.controllable = controllable;
+    }
+
+    public boolean isAbilityActive() {         // TODO this is probably something that could get abstracted, but for now leave it.
         return (
                 (!ability.equals("stealth") && !ability.equals("mind-control")) || stealthActive || mindControlUnit != null
         );
@@ -160,6 +182,14 @@ public class UnitData {
     public void setAbility(String ability) {
         this.ability = ability;
         modified = TimeUtils.millis();
+    }
+
+    public HashMap<String, Integer> getAbilityArgs() {
+        return abilityArgs;
+    }
+
+    public void setAbilityArgs(HashMap<String, Integer> abilityArgs) {
+        this.abilityArgs = abilityArgs;
     }
 
     public int getArmor() {
@@ -390,6 +420,22 @@ public class UnitData {
         modified = TimeUtils.millis();
     }
 
+    public boolean isMindControlUsed() {
+        return mindControlUsed;
+    }
+
+    public void setMindControlUsed(boolean mindControlUsed) {
+        this.mindControlUsed = mindControlUsed;
+    }
+
+    public AbstractUnit getMindControlUnit() {
+        return mindControlUnit;
+    }
+
+    public void setMindControlUnit(AbstractUnit mindControlUnit) {
+        this.mindControlUnit = mindControlUnit;
+    }
+
     public float getMovesLeft() {
         return movesLeft;
     }
@@ -424,6 +470,14 @@ public class UnitData {
         this.uncontested = uncontested;
     }
 
+    public boolean isVirginUnit() {
+        return virginUnit;
+    }
+
+    public void setVirginUnit(boolean virginUnit) {
+        this.virginUnit = virginUnit;
+    }
+
     public int getCapUnitCount() {
         return capUnitCount;
     }
@@ -434,5 +488,9 @@ public class UnitData {
 
     public long getModified() {
         return modified;
+    }
+
+    public void setModified(long modified) {
+        this.modified = modified;
     }
 }

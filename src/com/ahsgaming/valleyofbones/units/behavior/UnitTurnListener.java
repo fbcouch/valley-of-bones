@@ -2,6 +2,7 @@ package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.TurnListener;
+import com.ahsgaming.valleyofbones.units.UnitManager;
 
 /**
  * valley-of-bones
@@ -16,4 +17,6 @@ public abstract class UnitTurnListener implements TurnListener {
     public UnitTurnListener(AbstractUnit unit) {
         this.unit = unit;
     }
+
+    public abstract void update(UnitManager unitManager, float delta);
 }

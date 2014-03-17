@@ -42,7 +42,7 @@ public class BasicMove implements MoveBehavior {
                 cur = cur.parent;
             }
 
-            unit.getView().addToPath(unit.getView().getLastBoardPosition());
+//            unit.getView().addToPath(unit.getView().getLastBoardPosition());
             while (nodes.size > 0) {
                 Vector2 boardPos = nodes.pop();
                 unit.getView().addToPath(boardPos);

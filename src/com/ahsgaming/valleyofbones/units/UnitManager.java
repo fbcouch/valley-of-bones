@@ -90,71 +90,14 @@ public class UnitManager {
     }
 
     public void updateUnit(AbstractUnit unit, float delta) {
-        if (unit.getData().isCapturable())
-            findNewOwner(unit);
-
-        if (unit.data.curHP <= 0) {
-            if (unit.data.capturable) {
-                unit.data.curHP = 0;
-                if (unit.owner != unit.data.uncontested) {
-                    // set map dirty
-                    unit.data.modified = TimeUtils.millis();
-                }
-                unit.owner = unit.data.uncontested;
-                unit.data.attacksLeft = 0;
-                unit.data.movesLeft = 0;
-            }
-            if (unit.data.mindControlUnit != null && unit.data.mindControlUnit.data.curHP > 0) {
-//                applyDamage(unit.data.mindControlUnit, unit.data.mindControlUnit.data.curHP + unit.data.mindControlUnit.data.armor);
-                unit.data.mindControlUnit.owner = unit.data.mindControlUnit.originalOwner;
-                unit.data.mindControlUnit.data.attacksLeft = 0;
-                unit.data.mindControlUnit.data.movesLeft = 0;
-            }
-        }
-
-        unit.view.act(delta);
+        unit.update(this, delta);
     }
 
     public void startTurn(Player player) {
         for (AbstractUnit unit: units.values()) {
-            if (unit.data.ability.equals("increasing-returns")) {
-                for (int i = 0; i < unit.data.upkeep.size; i++) {
-                    if (gameController.getGameTurn() % unit.data.abilityArgs.get("interval") == 0) {
-                        unit.data.upkeep.set(
-                                i,
-                                Math.max(
-                                        unit.data.abilityArgs.get("max"),
-                                        unit.data.upkeep.get(i) + unit.data.abilityArgs.get("bonus")
-                                )
-                        );
-                    }
-                }
-
+            if (unit.data.ability.equals("increasing-returns") || unit.getOwner() == player) {
+                unit.startTurn(gameController.getGameTurn());
             }
-            if (unit.owner != player) continue;
-
-            if (!unit.data.building) {
-                unit.data.movesLeft = (unit.data.movesLeft % 1) + unit.data.moveSpeed * (unit.data.stealthActive ? 0.5f : 1f);
-                unit.data.movesThisTurn = 0;
-                unit.data.attacksLeft = (unit.data.attacksLeft % 1) + unit.data.attackSpeed;
-            }
-
-            if (unit.data.capturable && (unit.data.uncontested == unit.owner || unit.data.uncontested == null))
-                unit.data.setCurHP(unit.data.curHP += 5 * (unit.data.capUnitCount + 1)); // +1 here so that it auto-builds
-
-            unit.view.clearPath();
-            unit.view.addToPath(unit.view.getBoardPosition());
-
-            unit.data.stealthEntered = false;
-            unit.data.mindControlUsed = false;
-            unit.data.virginUnit = false;
-
-            if (unit.data.mindControlUnit != null) {
-                if (unit.data.mindControlUnit.data.curHP <= 0)
-                    unit.data.mindControlUnit = null;
-            }
-
-            unit.data.modified = TimeUtils.millis();
         }
     }
 
@@ -162,60 +105,13 @@ public class UnitManager {
         for (AbstractUnit unit: units.values()) {
             if (unit.owner != player) continue;
 
-            if (unit.data.building) {
-                unit.data.buildTimeLeft--;
-
-                if (unit.data.buildTimeLeft <= 0)
-                    unit.data.building = false;
-            }
-
-            unit.data.modified = TimeUtils.millis();
+            unit.endTurn(gameController.getGameTurn());
         }
     }
 
     public boolean attack (AbstractUnit attacker, AbstractUnit defender) {
         if (canAttack(attacker, defender)) {
-//            if (attacker.data.ability.equals("sabotage")) {
-//                if (defender.data.capturable) {
-//                    defender.data.movesLeft = 0;
-//                    defender.data.attacksLeft = 0;
-//                    applyDamage(defender, defender.data.curHP + defender.data.armor);
-//                } else {
-//                    if (defender.data.protoId.equals("castle-base"))
-//                        return false; // saboteur can't attack castle
-//                    if (defender.data.subtype.equals("light")) {
-//                        // saboteur 'assassinates' light units
-//                        applyDamage(defender, defender.data.curHP + defender.data.armor);
-//                    } else {
-//                        applyDamage(defender, (int)Math.floor(defender.data.curHP * 0.5f) + defender.data.armor);
-//                    }
-//                }
-//                attacker.data.attacksLeft--;
-//            } else if (attacker.data.ability.equals("mind-control")) {
-//                if (!defender.data.type.equals("building") && !defender.data.ability.equals("sabotage")
-//                        && !attacker.data.mindControlUsed && attacker.data.mindControlUnit == null) {
-//                    defender.owner = attacker.owner;
-//                    defender.data.movesLeft = 0;
-//                    defender.data.attacksLeft = 0;
-//                    defender.data.modified = TimeUtils.millis();
-//                    attacker.data.mindControlUsed = true;
-//                    attacker.data.mindControlUnit = defender;
-//                    attacker.data.attacksLeft--;
-//                }
-//            } else {
-//                attacker.data.attacksLeft--;
-//                applyDamage(defender, attacker.data.attackDamage * attacker.data.getBonus(defender.data.subtype));
-//
-//                if (attacker.data.stealthActive)
-//                    activateAbility(attacker);
-//
-//                attacker.view.addAction(UnitView.Actions.sequence(
-//                        UnitView.Actions.colorTo(new Color(1, 1, 0.5f, 1), 0.1f),
-//                        UnitView.Actions.delay(0.2f),
-//                        UnitView.Actions.colorTo(new Color(1, 1, 1, 1), 0.1f)
-//                ));
-//            }
-            attacker.attack(defender);
+            attacker.attack(this, defender);
             attacker.data.modified = TimeUtils.millis();
             return true;
         }
@@ -223,51 +119,8 @@ public class UnitManager {
     }
 
     public void moveUnit(AbstractUnit unit, Vector2 boardPosition) {
-//        if (unit.data.ability.equals("shift")) {
-//            if (unit.data.movesThisTurn > 0) return;
-//
-//            unit.view.lastBoardPosition = unit.view.boardPosition;
-//            unit.view.boardPosition = boardPosition;
-//            unit.data.movesThisTurn++;
-//
-//            Vector2 pos = gameController.getMap().boardToMapCoords(boardPosition.x, boardPosition.y);
-//            unit.view.addAction(UnitView.Actions.sequence(
-//                    UnitView.Actions.colorTo(new Color(1, 1, 1, 0), 0.4f),
-//                    UnitView.Actions.moveTo(pos.x, pos.y, 0.2f),
-//                    UnitView.Actions.colorTo(new Color(1, 1, 1, 1), 0.4f)
-//            ));
-//            return;
-//        }
-//
-//        AStar.AStarNode path = findPath(unit, boardPosition);
-//        if (path != null && path.gx <= unit.data.movesLeft) {
-//
-//            unit.data.movesLeft -= path.gx;
-//            unit.data.movesThisTurn += path.gx;
-//
-//            unit.view.lastBoardPosition = unit.view.boardPosition;
-//            unit.view.boardPosition = boardPosition;
-//
-//            Array<Vector2> nodes = new Array<Vector2>();
-//            AStar.AStarNode cur = path;
-//            while (cur.parent != null) {  // don't add the last node, it is the starting position
-//                nodes.add(cur.location);
-//                cur = cur.parent;
-//            }
-//
-//            while (nodes.size > 0) {
-//                Vector2 boardPos = nodes.pop();
-//                unit.view.addToPath(boardPos);
-//                Vector2 pos = gameController.getMap().boardToMapCoords(boardPos.x, boardPos.y);
-//                unit.view.addAction(UnitView.Actions.moveTo(pos.x, pos.y, 1 / unit.data.moveSpeed));
-//            }
-            unit.move(gameController, boardPosition);
-            unit.data.modified = TimeUtils.millis();
-//        }
-    }
-
-    AStar.AStarNode findPath(AbstractUnit unit, Vector2 boardPosition) {
-        return AStar.getPath(unit.getView().getBoardPosition(), boardPosition, gameController, (int)unit.data.movesLeft);
+        unit.move(gameController, boardPosition);
+        unit.data.modified = TimeUtils.millis();
     }
 
     public void activateAbility(AbstractUnit unit) {
@@ -354,35 +207,5 @@ public class UnitManager {
                 (!target.data.isInvisible() || looker.data.isDetector())
                 && HexMap.getMapDist(looker.view.boardPosition, target.view.boardPosition) <= looker.data.sightRange
         );
-    }
-
-    void findNewOwner(AbstractUnit unit) {
-        Player p = null;
-        unit.data.capUnitCount = 0;
-        Vector2[] adjacent = HexMap.getAdjacent(unit.view.boardPosition);
-        for (AbstractUnit u: units.values()) {
-            if (u == unit || u.owner == null || u.data.building)
-                continue;
-
-            boolean adj = false;
-            for (Vector2 pos: adjacent) {
-                if (pos.epsilonEquals(u.view.boardPosition, 0.1f)) {
-                    adj = true;
-                    break;
-                }
-            }
-            if (!adj)
-                continue;
-
-            if (p == null || p == u.owner) {
-                p = u.owner;
-                unit.data.capUnitCount++;
-            } else {
-                unit.data.uncontested = null;
-                unit.data.capUnitCount = 0;
-                return;
-            }
-        }
-        unit.data.uncontested = p;
     }
 }

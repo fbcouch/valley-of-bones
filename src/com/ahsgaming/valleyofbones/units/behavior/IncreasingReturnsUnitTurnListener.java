@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
+import com.ahsgaming.valleyofbones.units.UnitManager;
 
 /**
  * valley-of-bones
@@ -10,23 +11,37 @@ import com.ahsgaming.valleyofbones.units.AbstractUnit;
  * Time: 3:51 PM
  */
 public class IncreasingReturnsUnitTurnListener extends UnitTurnListener {
+    UnitTurnListener listener;
 
-    public IncreasingReturnsUnitTurnListener(AbstractUnit unit) {
-        super(unit);
+    public IncreasingReturnsUnitTurnListener(UnitTurnListener listener) {
+        super(listener.unit);
+        this.listener = listener;
     }
 
     @Override
-    public void startTurn() {
-        // TODO
+    public void startTurn(int turn) {
+        for (int i = 0; i < unit.getData().getUpkeep().size; i++) {
+            if (turn % unit.getData().getAbilityArgs().get("interval") == 0) {
+                unit.getData().getUpkeep().set(
+                        i,
+                        Math.max(
+                                unit.getData().getAbilityArgs().get("max"),
+                                unit.getData().getUpkeep().get(i) + unit.getData().getAbilityArgs().get("bonus")
+                        )
+                );
+            }
+        }
+
+        listener.startTurn(turn);
     }
 
     @Override
-    public void endTurn() {
-        // TODO
+    public void endTurn(int turn) {
+        listener.endTurn(turn);
     }
 
     @Override
-    public void update() {
-        // TODO
+    public void update(UnitManager unitManager, float delta) {
+        listener.update(unitManager, delta);
     }
 }

@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
+import com.ahsgaming.valleyofbones.units.UnitManager;
 
 /**
  * valley-of-bones
@@ -17,7 +18,7 @@ public class BasicAttack implements AttackBehavior {
     }
 
     @Override
-    public boolean attack(AbstractUnit defender) {
+    public boolean attack(UnitManager unitManager, AbstractUnit defender) {
         unit.getData().setAttacksLeft(unit.getData().getAttacksLeft() - 1);
         float damage = unit.getData().getAttackDamage() * unit.getData().getBonus(defender.getData().getSubtype());
         defender.defend(damage);

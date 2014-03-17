@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
+import com.ahsgaming.valleyofbones.units.UnitManager;
 
 /**
  * valley-of-bones
@@ -18,7 +19,7 @@ public class SabotageAttack implements AttackBehavior {
     }
 
     @Override
-    public boolean attack(AbstractUnit unit) {
+    public boolean attack(UnitManager unitManager, AbstractUnit unit) {
         return false; // TODO
     }
 }

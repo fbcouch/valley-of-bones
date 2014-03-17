@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
+import com.ahsgaming.valleyofbones.units.UnitManager;
 
 /**
  * valley-of-bones
@@ -11,7 +12,7 @@ import com.ahsgaming.valleyofbones.units.AbstractUnit;
  */
 public class NoAttack implements AttackBehavior {
     @Override
-    public boolean attack(AbstractUnit unit) {
+    public boolean attack(UnitManager unitManager, AbstractUnit unit) {
         return false;
     }
 }

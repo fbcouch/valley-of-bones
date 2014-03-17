@@ -32,12 +32,6 @@ import com.ahsgaming.valleyofbones.units.behavior.*;
  */
 public class Unit extends AbstractUnit {
 
-    UnitFSM fsm;
-
-    public UnitFSM getFsm() {
-        return fsm;
-    }
-
     public static AbstractUnit createUnit(int id, String protoId, Player owner) {
         AbstractUnit unit = new Unit();
 
@@ -51,6 +45,9 @@ public class Unit extends AbstractUnit {
         unit.defendBehavior = selectDefendBehavior(unit);
         unit.moveBehavior = selectMoveBehavior(unit);
         unit.turnBehavior = new BasicUnitTurnListener(unit);
+        if (unit.getData().isCapturable()) {
+            unit.turnBehavior = new CapturableUnitTurnListener(unit.turnBehavior);
+        }
         unit = applyAbility(unit);
 
         if (unit.getData().buildTime > 0) {
@@ -69,8 +66,13 @@ public class Unit extends AbstractUnit {
     }
 
     public static AttackBehavior selectAttackBehavior(AbstractUnit unit) {
+        AttackBehavior behavior;
         if (unit.getData().getAttackSpeed() > 0) {
-            return new BasicAttack(unit);
+            behavior = new BasicAttack(unit);
+            if (unit.getData().getSplashDamage() > 0) {
+                behavior = new SplashAttack((BasicAttack)behavior);
+            }
+            return behavior;
         }
         return new NoAttack();
     }
@@ -82,16 +84,19 @@ public class Unit extends AbstractUnit {
     public static AbstractUnit applyAbility(AbstractUnit unit) {
         String ability = unit.getData().getAbility();
         if (ability.equals("increasing-returns")) {
-            unit.turnBehavior = new IncreasingReturnsUnitTurnListener(unit);
+            unit.turnBehavior = new IncreasingReturnsUnitTurnListener(unit.turnBehavior);
         } else if (ability.equals("detect")) {
-            return new DetectorUnit(unit);
+            unit.getData().setDetector(true);
         } else if (ability.equals("stealth")) {
             unit.abilityBehavior = new StealthAbility(unit);
         } else if (ability.equals("sabotage")) {
             unit.attackBehavior = new SabotageAttack(unit);
-            return new SabotageUnit(unit);
+            unit.getData().setDetector(true);
+            unit.getData().setInvisible(true);
+            unit.getData().setControllable(false);
         } else if (ability.equals("mind-control")) {
-
+            unit.getData().setInvisible(true);
+            unit.getData().setControllable(false);
         } else if (ability.equals("shift")) {
             unit.moveBehavior = new ShiftMove(unit);
         }
