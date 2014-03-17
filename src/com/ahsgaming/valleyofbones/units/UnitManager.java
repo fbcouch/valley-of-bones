@@ -124,52 +124,7 @@ public class UnitManager {
     }
 
     public void activateAbility(AbstractUnit unit) {
-        if (unit.data.ability.equals("stealth")) {
-            // cant re-enter stealth on the same turn or enter after firing or moving twice
-            if (!unit.data.stealthActive && (unit.data.stealthEntered || unit.data.attacksLeft != unit.data.attackSpeed || unit.data.movesThisTurn > Math.floor(unit.data.moveSpeed * 0.5f)))
-                return; // cant re-enter stealth this turn
-
-            unit.data.stealthActive = !unit.data.stealthActive;
-            if (!unit.data.building) {
-                if (unit.data.stealthActive) {
-                    unit.data.stealthEntered = true;
-
-                    unit.data.movesLeft = (float)Math.floor(unit.data.moveSpeed * 0.5f) - unit.data.movesThisTurn; //- unit.data.moveSpeed - unit.data.movesLeft;
-                    if (unit.data.movesLeft < 0) unit.data.movesLeft = 0;
-                } else {
-                    unit.data.movesLeft = unit.data.moveSpeed - unit.data.movesThisTurn; //(float)Math.floor(unit.data.moveSpeed * 0.5f - unit.data.movesLeft);
-                }
-            }
-            unit.data.modified = TimeUtils.millis();
-        } else if (unit.data.ability.equals("mind-control")) {
-            if (!unit.data.mindControlUsed && unit.data.mindControlUnit != null) {
-                applyDamage(unit.data.mindControlUnit, unit.data.mindControlUnit.data.curHP + unit.data.mindControlUnit.data.armor);
-                unit.data.mindControlUnit = null;
-                unit.data.modified = TimeUtils.millis();
-                unit.data.mindControlUsed = true;
-                unit.data.attacksLeft = 0;
-            }
-        }
-    }
-
-    public void applyDamage(AbstractUnit unit, float amount) {
-        float damage = amount - unit.data.armor;
-        if (damage > 0) {
-            unit.data.curHP -= damage;
-
-            // TODO figure out a better way to do this
-            if (LevelScreen.getInstance() != null)
-                LevelScreen.getInstance().addFloatingLabel(String.format("-%d", (int)damage), unit.view.getX() + unit.view.getWidth() * 0.5f, unit.view.getY() + unit.view.getHeight() * 0.5f);
-
-            unit.view.addAction(UnitView.Actions.sequence(
-                    UnitView.Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
-                    UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f),
-                    UnitView.Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
-                    UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f)
-            ));
-
-            unit.data.modified = TimeUtils.millis();
-        }
+        unit.activateAbility();
     }
 
     public boolean canAttack(AbstractUnit attacker, AbstractUnit defender) {

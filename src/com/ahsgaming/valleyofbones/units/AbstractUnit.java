@@ -37,19 +37,24 @@ public class AbstractUnit implements EventEmitter {
     }
 
     public boolean attack(UnitManager unitManager, AbstractUnit target) {
-        return attackBehavior.attack(unitManager, target);
+        if (attackBehavior != null)
+            return attackBehavior.attack(unitManager, target);
+        return false;
     }
 
     public void move(GameController gameController, Vector2 boardPosition) {
-        moveBehavior.move(gameController, boardPosition);
+        if (moveBehavior != null)
+            moveBehavior.move(gameController, boardPosition);
     }
 
     public void defend(float damage) {
-        defendBehavior.defend(damage);
+        if (defendBehavior != null)
+            defendBehavior.defend(damage);
     }
 
     public void activateAbility() {
-        abilityBehavior.activateAbility();
+        if (abilityBehavior != null)
+            abilityBehavior.activateAbility();
     }
 
     public int getId() {
