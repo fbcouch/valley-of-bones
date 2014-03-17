@@ -2,13 +2,12 @@ package com.ahsgaming.valleyofbones.map;
 
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Unit;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -53,7 +52,7 @@ public class MapView {
         this.mapDirty = mapDirty;
     }
 
-    public void draw(SpriteBatch batch, float x, float y, float alpha, Array<Unit> units, HexMap map, Player currentPlayer) {
+    public void draw(SpriteBatch batch, float x, float y, float alpha, Array<AbstractUnit> units, HexMap map, Player currentPlayer) {
         Color save = batch.getColor();
         TextureRegion depth = VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "metal-hex-depth");
 
@@ -105,7 +104,7 @@ public class MapView {
             curY -= mapData.tileSize.y * 0.75;
         }
 
-        for (Unit unit: units) {
+        for (AbstractUnit unit: units) {
             if (unit.getData().getMoveSpeed() > 0 && unit.getOwner() != null) {
                 batch.setColor(unit.getOwner().getPlayerColor());
                 if (unit.getView().getLastBoardPosition() != null) {
@@ -134,7 +133,7 @@ public class MapView {
         }
 
         // draw enemy units
-        for (Unit u: units) {
+        for (AbstractUnit u: units) {
             if (player != u.getOwner()){
                 if ((hexStatus[(int)(u.getView().getBoardPosition().x + u.getView().getBoardPosition().y * mapData.bounds.x)] != FOG
                         || (u.getView().getLastBoardPosition() != null && hexStatus[(int)(u.getView().getLastBoardPosition().x + u.getView().getLastBoardPosition().y * mapData.bounds.x)] != FOG && u.getView().hasActions() && !u.getData().isBuilding()))
@@ -172,7 +171,7 @@ public class MapView {
         }
 
         // draw friendly units
-        for (Unit u: units) {
+        for (AbstractUnit u: units) {
             if (player == u.getOwner())
                 u.getView().draw(batch, x, y, alpha, u.getOwner() == currentPlayer);
         }

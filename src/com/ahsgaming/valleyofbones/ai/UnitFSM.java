@@ -5,6 +5,7 @@ import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.Attack;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.Move;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -22,15 +23,15 @@ import java.util.Stack;
 public class UnitFSM {
     public String LOG = "UnitFSM";
     Stack<Directive> directives;
-    Unit unit;
+    AbstractUnit unit;
 
-    Array<Unit> visibleEnemyUnits;
-    Array<Unit> towers;
+    Array<AbstractUnit> visibleEnemyUnits;
+    Array<AbstractUnit> towers;
 
-    public UnitFSM(Unit unit) {
+    public UnitFSM(AbstractUnit unit) {
         directives = new Stack<Directive>();
-        visibleEnemyUnits = new Array<Unit>();
-        towers = new Array<Unit>();
+        visibleEnemyUnits = new Array<AbstractUnit>();
+        towers = new Array<AbstractUnit>();
         this.unit = unit;
         LOG += "[" + unit.getProto().id + "(" + unit.getId() + ")]";
     }
@@ -44,7 +45,7 @@ public class UnitFSM {
 
         visibleEnemyUnits.clear();
         towers.clear();
-        for (Unit u: controller.getUnits()) {
+        for (AbstractUnit u: controller.getUnits()) {
             if (u.getOwner() != unit.getOwner() && u.getOwner() != null && controller.playerCanSee(unit.getOwner(), u)) {
                 visibleEnemyUnits.add(u);
             }
@@ -99,7 +100,7 @@ public class UnitFSM {
             return at;
         }
 
-        for (Unit u: towers) {
+        for (AbstractUnit u: towers) {
             if ((u.getOwner() != unit.getOwner() || (u.getOwner() == unit.getOwner() && u.getData().getCurHP() == 0))
                     && controller.getMap().getMapDist(unit.getView().getBoardPosition(), u.getView().getBoardPosition()) < dist) {
                 order(new Directive(Directive.DirectiveType.CAPTURE, u));
@@ -108,7 +109,7 @@ public class UnitFSM {
         }
 
         if (unit.getData().getAttacksLeft() > 0) {
-            Unit target = findTarget(controller);
+            AbstractUnit target = findTarget(controller);
             if (target != null) {
 //                if (controller.getMap().getMapDist(directive.target.getView().getBoardPosition(), target.getView().getBoardPosition()) == 1) {
                     order(new Directive(Directive.DirectiveType.HUNT, target));
@@ -128,9 +129,9 @@ public class UnitFSM {
         Directive directive = directives.peek();
 //        Gdx.app.log(LOG, "Defend " + directive.target.getProto().id + " at " + directive.target.getView().getBoardPosition());
 
-        Array<Unit> threats = new Array<Unit>();
-        Array<Unit> threatsInRange = new Array<Unit>();
-        for (Unit u: visibleEnemyUnits) {
+        Array<AbstractUnit> threats = new Array<AbstractUnit>();
+        Array<AbstractUnit> threatsInRange = new Array<AbstractUnit>();
+        for (AbstractUnit u: visibleEnemyUnits) {
             int dist = HexMap.getMapDist(directive.target.getView().getBoardPosition(), u.getView().getBoardPosition());
             if (u.getData().getAttackRange() + u.getData().getMoveSpeed() > dist) {
                 threats.add(u);
@@ -146,8 +147,8 @@ public class UnitFSM {
 
 //        Gdx.app.log(LOG, "Threats: " + threats.size);
 
-        Unit lowhp = null;
-        for (Unit u: threats) {
+        AbstractUnit lowhp = null;
+        for (AbstractUnit u: threats) {
             if (lowhp == null || u.getData().getCurHP() < lowhp.getData().getCurHP()) {
                 lowhp = u;
             }
@@ -211,10 +212,10 @@ public class UnitFSM {
         return null;
     }
 
-    Unit findTarget(GameController controller) {
+    AbstractUnit findTarget(GameController controller) {
         // TODO evaluate unit priority - for now, just attack the lowest hp
-        Unit lowHp = null;
-        for (Unit u: visibleEnemyUnits) {
+        AbstractUnit lowHp = null;
+        for (AbstractUnit u: visibleEnemyUnits) {
             if (!u.getProto().id.equals("tower-base") && controller.getMap().getMapDist(unit.getView().getBoardPosition(), u.getView().getBoardPosition()) <= unit.getData().getAttackRange()) {
                 if (lowHp == null || (u.getData().getCurHP() < lowHp.getData().getCurHP() && u.getData().getCurHP() > 0)) {
                     lowHp = u;

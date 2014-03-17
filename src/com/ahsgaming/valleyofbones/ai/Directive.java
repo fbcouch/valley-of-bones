@@ -1,6 +1,6 @@
 package com.ahsgaming.valleyofbones.ai;
 
-import com.ahsgaming.valleyofbones.units.Unit;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -11,11 +11,11 @@ import com.badlogic.gdx.math.Vector2;
  * Time: 9:06 AM
  */
 public class Directive {
-    Unit target;
+    AbstractUnit target;
     Vector2 location;
     DirectiveType type;
 
-    public Directive(DirectiveType type, Unit target) {
+    public Directive(DirectiveType type, AbstractUnit target) {
         this.type = type;
         this.target = target;
     }

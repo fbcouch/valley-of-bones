@@ -22,14 +22,12 @@
  */
 package com.ahsgaming.valleyofbones.map;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
-import com.ahsgaming.valleyofbones.units.Unit;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.*;
 
@@ -87,7 +85,7 @@ public class HexMap {
     void updateView(MapView view) {
         view.setMapDirty(false);
         // change all to FOG unless a UNIT can see them, or they are HIGHLIGHTED or DIMMED
-        Array<Unit> units;
+        Array<AbstractUnit> units;
         if (view.player == null) {
             units = gameController.getUnits();
         } else {
@@ -108,7 +106,7 @@ public class HexMap {
         int[] unitpositions = new int[units.size];
         int[] radii = new int[units.size];
         for (int u=0;u<units.size;u++) {
-            Unit unit = units.get(u);
+            AbstractUnit unit = units.get(u);
             unitpositions[u] = (int)(unit.getView().getBoardPosition().y * mapData.bounds.x + unit.getView().getBoardPosition().x);
             radii[u] = unit.getData().getSightRange();
         }
@@ -137,11 +135,11 @@ public class HexMap {
     }
 
     public void highlightArea(MapView view, Vector2 center, int radius) {
-        Array<Unit> units = gameController.getUnits();
+        Array<AbstractUnit> units = gameController.getUnits();
 
         boolean[] notavailable = new boolean[view.hexStatus.length];
 
-        for (Unit u: units) {
+        for (AbstractUnit u: units) {
             if (!u.getView().getBoardPosition().equals(center))
                 notavailable[(int)(u.getView().getBoardPosition().y * mapData.bounds.x + u.getView().getBoardPosition().x)] = true;
         }
@@ -231,9 +229,9 @@ public class HexMap {
                 && mapViews.get(player.getPlayerId()).isBoardPositionVisible(pos);
     }
 
-    public boolean detectorCanSee(Player player, Array<Unit> units, Vector2 boardPosition) {
+    public boolean detectorCanSee(Player player, Array<AbstractUnit> units, Vector2 boardPosition) {
         for (int u = 0; u < units.size; u++) {
-            Unit unit = units.get(u);
+            AbstractUnit unit = units.get(u);
             if (unit.getOwner() == player && unit.getData().isDetector() && !unit.getData().isBuilding() && getMapDist(unit.getView().getBoardPosition(), boardPosition) <= unit.getData().getSightRange()) return true;
         }
         return false;

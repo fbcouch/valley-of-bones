@@ -1,23 +1,16 @@
 package com.ahsgaming.valleyofbones.screens.panels;
 
-import com.ahsgaming.valleyofbones.TextureManager;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.AbstractScreen;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
-import com.ahsgaming.valleyofbones.units.ProgressBar;
-import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Unit;
-import com.ahsgaming.valleyofbones.units.UnitData;
-import com.badlogic.gdx.Gdx;
+import com.ahsgaming.valleyofbones.units.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -48,7 +41,7 @@ public class InfoPanel extends Group {
     VOBGame game;
     LevelScreen levelScreen;
     Group grpUnit;
-    Unit selected, lastSelected;
+    AbstractUnit selected, lastSelected;
     Prototypes.JsonProto lastBuildProto, buildProto;
 
     Table bonusTable, mainTable, statTable;
@@ -256,7 +249,7 @@ public class InfoPanel extends Group {
         healthBar.setSize(iconMovesLeft.getX() - iconHealth.getX(), 4 * VOBGame.SCALE);
     }
 
-    public void setSelected(Unit unit) {
+    public void setSelected(AbstractUnit unit) {
         selected = unit;
         buildProto = null;
     }
@@ -300,7 +293,7 @@ public class InfoPanel extends Group {
             add(grpAbilityText).fillX().row();
         }
 
-        public void update(final Unit unit) {
+        public void update(final AbstractUnit unit) {
             removeAll();
 
             if (!unit.getData().getAbility().equals("")) {

@@ -1,7 +1,6 @@
 package com.ahsgaming.valleyofbones.units;
 
 import com.ahsgaming.valleyofbones.VOBGame;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,9 +31,9 @@ public class UnitView {
     Vector2 size = new Vector2();
     Array<Action> actions = new Array<Action>();
     Color color = new Color(1, 1, 1, 1);
-    Unit unit;
+    AbstractUnit unit;
 
-    public static UnitView createUnitView(Unit unit) {
+    public static UnitView createUnitView(AbstractUnit unit) {
         UnitView view = new UnitView();
 
         view.unit = unit;
@@ -53,6 +52,23 @@ public class UnitView {
         view.healthBar.setSize(view.getWidth(), 4f * VOBGame.SCALE);
 
         return view;
+    }
+
+    public void attackAnim() {
+        addAction(Actions.sequence(
+                UnitView.Actions.colorTo(new Color(1, 1, 0.5f, 1), 0.1f),
+                UnitView.Actions.delay(0.2f),
+                UnitView.Actions.colorTo(new Color(1, 1, 1, 1), 0.1f)
+        ));
+    }
+
+    public void damagedAnim() {
+        addAction(UnitView.Actions.sequence(
+                UnitView.Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
+                UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f),
+                UnitView.Actions.colorTo(new Color(1.0f, 0.5f, 0.5f, 1.0f), 0.1f),
+                UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f)
+        ));
     }
 
     public Sprite getImage() {

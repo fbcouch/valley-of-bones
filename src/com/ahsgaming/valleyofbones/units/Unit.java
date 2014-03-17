@@ -22,74 +22,24 @@
  */
 package com.ahsgaming.valleyofbones.units;
 
-import java.util.ArrayList;
-
 import com.ahsgaming.valleyofbones.*;
 import com.ahsgaming.valleyofbones.ai.UnitFSM;
-import com.ahsgaming.valleyofbones.network.Command;
-import com.ahsgaming.valleyofbones.screens.LevelScreen;
-import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.ahsgaming.valleyofbones.units.behavior.*;
 
 /**
  * @author jami
  *
  */
-public class Unit {
-	public String LOG = "Unit";
+public class Unit extends AbstractUnit {
 
-	JsonProto proto;
-    UnitData data;
-    UnitView view;
     UnitFSM fsm;
-    Player owner;
-    Player originalOwner;
-    int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public JsonProto getProto() {
-        return proto;
-    }
-
-    public UnitData getData() {
-        return data;
-    }
-
-    public UnitView getView() {
-        return view;
-    }
 
     public UnitFSM getFsm() {
         return fsm;
     }
 
-    public Player getOwner() {
-        return owner;
-    }
-
-    public Player getOriginalOwner() {
-        return originalOwner;
-    }
-
-    public static Unit createUnit(int id, String protoId, Player owner) {
-        Unit unit = new Unit();
+    public static AbstractUnit createUnit(int id, String protoId, Player owner) {
+        AbstractUnit unit = new Unit();
 
         unit.id = id;
         unit.originalOwner = unit.owner = owner;
@@ -97,13 +47,54 @@ public class Unit {
         unit.data = UnitData.createUnitData(unit.proto);
         unit.view = UnitView.createUnitView(unit);
 
+        unit.attackBehavior = selectAttackBehavior(unit);
+        unit.defendBehavior = selectDefendBehavior(unit);
+        unit.moveBehavior = selectMoveBehavior(unit);
+        unit.turnBehavior = new BasicUnitTurnListener(unit);
+        unit = applyAbility(unit);
 
-        if (unit.data.buildTime > 0) {
-            unit.data.building = true;
-            unit.data.buildTimeLeft = unit.data.buildTime;
+        if (unit.getData().buildTime > 0) {
+            unit.getData().building = true;
+            unit.getData().buildTimeLeft = unit.getData().buildTime;
         }
 
         return unit;
     }
 
+    public static MoveBehavior selectMoveBehavior(AbstractUnit unit) {
+        if (unit.getData().getMoveSpeed() > 0) {
+            return new BasicMove(unit);
+        }
+        return new NoMove();
+    }
+
+    public static AttackBehavior selectAttackBehavior(AbstractUnit unit) {
+        if (unit.getData().getAttackSpeed() > 0) {
+            return new BasicAttack(unit);
+        }
+        return new NoAttack();
+    }
+
+    public static DefendBehavior selectDefendBehavior(AbstractUnit unit) {
+        return new BasicDefend(unit);
+    }
+
+    public static AbstractUnit applyAbility(AbstractUnit unit) {
+        String ability = unit.getData().getAbility();
+        if (ability.equals("increasing-returns")) {
+            unit.turnBehavior = new IncreasingReturnsUnitTurnListener(unit);
+        } else if (ability.equals("detect")) {
+            return new DetectorUnit(unit);
+        } else if (ability.equals("stealth")) {
+            unit.abilityBehavior = new StealthAbility(unit);
+        } else if (ability.equals("sabotage")) {
+            unit.attackBehavior = new SabotageAttack(unit);
+            return new SabotageUnit(unit);
+        } else if (ability.equals("mind-control")) {
+
+        } else if (ability.equals("shift")) {
+            unit.moveBehavior = new ShiftMove(unit);
+        }
+        return unit;
+    }
 }

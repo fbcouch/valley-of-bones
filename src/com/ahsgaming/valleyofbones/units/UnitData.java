@@ -1,9 +1,7 @@
 package com.ahsgaming.valleyofbones.units;
 
 import com.ahsgaming.valleyofbones.Player;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -52,7 +50,7 @@ public class UnitData {
     boolean virginUnit = true;
 
     boolean mindControlUsed = false;
-    Unit mindControlUnit;
+    AbstractUnit mindControlUnit;
 
     float movesLeft = 0, attacksLeft = 0;
     int movesThisTurn = 0;

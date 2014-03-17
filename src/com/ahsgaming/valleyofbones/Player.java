@@ -26,14 +26,12 @@ import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
 import com.ahsgaming.valleyofbones.network.Upgrade;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
-import com.ahsgaming.valleyofbones.units.Unit;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;
 
@@ -72,7 +70,7 @@ public class Player {
 	
 	int teamId = 0;
 	
-	Unit baseUnit = null; // when this unit dies, this player is out (in some game types)
+	AbstractUnit baseUnit = null; // when this unit dies, this player is out (in some game types)
 	
 	/**
 	 * 
@@ -112,9 +110,9 @@ public class Player {
 	public void updateFoodAndUpkeep(GameController controller, boolean updateBank) {
 		float upkeep = 0;
 		int food = 0, mFood = 0;
-        Array<Unit> units = controller.getUnitsByPlayerId(playerId);
+        Array<AbstractUnit> units = controller.getUnitsByPlayerId(playerId);
         HashMap<String, Integer> unitCount = new HashMap<String, Integer>();
-		for (Unit unit: units) {
+		for (AbstractUnit unit: units) {
             if (!unitCount.containsKey(unit.getProto().id)) {
                 unitCount.put(unit.getProto().id, 0);
             }
@@ -166,7 +164,7 @@ public class Player {
         int costPerUnit = (proto.hasProperty("costperunit") ? proto.getProperty("costperunit").asInt() : 0);
         if (costPerUnit == 0) return cost;
 
-        for (Unit unit: controller.getUnitsByPlayerId(playerId)) {
+        for (AbstractUnit unit: controller.getUnitsByPlayerId(playerId)) {
             if (unit.getProto().id.equals(proto.id)) {
                 cost += costPerUnit;
             }
@@ -174,7 +172,7 @@ public class Player {
         return cost;
     }
 	
-	public boolean canUpgrade(Unit unit, String protoId, GameController controller) {
+	public boolean canUpgrade(AbstractUnit unit, String protoId, GameController controller) {
 		JsonProto proto = Prototypes.getProto(race, protoId);
 		
 		// TODO check if the upgrade can apply to this unit
@@ -192,8 +190,8 @@ public class Player {
 	}
 	
 	public boolean hasAUnit(String id, GameController controller) {
-		Array<Unit> units = controller.getUnitsByPlayerId(getPlayerId());
-		for (Unit u: units) {
+		Array<AbstractUnit> units = controller.getUnitsByPlayerId(getPlayerId());
+		for (AbstractUnit u: units) {
 			if (u.getProto().id.equals(id))
 				return true;
 		}
@@ -386,14 +384,14 @@ public class Player {
 	/**
 	 * @return the baseUnit
 	 */
-	public Unit getBaseUnit() {
+	public AbstractUnit getBaseUnit() {
 		return baseUnit;
 	}
 
 	/**
 	 * @param baseUnit the baseUnit to set
 	 */
-	public void setBaseUnit(Unit baseUnit) {
+	public void setBaseUnit(AbstractUnit baseUnit) {
 		this.baseUnit = baseUnit;
 	}
 	

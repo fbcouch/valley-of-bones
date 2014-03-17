@@ -28,6 +28,7 @@ import com.ahsgaming.valleyofbones.Utils;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.network.*;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -99,8 +100,8 @@ public class AIPlayer extends Player {
 
                 // next, create the value matrix and threat matrix
                 if (valueMatrix == null) {
-                    Array<Unit> visibleUnits = new Array<Unit>();
-                    for (Unit unit: controller.getUnits()) {
+                    Array<AbstractUnit> visibleUnits = new Array<AbstractUnit>();
+                    for (AbstractUnit unit: controller.getUnits()) {
                         if (visibilityMatrix[(int)(unit.getView().getBoardPosition().y * controller.getMap().getWidth() + unit.getView().getBoardPosition().x)]) {
                             visibleUnits.add(unit);
                         }
@@ -135,7 +136,7 @@ public class AIPlayer extends Player {
                 }
 
                 // move units
-                for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
+                for (AbstractUnit unit: controller.getUnitsByPlayerId(getPlayerId())) {
                     if (unit.getData().getMovesLeft() < 1) continue;
                     Vector2[] adjacent = HexMap.getAdjacent((int) unit.getView().getBoardPosition().x, (int) unit.getView().getBoardPosition().y);
                     Vector2 finalPos = new Vector2(unit.getView().getBoardPosition());
@@ -167,20 +168,20 @@ public class AIPlayer extends Player {
                 }
 
                 // attack
-                Array<Unit> visibleUnits = new Array<Unit>();
-                Array<Unit> friendlyUnits = controller.getUnitsByPlayerId(this.getPlayerId());
-                for (Unit unit: controller.getUnits()) {
+                Array<AbstractUnit> visibleUnits = new Array<AbstractUnit>();
+                Array<AbstractUnit> friendlyUnits = controller.getUnitsByPlayerId(this.getPlayerId());
+                for (AbstractUnit unit: controller.getUnits()) {
                     if (unit.getOwner() == this || unit.getOwner() == null) continue;
                     if (visibilityMatrix[(int)(unit.getView().getBoardPosition().y * controller.getMap().getWidth() + unit.getView().getBoardPosition().x)]
                             && !unit.getData().isInvisible() || controller.getMap().detectorCanSee(this, friendlyUnits, unit.getView().getBoardPosition())) {
                         visibleUnits.add(unit);
                     }
                 }
-                for (Unit unit: controller.getUnitsByPlayerId(getPlayerId())) {
+                for (AbstractUnit unit: controller.getUnitsByPlayerId(getPlayerId())) {
                     if (unit.getData().getAttacksLeft() < 1) continue;
-                    Unit toAttack = null;
+                    AbstractUnit toAttack = null;
                     float toAttackThreat = 0;
-                    for (Unit o: visibleUnits) {
+                    for (AbstractUnit o: visibleUnits) {
                         float thisThreat = threatMatrix[controller.getMap().getWidth() * (int)o.getView().getBoardPosition().y + (int)o.getView().getBoardPosition().x];
                         if (controller.getUnitManager().canAttack(unit, o) && (toAttack == null || thisThreat > toAttackThreat)) {
                             toAttack = o;
@@ -231,7 +232,7 @@ public class AIPlayer extends Player {
                         }
                     }
 
-                    for (Unit unit: controller.getUnits()) {
+                    for (AbstractUnit unit: controller.getUnits()) {
                         if (unit.getOwner() == this || !visibilityMatrix[(int)(unit.getView().getBoardPosition().y * controller.getMap().getWidth() + unit.getView().getBoardPosition().x)]) continue;
 
                         int unitIndex = protoIds.indexOf(unit.getProto().id, false);
@@ -288,7 +289,7 @@ public class AIPlayer extends Player {
 
 	}
 
-    public float[] createGoalMatrix(HexMap map, Array<Unit> units) {
+    public float[] createGoalMatrix(HexMap map, Array<AbstractUnit> units) {
         int mapWidth = map.getWidth(), mapHeight = map.getHeight();
         float[] goalMatrix = new float[mapWidth * mapHeight];
 
@@ -301,9 +302,9 @@ public class AIPlayer extends Player {
         return goalMatrix;
     }
 
-    public float calcGoalMatrix(int x, int y, HexMap map, Array<Unit> units) {
+    public float calcGoalMatrix(int x, int y, HexMap map, Array<AbstractUnit> units) {
         float total = 0;
-        for (Unit unit: units) {
+        for (AbstractUnit unit: units) {
             if (unit.getData().getType().equals("building")) {
                 int dist = map.getMapDist(unit.getView().getBoardPosition(), new Vector2(x, y));
                 Float value = 0f;
@@ -354,9 +355,9 @@ public class AIPlayer extends Player {
         return total;
     }
 
-    public boolean[] createVisibilityMatrix(HexMap map, Array<Unit> units) {
+    public boolean[] createVisibilityMatrix(HexMap map, Array<AbstractUnit> units) {
         boolean[] matrix = new boolean[map.getWidth() * map.getHeight()];
-        for (Unit unit: units) {
+        for (AbstractUnit unit: units) {
             if (unit.getData().isBuilding()) continue;
             int range = unit.getData().getSightRange();
             for (int x = (int)Math.max(unit.getView().getBoardPosition().x - range - 1, 0); x < Math.min(unit.getView().getBoardPosition().x + range + 1, map.getWidth()); x++) {
@@ -369,7 +370,7 @@ public class AIPlayer extends Player {
         return matrix;
     }
 
-    public float[] createUnitMatrix(HexMap map, Array<Unit> units, boolean threat) {
+    public float[] createUnitMatrix(HexMap map, Array<AbstractUnit> units, boolean threat) {
         float[] unitMatrix = new float[map.getWidth() * map.getHeight()];
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
@@ -379,9 +380,9 @@ public class AIPlayer extends Player {
         return unitMatrix;
     }
 
-    public float calcUnitMatrix(int x, int y, HexMap map, Array<Unit> units, boolean threat) {
+    public float calcUnitMatrix(int x, int y, HexMap map, Array<AbstractUnit> units, boolean threat) {
         float total = 0;
-        for (Unit unit: units) {
+        for (AbstractUnit unit: units) {
             if (unit.getOwner() == this) {
                 int i = Prototypes.getAll(getRace()).indexOf(Prototypes.getProto(getRace(), unit.getProto().id), true);
                 total += calc_value(

@@ -6,6 +6,7 @@ import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.EndTurn;
 import com.ahsgaming.valleyofbones.network.NetController;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +15,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
-import java.util.Stack;
 
 /**
  * valley-of-bones
@@ -47,7 +47,7 @@ public class FSMAIPlayer extends AIPlayer {
             countdown = timer;
             // my turn
 
-            Array<Unit> myUnits = controller.getUnitsByPlayerId(getPlayerId());
+            Array<AbstractUnit> myUnits = controller.getUnitsByPlayerId(getPlayerId());
 
             if (visibilityMatrix == null) {
                 visibilityMatrix = createVisibilityMatrix(controller.getMap(), myUnits);
@@ -83,8 +83,8 @@ public class FSMAIPlayer extends AIPlayer {
         return true;
     }
 
-    Command updateUnitFSMs(Array<Unit> units, GameController controller) {
-        for (Unit unit: units) {
+    Command updateUnitFSMs(Array<AbstractUnit> units, GameController controller) {
+        for (AbstractUnit unit: units) {
             if (!unitFSMs.containsKey(unit.getId())) {
                 unitFSMs.put(unit.getId(), new UnitFSM(unit));
             }
@@ -111,7 +111,7 @@ public class FSMAIPlayer extends AIPlayer {
         return cmd;
     }
 
-    void updateGoals(Array<Unit> myUnits, GameController controller) {
+    void updateGoals(Array<AbstractUnit> myUnits, GameController controller) {
         for (int i = 0; i < currentGoals.size; i++) {
             Directive goal = currentGoals.get(i);
             switch(goal.type) {
@@ -137,11 +137,11 @@ public class FSMAIPlayer extends AIPlayer {
             }
         }
 
-        for (Unit defend: myUnits) {
+        for (AbstractUnit defend: myUnits) {
             if (!defend.getData().isCapturable() && defend != getBaseUnit()) continue;
-            Array<Unit> friendlyUnits = new Array<Unit>();
+            Array<AbstractUnit> friendlyUnits = new Array<AbstractUnit>();
             boolean threat = false;
-            for (Unit u: controller.getUnitsInArea(defend.getView().getBoardPosition(), 5)) {
+            for (AbstractUnit u: controller.getUnitsInArea(defend.getView().getBoardPosition(), 5)) {
                 if (u.getOwner() != this && u.getOwner() != null && controller.playerCanSee(this, u)) {
                     threat = true;
                 } else if (u.getOwner() == this) {
@@ -150,7 +150,7 @@ public class FSMAIPlayer extends AIPlayer {
             }
 
             if (threat) {
-                for (Unit u: friendlyUnits) {
+                for (AbstractUnit u: friendlyUnits) {
                     UnitFSM fsm = unitFSMs.get(u.getId());
                     if (fsm != null && (fsm.directives.size() == 0 || fsm.directives.peek().type == Directive.DirectiveType.CAPTURE))
                         fsm.order(new Directive(Directive.DirectiveType.DEFEND, defend));
@@ -160,9 +160,9 @@ public class FSMAIPlayer extends AIPlayer {
     }
 
     Directive getGoal(GameController controller) {
-        Unit target = null;
+        AbstractUnit target = null;
         int dist = 0;
-        for (Unit unit: controller.getUnits()) {
+        for (AbstractUnit unit: controller.getUnits()) {
             if (unit.getProto().id.equals("tower-base") && unit.getOwner() != this) {
                 int unitDist = controller.getMap().getMapDist(getBaseUnit().getView().getBoardPosition(), unit.getView().getBoardPosition());
                 if (target == null || unitDist < dist) {

@@ -1,7 +1,7 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.ahsgaming.valleyofbones.map.HexMap;
-import com.ahsgaming.valleyofbones.units.Unit;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -45,7 +45,7 @@ public class LevelScreenInputListener extends ActorGestureListener {
         }
 
         Gdx.app.log(LOG, String.format("Select obj at %s", boardPos.toString()));
-        Unit u = levelScreen.gController.getUnitAtBoardPos(boardPos);
+        AbstractUnit u = levelScreen.gController.getUnitAtBoardPos(boardPos);
         if (u != null && levelScreen.gController.playerCanSee(levelScreen.game.getPlayer(), u)) {
             levelScreen.selected = u;
             Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProto().id, u.getData().getCurHP(), u.getData().getMaxHP()));
@@ -77,8 +77,8 @@ public class LevelScreenInputListener extends ActorGestureListener {
             levelScreen.isCurrentPlayer() &&
             levelScreen.selected.getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId())
         {
-            Unit target = levelScreen.gController.getUnitAtBoardPos(boardPos);
-            Unit unit = levelScreen.selected;
+            AbstractUnit target = levelScreen.gController.getUnitAtBoardPos(boardPos);
+            AbstractUnit unit = levelScreen.selected;
 
             if (target != null && (!target.getData().isInvisible() || levelScreen.gController.playerCanDetect(levelScreen.game.getPlayer(), unit))) {
                 if (target.getOwner() == null || target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {

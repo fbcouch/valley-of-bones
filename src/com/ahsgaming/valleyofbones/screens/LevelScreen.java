@@ -27,10 +27,9 @@ import com.ahsgaming.valleyofbones.map.HexMap;
 import com.ahsgaming.valleyofbones.map.MapView;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.panels.*;
+import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.ahsgaming.valleyofbones.units.Unit;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -97,7 +96,7 @@ public class LevelScreen extends AbstractScreen {
     Prototypes.JsonProto buildProto = null;
     Image buildImage = null;
 
-    Unit selected, lastSelected;
+    AbstractUnit selected, lastSelected;
 
     MapView mapView;
 
@@ -557,7 +556,7 @@ public class LevelScreen extends AbstractScreen {
             shapeRenderer = new ShapeRenderer();
         }
 
-        public void draw(Matrix4 projectionMatrix, Unit unit, Vector2 start, Vector2 offset, Vector2 tileSize) {
+        public void draw(Matrix4 projectionMatrix, AbstractUnit unit, Vector2 start, Vector2 offset, Vector2 tileSize) {
             shapeRenderer.setProjectionMatrix(projectionMatrix);
             shapeRenderer.begin(ShapeType.Filled);
             shapeRenderer.setColor((unit.getOwner() != null ? unit.getOwner().getPlayerColor() : new Color(1, 1, 1, 1)));
