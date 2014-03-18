@@ -414,7 +414,7 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 //        upgradePanel.setAnchor(0, 64);
 
         stage.addActor(buildPanel);
-        buildPanel.setPosition(-3 * VOBGame.SCALE, -3 * VOBGame.SCALE);
+        buildPanel.setPosition(0, 0);
 
         stage.addActor(selectionPanel);
         selectionPanel.setPosition(stage.getWidth() * 0.5f - selectionPanel.getWidth() * 0.5f, -selectionPanel.getHeight() + 3 * VOBGame.SCALE);
