@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.units;
 
 import com.ahsgaming.valleyofbones.VOBGame;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -174,7 +175,7 @@ public class UnitView {
     }
 
     public void addToPath(Vector2 position) {
-        path.add(position);
+        path.add(new Vector2(position));
     }
 
     public void addAction(Action action) {
@@ -189,7 +190,7 @@ public class UnitView {
         return actions.size > 0;
     }
 
-        public Action getCurAction() {
+    public Action getCurAction() {
         return (actions.size > 0 ? actions.first() : null);
     }
 
