@@ -4,6 +4,7 @@ import com.ahsgaming.valleyofbones.GameController;
 import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.ai.AStar;
 import com.ahsgaming.valleyofbones.map.HexMap;
+import com.ahsgaming.valleyofbones.map.MapView;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +19,7 @@ import java.util.HashMap;
  * Created on 1/16/14 by jami
  * ahsgaming.com
  */
-public class UnitManager {
+public class UnitManager implements EventListener {
     HashMap<Integer, AbstractUnit> units;
     GameController gameController;
 
@@ -29,10 +30,11 @@ public class UnitManager {
 
     public void addUnit(AbstractUnit unit) {
         units.put(unit.getId(), unit);
+        unit.register(this);
     }
 
     public void removeUnit(int id) {
-        units.remove(id);
+        units.remove(id).emit();
     }
 
     public AbstractUnit getUnit(int id) {
@@ -84,7 +86,7 @@ public class UnitManager {
             }
         }
         for (int i: toRemove) {
-            units.remove(i);
+            units.remove(i).emit();
             gameController.getMap().invalidateViews();
         }
     }
@@ -112,7 +114,6 @@ public class UnitManager {
     public boolean attack (AbstractUnit attacker, AbstractUnit defender) {
         if (canAttack(attacker, defender)) {
             attacker.attack(this, defender);
-            attacker.data.modified = TimeUtils.millis();
             return true;
         }
         return false;
@@ -120,7 +121,6 @@ public class UnitManager {
 
     public void moveUnit(AbstractUnit unit, Vector2 boardPosition) {
         unit.move(gameController, boardPosition);
-        unit.data.modified = TimeUtils.millis();
     }
 
     public void activateAbility(AbstractUnit unit) {
@@ -162,5 +162,10 @@ public class UnitManager {
                 (!target.data.isInvisible() || looker.data.isDetector())
                 && HexMap.getMapDist(looker.view.boardPosition, target.view.boardPosition) <= looker.data.sightRange
         );
+    }
+
+    @Override
+    public void update() {
+        gameController.getMap().invalidateViews();
     }
 }

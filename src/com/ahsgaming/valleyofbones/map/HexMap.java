@@ -180,6 +180,14 @@ public class HexMap {
         return mapViews.get(id);
     }
 
+    public Array<MapView> getMapViews() {
+        Array<MapView> returnVal = new Array<MapView>(mapViews.values().size());
+        for (MapView mv: mapViews.values()) {
+            returnVal.add(mv);
+        }
+        return returnVal;
+    }
+
     public int getWidth() {
 		return (int)mapData.bounds.x;
 	}

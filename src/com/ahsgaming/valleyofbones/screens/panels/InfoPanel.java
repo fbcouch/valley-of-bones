@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * Time: 11:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class InfoPanel extends Group {
+public class InfoPanel extends Group implements EventListener {
     public static final String LOG = "InfoPanel";
 
     final String HEALTH = "%d/%d";
@@ -176,7 +176,7 @@ public class InfoPanel extends Group {
 
             layout();
 
-        } else if (selected != null && (selected != lastSelected || selected.getData().getModified() > lastUpdated)) {
+        } else if (selected != null) {
             lastSelected = selected;
             buildProto = null;
             lastBuildProto = null;
@@ -255,6 +255,7 @@ public class InfoPanel extends Group {
     }
 
     public void setBuildProto(Prototypes.JsonProto proto) {
+        selected = null;
         buildProto = proto;
     }
 

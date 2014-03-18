@@ -28,6 +28,7 @@ import com.ahsgaming.valleyofbones.map.MapView;
 import com.ahsgaming.valleyofbones.network.*;
 import com.ahsgaming.valleyofbones.screens.panels.*;
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
+import com.ahsgaming.valleyofbones.units.EventListener;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
@@ -51,7 +52,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * @author jami
  *
  */
-public class LevelScreen extends AbstractScreen {
+public class LevelScreen extends AbstractScreen implements EventListener {
 	public String LOG = "LevelScreen";
 
     static float SELECT_BOX_LINE_WIDTH = 2;
@@ -237,6 +238,25 @@ public class LevelScreen extends AbstractScreen {
             buildProto = proto;
             buildImage = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
             buildImage.setColor(1, 1, 1, 0.5f);
+
+            clearSelection();
+        }
+    }
+
+    public void select(AbstractUnit unit) {
+        clearSelection();
+        unit.register(this);
+        unit.register(selectionPanel);
+        selectionPanel.setSelected(unit);
+        selectionPanel.update();
+        selected = unit;
+    }
+
+    public void clearSelection() {
+        if (selected != null) {
+            selected.remove(this);
+            selected.remove(selectionPanel);
+            selectionPanel.setSelected(null);
             selected = null;
         }
     }
@@ -441,33 +461,27 @@ public class LevelScreen extends AbstractScreen {
 
         if (buildMode && !isCurrentPlayer()) unsetBuildMode();
 
-        if (selected != null && selected.getData().getCurHP() <= 0 && !selected.getData().getType().equals("building"))
-            selected = null;
+        if (selected != null && selected.getData().getCurHP() <= 0 && !selected.getData().getType().equals("building")) {
+            clearSelection();
+        }
 
         // clear highlighting if necessary
         mapView.clearHighlightAndDim();
-        if (lastSelected != selected || (selected != null && selected.getData().getModified() > lastUpdate)) {
-            lastUpdate = TimeUtils.millis();
-            mapView.setMapDirty(true);
-        }
 
         lastSelected = selected;
 
-        selectionPanel.setSelected(null);
         if (buildMode) {
             selectionPanel.setBuildProto(buildProto);
+            selectionPanel.update();
 
             if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
                 selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6  * VOBGame.SCALE, 0.5f));
             }
 
         } else {
-            selectionPanel.setBuildProto(null);
-
             if (lastSelected != null) {
                 gController.getMap().highlightArea(mapView, lastSelected.getView().getBoardPosition(), (int)lastSelected.getData().getMovesLeft());
 
-                selectionPanel.setSelected(lastSelected);
                 if (Utils.epsilonEquals(selectionPanel.getY(), -selectionPanel.getHeight() + 3f  * VOBGame.SCALE, 0.01f)) {
                     selectionPanel.addAction(Actions.moveBy(0, selectionPanel.getHeight() - 6  * VOBGame.SCALE, 0.5f));
                 }
@@ -478,13 +492,9 @@ public class LevelScreen extends AbstractScreen {
             }
         }
 
-//        gController.getMap().update(game.getPlayer());
-
         pausePopup();
 		yourTurnPopup();
         buildPanel.update();
-
-        selectionPanel.update();
 
         turnPanel.update(isCurrentPlayer());
 
@@ -510,6 +520,11 @@ public class LevelScreen extends AbstractScreen {
         menuButton.setPosition(stage.getWidth() - menuButton.getWidth() + 30 * VOBGame.SCALE, -3  * VOBGame.SCALE);
         stage.draw();
 	}
+
+    @Override
+    public void update() {
+        mapView.setMapDirty(true);
+    }
 	
 	public void addFloatingLabel(String text, float x, float y) {
         Vector2 screenPos = mapToScreenCoords(x, y);

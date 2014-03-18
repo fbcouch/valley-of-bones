@@ -37,24 +37,34 @@ public class AbstractUnit implements EventEmitter {
     }
 
     public boolean attack(UnitManager unitManager, AbstractUnit target) {
-        if (attackBehavior != null)
-            return attackBehavior.attack(unitManager, target);
+        if (attackBehavior != null) {
+            if (attackBehavior.attack(unitManager, target)) {
+                emit();
+                return true;
+            }
+        }
         return false;
     }
 
     public void move(GameController gameController, Vector2 boardPosition) {
-        if (moveBehavior != null)
+        if (moveBehavior != null) {
             moveBehavior.move(gameController, boardPosition);
+            emit();
+        }
     }
 
     public void defend(float damage) {
-        if (defendBehavior != null)
+        if (defendBehavior != null) {
             defendBehavior.defend(damage);
+            emit();
+        }
     }
 
     public void activateAbility() {
-        if (abilityBehavior != null)
+        if (abilityBehavior != null) {
             abilityBehavior.activateAbility();
+            emit();
+        }
     }
 
     public int getId() {
@@ -83,6 +93,7 @@ public class AbstractUnit implements EventEmitter {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+        emit();
     }
 
     public void setOriginalOwner(Player originalOwner) {
@@ -114,10 +125,12 @@ public class AbstractUnit implements EventEmitter {
 
     public void startTurn(int turn) {
         turnBehavior.startTurn(turn);
+        emit();
     }
 
     public void endTurn(int turn) {
         turnBehavior.endTurn(turn);
+        emit();
     }
 
     public void update(UnitManager unitManager, float delta) {

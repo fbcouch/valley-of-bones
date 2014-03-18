@@ -47,11 +47,11 @@ public class LevelScreenInputListener extends ActorGestureListener {
         Gdx.app.log(LOG, String.format("Select obj at %s", boardPos.toString()));
         AbstractUnit u = levelScreen.gController.getUnitAtBoardPos(boardPos);
         if (u != null && levelScreen.gController.playerCanSee(levelScreen.game.getPlayer(), u)) {
-            levelScreen.selected = u;
+            levelScreen.select(u);
             Gdx.app.log(LOG, String.format("Selected: %s (%d/%d)", u.getProto().id, u.getData().getCurHP(), u.getData().getMaxHP()));
             levelScreen.unsetBuildMode();
         } else {
-            levelScreen.selected = null;
+            levelScreen.clearSelection();
         }
     }
 
