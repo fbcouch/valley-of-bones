@@ -41,6 +41,16 @@ public class CapturableUnitTurnListener extends UnitTurnListener {
 
     @Override
     public void startTurn(int turn) {
+        if (unit.getOwner() != null) {
+            int hp = unit.getData().getCurHP();
+            if (unit.getOwner() == unit.getData().getUncontested()) {
+                hp += 5 * (unit.getData().getCapUnitCount() + 1);
+            } else if (unit.getData().getUncontested() == null) {
+                hp += 5;
+            }
+            unit.getData().setCurHP(Math.min(unit.getData().getMaxHP(), hp));
+        }
+
         listener.startTurn(turn);
     }
 

@@ -97,6 +97,9 @@ public class Unit extends AbstractUnit {
         } else if (ability.equals("mind-control")) {
             unit.getData().setInvisible(true);
             unit.getData().setControllable(false);
+            MindControlAbility mindControlAbility = new MindControlAbility(unit);
+            unit.attackBehavior = mindControlAbility;
+            unit.abilityBehavior = mindControlAbility;
         } else if (ability.equals("shift")) {
             unit.moveBehavior = new ShiftMove(unit);
         }

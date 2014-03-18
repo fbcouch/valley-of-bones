@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * Date: 3/17/14
  * Time: 6:30 PM
  */
-public class MindControlAbility implements AbilityBehavior {
+public class MindControlAbility implements AbilityBehavior, AttackBehavior {
     AbstractUnit unit;
 
     public MindControlAbility(AbstractUnit unit) {
@@ -29,5 +29,20 @@ public class MindControlAbility implements AbilityBehavior {
             unit.getData().setAttacksLeft(0);
             unit.getData().setModified(TimeUtils.millis());
         }
+    }
+
+    @Override
+    public boolean attack(UnitManager unitManager, AbstractUnit defender) {
+        if (!unit.getData().isMindControlUsed() && unit.getData().getMindControlUnit() == null && defender.getData().isControllable()) {
+            unit.getData().setMindControlUnit(defender);
+            unit.getData().setMindControlUsed(true);
+            unit.getData().setAttacksLeft(0);
+
+            defender.setOwner(unit.getOwner());
+            defender.getData().setAttacksLeft(0);
+            defender.getData().setMovesLeft(0);
+            return true;
+        }
+        return false;
     }
 }
