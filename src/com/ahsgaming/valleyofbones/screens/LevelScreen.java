@@ -215,32 +215,14 @@ public class LevelScreen extends AbstractScreen implements EventListener {
         }
     }
 
-//    public boolean canRefund(Unit unit) {
-//        return gController.canPlayerRefundUnit(game.getPlayer(), unit);
-//    }
-//
-//    public void refundUnit(Unit unit) {
-//        if (canRefund(unit)) {
-//            int refund = unit.getRefund();
-//            Refund r = new Refund();
-//            r.owner = game.getPlayer().getPlayerId();
-//            r.turn = gController.getGameTurn();
-//            r.unit = unit.getObjId();
-//            game.sendCommand(r);
-//            addFloatingLabel(String.format("+$%02d", refund), unit.getX() + unit.getWidth() * 0.5f, unit.getY());
-//        }
-//    }
-
     public void setBuildMode(Prototypes.JsonProto proto) {
         if (buildMode) unsetBuildMode();
-        if (isCurrentPlayer() && game.getPlayer().canBuild(proto.id, gController)) {
-            buildMode = true;
-            buildProto = proto;
-            buildImage = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
-            buildImage.setColor(1, 1, 1, 0.5f);
+        buildMode = true;
+        buildProto = proto;
+        buildImage = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
+        buildImage.setColor(1, 1, 1, 0.5f);
 
-            clearSelection();
-        }
+        clearSelection();
     }
 
     public void select(AbstractUnit unit) {

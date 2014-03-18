@@ -39,24 +39,24 @@ public class Prototypes {
         }
 
         for (int i=0; i<returnVal.size; i++) {
-            int max = i;
-            int maxcost = 0;
-            if (returnVal.get(max).hasProperty("cost"))
-                maxcost = returnVal.get(max).getProperty("cost").asInt();
+            int min = i;
+            int mincost = 0;
+            if (returnVal.get(min).hasProperty("cost"))
+                mincost = returnVal.get(min).getProperty("cost").asInt();
 
             for (int j=i+1; j<returnVal.size; j++) {
                 int jcost = 0;
                 if (returnVal.get(j).hasProperty("cost"))
                     jcost = returnVal.get(j).getProperty("cost").asInt();
 
-                if (jcost > maxcost) {
-                    max = j;
-                    maxcost = jcost;
+                if (jcost < mincost) {
+                    min = j;
+                    mincost = jcost;
                 }
             }
 
-            if (max != i) {
-                returnVal.insert(i, returnVal.removeIndex(max));
+            if (min != i) {
+                returnVal.insert(i, returnVal.removeIndex(min));
             }
         }
 

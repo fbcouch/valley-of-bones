@@ -5,7 +5,6 @@ import com.ahsgaming.valleyofbones.Player;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
 import com.ahsgaming.valleyofbones.units.Prototypes;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -29,8 +28,7 @@ public class BuildPanel extends Group {
     Player player;
     Skin skin;
 
-    Image imgBackground, imgInfantryTab;//, imgMechTab;
-    Array<BuildItem> infantryItems;//, mechItems;
+    Array<BuildItem> items;
     Array<Prototypes.JsonProto> itemProtos;
     Image imgNext;
 
@@ -42,27 +40,8 @@ public class BuildPanel extends Group {
         this.levelScreen = lvlScreen;
         skin = levelScreen.getSkin();
 
-        imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-hud-bg"));
-//        addActor(imgBackground);
-
-//        imgInfantryTab = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-infantry-tab"));
-//        addActor(imgInfantryTab);
-//        imgInfantryTab.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
-//
-//                select(0);
-//            }
-//        });
-
-        for (int i = 0; i < 4; i++) {
-            Image btnBg = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
-            addActor(btnBg);
-            btnBg.setPosition((i % 2) * btnBg.getWidth() * 0.5f, btnBg.getHeight() * i * 0.75f);
-        }
-
-        imgNext = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
+        imgNext = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "next-button"));
+        imgNext.setScale(0.75f);
         imgNext.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -72,30 +51,13 @@ public class BuildPanel extends Group {
             }
         });
 
-//        imgMechTab = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "build-mech-tab"));
-//        addActor(imgMechTab);
-//        imgMechTab.addListener(new ClickListener(){
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                super.clicked(event, x, y);    //To change body of overridden methods use File | Settings | File Templates.
-//
-//                select(1);
-//            }
-//        });
-
         itemProtos = Prototypes.getPlayerCanBuild((player != null ? player.getRace() : "terran"));
-        infantryItems = new Array<BuildItem>();
-//        mechItems = new Array<BuildItem>();
+        items = new Array<BuildItem>();
 
         for (Prototypes.JsonProto jp: itemProtos) {
             final BuildItem item = new BuildItem(jp, skin);
 
-            String type = jp.getProperty("subtype").asString();
-//            if (type.equals("armored")) {
-//                mechItems.add(item);
-//            } else {
-            infantryItems.add(item);
-//            }
+            items.add(item);
 
             item.addListener(new ClickListener() {
                 @Override
@@ -104,6 +66,16 @@ public class BuildPanel extends Group {
 
                     click(item);
                 }
+
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    item.showTooltip(x, y);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    item.hideTooltip();
+                }
             });
         }
 
@@ -111,61 +83,28 @@ public class BuildPanel extends Group {
     }
 
     public void layout() {
-//        imgInfantryTab.setPosition(-15 * VOBGame.SCALE, imgBackground.getTop() - 4 * VOBGame.SCALE);
-//        imgMechTab.setPosition(imgInfantryTab.getRight() - 25 * VOBGame.SCALE, imgInfantryTab.getY());
-        float y = 111 * VOBGame.SCALE;
-//        switch(selected) {
-//            default:
-//            case 0:
-//                imgInfantryTab.setZIndex(2);
-//                imgMechTab.setZIndex(0);
-//                for (Group g: mechItems) g.remove();
-//
-        for (Group g: infantryItems) g.remove();
+        float y = imgNext.getHeight() * imgNext.getScaleY();
+
+        for (Group g: items) g.remove();
         imgNext.remove();
 
-        int start = page * 3, end = (infantryItems.size <= 4 ? 4 : Math.min(infantryItems.size, start + 3));
+        int start = page * 3, end = (items.size <= 4 ? 4 : Math.min(items.size, start + 3));
         for (int i = start; i < end; i++) {
-            Group g = infantryItems.get(i);
+            Group g = items.get(i);
             addActor(g);
-            g.setPosition(((i % 3 +1) % 2) * 24 * VOBGame.SCALE, y);
-            y -= g.getHeight() * 0.75f;
+            g.setPosition(0, y);
+            y += g.getHeight();
         }
 
-        if (infantryItems.size > 4) {
+        if (items.size > 4) {
             addActor(imgNext);
             imgNext.setPosition(0, 0);
         }
 
-//                break;
-//            case 1:
-//                imgInfantryTab.setZIndex(0);
-//                imgMechTab.setZIndex(2);
-//                for (Group g: infantryItems) g.remove();
-//
-//                for (Group g: mechItems) {
-//                    addActor(g);
-//                    g.setPosition(5, y);
-//                    y -= g.getHeight();
-//                }
-//                break;
-//        }
-
-        setSize(imgBackground.getRight(), imgBackground.getTop());
+        setSize(items.get(end - 1).getWidth(), items.get(end - 1).getTop());
     }
 
     public void update() {
-        Array<BuildItem> items;
-//        switch(selected) {
-//            default:
-//            case 0:
-                items = infantryItems;
-//                break;
-//            case 1:
-//                items = mechItems;
-//                break;
-//        }
-
         for (BuildItem item: items) {
             if (player == null || player.canBuild(item.proto.id, gController)) {
                 item.icon.setColor(1, 1, 1, 1);
@@ -175,7 +114,7 @@ public class BuildPanel extends Group {
             if (player != null) {
                 item.setCost(player.getProtoCost(item.proto, gController));
             }
-            item.setHighlight(levelScreen.isBuildMode() && levelScreen.getBuildProto() == item.proto);
+            item.setHighlight(levelScreen.isBuildMode() && levelScreen.getBuildProto() == item.proto, levelScreen.isCurrentPlayer() && gController.getCurrentPlayer().canBuild(item.proto.id, gController));
         }
     }
 
@@ -190,7 +129,7 @@ public class BuildPanel extends Group {
 
     public void next() {
         page++;
-        if (infantryItems.size <= 4 || page * 3 >= infantryItems.size) {
+        if (items.size <= 4 || page * 3 >= items.size) {
             page = 0;
         }
         layout();
@@ -199,7 +138,7 @@ public class BuildPanel extends Group {
     public static class BuildItem extends Group {
 
         Skin skin;
-        Image icon, imgSupply, imgMoney, imgHighlight, iconSubtype;
+        Image icon, imgSupply, imgMoney, imgHighlight, iconSubtype, imgBackground;
         Label lblSupply, lblMoney;
         Prototypes.JsonProto proto;
         Group tooltip;
@@ -207,6 +146,9 @@ public class BuildPanel extends Group {
         public BuildItem(Prototypes.JsonProto proto, Skin skin) {
             this.proto = proto;
             this.skin = skin;
+
+            imgBackground = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "button-bg"));
+            addActor(imgBackground);
 
             imgHighlight = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", "unit-highlight"));
 //            imgHighlight.setScale(0.75f);
@@ -242,39 +184,30 @@ public class BuildPanel extends Group {
             tooltip.addActor(lblMoney);
 
             setSize(icon.getWidth() * icon.getScaleX(), icon.getHeight() * icon.getScaleY());
+        }
 
-            addListener(new InputListener() {
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    super.enter(event, x, y, pointer, fromActor);
+        public void showTooltip(float x, float y) {
+            addActor(tooltip);
+            tooltip.setPosition(imgBackground.getWidth() + 2 * VOBGame.SCALE, 3 * VOBGame.SCALE);
+        }
 
-                    addActor(tooltip);
-                    tooltip.setPosition(x, y);
-                }
-
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    super.exit(event, x, y, pointer, toActor);
-
-                    removeActor(tooltip);
-                }
-
-                @Override
-                public boolean mouseMoved(InputEvent event, float x, float y) {
-//                    tooltip.setPosition(x, y);
-                    return super.mouseMoved(event, x, y);
-                }
-            });
+        public void hideTooltip() {
+            removeActor(tooltip);
         }
 
         public void setCost(int cost) {
             lblMoney.setText(Integer.toString(cost));
         }
 
-        public void setHighlight(boolean highlight) {
+        public void setHighlight(boolean highlight, boolean canBuild) {
             if (highlight) {
+                if (canBuild) {
+                    imgHighlight.setColor(1f, 1, 1, 1);
+                } else {
+                    imgHighlight.setColor(0.8f, 0, 0, 1);
+                }
                 addActor(imgHighlight);
-                imgHighlight.setZIndex(0);
+                imgHighlight.setZIndex(1);
             } else {
                 imgHighlight.remove();
             }
