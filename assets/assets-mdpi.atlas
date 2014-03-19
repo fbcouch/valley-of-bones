@@ -5,7 +5,7 @@ filter: Nearest,Nearest
 repeat: none
 ability-bg
   rotate: false
-  xy: 1811, 404
+  xy: 1877, 404
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -33,7 +33,7 @@ armored
   index: -1
 armored-small
   rotate: false
-  xy: 436, 158
+  xy: 1803, 292
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -89,21 +89,21 @@ build-mech-tab
   index: -1
 building
   rotate: false
-  xy: 1811, 370
+  xy: 1877, 370
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 building-small
   rotate: false
-  xy: 2023, 424
+  xy: 436, 158
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 button-bg
   rotate: false
-  xy: 1759, 394
+  xy: 1825, 394
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -131,42 +131,42 @@ check-bg
   index: -1
 check-off
   rotate: false
-  xy: 1853, 394
+  xy: 1919, 394
   size: 40, 16
   orig: 40, 16
   offset: 0, 0
   index: -1
 check-on
   rotate: false
-  xy: 1895, 394
+  xy: 1961, 394
   size: 40, 16
   orig: 40, 16
   offset: 0, 0
   index: -1
 checked-shield
   rotate: false
-  xy: 1853, 412
+  xy: 1919, 412
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 checked-shield-small
   rotate: false
-  xy: 1735, 292
+  xy: 570, 97
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 crossed-swords
   rotate: false
-  xy: 1887, 412
+  xy: 1953, 412
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 crossed-swords-small
   rotate: false
-  xy: 570, 97
+  xy: 1825, 286
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -187,14 +187,14 @@ dark-metal-hex-depth
   index: -1
 detect
   rotate: false
-  xy: 1921, 412
+  xy: 1987, 412
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 detect-small
   rotate: false
-  xy: 1937, 390
+  xy: 1803, 270
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -236,28 +236,28 @@ game-menu-bg
   index: -1
 hazard-sign
   rotate: false
-  xy: 1955, 412
+  xy: 438, 15
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 hazard-sign-small
   rotate: false
-  xy: 1959, 390
+  xy: 537, 79
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 hospital-cross
   rotate: false
-  xy: 1989, 412
+  xy: 1429, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 hospital-cross-small
   rotate: false
-  xy: 1981, 390
+  xy: 1825, 264
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -271,35 +271,35 @@ hud-bar
   index: -1
 increasing-returns
   rotate: false
-  xy: 438, 15
+  xy: 1463, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 increasing-returns-small
   rotate: false
-  xy: 2003, 390
+  xy: 1911, 372
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 king
   rotate: false
-  xy: 1429, 280
+  xy: 1497, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 king-small
   rotate: false
-  xy: 563, 75
+  xy: 1911, 350
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 light
   rotate: false
-  xy: 1463, 280
+  xy: 1531, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -320,7 +320,7 @@ light-mech-overlay
   index: -1
 light-small
   rotate: false
-  xy: 1757, 286
+  xy: 1933, 372
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -369,14 +369,14 @@ metal-hex-depth
   index: -1
 mind-control
   rotate: false
-  xy: 1497, 280
+  xy: 1565, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 mind-control-small
   rotate: false
-  xy: 1735, 270
+  xy: 1933, 350
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -397,14 +397,14 @@ mindwalker-overlay
   index: -1
 money
   rotate: false
-  xy: 1531, 280
+  xy: 1599, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 money-small
   rotate: false
-  xy: 1757, 264
+  xy: 1955, 372
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -439,7 +439,7 @@ path-edge
   index: -1
 path-node
   rotate: false
-  xy: 2023, 412
+  xy: 1208, 394
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
@@ -481,56 +481,56 @@ radial
   index: -1
 radial-balance
   rotate: false
-  xy: 1565, 280
+  xy: 1633, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 radial-balance-small
   rotate: false
-  xy: 1845, 372
+  xy: 1955, 350
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 reticule
   rotate: false
-  xy: 1599, 280
+  xy: 1667, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 reticule-small
   rotate: false
-  xy: 1845, 350
+  xy: 1977, 372
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 rune-sword
   rotate: false
-  xy: 1633, 280
+  xy: 1701, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 rune-sword-small
   rotate: false
-  xy: 1867, 372
+  xy: 1977, 350
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 sabotage
   rotate: false
-  xy: 1667, 280
+  xy: 1735, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sabotage-small
   rotate: false
-  xy: 1867, 350
+  xy: 2003, 390
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -572,14 +572,14 @@ selection-hud-bg
   index: -1
 shift
   rotate: false
-  xy: 1701, 280
+  xy: 1769, 280
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shift-small
   rotate: false
-  xy: 1889, 372
+  xy: 1999, 368
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -593,7 +593,7 @@ skull-crossed-bones
   index: -1
 skull-crossed-bones-small
   rotate: false
-  xy: 1889, 350
+  xy: 1999, 346
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -649,14 +649,14 @@ spectre-overlay
   index: -1
 splash
   rotate: false
-  xy: 1759, 308
+  xy: 1825, 308
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 splash-small
   rotate: false
-  xy: 1911, 372
+  xy: 2025, 398
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -670,14 +670,14 @@ starship
   index: -1
 stealth
   rotate: false
-  xy: 1811, 336
+  xy: 1877, 336
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stealth-small
   rotate: false
-  xy: 1911, 350
+  xy: 1911, 328
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -691,7 +691,7 @@ supply
   index: -1
 supply-small
   rotate: false
-  xy: 1933, 368
+  xy: 1933, 328
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -733,14 +733,35 @@ unit-builder-overlay
   index: -1
 tower
   rotate: false
-  xy: 1561, 314
+  xy: 1627, 314
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-tower-base
+tower-armor
   rotate: false
   xy: 1561, 380
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+tower-armor-overlay
+  rotate: false
+  xy: 1495, 314
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+tower-overlay
+  rotate: false
+  xy: 1495, 314
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+tower-money-overlay
+  rotate: false
+  xy: 1495, 314
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -752,9 +773,16 @@ tower-base-overlay
   orig: 64, 64
   offset: 0, 0
   index: -1
-tower-overlay
+tower-base
   rotate: false
-  xy: 1495, 314
+  xy: 1561, 314
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+tower-money
+  rotate: false
+  xy: 1627, 380
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -782,14 +810,14 @@ turn-indicator-base
   index: -1
 turn-indicator-overlay
   rotate: false
-  xy: 537, 75
+  xy: 2021, 420
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 unit-highlight
   rotate: false
-  xy: 1759, 342
+  xy: 1825, 342
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -810,35 +838,35 @@ walking-boot
   index: -1
 walking-boot-small
   rotate: false
-  xy: 1955, 368
+  xy: 1955, 328
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 warrior
   rotate: false
-  xy: 1627, 314
+  xy: 1693, 314
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 warrior-overlay
   rotate: false
-  xy: 1627, 380
+  xy: 1693, 380
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 wraith
   rotate: false
-  xy: 1693, 314
+  xy: 1759, 314
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 wraith-overlay
   rotate: false
-  xy: 1693, 380
+  xy: 1759, 380
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

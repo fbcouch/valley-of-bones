@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 
 /**
  * valley-of-bones
@@ -28,7 +29,7 @@ public class BuildPanel extends Group {
     Player player;
     Skin skin;
 
-    Array<BuildItem> items;
+    Array<BuildItem> items, allItems;
     Array<Prototypes.JsonProto> itemProtos;
     Image imgNext;
 

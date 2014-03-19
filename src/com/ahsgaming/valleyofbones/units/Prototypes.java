@@ -38,28 +38,6 @@ public class Prototypes {
             if ((jp.type.equals("building") || jp.type.equals("unit")) && cost >= 0) returnVal.add(jp);
         }
 
-        for (int i=0; i<returnVal.size; i++) {
-            int min = i;
-            int mincost = 0;
-            if (returnVal.get(min).hasProperty("cost"))
-                mincost = returnVal.get(min).getProperty("cost").asInt();
-
-            for (int j=i+1; j<returnVal.size; j++) {
-                int jcost = 0;
-                if (returnVal.get(j).hasProperty("cost"))
-                    jcost = returnVal.get(j).getProperty("cost").asInt();
-
-                if (jcost < mincost) {
-                    min = j;
-                    mincost = jcost;
-                }
-            }
-
-            if (min != i) {
-                returnVal.insert(i, returnVal.removeIndex(min));
-            }
-        }
-
         return returnVal;
     }
 

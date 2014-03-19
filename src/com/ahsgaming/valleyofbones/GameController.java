@@ -433,7 +433,7 @@ public class GameController {
 		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
 
         AbstractUnit unit = Unit.createUnit(getNextObjectId(), cmd.building, this.getPlayerById(cmd.owner));
-        if (owner.getRace().equals("terran")) {
+        if (owner.getRace().equals("terran") && !junit.type.equals("building")) {
             unit.getView().setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
             unit.getView().addAction(UnitView.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
         } else {
