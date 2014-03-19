@@ -314,199 +314,27 @@ public class GameController {
 		
 	}
 	
-	public boolean validate(Command cmd) {
-		if (cmd.owner != currentPlayer.getPlayerId() && !(cmd instanceof Surrender) && !(cmd instanceof Pause) && !(cmd instanceof Unpause)) return false;
-
-		if (cmd instanceof Attack) {
-            AbstractUnit u = unitManager.getUnit(((Attack)cmd).unit);
-            AbstractUnit o = unitManager.getUnit(((Attack)cmd).target);
-            return u != null && u.getData().getAttacksLeft() >= 1 && o != null && o.getData().getCurHP() > 0;
-		} else if (cmd instanceof Build) {
-			Build b = (Build)cmd;
-//            if (!getPlayerById(b.owner).canBuild(b.building, this)) {
-//                Gdx.app.log(LOG, "build failed: cant build");
-//            }
-//            if (!isBoardPosEmpty(b.location)) {
-//                Gdx.app.log(LOG, "build failed: position not empty");
-//            }
-			return validateBuild(b);
-		} else if (cmd instanceof Move) {
-			return validateMove((Move)cmd);
-		} else if (cmd instanceof Pause) {
-			return cmd.owner == -1 || maxPauses == 0 || ((Pause) cmd).isAuto || getPlayerById(cmd.owner).getPauses() < maxPauses;
-		} else if (cmd instanceof Unpause) {
-			return true;
-		} else if (cmd instanceof EndTurn) {
-            return (cmd.owner == currentPlayer.getPlayerId());
-        } else if (cmd instanceof Refund) {
-            Refund r = (Refund)cmd;
-            Player p = getPlayerById(r.owner);
-            AbstractUnit u = unitManager.getUnit(r.unit);
-            return canPlayerRefundUnit(p, u);
-        } else if (cmd instanceof ActivateAbility) {
-            ActivateAbility ab = (ActivateAbility)cmd;
-            AbstractUnit u = unitManager.getUnit(ab.unit);
-            if (u.getOwner() != null && u.getOwner().getPlayerId() != ab.owner) return false;
-            return true;
-        } else if (cmd instanceof Surrender) {
-            return true;
-        }
-		return false;
-	}
-	
 	public void executeCommand(Command cmd) {
-//        Json json = new Json();
-//        System.out.println(json.prettyPrint(json.toJson(cmd)));
-		if (!validate(cmd)) {
-//            Gdx.app.log(LOG, "invalid command");
-            return;
+		if (cmd.validate(this)) {
+            cmd.execute(this);
+            commandHistory.add(cmd);
+            map.invalidateViews();
         }
-		if (cmd instanceof Attack) {
-			executeAttack((Attack)cmd);
-            if (turnTimer < actionBonusTime)
-                turnTimer = actionBonusTime;
-		} else if (cmd instanceof Build) {
-//			Gdx.app.log(LOG, "Building: " + Integer.toString(cmd.turn));
-			executeBuild((Build)cmd);
-            if (turnTimer < actionBonusTime)
-                turnTimer = actionBonusTime;
-		} else if (cmd instanceof Move) {
-			executeMove((Move)cmd);
-            if (turnTimer < actionBonusTime)
-                turnTimer = actionBonusTime;
-		} else if (cmd instanceof Pause) {
-			executePause((Pause)cmd);
-		} else if (cmd instanceof Unpause) {
-			executeUnpause((Unpause)cmd);
-		} else if (cmd instanceof EndTurn) {
-            setNextTurn(true);
-        } else if (cmd instanceof Refund) {
-            Refund r = (Refund)cmd;
-            refundUnit(getPlayerById(r.owner), unitManager.getUnit(r.unit));
-            if (turnTimer < actionBonusTime)
-                turnTimer = actionBonusTime;
-        } else if (cmd instanceof ActivateAbility) {
-            ActivateAbility ab = (ActivateAbility)cmd;
-            AbstractUnit u = unitManager.getUnit(ab.unit);
-            unitManager.activateAbility(u);
-            if (turnTimer < actionBonusTime)
-                turnTimer = actionBonusTime;
-        } else if (cmd instanceof Surrender) {
-            Player p = getPlayerById(cmd.owner);
-            p.getBaseUnit().getData().setCurHP(0);
-        } else {
-//			Gdx.app.log(LOG, "Unknown command");
-		}
-
-        commandHistory.add(cmd);
-        map.invalidateViews();
 	}
+
+    public void actionReset() {
+        if (turnTimer < actionBonusTime)
+            turnTimer = actionBonusTime;
+    }
 	
-	public void executeAttack(Attack cmd) {
-		//Gdx.app.log(LOG, String.format("Attack: unit(%d) --> unit(%d)", cmd.unit, cmd.target));
-        AbstractUnit obj = unitManager.getUnit(cmd.unit);
-		AbstractUnit tar = unitManager.getUnit(cmd.target);
-		if (obj == null || tar == null) {
-			if (obj == null) Gdx.app.log(LOG, String.format("Attack: cannot find unit(%d)", cmd.unit));
-			if (tar == null) Gdx.app.log(LOG, String.format("Attack: cannot find target(%d)", cmd.target));
-		} else if (obj.getOwner() == null || obj.getOwner().getPlayerId() != cmd.owner) {
-			Gdx.app.log(LOG,  "Error: object owner does not match command owner");
-		} else {
-			if ((!tar.getData().isInvisible() && playerCanSee(obj.getOwner(), tar)) || playerCanDetect(obj.getOwner(), tar)) {
-                unitManager.attack(obj, tar);
-            }
-		}
-	}
-
-    public boolean playerCanSee(Player player, AbstractUnit target) {
+	public boolean playerCanSee(Player player, AbstractUnit target) {
         return unitManager.canPlayerSee(player, target);
     }
 
     public boolean playerCanDetect(Player player, AbstractUnit target) {
         return unitManager.canPlayerDetect(player, target);
     }
-	
-	public void executeBuild(Build cmd) {
-		// check that this can be built
-        Player owner = getPlayerById(cmd.owner);
-        JsonProto junit = Prototypes.getProto(owner.getRace(), cmd.building);
-		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
 
-        AbstractUnit unit = Unit.createUnit(getNextObjectId(), cmd.building, this.getPlayerById(cmd.owner));
-        if (owner.getRace().equals("terran") && !junit.type.equals("building")) {
-            unit.getView().setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
-            unit.getView().addAction(UnitView.Actions.moveTo(levelPos.x, levelPos.y, 0.5f));
-        } else {
-            unit.getView().setPosition(levelPos.x, levelPos.y);
-        }
-        unit.getView().setBoardPosition((int) cmd.location.x, (int) cmd.location.y);
-		owner.setBankMoney(owner.getBankMoney() - owner.getProtoCost(unit.getProto(), this));
-		owner.updateFood(this);
-        cmd.unitId = unit.getId();
-
-        AbstractUnit atLocation = getUnitAtBoardPos(cmd.location);
-        if (atLocation != null) {
-            unitManager.reserveUnit(atLocation.getId());
-        }
-
-        unitManager.addUnit(unit);
-	}
-
-    public boolean validateBuild(Build b) {
-        Player p = getPlayerById(b.owner);
-        if (p == null) return false;
-
-        JsonProto buildProto = Prototypes.getProto(p.getRace(), b.building);
-        if (buildProto == null) return false;
-
-        String buildOn = buildProto.properties.getString("build-on", "");
-        AbstractUnit atLocation = getUnitAtBoardPos(b.location.x, b.location.y);
-
-        return (p.canBuild(b.building, this) && map.isBoardPositionVisible(p, b.location))
-                && ((buildOn.equals("") && atLocation == null) || (atLocation != null && atLocation.getProto().id.equals(buildOn)));
-    }
-	
-	public void executeMove(Move cmd) {
-		AbstractUnit unit = unitManager.getUnit(cmd.unit);
-		unitManager.moveUnit(unit, cmd.toLocation);
-	}
-
-    public boolean validateMove(Move m) {
-        if (m.toLocation.x < 0 || m.toLocation.x >= map.getWidth() || m.toLocation.y < 0 || m.toLocation.y >= map.getHeight()) return false;
-
-        AbstractUnit u = unitManager.getUnit(m.unit);
-
-        // TODO seems like the AI is sometimes passing an invalid unit id?
-        if (u == null || u.getOwner() == null || u.getOwner().getPlayerId() != m.owner) {
-//            if (u == null) {
-//                Gdx.app.log(LOG, "move failed: invalid unit");
-//            } else if (u.getOwner() == null) {
-//                Gdx.app.log(LOG, "move failed: no owner");
-//            } else if (u.getOwner().getPlayerId() != m.owner) {
-//                Gdx.app.log(LOG, "move failed: wrong owner");
-//            }
-            return false;
-        }
-
-        if (u.getData().getAbility().equals("shift")) {
-            return u.getData().getMovesThisTurn() == 0 && isBoardPosEmpty(m.toLocation) && map.isBoardPositionVisible(u.getOwner(), m.toLocation);
-        }
-
-        boolean[] notavailable = new boolean[map.getWidth() * map.getHeight()];
-        for (AbstractUnit unit: getUnits()) {
-            if (unit.getId() != u.getId())
-                notavailable[(int)(unit.getView().getBoardPosition().y * map.getWidth() + unit.getView().getBoardPosition().x)] = true;
-        }
-
-        int[] start = {(int)(u.getView().getBoardPosition().y * map.getWidth() + u.getView().getBoardPosition().x)};
-        int[] radii = {(int)u.getData().getMovesLeft()};
-
-        boolean[] available = map.getAvailablePositions(start, radii, notavailable, true);
-
-        int to = (int)(m.toLocation.y * map.getWidth() + m.toLocation.x);
-        return (available[to] && !notavailable[to]);
-    }
-	
 	public void executePause(Pause cmd) {
 		state = GameStates.PAUSED;
         if (cmd.owner != -1 && !cmd.isAuto) {
@@ -517,10 +345,18 @@ public class GameController {
 	public void executeUnpause(Unpause cmd) {
 		state = GameStates.RUNNING;
 	}
-	
-	/**
+
+    /**
 	 * Getters/Setters
 	 */
+
+    public int getMaxPauses() {
+        return maxPauses;
+    }
+
+    public void setMaxPauses(int maxPauses) {
+        this.maxPauses = maxPauses;
+    }
 
 	public Array<Player> getPlayers() {
 		return players;

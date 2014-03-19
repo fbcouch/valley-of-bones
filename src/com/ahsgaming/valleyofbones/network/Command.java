@@ -1,6 +1,8 @@
 package com.ahsgaming.valleyofbones.network;
 
-public class Command {
+import com.ahsgaming.valleyofbones.GameController;
+
+public abstract class Command {
 	public int owner;
 	public int turn;
 	public boolean isAdd = false;
@@ -21,4 +23,9 @@ public class Command {
     protected String getJsonItems() {
         return String.format("\"owner\": %d, \"turn\": %d, \"isAdd\": %b", owner, turn, isAdd);
     }
+
+    public boolean validate(GameController gameController) {
+        return owner == gameController.getCurrentPlayer().getPlayerId();
+    }
+    public abstract void execute(GameController gameController);
 }

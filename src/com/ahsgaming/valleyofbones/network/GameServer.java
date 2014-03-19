@@ -580,7 +580,7 @@ public class GameServer implements NetController {
             synchronized (recdCommands) {
                 for (Command cmd: recdCommands) {
                     // discard past, future, invalid, or duplicated commands
-                    if (cmd.turn == controller.getGameTurn() && !controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
+                    if (cmd.turn == controller.getGameTurn() && !controller.getCommandQueue().contains(cmd, false) && cmd.validate(controller)) {
                         if (cmd instanceof EndTurn) {
                             endTurnRecd = true;
                         } else {
@@ -761,7 +761,7 @@ public class GameServer implements NetController {
 
     @Override
     public void sendAICommand(Command cmd) {
-        if (!controller.getCommandQueue().contains(cmd, false) && controller.validate(cmd)) {
+        if (!controller.getCommandQueue().contains(cmd, false) && cmd.validate(controller)) {
             if (cmd instanceof EndTurn) {
                 endTurnRecd = true;
             } else {

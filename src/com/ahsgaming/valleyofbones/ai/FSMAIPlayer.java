@@ -74,7 +74,7 @@ public class FSMAIPlayer extends AIPlayer {
 
         cmd.owner = getPlayerId();
         cmd.turn = controller.getGameTurn();
-        if (!controller.validate(cmd)) {
+        if (!cmd.validate(controller)) {
             return true;            // JC: leave this here as a safeguard, even though I think we're good
         }
         netController.sendAICommand(cmd);

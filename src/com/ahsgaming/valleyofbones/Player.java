@@ -25,7 +25,6 @@ package com.ahsgaming.valleyofbones;
 import com.ahsgaming.valleyofbones.network.Build;
 import com.ahsgaming.valleyofbones.network.Command;
 import com.ahsgaming.valleyofbones.network.KryoCommon;
-import com.ahsgaming.valleyofbones.network.Upgrade;
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.Prototypes;
 import com.ahsgaming.valleyofbones.units.Prototypes.JsonProto;
@@ -210,8 +209,6 @@ public class Player {
 			if (c instanceof Build) {
 				proto = Prototypes.getProto(race, ((Build)c).building);
 
-			} else if (c instanceof Upgrade) {
-				proto = Prototypes.getProto(race, ((Upgrade)c).upgrade);
 			}
 
 			if (proto != null && proto.hasProperty("food")) {

@@ -46,9 +46,7 @@ public class KryoCommon {
 		kryo.register(Vector2.class);
 		kryo.register(Attack.class);
 		kryo.register(Build.class);
-        kryo.register(Refund.class);
 		kryo.register(Move.class);
-		kryo.register(Upgrade.class);
 		kryo.register(Pause.class);
 		kryo.register(Unpause.class);
 		kryo.register(EndTurn.class);

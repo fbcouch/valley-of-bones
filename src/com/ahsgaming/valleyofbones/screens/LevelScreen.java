@@ -142,7 +142,7 @@ public class LevelScreen extends AbstractScreen implements EventListener {
             bld.turn = gController.getGameTurn();
             bld.building = buildProto.id;
             bld.location = boardPos;
-            if (gController.validateBuild(bld)) {
+            if (bld.validate(gController)) {
                 game.sendCommand(bld);
             }
         }

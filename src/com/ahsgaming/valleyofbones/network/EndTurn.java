@@ -1,5 +1,6 @@
 package com.ahsgaming.valleyofbones.network;
 
+import com.ahsgaming.valleyofbones.GameController;
 import com.badlogic.gdx.utils.Array;
 
 public class EndTurn extends Command {
@@ -24,5 +25,10 @@ public class EndTurn extends Command {
     @Override
     public String toJson() {
         return "{ \"type\": \"EndTurn\", " + getJsonItems() + "}";
+    }
+
+    @Override
+    public void execute(GameController gameController) {
+        gameController.setNextTurn(true);
     }
 }
