@@ -21,10 +21,12 @@ import java.util.HashMap;
  */
 public class UnitManager implements EventListener {
     HashMap<Integer, AbstractUnit> units;
+    Array<AbstractUnit> reserveUnits;
     GameController gameController;
 
     public UnitManager(GameController gameController) {
         units = new HashMap<Integer, AbstractUnit>();
+        reserveUnits = new Array<AbstractUnit>();
         this.gameController = gameController;
     }
 
@@ -35,6 +37,13 @@ public class UnitManager implements EventListener {
 
     public void removeUnit(int id) {
         units.remove(id).emit();
+    }
+
+    public void reserveUnit(int id) {
+        if (units.containsKey(id)) {
+            reserveUnits.add(units.get(id));
+        }
+        removeUnit(id);
     }
 
     public AbstractUnit getUnit(int id) {
@@ -86,7 +95,15 @@ public class UnitManager implements EventListener {
             }
         }
         for (int i: toRemove) {
-            units.remove(i).emit();
+            AbstractUnit unit = units.remove(i);
+            for (int j = 0; j < reserveUnits.size; j++) {
+                if (reserveUnits.get(j).getView().getBoardPosition().epsilonEquals(unit.getView().getBoardPosition(), 0.1f)) {
+                    addUnit(reserveUnits.removeIndex(j));
+                    j--;
+                }
+            }
+
+            unit.emit();
             gameController.getMap().invalidateViews();
         }
     }

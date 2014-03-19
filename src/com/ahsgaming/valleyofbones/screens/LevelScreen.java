@@ -137,14 +137,15 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 
         if (boardPos.x < 0 || boardPos.y < 0 || boardPos.x >= gController.getMap().getWidth() || boardPos.y >= gController.getMap().getHeight()) {
             unsetBuildMode();
-        } else if (game.getPlayer().canBuild(buildProto.id, gController) && gController.isBoardPosEmpty(boardPos) && gController.getMap().isBoardPositionVisible(game.getPlayer(), boardPos)) {
+        } else {
             Build bld = new Build();
             bld.owner = game.getPlayer().getPlayerId();
             bld.turn = gController.getGameTurn();
             bld.building = buildProto.id;
             bld.location = boardPos;
-            game.sendCommand(bld);
-//            if (!(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) unsetBuildMode();
+            if (gController.validateBuild(bld)) {
+                game.sendCommand(bld);
+            }
         }
     }
 

@@ -34,6 +34,7 @@ public class UnitData {
     float moveSpeed = 0;
     String protoId = "";
     Array<String> requires = new Array<String>();
+    String buildOn = "";
     int sightRange = 0;
     float splashDamage = 0;
     String subtype = "";
@@ -93,6 +94,7 @@ public class UnitData {
         if (proto.properties.get("bonus") != null)
             for (JsonValue v: proto.properties.get("bonus"))
                 unitData.bonus.put(v.name(), v.asFloat());
+        unitData.buildOn = proto.properties.getString("build-on", "");
         unitData.buildTime = proto.properties.getInt("buildtime", 0);
         unitData.capturable = proto.properties.getBoolean("capturable", false);
         unitData.cost = proto.properties.getInt("cost", 0);
@@ -239,6 +241,14 @@ public class UnitData {
     public void setBonus(String type, float bonus) {
         this.bonus.put(type, bonus);
         modified = TimeUtils.millis();
+    }
+
+    public String getBuildOn() {
+        return buildOn;
+    }
+
+    public void setBuildOn(String buildOn) {
+        this.buildOn = buildOn;
     }
 
     public int getBuildTime() {

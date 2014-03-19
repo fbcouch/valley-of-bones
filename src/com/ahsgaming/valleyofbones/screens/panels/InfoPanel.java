@@ -190,7 +190,7 @@ public class InfoPanel extends Group implements EventListener {
             lblMove.setText(String.format(MOVE, (int) selected.getData().getMoveSpeed()));
             lblAttacksLeft.setText(String.format(ATTACK_LEFT, (int)selected.getData().getAttacksLeft()));
             lblMovesLeft.setText(String.format(MOVE_LEFT, (int)selected.getData().getMovesLeft()));
-            lblRefund.setText(String.format(REFUND, selected.getData().getRefund()));
+//            lblRefund.setText(String.format(REFUND, selected.getData().getRefund()));
 
             bonusTable.clearChildren();
 

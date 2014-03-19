@@ -329,7 +329,7 @@ public class GameController {
 //            if (!isBoardPosEmpty(b.location)) {
 //                Gdx.app.log(LOG, "build failed: position not empty");
 //            }
-			return (getPlayerById(b.owner).canBuild(b.building, this) && isBoardPosEmpty(b.location));
+			return validateBuild(b);
 		} else if (cmd instanceof Move) {
 			return validateMove((Move)cmd);
 		} else if (cmd instanceof Pause) {
@@ -432,9 +432,6 @@ public class GameController {
         JsonProto junit = Prototypes.getProto(owner.getRace(), cmd.building);
 		Vector2 levelPos = map.boardToMapCoords(cmd.location.x, cmd.location.y);
 
-			
-		// TODO place builder
-		// for now, just add the unit
         AbstractUnit unit = Unit.createUnit(getNextObjectId(), cmd.building, this.getPlayerById(cmd.owner));
         if (owner.getRace().equals("terran")) {
             unit.getView().setPosition(levelPos.x - 300 * VOBGame.SCALE, levelPos.y + 600 * VOBGame.SCALE);
@@ -446,8 +443,28 @@ public class GameController {
 		owner.setBankMoney(owner.getBankMoney() - owner.getProtoCost(unit.getProto(), this));
 		owner.updateFood(this);
         cmd.unitId = unit.getId();
+
+        AbstractUnit atLocation = getUnitAtBoardPos(cmd.location);
+        if (atLocation != null) {
+            unitManager.reserveUnit(atLocation.getId());
+        }
+
         unitManager.addUnit(unit);
 	}
+
+    public boolean validateBuild(Build b) {
+        Player p = getPlayerById(b.owner);
+        if (p == null) return false;
+
+        JsonProto buildProto = Prototypes.getProto(p.getRace(), b.building);
+        if (buildProto == null) return false;
+
+        String buildOn = buildProto.properties.getString("build-on", "");
+        AbstractUnit atLocation = getUnitAtBoardPos(b.location.x, b.location.y);
+
+        return (p.canBuild(b.building, this) && map.isBoardPositionVisible(p, b.location))
+                && ((buildOn.equals("") && atLocation == null) || (atLocation != null && atLocation.getProto().id.equals(buildOn)));
+    }
 	
 	public void executeMove(Move cmd) {
 		AbstractUnit unit = unitManager.getUnit(cmd.unit);
