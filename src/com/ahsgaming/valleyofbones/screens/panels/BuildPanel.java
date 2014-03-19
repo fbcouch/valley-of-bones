@@ -34,6 +34,7 @@ public class BuildPanel extends Group {
     Image imgNext;
 
     int selected, page;
+    int page_size = 7;
 
     public BuildPanel(GameController controller, Player player, LevelScreen lvlScreen) {
         this.gController = controller;
@@ -84,12 +85,12 @@ public class BuildPanel extends Group {
     }
 
     public void layout() {
-        float y = imgNext.getHeight() * imgNext.getScaleY();
+        float y = (items.size >= page_size ? imgNext.getHeight() * imgNext.getScaleY() : 0);
 
         for (Group g: items) g.remove();
         imgNext.remove();
 
-        int start = page * 3, end = (items.size <= 4 ? 4 : Math.min(items.size, start + 3));
+        int start = page * page_size, end = (items.size <= page_size + 1 ? Math.min(items.size, page_size) : Math.min(items.size, start + page_size));
         for (int i = start; i < end; i++) {
             Group g = items.get(i);
             addActor(g);
@@ -97,7 +98,7 @@ public class BuildPanel extends Group {
             y += g.getHeight();
         }
 
-        if (items.size > 4) {
+        if (items.size > page_size + 1) {
             addActor(imgNext);
             imgNext.setPosition(0, 0);
         }
@@ -130,7 +131,7 @@ public class BuildPanel extends Group {
 
     public void next() {
         page++;
-        if (items.size <= 4 || page * 3 >= items.size) {
+        if (items.size <= page_size + 1 || page * page_size >= items.size) {
             page = 0;
         }
         layout();
