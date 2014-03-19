@@ -46,7 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * @author jami
@@ -82,7 +81,7 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 	
 	Group grpPreviews = new Group();
 
-    BuildPanel buildPanel;
+    BuildPanel unitBuildPanel;//, buildingBuildPanel;
     InfoPanel selectionPanel;
     TurnPanel turnPanel;
 
@@ -223,7 +222,7 @@ public class LevelScreen extends AbstractScreen implements EventListener {
         buildImage = new Image(VOBGame.instance.getTextureManager().getSpriteFromAtlas("assets", proto.image));
         buildImage.setColor(1, 1, 1, 0.5f);
 
-        clearSelection();
+//        clearSelection();
     }
 
     public void select(AbstractUnit unit) {
@@ -340,7 +339,8 @@ public class LevelScreen extends AbstractScreen implements EventListener {
             posCamera.set(gController.getMap().getMapWidth() * 0.5f, gController.getMap().getMapHeight() * 0.5f);
         }
 
-        buildPanel = new BuildPanel(gController, game.getPlayer(), this);
+        unitBuildPanel = new BuildPanel(gController, game.getPlayer(), this);
+//        buildingBuildPanel = new BuildPanel(gController, game.getPlayer(), this, "building");
         selectionPanel = new InfoPanel(game, this, getSkin());
         turnPanel = new TurnPanel(gController, game.getPlayer(), getSkin());
         menuButton = new SmallUIButton("Menu", getSkin());
@@ -355,7 +355,8 @@ public class LevelScreen extends AbstractScreen implements EventListener {
             }
         };
 
-        buildPanel.addListener(interruptListener);
+        unitBuildPanel.addListener(interruptListener);
+//        buildingBuildPanel.addListener(interruptListener);
         selectionPanel.addListener(interruptListener);
         turnPanel.addListener(interruptListener);
         menuButton.addListener(interruptListener);
@@ -396,8 +397,9 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 //        stage.addActor(upgradePanel);
 //        upgradePanel.setAnchor(0, 64);
 
-        stage.addActor(buildPanel);
-        buildPanel.setPosition(0, 0);
+        stage.addActor(unitBuildPanel);
+        unitBuildPanel.setPosition(0, 0);
+//        buildingBuildPanel.setPosition(0, 0);
 
         stage.addActor(selectionPanel);
         selectionPanel.setPosition(stage.getWidth() * 0.5f - selectionPanel.getWidth() * 0.5f, -selectionPanel.getHeight() + 3 * VOBGame.SCALE);
@@ -442,7 +444,7 @@ public class LevelScreen extends AbstractScreen implements EventListener {
             }
         }
 
-        if (buildMode && !isCurrentPlayer()) unsetBuildMode();
+//        if (buildMode && !isCurrentPlayer()) unsetBuildMode();
 
         if (selected != null && selected.getData().getCurHP() <= 0 && !selected.getData().getType().equals("building")) {
             clearSelection();
@@ -450,6 +452,14 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 
         // clear highlighting if necessary
         mapView.clearHighlightAndDim();
+
+        if (selected != lastSelected && !buildMode) {
+            if (selected != null && selected.getProto().id.equals("tower-base")) {
+                unitBuildPanel.filterItems("building");
+            } else {
+                unitBuildPanel.filterItems("unit");
+            }
+        }
 
         lastSelected = selected;
 
@@ -477,16 +487,17 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 
         pausePopup();
 		yourTurnPopup();
-        buildPanel.update();
+        unitBuildPanel.update();
+//        buildingBuildPanel.update();
 
         turnPanel.update(isCurrentPlayer());
 
         if (buildImage != null) buildImage.remove();
-        if (buildMode) {
-            // TODO build preview for PC players (though that will go in a listener now)
-
-            if (!isCurrentPlayer()) unsetBuildMode();
-        }
+//        if (buildMode) {
+//            // TODO build preview for PC players (though that will go in a listener now)
+//
+//            if (!isCurrentPlayer()) unsetBuildMode();
+//        }
 
         menuPanel.update(delta);
 

@@ -345,24 +345,49 @@
         {
             "id": "tower-base",
             "type": "building",
-            "image": "tower",
+            "image": "tower-base",
             "title": "Tower",
             "desc": "Towers are checkpoints that provide a little additional income and supply room according to the following schedule:\n\n * 1st tower: 25 income, 4 supply\n * 2nd tower: 20 income, 3 supply\n * 3rd tower: 10 income, 2 supply\n * Add'l: 5 income, 1 supply",
             "attacksound": "laser_shot",
             "properties": {
                 "curhp": 0,
-                "maxhp": 30,
+                "maxhp": 5,
                 "armor": 1,
-                "food": [ -4, -3, -2, -1 ],
+                "food": 0,
                 "requires": [],
-                "attackdamage": 5,
-                "attackspeed": 2,
-                "attackrange": 3,
+                "attackdamage": 0,
+                "attackspeed": 0,
+                "attackrange": 0,
                 "movespeed": 0,
                 "cost": -1,
-                "upkeep": [ -25, -20, -10, -5 ],
+                "upkeep": -5,
                 "subtype": "building",
                 "capturable": true
+            }
+        },
+        {
+            "id": "scout",
+            "type": "unit",
+            "image": "scout",
+            "title": "Scout",
+            "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
+            "attacksound": "laser_shot",
+            "properties": {
+                "curhp": 10,
+                "maxhp": 10,
+                "armor": 0,
+                "food": 1,
+                "requires": [],
+                "attackdamage": 0,
+                "attackspeed": 0,
+                "attackrange": 0,
+                "sightrange": 4,
+                "movespeed": 4,
+                "cost": 25,
+                "costperunit": 3,
+                "subtype": "light",
+                "ability": "detect",
+                "buildtime": 1
             }
         },
         {
@@ -386,31 +411,6 @@
                 "cost": 75,
                 "costperunit": 3,
                 "subtype": "armored",
-                "buildtime": 1
-            }
-        },
-        {
-            "id": "spectre",
-            "type": "unit",
-            "image": "spectre",
-            "title": "Spectre",
-            "desc": "With a 4x bonus vs infantry and the stealth ability, snipers are the ultimate anti-infantry weapon.\n\n**Stealth:**\n\nWhile cloaked, only detectors can see or fire at snipers. Movement speed is reduced by half. Cannot enter cloak on any turn when the sniper has already cloaked, fired, or moved more than once.",
-            "attacksound": "laser_shot",
-            "properties": {
-                "curhp": 20,
-                "maxhp": 20,
-                "armor": 0,
-                "food": 2,
-                "requires": [],
-                "attackdamage": 15,
-                "attackspeed": 1,
-                "attackrange": 4,
-                "sightrange": 5,
-                "movespeed": 2,
-                "cost": 120,
-                "costperunit": 3,
-                "subtype": "light",
-                "ability": "detect",
                 "buildtime": 1
             }
         },
@@ -443,7 +443,31 @@
                 "buildtime": 1
             }
         },
-
+        {
+            "id": "spectre",
+            "type": "unit",
+            "image": "spectre",
+            "title": "Spectre",
+            "desc": "With a 4x bonus vs infantry and the stealth ability, snipers are the ultimate anti-infantry weapon.\n\n**Stealth:**\n\nWhile cloaked, only detectors can see or fire at snipers. Movement speed is reduced by half. Cannot enter cloak on any turn when the sniper has already cloaked, fired, or moved more than once.",
+            "attacksound": "laser_shot",
+            "properties": {
+                "curhp": 20,
+                "maxhp": 20,
+                "armor": 0,
+                "food": 2,
+                "requires": [],
+                "attackdamage": 15,
+                "attackspeed": 1,
+                "attackrange": 4,
+                "sightrange": 5,
+                "movespeed": 2,
+                "cost": 120,
+                "costperunit": 3,
+                "subtype": "light",
+                "ability": "detect",
+                "buildtime": 1
+            }
+        },
         {
             "id": "mindwalker",
             "type": "unit",
@@ -469,33 +493,6 @@
                 "buildtime": 1
             }
         },
-
-        {
-            "id": "scout",
-            "type": "unit",
-            "image": "scout",
-            "title": "Scout",
-            "desc": "The saboteur is an infiltrator capable of taking a tower without a fight or severely damaging units.\n\n**Sabotage:**\n\nThe saboteur is always cloaked. When the saboteur attacks a tower, that tower is now under your control. When the saboteur attacks other units, their health is reduced to 1. The saboteur cannot attack the base. The saboteur is a suicide unit.",
-            "attacksound": "laser_shot",
-            "properties": {
-                "curhp": 10,
-                "maxhp": 10,
-                "armor": 0,
-                "food": 1,
-                "requires": [],
-                "attackdamage": 0,
-                "attackspeed": 0,
-                "attackrange": 0,
-                "sightrange": 4,
-                "movespeed": 4,
-                "cost": 25,
-                "costperunit": 3,
-                "subtype": "light",
-                "ability": "detect",
-                "buildtime": 1
-            }
-        },
-
         {
             "id": "wraith",
             "type": "unit",
@@ -523,6 +520,84 @@
                 "subtype": "armored",
                 "ability": "shift",
                 "buildtime": 1
+            }
+        },
+        {
+            "id": "tower-infantry",
+            "type": "building",
+            "image": "tower",
+            "title": "Anti-Infantry",
+            "desc": "Towers are checkpoints that provide a little additional income and supply room according to the following schedule:\n\n * 1st tower: 25 income, 4 supply\n * 2nd tower: 20 income, 3 supply\n * 3rd tower: 10 income, 2 supply\n * Add'l: 5 income, 1 supply",
+            "attacksound": "laser_shot",
+            "properties": {
+                "curhp": 30,
+                "maxhp": 30,
+                "armor": 1,
+                "food": [ -2, -1 ],
+                "requires": [ "tower-base" ],
+                "build-on": "tower-base",
+                "attackdamage": 5,
+                "attackspeed": 2,
+                "attackrange": 3,
+                "movespeed": 0,
+                "cost": 50,
+                "upkeep": [ -15, -10, -5 ],
+                "subtype": "building",
+                "bonus": {
+                    "light": 2
+                }
+            }
+        },
+        {
+            "id": "tower-armor",
+            "type": "building",
+            "image": "tower-armor",
+            "title": "Anti-Armor",
+            "desc": "Towers are checkpoints that provide a little additional income and supply room according to the following schedule:\n\n * 1st tower: 25 income, 4 supply\n * 2nd tower: 20 income, 3 supply\n * 3rd tower: 10 income, 2 supply\n * Add'l: 5 income, 1 supply",
+            "attacksound": "laser_shot",
+            "properties": {
+                "curhp": 30,
+                "maxhp": 30,
+                "armor": 1,
+                "food": [ -2, -1 ],
+                "requires": [ "tower-base" ],
+                "build-on": "tower-base",
+                "attackdamage": 5,
+                "attackspeed": 2,
+                "attackrange": 3,
+                "movespeed": 0,
+                "cost": 50,
+                "upkeep": [ -15, -10, -5 ],
+                "subtype": "building",
+                "bonus": {
+                    "armored": 2
+                }
+            }
+        },
+        {
+            "id": "tower-money",
+            "type": "building",
+            "image": "tower-money",
+            "title": "Reactor",
+            "desc": "Towers are checkpoints that provide a little additional income and supply room according to the following schedule:\n\n * 1st tower: 25 income, 4 supply\n * 2nd tower: 20 income, 3 supply\n * 3rd tower: 10 income, 2 supply\n * Add'l: 5 income, 1 supply",
+            "attacksound": "laser_shot",
+            "properties": {
+                "curhp": 15,
+                "maxhp": 15,
+                "armor": 1,
+                "food": [ -4, -3, -2, -1 ],
+                "requires": [ "tower-base" ],
+                "build-on": "tower-base",
+                "attackdamage": 5,
+                "attackspeed": 2,
+                "attackrange": 3,
+                "movespeed": 0,
+                "cost": 50,
+                "upkeep": [ -25, -20, -10, -5 ],
+                "subtype": "building",
+                "bonus": {
+                    "armored": 2
+                }
             }
         }
     ]

@@ -54,12 +54,15 @@ public class BuildPanel extends Group {
         });
 
         itemProtos = Prototypes.getPlayerCanBuild((player != null ? player.getRace() : "terran"));
+
+        allItems = new Array<BuildItem>();
+
         items = new Array<BuildItem>();
 
         for (Prototypes.JsonProto jp: itemProtos) {
             final BuildItem item = new BuildItem(jp, skin);
 
-            items.add(item);
+            allItems.add(item);
 
             item.addListener(new ClickListener() {
                 @Override
@@ -81,13 +84,23 @@ public class BuildPanel extends Group {
             });
         }
 
+        filterItems("unit");
+    }
+
+    public void filterItems(String type) {
+        items.clear();
+        for (BuildItem item: allItems) {
+            if (type.equals("") || item.proto.type.equals(type)) {
+                items.add(item);
+            }
+        }
         layout();
     }
 
     public void layout() {
-        float y = (items.size >= page_size ? imgNext.getHeight() * imgNext.getScaleY() : 0);
+        float y = (items.size > page_size ? imgNext.getHeight() * imgNext.getScaleY() : 0);
 
-        for (Group g: items) g.remove();
+        for (Group g: allItems) g.remove();
         imgNext.remove();
 
         int start = page * page_size, end = (items.size <= page_size + 1 ? Math.min(items.size, page_size) : Math.min(items.size, start + page_size));
