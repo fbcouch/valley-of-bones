@@ -167,6 +167,17 @@ public class LevelScreen extends AbstractScreen implements EventListener {
         game.sendCommand(at);
     }
 
+    protected void heal(int unit, int target) {
+        Heal hl = new Heal();
+        hl.owner = game.getPlayer().getPlayerId();
+        hl.turn = gController.getGameTurn();
+        hl.unit = unit;
+        hl.target = target;
+
+        if (hl.validate(gController))
+            game.sendCommand(hl);
+    }
+
     protected void move(int unit, Vector2 boardPos) {
         Move mv = new Move();
         mv.owner = game.getPlayer().getPlayerId();

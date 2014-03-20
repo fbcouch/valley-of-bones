@@ -72,7 +72,8 @@
                 "costperunit": 2,
                 "subtype": "light",
                 "ability": "detect",
-                "buildtime": 1
+                "buildtime": 1,
+                "heal": 5
             }
         },
         {
@@ -99,7 +100,8 @@
                     "armored": 2,
                     "building": 1.5
                 },
-                "buildtime": 1
+                "buildtime": 1,
+                "heal": 5
             }
         },
         {
@@ -126,7 +128,8 @@
                     "light": 4
                 },
                 "ability": "stealth",
-                "buildtime": 1
+                "buildtime": 1,
+                "heal": 5
             }
         },
         {
@@ -151,7 +154,8 @@
                 "costperunit": 3,
                 "subtype": "light",
                 "buildtime": 1,
-                "ability": "sabotage"
+                "ability": "sabotage",
+                "heal": 5
             }
         },
         {
@@ -387,7 +391,8 @@
                 "costperunit": 3,
                 "subtype": "light",
                 "ability": "detect",
-                "buildtime": 1
+                "buildtime": 1,
+                "autoheal": 3
             }
         },
         {
@@ -411,7 +416,8 @@
                 "cost": 75,
                 "costperunit": 3,
                 "subtype": "armored",
-                "buildtime": 1
+                "buildtime": 1,
+                "autoheal": 3
             }
         },
         {
@@ -440,7 +446,8 @@
                 },
                 "splashdistance": 1,
                 "splashdamage": 0.5,
-                "buildtime": 1
+                "buildtime": 1,
+                "autoheal": 3
             }
         },
         {
@@ -465,7 +472,8 @@
                 "costperunit": 3,
                 "subtype": "light",
                 "ability": "detect",
-                "buildtime": 1
+                "buildtime": 1,
+                "autoheal": 3
             }
         },
         {
@@ -490,7 +498,8 @@
                 "costperunit": 3,
                 "subtype": "light",
                 "ability": "mind-control",
-                "buildtime": 1
+                "buildtime": 1,
+                "autoheal": 3
             }
         },
         {
@@ -519,7 +528,8 @@
                 },
                 "subtype": "armored",
                 "ability": "shift",
-                "buildtime": 1
+                "buildtime": 1,
+                "autoheal": 3
             }
         },
         {

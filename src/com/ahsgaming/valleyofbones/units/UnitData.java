@@ -29,6 +29,8 @@ public class UnitData {
     int costPerUnit = 0;
     int curHP = 0;
     Array<Integer> food;
+    int heal = 0;
+    int autoheal = 0;
     String image = "";
     int maxHP = 0;
     float moveSpeed = 0;
@@ -90,6 +92,7 @@ public class UnitData {
         unitData.attackDamage = proto.properties.getInt("attackdamage", 0);
         unitData.attackRange = proto.properties.getInt("attackrange", 0);
         unitData.attackSpeed = proto.properties.getFloat("attackspeed", 0);
+        unitData.autoheal = proto.properties.getInt("autoheal", 0);
         unitData.bonus.clear();
         if (proto.properties.get("bonus") != null)
             for (JsonValue v: proto.properties.get("bonus"))
@@ -108,6 +111,7 @@ public class UnitData {
         } else {
             unitData.food.add(proto.properties.getInt("food", 0));
         }
+        unitData.heal = proto.properties.getInt("heal", 0);
         unitData.image = proto.image;
         unitData.maxHP = proto.properties.getInt("maxhp", 0);
         unitData.moveSpeed = proto.properties.getFloat("movespeed", 0);
@@ -230,6 +234,14 @@ public class UnitData {
         modified = TimeUtils.millis();
     }
 
+    public int getAutoheal() {
+        return autoheal;
+    }
+
+    public void setAutoheal(int autoheal) {
+        this.autoheal = autoheal;
+    }
+
     public float getBonus(String type) {
         return (bonus.containsKey(type) ? bonus.get(type) : 1);
     }
@@ -302,6 +314,14 @@ public class UnitData {
 
     public Array<Integer> getFood() {
         return food;
+    }
+
+    public int getHeal() {
+        return heal;
+    }
+
+    public void setHeal(int heal) {
+        this.heal = heal;
     }
 
     public String getImage() {

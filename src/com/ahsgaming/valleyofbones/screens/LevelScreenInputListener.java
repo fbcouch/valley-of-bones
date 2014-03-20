@@ -83,6 +83,8 @@ public class LevelScreenInputListener extends ActorGestureListener {
             if (target != null && (!target.getData().isInvisible() || levelScreen.gController.playerCanDetect(levelScreen.game.getPlayer(), unit))) {
                 if (target.getOwner() == null || target.getOwner().getPlayerId() != levelScreen.game.getPlayer().getPlayerId()) {
                     levelScreen.attack(unit.getId(), target.getId());
+                } else if (target.getOwner().getPlayerId() == levelScreen.game.getPlayer().getPlayerId()) {
+                    levelScreen.heal(unit.getId(), target.getId());
                 }
 
             } else {

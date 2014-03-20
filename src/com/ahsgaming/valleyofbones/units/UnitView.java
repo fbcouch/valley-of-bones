@@ -72,6 +72,15 @@ public class UnitView {
         ));
     }
 
+    public void healedAnim() {
+        addAction(UnitView.Actions.sequence(
+                UnitView.Actions.colorTo(new Color(0.5f, 1.0f, 0.5f, 1.0f), 0.1f),
+                UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f),
+                UnitView.Actions.colorTo(new Color(0.5f, 1.0f, 0.5f, 1.0f), 0.1f),
+                UnitView.Actions.colorTo(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.1f)
+        ));
+    }
+
     public Sprite getImage() {
         return image;
     }

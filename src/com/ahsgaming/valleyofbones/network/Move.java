@@ -55,7 +55,7 @@ public class Move extends ActionResetCommand {
 
         AStar.AStarNode path = AStar.getPath(u.getView().getBoardPosition(), toLocation, gameController, (int) u.getData().getMovesLeft());
 
-        return (path != null && path.gx <= u.getData().getMovesLeft());
+        return (path != null && path.location.epsilonEquals(toLocation, 0.1f) && path.gx <= u.getData().getMovesLeft() && gameController.isBoardPosEmpty(toLocation));
     }
 
     @Override

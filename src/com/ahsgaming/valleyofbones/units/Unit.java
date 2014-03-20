@@ -44,7 +44,17 @@ public class Unit extends AbstractUnit {
         unit.attackBehavior = selectAttackBehavior(unit);
         unit.defendBehavior = selectDefendBehavior(unit);
         unit.moveBehavior = selectMoveBehavior(unit);
+        if (unit.getData().getHeal() > 0) {
+            unit.healBehavior = new BasicHeal(unit);
+        } else {
+            unit.healBehavior = new NoHeal();
+        }
         unit.turnBehavior = new BasicUnitTurnListener(unit);
+
+        if (unit.getData().getAutoheal() > 0) {
+            unit.turnBehavior = new AutoHealUnitTurnListener(unit.turnBehavior);
+        }
+
         if (unit.getData().isCapturable()) {
             unit.turnBehavior = new CapturableUnitTurnListener(unit.turnBehavior);
         }

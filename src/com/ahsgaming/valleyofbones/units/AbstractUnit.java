@@ -28,6 +28,7 @@ public class AbstractUnit implements EventEmitter {
     DefendBehavior defendBehavior;
     AbilityBehavior abilityBehavior;
     UnitTurnListener turnBehavior;
+    HealBehavior healBehavior;
 
     Array<EventListener> listeners;
     TurnEmitter turnEmitter;
@@ -63,6 +64,13 @@ public class AbstractUnit implements EventEmitter {
     public void activateAbility() {
         if (abilityBehavior != null) {
             abilityBehavior.activateAbility();
+            emit();
+        }
+    }
+
+    public void heal(AbstractUnit target) {
+        if (healBehavior != null) {
+            healBehavior.heal(target);
             emit();
         }
     }

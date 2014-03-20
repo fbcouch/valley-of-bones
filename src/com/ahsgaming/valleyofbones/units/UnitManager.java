@@ -152,6 +152,15 @@ public class UnitManager implements EventListener {
         );
     }
 
+    public boolean canHeal(AbstractUnit healer, AbstractUnit healed) {
+        return (
+                healer.getData().getAttacksLeft() > 0
+                && healer.getData().getHeal() > 0
+                && healed.getData().getCurHP() < healed.getData().getMaxHP()
+                && HexMap.getMapDist(healer.getView().getBoardPosition(), healed.getView().getBoardPosition()) <= 1
+        );
+    }
+
     public boolean canPlayerSee(Player player, AbstractUnit unit) {
         if (unit.owner == player || player == null) return true;
 
