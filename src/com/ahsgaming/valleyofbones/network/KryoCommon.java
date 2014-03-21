@@ -47,6 +47,7 @@ public class KryoCommon {
 		kryo.register(Attack.class);
 		kryo.register(Build.class);
 		kryo.register(Move.class);
+        kryo.register(Heal.class);
 		kryo.register(Pause.class);
 		kryo.register(Unpause.class);
 		kryo.register(EndTurn.class);
