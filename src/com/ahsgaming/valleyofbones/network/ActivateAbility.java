@@ -28,6 +28,7 @@ public class ActivateAbility extends ActionResetCommand {
 
     @Override
     public void execute(GameController gameController) {
+        super.execute(gameController);
         gameController.getUnitManager().activateAbility(gameController.getUnitManager().getUnit(unit));
     }
 }

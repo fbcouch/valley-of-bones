@@ -43,6 +43,7 @@ public class Heal extends ActionResetCommand {
 
     @Override
     public void execute(GameController gameController) {
+        super.execute(gameController);
         AbstractUnit healer = gameController.getUnitManager().getUnit(unit);
         AbstractUnit healed = gameController.getUnitManager().getUnit(target);
 

@@ -52,6 +52,7 @@ public class Build extends ActionResetCommand {
 
     @Override
     public void execute(GameController gameController) {
+        super.execute(gameController);
         Player player = gameController.getPlayerById(owner);
         Prototypes.JsonProto junit = Prototypes.getProto(player.getRace(), building);
         Vector2 levelPos = gameController.getMap().boardToMapCoords(location.x, location.y);

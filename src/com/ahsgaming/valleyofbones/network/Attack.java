@@ -38,6 +38,7 @@ public class Attack extends ActionResetCommand {
 
     @Override
     public void execute(GameController gameController) {
+        super.execute(gameController);
         AbstractUnit attacker = gameController.getUnitManager().getUnit(unit);
         AbstractUnit defender = gameController.getUnitManager().getUnit(target);
 

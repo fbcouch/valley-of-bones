@@ -110,6 +110,7 @@ public class Unit extends AbstractUnit {
             MindControlAbility mindControlAbility = new MindControlAbility(unit);
             unit.attackBehavior = mindControlAbility;
             unit.abilityBehavior = mindControlAbility;
+            unit.turnBehavior = new MindControlUnitTurnListener(unit.turnBehavior);
         } else if (ability.equals("shift")) {
             unit.moveBehavior = new ShiftMove(unit);
         }

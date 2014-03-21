@@ -304,16 +304,13 @@
                 "food": [ -4, -3, -2, -1 ],
                 "requires": [ "tower-base" ],
                 "build-on": "tower-base",
-                "attackdamage": 5,
-                "attackspeed": 2,
-                "attackrange": 3,
+                "attackdamage": 0,
+                "attackspeed": 0,
+                "attackrange": 0,
                 "movespeed": 0,
                 "cost": 50,
                 "upkeep": [ -25, -20, -10, -5 ],
-                "subtype": "building",
-                "bonus": {
-                    "armored": 2
-                }
+                "subtype": "building"
             }
         }
     ],
@@ -598,16 +595,13 @@
                 "food": [ -4, -3, -2, -1 ],
                 "requires": [ "tower-base" ],
                 "build-on": "tower-base",
-                "attackdamage": 5,
-                "attackspeed": 2,
-                "attackrange": 3,
+                "attackdamage": 0,
+                "attackspeed": 0,
+                "attackrange": 0,
                 "movespeed": 0,
                 "cost": 50,
                 "upkeep": [ -25, -20, -10, -5 ],
-                "subtype": "building",
-                "bonus": {
-                    "armored": 2
-                }
+                "subtype": "building"
             }
         }
     ]

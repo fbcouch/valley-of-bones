@@ -39,13 +39,6 @@ public class Move extends ActionResetCommand {
 
         // TODO seems like the AI is sometimes passing an invalid unit id?
         if (u == null || u.getOwner() == null || u.getOwner().getPlayerId() != owner) {
-//            if (u == null) {
-//                Gdx.app.log(LOG, "move failed: invalid unit");
-//            } else if (u.getOwner() == null) {
-//                Gdx.app.log(LOG, "move failed: no owner");
-//            } else if (u.getOwner().getPlayerId() != m.owner) {
-//                Gdx.app.log(LOG, "move failed: wrong owner");
-//            }
             return false;
         }
 
@@ -60,6 +53,7 @@ public class Move extends ActionResetCommand {
 
     @Override
     public void execute(GameController gameController) {
+        super.execute(gameController);
         gameController.getUnitManager().moveUnit(gameController.getUnitManager().getUnit(unit), toLocation);
     }
 }
