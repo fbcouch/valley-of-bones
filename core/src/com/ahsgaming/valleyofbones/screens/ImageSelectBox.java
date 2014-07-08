@@ -1,6 +1,7 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -134,7 +135,7 @@ public class ImageSelectBox extends Widget implements Disableable {
     }
 
     @Override
-    public void draw (SpriteBatch batch, float parentAlpha) {
+    public void draw (Batch batch, float parentAlpha) {
         Drawable background;
         if (disabled && style.backgroundDisabled != null)
             background = style.backgroundDisabled;

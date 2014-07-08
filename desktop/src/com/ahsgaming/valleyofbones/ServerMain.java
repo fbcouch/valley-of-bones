@@ -17,10 +17,10 @@ public class ServerMain {
 		cfg.fullscreen = false;
 		cfg.resizable = false;
 
-        cfg.addIcon("icon_128.png", Files.FileType.Internal);
-        cfg.addIcon("icon_64.png", Files.FileType.Internal);
-        cfg.addIcon("icon_32.png", Files.FileType.Internal);
-        cfg.addIcon("icon_16.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_128.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_64.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_32.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_16.png", Files.FileType.Internal);
 		
 		new LwjglApplication(new VOBServer(), cfg);
 	}

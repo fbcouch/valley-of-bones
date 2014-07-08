@@ -53,7 +53,7 @@ public class SPGameSetupScreen extends AbstractScreen {
     boolean isHost = false;
     boolean needsUpdate = false;
 
-    SelectBox mapSelect;
+    SelectBox<String> mapSelect;
     Image mapThumb;
 
 	/**
@@ -101,14 +101,15 @@ public class SPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).expandX().left();
 
-            SelectBox raceSelect = new SelectBox(Prototypes.getRaces().toArray(), getSkin());
+            SelectBox<String> raceSelect = new SelectBox<String>(getSkin());
+            raceSelect.setItems(Prototypes.getRaces().toArray());
             playerTable.add(raceSelect).expandX();
-            raceSelect.setSelection(p.getRace());
+            raceSelect.setSelected(p.getRace());
 
             raceSelect.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    p.setRace(((SelectBox)actor).getSelection());
+                    p.setRace(((SelectBox<String>)actor).getSelected());
                 }
             });
 
@@ -152,14 +153,15 @@ public class SPGameSetupScreen extends AbstractScreen {
             maps.add(v.asString());
         }
 
-        mapSelect = new SelectBox(maps.toArray(), getSkin());
-        mapSelect.setSelection(config.mapName);
-        config.mapName = mapSelect.getSelection();
+        mapSelect = new SelectBox<String>(getSkin());
+        mapSelect.setItems(maps.toArray());
+        mapSelect.setSelected(config.mapName);
+        config.mapName = mapSelect.getSelected();
 
         mapSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.mapName = ((SelectBox)actor).getSelection();
+                config.mapName = ((SelectBox<String>)actor).getSelected();
                 needsUpdate = true;
             }
         });
@@ -170,13 +172,13 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.row();
 
         setupTable.add("Rules:").left();
-        SelectBox ruleSelect = new SelectBox(new String[]{ "Classic" }, getSkin());
-
-        ruleSelect.setSelection(config.ruleSet);
+        SelectBox<String> ruleSelect = new SelectBox<String>(getSkin());
+        ruleSelect.setItems(new String[]{ "Classic" });
+        ruleSelect.setSelectedIndex(config.ruleSet);
         ruleSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.ruleSet = ((SelectBox)actor).getSelectionIndex();
+                config.ruleSet = ((SelectBox)actor).getSelectedIndex();
             }
         });
 
@@ -184,13 +186,14 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.row();
 
         setupTable.add("Starting Locations:").left();
-        SelectBox spawnSelect = new SelectBox(new String[]{ "Normal", "Inverted", "Random" }, getSkin());
+        SelectBox<String> spawnSelect = new SelectBox<String>(getSkin());
+        spawnSelect.setItems(new String[]{ "Normal", "Inverted", "Random" });
 
-        spawnSelect.setSelection(config.spawnType);
+        spawnSelect.setSelectedIndex(config.spawnType);
         spawnSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.spawnType = ((SelectBox)actor).getSelectionIndex();
+                config.spawnType = ((SelectBox)actor).getSelectedIndex();
             }
         });
 
@@ -198,13 +201,13 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.row();
 
         setupTable.add("First Move:").left();
-        SelectBox moveSelect = new SelectBox(new String[]{ "Random", "P1", "P2" }, getSkin());
-
-        moveSelect.setSelection(config.firstMove);
+        SelectBox<String> moveSelect = new SelectBox<String>(getSkin());
+        moveSelect.setItems(new String[]{ "Random", "P1", "P2" });
+        moveSelect.setSelectedIndex(config.firstMove);
         moveSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.firstMove = ((SelectBox)actor).getSelectionIndex();
+                config.firstMove = ((SelectBox)actor).getSelectedIndex();
             }
         });
 
@@ -217,35 +220,38 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.add(timingTable).colspan(2).fillX();
 
         timingTable.add("Base:").left().expandX();
-        SelectBox baseTime = new SelectBox(new String[]{"30", "60", "90"}, getSkin());
+        SelectBox<String> baseTime = new SelectBox<String>(getSkin());
+        baseTime.setItems(new String[]{"30", "60", "90"});
         timingTable.add(baseTime).expandX();
-        baseTime.setSelection(Integer.toString(config.baseTimer));
+        baseTime.setSelected(Integer.toString(config.baseTimer));
         baseTime.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.baseTimer = Integer.parseInt(((SelectBox)actor).getSelection());
+                config.baseTimer = Integer.parseInt(((SelectBox<String>)actor).getSelected());
             }
         });
 
         timingTable.add("Action:").left().expandX();
-        SelectBox actionTime = new SelectBox(new String[]{"0", "15", "30"}, getSkin());
+        SelectBox<String> actionTime = new SelectBox<String>(getSkin());
+        actionTime.setItems(new String[]{"0", "15", "30"});
         timingTable.add(actionTime).expandX();
-        actionTime.setSelection(Integer.toString(config.actionBonusTime));
+        actionTime.setSelected(Integer.toString(config.actionBonusTime));
         actionTime.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.actionBonusTime = Integer.parseInt(((SelectBox)actor).getSelection());
+                config.actionBonusTime = Integer.parseInt(((SelectBox<String>)actor).getSelected());
             }
         });
 
         timingTable.add("Unit:").left().expandX();
-        SelectBox unitTime = new SelectBox(new String[]{"0", "3", "5"}, getSkin());
+        SelectBox<String> unitTime = new SelectBox<String>(getSkin());
+        unitTime.setItems(new String[]{"0", "3", "5"});
         timingTable.add(unitTime).expandX();
-        unitTime.setSelection(Integer.toString(config.unitBonusTime));
+        unitTime.setSelected(Integer.toString(config.unitBonusTime));
         unitTime.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.unitBonusTime = Integer.parseInt(((SelectBox)actor).getSelection());
+                config.unitBonusTime = Integer.parseInt(((SelectBox<String>)actor).getSelected());
             }
         });
 

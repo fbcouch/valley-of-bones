@@ -851,6 +851,11 @@ public class GameServer implements NetController {
                 Gdx.app.log(LOG, "Failed to register with global server");
                 t.printStackTrace();
             }
+
+            @Override
+            public void cancelled() {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
         });
     }
 
@@ -867,6 +872,11 @@ public class GameServer implements NetController {
                 @Override
                 public void failed(Throwable t) {
                     t.printStackTrace();
+                }
+
+                @Override
+                public void cancelled() {
+                    //To change body of implemented methods use File | Settings | File Templates.
                 }
             });
         }
@@ -932,6 +942,11 @@ public class GameServer implements NetController {
                 public void failed(Throwable t) {
                     t.printStackTrace();
                 }
+
+                @Override
+                public void cancelled() {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
             });
 
             Gdx.app.log(LOG, httpPost.getContent());
@@ -969,6 +984,11 @@ public class GameServer implements NetController {
             @Override
             public void failed(Throwable t) {
                 Gdx.app.log(LOG, "Update failed");
+            }
+
+            @Override
+            public void cancelled() {
+                //To change body of implemented methods use File | Settings | File Templates.
             }
         });
     }
