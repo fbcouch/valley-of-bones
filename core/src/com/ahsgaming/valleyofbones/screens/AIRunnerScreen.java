@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class AIRunnerScreen extends AbstractScreen {
 
-    List listGames;
+    List<String> listGames;
 
     float updateTimer = 0; // only update once per minute
     float updateInterval = 60;
@@ -34,7 +34,8 @@ public class AIRunnerScreen extends AbstractScreen {
     public void resize(int width, int height) {
         super.resize(width, height);
 
-        listGames = new List(new String[]{"test"}, getSkin());
+        listGames = new List<String>(getSkin());
+        listGames.setItems(new String[]{"test"});
         ScrollPane pane = new ScrollPane(listGames, getSkin());
         pane.setFillParent(true);
         stage.addActor(pane);

@@ -62,6 +62,11 @@ public class Auth {
                 callback.error(e);
                 t.printStackTrace();
             }
+
+            @Override
+            public void cancelled() {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
         });
     }
 

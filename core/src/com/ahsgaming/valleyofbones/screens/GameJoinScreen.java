@@ -68,7 +68,7 @@ public class GameJoinScreen extends AbstractScreen {
 	
 	MPGameSetupScreen gsScreen = null;
     Array<ServerObj> servers;
-    List listNames, listServers, listPlayers, listStatus;
+    List<String> listNames, listServers, listPlayers, listStatus;
 
     Auth.AuthPlayer authPlayer = null;
     Auth.AuthError authError = null;
@@ -112,10 +112,10 @@ public class GameJoinScreen extends AbstractScreen {
         table.add("Status", "small-grey");
         table.row();
 
-        listNames = new List(new Object[]{}, getSkin());
-        listServers = new List(new Object[]{}, getSkin());
-        listPlayers = new List(new Object[]{}, getSkin());
-        listStatus = new List(new Object[]{}, getSkin());
+        listNames = new List<String>(getSkin());
+        listServers = new List<String>(getSkin());
+        listPlayers = new List<String>(getSkin());
+        listStatus = new List<String>(getSkin());
 
         table.add(listNames).pad(5);
         table.add(listServers).pad(5);
@@ -125,7 +125,7 @@ public class GameJoinScreen extends AbstractScreen {
         ChangeListener changeAll = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                int index = ((List)actor).getSelectedIndex();
+                int index = ((List<String>)actor).getSelectedIndex();
 
                 listNames.setSelectedIndex(index);
                 listServers.setSelectedIndex(index);
@@ -267,6 +267,11 @@ public class GameJoinScreen extends AbstractScreen {
             public void failed(Throwable t) {
                 Gdx.app.log(LOG, "GET server request failed");
                 t.printStackTrace();
+            }
+
+            @Override
+            public void cancelled() {
+                //To change body of implemented methods use File | Settings | File Templates.
             }
         });
 

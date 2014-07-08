@@ -365,11 +365,14 @@ public class LevelScreen extends AbstractScreen {
                 toggleMenu();
             }
         });
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update((int) (800 * VOBGame.SCALE), (int) (480 * VOBGame.SCALE));
+        super.resize(width, height);
+        Gdx.app.log("resize", "" + width + "," + height + ";" + VOBGame.SCALE);
+        stage.getViewport().setWorldSize((int) (800 * VOBGame.SCALE), (int) (480 * VOBGame.SCALE));
         stage.clear();
 
         stage.addListener(new LevelScreenInputListener(this));

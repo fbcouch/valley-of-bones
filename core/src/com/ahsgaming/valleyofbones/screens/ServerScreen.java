@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class ServerScreen extends AbstractScreen {
     public static final String LOG = "ServerScreen";
 
-    List listNames, listPorts, listPublics, listPlayers, listStatus;
+    List<String> listNames, listPorts, listPublics, listPlayers, listStatus;
     TextField txtName, txtPort;
     CheckBox chkPublic;
     TextButton btnStopServer;
@@ -88,7 +88,9 @@ public class ServerScreen extends AbstractScreen {
         listPlayers.setItems(players);
         listStatus.setItems(statuses);
 
-        if (selected >= -1 && selected < numServers) {
+        selected = 0;
+
+        if (selected > -1 && selected < numServers) {
             listNames.setSelectedIndex(selected);
             listPorts.setSelectedIndex(selected);
             listPublics.setSelectedIndex(selected);
@@ -120,53 +122,47 @@ public class ServerScreen extends AbstractScreen {
 
 		table.row();
 
-        listNames = new List(getSkin());
-        listNames.setItems(new String[]{});
+        listNames = new List<String>(getSkin());
         table.add(listNames).pad(5);
 
-        listPorts = new List(getSkin());
-        listPorts.setItems(new String[]{});
+        listPorts = new List<String>(getSkin());
         table.add(listPorts).pad(5);
 
-        listPublics = new List(getSkin());
-        listPublics.setItems(new String[]{});
+        listPublics = new List<String>(getSkin());
         table.add(listPublics).pad(5);
 
-        listPlayers = new List(getSkin());
-        listPlayers.setItems(new String[]{});
+        listPlayers = new List<String>(getSkin());
         table.add(listPlayers).pad(5);
 
-        listStatus = new List(getSkin());
-        listStatus.setItems(new String[]{});
+        listStatus = new List<String>(getSkin());
         table.add(listStatus).pad(5);
 
         ChangeListener changeAll = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 int index = ((List)actor).getSelectedIndex();
-
-                listNames.setSelectedIndex(index);
-                listPorts.setSelectedIndex(index);
-                listPublics.setSelectedIndex(index);
-                listPlayers.setSelectedIndex(index);
-                listStatus.setSelectedIndex(index);
+                if (index > -1 && index < listNames.getItems().size)
+                    listNames.setSelectedIndex(index);
+                if (index > -1 && index < listPorts.getItems().size)
+                    listPorts.setSelectedIndex(index);
+                if (index > -1 && index < listPublics.getItems().size)
+                    listPublics.setSelectedIndex(index);
+                if (index > -1 && index < listPlayers.getItems().size)
+                    listPlayers.setSelectedIndex(index);
+                if (index > -1 && index < listStatus.getItems().size)
+                    listStatus.setSelectedIndex(index);
             }
         };
 
-        listNames.setSelectedIndex(-1);
-        listNames.addListener(changeAll);
-
-        listPorts.setSelectedIndex(-1);
-        listPorts.addListener(changeAll);
-
-        listPlayers.setSelectedIndex(-1);
-        listPlayers.addListener(changeAll);
-
-        listPublics.setSelectedIndex(-1);
-        listPublics.addListener(changeAll);
-
-        listStatus.setSelectedIndex(-1);
-        listStatus.addListener(changeAll);
+//        listNames.addListener(changeAll);
+//
+//        listPorts.addListener(changeAll);
+//
+//        listPlayers.addListener(changeAll);
+//
+//        listPublics.addListener(changeAll);
+//
+//        listStatus.addListener(changeAll);
 
         table.row();
 

@@ -15,7 +15,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'valley-of-bones'
-        gdxVersion = '0.9.9'
+        gdxVersion = '1.0.0'
         roboVMVersion = '0.0.12'
         kryonetVersion = "2.21"
     }

@@ -32,6 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 
 /**
@@ -54,7 +57,7 @@ public class AbstractScreen implements Screen {
 	 */
 	public AbstractScreen(VOBGame game) {
 		this.game = game;
-    	this.stage = new Stage();
+    	this.stage = new Stage(new StretchViewport(1200, 640));
 		this.gameGroup = new Group();
         getSkin();
 	}
@@ -74,7 +77,7 @@ public class AbstractScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 //		stage.setViewport(width, height, false);
-        stage.setViewport(1200, 640, true);  // TODO probably need to make this different for android vs desktop
+        stage.getViewport().update(width, height, true);  // TODO probably need to make this different for android vs desktop
 		stage.clear();
 	}
 
