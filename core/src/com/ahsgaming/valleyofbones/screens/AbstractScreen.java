@@ -54,7 +54,7 @@ public class AbstractScreen implements Screen {
 	 */
 	public AbstractScreen(VOBGame game) {
 		this.game = game;
-		this.stage = new Stage(0, 0, true);
+    	this.stage = new Stage();
 		this.gameGroup = new Group();
         getSkin();
 	}
@@ -147,7 +147,7 @@ public class AbstractScreen implements Screen {
 	
 	public Skin getSkin() {
         if (skin == null) {
-            skin = new Skin(Gdx.files.internal("uiskin.json"));
+            skin = new Skin(Gdx.files.internal("assets/uiskin.json"));
             fontSmall = skin.getFont("small-font");
             fontMed = skin.getFont("medium-font");
             fontLarge = skin.getFont("large-font");

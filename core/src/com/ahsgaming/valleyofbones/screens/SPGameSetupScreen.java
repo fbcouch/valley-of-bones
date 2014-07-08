@@ -145,7 +145,7 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.add(mapLbl).left();
 
         JsonReader reader = new JsonReader();
-        JsonValue val = reader.parse(Gdx.files.internal("maps/maps.json").readString());
+        JsonValue val = reader.parse(Gdx.files.internal("assets/maps/maps.json").readString());
 
         Array<String> maps = new Array<String>();
         for (JsonValue v: val) {

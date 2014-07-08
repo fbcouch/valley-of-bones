@@ -154,7 +154,7 @@ public class Prototypes {
 		if (protos == null) protos = new HashMap<String, Array<JsonProto>>();
 		
 		JsonReader reader = new JsonReader();
-		JsonValue json = reader.parse(Gdx.files.internal(file));
+		JsonValue json = reader.parse(Gdx.files.internal("assets/" + file));
 
         for (JsonValue race: json) {
             Array<JsonProto> raceProtos = new Array<JsonProto>();

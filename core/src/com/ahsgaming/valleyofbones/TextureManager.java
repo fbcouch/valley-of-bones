@@ -98,7 +98,7 @@ public class TextureManager {
 	
 	public Sprite getSpriteFromAtlas(String atlas, String name, int id) {
         if (!atlases.containsKey(atlas)) {
-            atlases.put(atlas, new TextureAtlas(Gdx.files.internal(atlas + "-" + size + ".atlas")));
+            atlases.put(atlas, new TextureAtlas(Gdx.files.internal("assets/" + atlas + "-" + size + ".atlas")));
             for (Texture t: atlases.get(atlas).getTextures()) {
                 t.setFilter(defaultMinFilter, defaultMaxFilter);
             }

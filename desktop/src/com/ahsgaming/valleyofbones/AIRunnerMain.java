@@ -12,7 +12,6 @@ public class AIRunnerMain {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Valley of Bones AI Runner";
-		cfg.useGL20 = false;
 		cfg.width = 1280;
 		cfg.height = 768;
 		cfg.fullscreen = false;
