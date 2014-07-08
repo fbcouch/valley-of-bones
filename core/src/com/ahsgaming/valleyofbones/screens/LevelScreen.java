@@ -383,7 +383,7 @@ public class LevelScreen extends AbstractScreen implements EventListener {
 	
 	@Override
 	public void resize(int width, int height) {
-		stage.setViewport(800 * VOBGame.SCALE, 480 * VOBGame.SCALE, true);
+		stage.getViewport().update((int) (800 * VOBGame.SCALE), (int) (480 * VOBGame.SCALE));
         stage.clear();
 
         stage.addListener(new LevelScreenInputListener(this));

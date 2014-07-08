@@ -21,15 +21,14 @@ public class Main {
 
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Valley of Bones | ahsgaming.com | (c) 2013 Jami Couch";
-        cfg.useGL20 = false;
         cfg.width = 1280;     // TODO load from config?
         cfg.height = 768;
         cfg.fullscreen = false;
         cfg.resizable = true;
-        cfg.addIcon("icon_128.png", Files.FileType.Internal);
-        cfg.addIcon("icon_64.png", Files.FileType.Internal);
-        cfg.addIcon("icon_32.png", Files.FileType.Internal);
-        cfg.addIcon("icon_16.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_128.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_64.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_32.png", Files.FileType.Internal);
+        cfg.addIcon("assets/icon_16.png", Files.FileType.Internal);
 
         TextureManager.defaultMaxFilter = Texture.TextureFilter.Linear;
         TextureManager.defaultMinFilter = Texture.TextureFilter.Linear;

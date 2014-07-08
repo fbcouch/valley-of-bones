@@ -120,19 +120,24 @@ public class ServerScreen extends AbstractScreen {
 
 		table.row();
 
-        listNames = new List(new String[]{}, getSkin());
+        listNames = new List(getSkin());
+        listNames.setItems(new String[]{});
         table.add(listNames).pad(5);
 
-        listPorts = new List(new String[]{}, getSkin());
+        listPorts = new List(getSkin());
+        listPorts.setItems(new String[]{});
         table.add(listPorts).pad(5);
 
-        listPublics = new List(new String[]{}, getSkin());
+        listPublics = new List(getSkin());
+        listPublics.setItems(new String[]{});
         table.add(listPublics).pad(5);
 
-        listPlayers = new List(new String[]{}, getSkin());
+        listPlayers = new List(getSkin());
+        listPlayers.setItems(new String[]{});
         table.add(listPlayers).pad(5);
 
-        listStatus = new List(new String[]{}, getSkin());
+        listStatus = new List(getSkin());
+        listStatus.setItems(new String[]{});
         table.add(listStatus).pad(5);
 
         ChangeListener changeAll = new ChangeListener() {

@@ -1,7 +1,7 @@
 package com.ahsgaming.valleyofbones.screens;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -100,7 +100,7 @@ public class ImageList extends Widget implements Cullable {
     }
 
     @Override
-    public void draw (Batch batch, float parentAlpha) {
+    public void draw (SpriteBatch batch, float parentAlpha) {
         Drawable selectedDrawable = style.selection;
 
         float x = getX();

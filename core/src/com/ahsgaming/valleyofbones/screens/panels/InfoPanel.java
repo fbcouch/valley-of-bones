@@ -3,8 +3,11 @@ package com.ahsgaming.valleyofbones.screens.panels;
 import com.ahsgaming.valleyofbones.VOBGame;
 import com.ahsgaming.valleyofbones.screens.AbstractScreen;
 import com.ahsgaming.valleyofbones.screens.LevelScreen;
-import com.ahsgaming.valleyofbones.units.*;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.ahsgaming.valleyofbones.units.ProgressBar;
+import com.ahsgaming.valleyofbones.units.Prototypes;
+import com.ahsgaming.valleyofbones.units.Unit;
+import com.ahsgaming.valleyofbones.units.UnitData;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -214,7 +217,7 @@ public class InfoPanel extends Group implements EventListener {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(SpriteBatch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         Vector2 coords = AbstractScreen.localToGlobal(new Vector2(0, 0), lblHealth);
         healthBar.setSize(iconMovesLeft.getX() - iconHealth.getX() - iconHealth.getWidth(), 4 * VOBGame.SCALE);
