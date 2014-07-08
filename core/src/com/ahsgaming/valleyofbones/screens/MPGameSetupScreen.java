@@ -132,7 +132,7 @@ public class MPGameSetupScreen extends AbstractScreen {
                     public void changed(ChangeEvent event, Actor actor) {
                         KryoCommon.UpdatePlayer update = new KryoCommon.UpdatePlayer();
                         update.id = p.getPlayerId();
-                        update.race = ((SelectBox)actor).getSelection().toString();
+                        update.race = ((SelectBox)actor).getSelected().toString();
                         update.color = 0;
                         while (update.color < Player.AUTOCOLORS.length && !p.getPlayerColor().equals(Player.AUTOCOLORS[update.color])) {
                             update.color++;
@@ -525,7 +525,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             gameDetails.actionBonusTime = Integer.parseInt(actionTime.getSelected().toString());
             gameDetails.unitBonusTime = Integer.parseInt(unitTime.getSelected().toString());
             gameDetails.allowSpectate = chkSpectators.isChecked();
-            if (!config.mapName.equals(mapSelect.getSelection())) {
+            if (!config.mapName.equals(mapSelect.getSelected())) {
                 stage.clear();
                 config.setDetails(gameDetails);
                 setupScreen();
@@ -571,7 +571,7 @@ public class MPGameSetupScreen extends AbstractScreen {
         }
 
         if (!config.isMulti || config.isHost) {
-            if (!mapSelect.getSelection().equals(config.mapName)) mapSelect.setSelected(config.mapName);
+            if (!mapSelect.getSelected().equals(config.mapName)) mapSelect.setSelected(config.mapName);
             if (moveSelect.getSelectedIndex() != config.firstMove) moveSelect.setSelected(config.firstMove);
             if (spawnSelect.getSelectedIndex() != config.spawnType) moveSelect.setSelected(config.spawnType);
             if (ruleSelect.getSelectedIndex() != config.ruleSet) moveSelect.setSelected(config.ruleSet);
