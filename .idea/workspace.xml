@@ -25,59 +25,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="158f7e3e-4279-4ad7-b3f4-7deb523413fc" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/android/assets" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/ai/xjix3xuv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-hdpi.atlas" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-hdpi.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-ldpi.atlas" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-ldpi.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-mdpi.atlas" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-mdpi.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-xhdpi.atlas" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/assets-xhdpi.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/auth.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/badlogic.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/icon_128.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/icon_16.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/icon_32.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/icon_64.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/maps/choke.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/maps/maps.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/maps/radial.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/maps/starship.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/maps/valley.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/Roboto-Condensed.ttf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/kenpixel-16.fnt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/kenpixel-16.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/kenpixel-24.fnt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/kenpixel-24.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/kenpixel-32.fnt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/kenpixel-32.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/roboto-16.fnt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/roboto-16.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/roboto-24.fnt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/roboto-24.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/roboto-32.fnt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/fonts/roboto-32.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/uiskin.atlas" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/uiskin.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/newui/uiskin.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/rules/classic.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/rules/rulesets.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/sfx/cannon_fire.ogg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/sfx/laser_shot.ogg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/uiskin.atlas" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/uiskin.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/uiskin.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android/libs/armeabi/libgdx.so" afterPath="$PROJECT_DIR$/android/libs/armeabi/libgdx.so" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android/libs/armeabi-v7a/libgdx.so" afterPath="$PROJECT_DIR$/android/libs/armeabi-v7a/libgdx.so" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java" afterPath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java" afterPath="$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android/android.iml" afterPath="$PROJECT_DIR$/android/android.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/build.gradle" afterPath="$PROJECT_DIR$/desktop/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop/desktop.iml" afterPath="$PROJECT_DIR$/desktop/desktop.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/android/libs/armeabi-v7a/libandroidgl20.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/android/libs/armeabi-v7a/libgdx.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/android/libs/armeabi/libandroidgl20.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/android/libs/armeabi/libgdx.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/android/libs/gdx-backend-android-sources.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/android/libs/gdx-backend-android.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/desktop/libs/gdx-backend-lwjgl-natives.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/desktop/libs/gdx-backend-lwjgl-sources.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/desktop/libs/gdx-backend-lwjgl.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/desktop/libs/gdx-natives.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/desktop/libs/gdx-openal-sources.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/desktop/libs/gdx-openal.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/armeabi-v7a/libgdx-freetype.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/armeabi/libgdx-freetype.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/gdx-freetype-natives.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/gdx-freetype.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/ios/libgdx-freetype.a" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/sources/gdx-freetype-sources.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-freetype/x86/libgdx-freetype.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-sources.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx-tools.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/gdx.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/libs/kryonet-debug-2.18-all.jar" afterPath="" />
     </list>
     <ignored path="valley-of-bones.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -285,89 +255,7 @@
     <favorites_list name="valley-of-bones" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="26" selection-start="1013" selection-end="1013" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/desktop/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="32" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.8197065">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="0" selection-start="754" selection-end="754" vertical-scroll-proportion="-6.12">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ServerMain.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="45" selection-start="406" selection-end="406" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TextureManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/TextureManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="102" column="67" selection-start="3158" selection-end="3158" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPGameSetupScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/SPGameSetupScreen.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="168" column="80" selection-start="5943" selection-end="5949" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MPGameSetupScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/MPGameSetupScreen.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="266" column="61" selection-start="10501" selection-end="10501" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="152" column="48" selection-start="3560" selection-end="3560" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Prototypes.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="153" column="16" selection-start="4447" selection-end="4447" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -479,20 +367,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="valley-of-bones" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="valley-of-bones" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="valley-of-bones" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -951,7 +825,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="27" width="1922" height="1054" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -961,11 +835,11 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922912" sideWeight="0.78" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.37988827" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37988827" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.67741936" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32668883" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20512821" sideWeight="0.6201117" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20512821" sideWeight="0.6201117" order="0" side_tool="false" content_ui="combo" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3094972" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1112,62 +986,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/TextureManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="67" selection-start="3158" selection-end="3158" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/SPGameSetupScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="168" column="80" selection-start="5943" selection-end="5949" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/MPGameSetupScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="266" column="61" selection-start="10501" selection-end="10501" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="48" selection-start="3560" selection-end="3560" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="153" column="16" selection-start="4447" selection-end="4447" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="45" selection-start="406" selection-end="406" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="26" selection-start="1013" selection-end="1013" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="0" selection-start="754" selection-end="754" vertical-scroll-proportion="-6.12">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/android/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-2.0314465">
@@ -1177,7 +995,63 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/desktop/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="32" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.8197065">
+        <state line="44" column="32" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.47858018">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="26" selection-start="1013" selection-end="1013" vertical-scroll-proportion="0.4503464">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="754" selection-end="754" vertical-scroll-proportion="0.18192628">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop/src/com/ahsgaming/valleyofbones/ServerMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="45" selection-start="406" selection-end="406" vertical-scroll-proportion="0.21593533">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/TextureManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="102" column="67" selection-start="3158" selection-end="3158" vertical-scroll-proportion="0.019630484">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/SPGameSetupScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="168" column="80" selection-start="5943" selection-end="5949" vertical-scroll-proportion="0.019630484">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/MPGameSetupScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="266" column="61" selection-start="10501" selection-end="10501" vertical-scroll-proportion="0.019630484">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/screens/AbstractScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="152" column="48" selection-start="3560" selection-end="3560" vertical-scroll-proportion="0.019630484">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/com/ahsgaming/valleyofbones/units/Prototypes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="153" column="16" selection-start="4447" selection-end="4447" vertical-scroll-proportion="0.019630484">
           <folding />
         </state>
       </provider>
