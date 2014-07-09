@@ -127,20 +127,27 @@ public class GameJoinScreen extends AbstractScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 int index = ((List<String>)actor).getSelectedIndex();
 
-                listNames.setSelectedIndex(index);
-                listServers.setSelectedIndex(index);
-                listPlayers.setSelectedIndex(index);
-                listStatus.setSelectedIndex(index);
+                if (index >= -1 && index < listNames.getItems().size && listNames.getSelectedIndex() != index)
+                    listNames.setSelectedIndex(index);
+                if (index >= -1 && index < listServers.getItems().size && listServers.getSelectedIndex() != index)
+                    listServers.setSelectedIndex(index);
 
                 ServerObj server = servers.get(index);
                 txtJoinHostname.setText(String.format("%s:%d", server.ipAddr, server.port));
             }
         };
 
+        ChangeListener noSelect = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                ((List)actor).setSelectedIndex(-1);
+            }
+        };
+
         listNames.addListener(changeAll);
         listServers.addListener(changeAll);
-        listPlayers.addListener(changeAll);
-        listStatus.addListener(changeAll);
+        listPlayers.addListener(noSelect);
+        listStatus.addListener(noSelect);
 
         table.row();
 		

@@ -88,9 +88,7 @@ public class ServerScreen extends AbstractScreen {
         listPlayers.setItems(players);
         listStatus.setItems(statuses);
 
-        selected = 0;
-
-        if (selected > -1 && selected < numServers) {
+        if (selected >= -1 && selected < numServers) {
             listNames.setSelectedIndex(selected);
             listPorts.setSelectedIndex(selected);
             listPublics.setSelectedIndex(selected);
@@ -137,32 +135,33 @@ public class ServerScreen extends AbstractScreen {
         listStatus = new List<String>(getSkin());
         table.add(listStatus).pad(5);
 
+        ChangeListener noSelect = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                ((List)actor).setSelectedIndex(-1);
+            }
+        };
+
         ChangeListener changeAll = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 int index = ((List)actor).getSelectedIndex();
-                if (index > -1 && index < listNames.getItems().size)
+                if (index > -1 && index < listNames.getItems().size && listNames.getSelectedIndex() != index)
                     listNames.setSelectedIndex(index);
-                if (index > -1 && index < listPorts.getItems().size)
+                if (index > -1 && index < listPorts.getItems().size && listPorts.getSelectedIndex() != index)
                     listPorts.setSelectedIndex(index);
-                if (index > -1 && index < listPublics.getItems().size)
-                    listPublics.setSelectedIndex(index);
-                if (index > -1 && index < listPlayers.getItems().size)
-                    listPlayers.setSelectedIndex(index);
-                if (index > -1 && index < listStatus.getItems().size)
-                    listStatus.setSelectedIndex(index);
             }
         };
 
-//        listNames.addListener(changeAll);
-//
-//        listPorts.addListener(changeAll);
-//
-//        listPlayers.addListener(changeAll);
-//
-//        listPublics.addListener(changeAll);
-//
-//        listStatus.addListener(changeAll);
+        listNames.addListener(changeAll);
+
+        listPorts.addListener(changeAll);
+
+        listPlayers.addListener(noSelect);
+
+        listPublics.addListener(noSelect);
+
+        listStatus.addListener(noSelect);
 
         table.row();
 
