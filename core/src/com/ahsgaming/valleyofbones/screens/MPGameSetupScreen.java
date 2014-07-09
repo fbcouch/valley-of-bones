@@ -57,7 +57,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 
     boolean isHost = false;
 
-    SelectBox mapSelect, spawnSelect, ruleSelect, moveSelect, baseTime, actionTime, unitTime;
+    SelectBox<String> mapSelect, spawnSelect, ruleSelect, moveSelect, baseTime, actionTime, unitTime;
     Label lblMap, lblSpawn, lblRule, lblMove, lblBaseTime, lblActionTime, lblUnitTime;
     CheckBox chkSpectators;
 
@@ -294,7 +294,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             ruleSelect = new SelectBox(getSkin());
             ruleSelect.setItems(items);
             setupTable.add(ruleSelect).left().padBottom(4).fillX();
-            ruleSelect.setSelected(config.ruleSet);
+            ruleSelect.setSelectedIndex(config.ruleSet);
 
             ruleSelect.addListener(updateListener);
         } else {
@@ -308,7 +308,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             spawnSelect = new SelectBox(getSkin());
             spawnSelect.setItems(spawnTypes);
             setupTable.add(spawnSelect).left().padBottom(4).fillX();
-            spawnSelect.setSelected(config.spawnType);
+            spawnSelect.setSelectedIndex(config.spawnType);
 
             spawnSelect.addListener(updateListener);
         } else {
@@ -322,7 +322,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             moveSelect = new SelectBox(getSkin());
             moveSelect.setItems(firstMoves);
             setupTable.add(moveSelect).left().padBottom(4).fillX();
-            moveSelect.setSelected(config.firstMove);
+            moveSelect.setSelectedIndex(config.firstMove);
 
             moveSelect.addListener(updateListener);
         } else {
@@ -517,13 +517,13 @@ public class MPGameSetupScreen extends AbstractScreen {
         if (config.isHost && needsUpdate) {
             needsUpdate = false;
             KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
-            gameDetails.map = mapSelect.getSelected().toString();
+            gameDetails.map = mapSelect.getSelected();
             gameDetails.rules = ruleSelect.getSelectedIndex();
             gameDetails.firstMove = moveSelect.getSelectedIndex();
             gameDetails.spawn = spawnSelect.getSelectedIndex();
-            gameDetails.baseTimer = Integer.parseInt(baseTime.getSelected().toString());
-            gameDetails.actionBonusTime = Integer.parseInt(actionTime.getSelected().toString());
-            gameDetails.unitBonusTime = Integer.parseInt(unitTime.getSelected().toString());
+            gameDetails.baseTimer = Integer.parseInt(baseTime.getSelected());
+            gameDetails.actionBonusTime = Integer.parseInt(actionTime.getSelected());
+            gameDetails.unitBonusTime = Integer.parseInt(unitTime.getSelected());
             gameDetails.allowSpectate = chkSpectators.isChecked();
             if (!config.mapName.equals(mapSelect.getSelected())) {
                 stage.clear();
@@ -570,17 +570,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             }
         }
 
-        if (!config.isMulti || config.isHost) {
-            if (!mapSelect.getSelected().equals(config.mapName)) mapSelect.setSelected(config.mapName);
-            if (moveSelect.getSelectedIndex() != config.firstMove) moveSelect.setSelected(config.firstMove);
-            if (spawnSelect.getSelectedIndex() != config.spawnType) moveSelect.setSelected(config.spawnType);
-            if (ruleSelect.getSelectedIndex() != config.ruleSet) moveSelect.setSelected(config.ruleSet);
-
-            baseTime.setSelected(Integer.toString(config.baseTimer));
-            actionTime.setSelected(Integer.toString(config.actionBonusTime));
-            unitTime.setSelected(Integer.toString(config.unitBonusTime));
-
-        } else {
+        if (config.isMulti && !config.isHost) {
             if (!lblMap.getText().toString().equals(config.mapName)) {
                 stage.clear();
                 setupScreen();
