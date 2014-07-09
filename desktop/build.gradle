@@ -4,10 +4,19 @@ sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 project.ext.mainClassName = "com.ahsgaming.valleyofbones.Main"
+project.ext.serverClassName = "com.ahsgaming.valleyofbones.ServerMain"
 project.ext.assetsDir = new File("../android/assets");
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue = true
+}
+
+task runServer(dependsOn: classes, type: JavaExec) {
+    main = project.serverClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -19,9 +28,24 @@ task dist(type: Jar) {
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(project.assetsDir);
- 
+
+    baseName appName
+
     manifest {
         attributes 'Main-Class': project.mainClassName
+    }
+}
+
+task distServer(type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir);
+
+    baseName appName + '-server'
+
+    manifest {
+        attributes 'Main-Class': project.serverClassName
     }
 }
 

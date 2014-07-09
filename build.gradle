@@ -15,7 +15,7 @@ allprojects {
     version = '0.3.1'
     ext {
         appName = 'valley-of-bones'
-        gdxVersion = '1.0.0'
+        gdxVersion = '1.2.0'
         roboVMVersion = '0.0.12'
         kryonetVersion = "2.21"
     }
@@ -34,29 +34,12 @@ allprojects {
 project(":desktop") {
     apply plugin: "java"
 
-
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-    }
-
-    uploadArchives {
-        repositories {
-            flatDir {
-                dirs '../out/desktop'
-            }
-        }
-    }
-
-    jar {
-        baseName = appName
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        manifest {
-            attributes 'Implementation-Title': 'Test', 'Implementation-Version': 'a version', 'Main-Class': 'com.ahsgaming.valleyofbones.Main'
-        }
     }
 }
 
