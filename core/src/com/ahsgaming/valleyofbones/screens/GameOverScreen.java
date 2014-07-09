@@ -88,7 +88,7 @@ public class GameOverScreen extends AbstractScreen {
         }
 
         TextButton btnMainMenu = new TextButton("Back to Main Menu", getSkin());
-        table.add(btnMainMenu).left().minSize(150, 50).pad(4).colspan(4);
+        table.add(btnMainMenu).left().height(50).pad(4).colspan(4);
 
         table.row();
 
