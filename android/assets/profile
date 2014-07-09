@@ -1,0 +1,6 @@
+{
+scale: 4,
+name: Player,
+filter: Linear,
+token: ""
+}
