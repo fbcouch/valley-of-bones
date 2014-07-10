@@ -350,7 +350,7 @@ public class GameController {
         } else if (cmd instanceof ActivateAbility) {
             ActivateAbility ab = (ActivateAbility)cmd;
             Unit u = unitManager.getUnit(ab.unit);
-            if (u.getOwner() != null && u.getOwner().getPlayerId() != ab.owner) return false;
+            if (u == null || (u.getOwner() != null && u.getOwner().getPlayerId() != ab.owner)) return false;
             return true;
         } else if (cmd instanceof Surrender) {
             return true;
