@@ -121,7 +121,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).left().expandX();
 
             if (p == client.getPlayer() || (config.isHost && p.isAI())) {
-
+                Prototypes.setUnitFile(config.ruleSet);
                 SelectBox raceSelect = new SelectBox(getSkin());
                 raceSelect.setItems(Prototypes.getRaces().toArray());
                 playerTable.add(raceSelect).expandX();
@@ -286,19 +286,32 @@ public class MPGameSetupScreen extends AbstractScreen {
 
         setupTable.add("Rules:").left();
         if (config.isHost) {
-            Array<VOBGame.RuleSet> ruleSets = game.getRuleSets();
-            String[] items = new String[ruleSets.size];
-            for (int i = 0; i < ruleSets.size; i++) {
-                items[i] = ruleSets.get(i).name;
+
+            JsonReader reader = new JsonReader();
+            JsonValue val = reader.parse(Gdx.files.internal("rules/rulesets.json").readString());
+
+            Array<String> rules = new Array<String>();
+            for (JsonValue v: val) {
+                rules.add(v.asString());
             }
+
+            ruleSelect = new SelectBox<String>(getSkin());
+            ruleSelect.setItems(rules);
+            ruleSelect.setSelected(config.ruleSet);
+            ruleSelect.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    config.ruleSet = ((SelectBox<String>)actor).getSelected();
+                }
+            });
             ruleSelect = new SelectBox(getSkin());
-            ruleSelect.setItems(items);
+            ruleSelect.setItems(rules);
             setupTable.add(ruleSelect).left().padBottom(4).fillX();
-            ruleSelect.setSelectedIndex(config.ruleSet);
+            ruleSelect.setSelected(config.ruleSet);
 
             ruleSelect.addListener(updateListener);
         } else {
-            lblRule = new Label(game.getRuleSets().get(config.ruleSet).name, getSkin());
+            lblRule = new Label(config.ruleSet, getSkin());
             setupTable.add(lblRule).left();
         }
         setupTable.row();
@@ -518,7 +531,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             needsUpdate = false;
             KryoCommon.GameDetails gameDetails = new KryoCommon.GameDetails();
             gameDetails.map = mapSelect.getSelected();
-            gameDetails.rules = ruleSelect.getSelectedIndex();
+            gameDetails.rules = ruleSelect.getSelected();
             gameDetails.firstMove = moveSelect.getSelectedIndex();
             gameDetails.spawn = spawnSelect.getSelectedIndex();
             gameDetails.baseTimer = Integer.parseInt(baseTime.getSelected());
@@ -531,6 +544,12 @@ public class MPGameSetupScreen extends AbstractScreen {
                 setupScreen();
             } else {
                 config.setDetails(gameDetails);
+            }
+
+            if (!config.ruleSet.equals(mapSelect.getSelected())) {
+                stage.clear();
+                config.setDetails(gameDetails);
+                setupScreen();
             }
             if (client instanceof MPGameClient)
                 ((MPGameClient)client).sendGameDetails(gameDetails);
@@ -580,7 +599,7 @@ public class MPGameSetupScreen extends AbstractScreen {
             }
             if (!lblSpawn.getText().toString().equals(spawnTypes[config.spawnType])) lblSpawn.setText(spawnTypes[config.spawnType]);
             if (!lblMove.getText().toString().equals(firstMoves[config.firstMove])) lblMove.setText(firstMoves[config.firstMove]);
-            if (!lblRule.getText().toString().equals(game.getRuleSets().get(config.ruleSet).name)) lblRule.setText(game.getRuleSets().get(config.ruleSet).name);
+            if (!lblRule.getText().toString().equals(config.ruleSet)) lblRule.setText(config.ruleSet);
 
             lblBaseTime.setText(Integer.toString(config.baseTimer));
             lblActionTime.setText(Integer.toString(config.actionBonusTime));

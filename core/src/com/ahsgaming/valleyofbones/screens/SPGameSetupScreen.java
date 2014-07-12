@@ -53,7 +53,7 @@ public class SPGameSetupScreen extends AbstractScreen {
     boolean isHost = false;
     boolean needsUpdate = false;
 
-    SelectBox<String> mapSelect;
+    SelectBox<String> mapSelect, ruleSelect;
     Image mapThumb;
 
 	/**
@@ -101,6 +101,7 @@ public class SPGameSetupScreen extends AbstractScreen {
 
             playerTable.add(new Label(String.format("%s (%d)", p.getPlayerName(), p.getPlayerId()), getSkin())).expandX().left();
 
+            Prototypes.setUnitFile(config.ruleSet);
             SelectBox<String> raceSelect = new SelectBox<String>(getSkin());
             raceSelect.setItems(Prototypes.getRaces().toArray());
             playerTable.add(raceSelect).expandX();
@@ -172,13 +173,22 @@ public class SPGameSetupScreen extends AbstractScreen {
         setupTable.row();
 
         setupTable.add("Rules:").left();
-        SelectBox<String> ruleSelect = new SelectBox<String>(getSkin());
-        ruleSelect.setItems(new String[]{ "Classic" });
-        ruleSelect.setSelectedIndex(config.ruleSet);
+
+        val = reader.parse(Gdx.files.internal("rules/rulesets.json").readString());
+
+        Array<String> rules = new Array<String>();
+        for (JsonValue v: val) {
+            rules.add(v.asString());
+        }
+
+        ruleSelect = new SelectBox<String>(getSkin());
+        ruleSelect.setItems(rules);
+        ruleSelect.setSelected(config.ruleSet);
         ruleSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                config.ruleSet = ((SelectBox)actor).getSelectedIndex();
+                config.ruleSet = ((SelectBox<String>)actor).getSelected();
+                needsUpdate = true;
             }
         });
 

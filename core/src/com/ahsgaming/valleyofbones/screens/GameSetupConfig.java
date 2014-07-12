@@ -11,7 +11,7 @@ import com.badlogic.gdx.Gdx;
 */
 public class GameSetupConfig {
     public String mapName = "";
-    public int ruleSet = 0;
+    public String ruleSet = "classic";
     public int spawnType = 0;
     public int firstMove = 0;
     public boolean isMulti = false;

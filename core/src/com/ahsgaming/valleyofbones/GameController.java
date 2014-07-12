@@ -86,7 +86,7 @@ public class GameController {
         this.actionBonusTime = config.actionBonusTime;
         this.unitBonusTime = config.unitBonusTime;
 
-        // TODO - set ruleset here
+        Prototypes.setUnitFile(config.ruleSet);
 
         unitManager = new UnitManager(this);
 

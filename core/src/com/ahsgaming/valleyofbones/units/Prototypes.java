@@ -1,21 +1,27 @@
 package com.ahsgaming.valleyofbones.units;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ahsgaming.valleyofbones.*;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.*;
 
 
 public class Prototypes {
-	static final String UNIT_FILE = "rules/classic.json"; // TODO pass this in
+	static String unitFile = "classic";
     static HashMap<String, Array<JsonProto>> protos = null;
+
+    public static String getUnitFile() { return unitFile; }
+
+    public static void setUnitFile(String fileName) {
+        if (!unitFile.equals(fileName)) {
+            protos = null;
+            unitFile = fileName;
+        }
+    }
 	
 	public static JsonProto getProto(String race, String id) {
-		if (protos == null) loadUnits(UNIT_FILE);
+		if (protos == null) loadUnits(unitFile);
 		if (!protos.containsKey(race)) return null;
 
         JsonProto proto = null;
@@ -27,7 +33,7 @@ public class Prototypes {
 	}
 
     public static Array<JsonProto> getPlayerCanBuild(String race) {
-        if (protos == null) loadUnits(UNIT_FILE);
+        if (protos == null) loadUnits(unitFile);
         if (!protos.containsKey(race)) return null;
 
         Array<JsonProto> returnVal = new Array<JsonProto>();
@@ -42,7 +48,7 @@ public class Prototypes {
     }
 
     public static Array<JsonProto> getAll(String race) {
-        if (protos == null) loadUnits(UNIT_FILE);
+        if (protos == null) loadUnits(unitFile);
         if (!protos.containsKey(race)) return null;
 
         Array<JsonProto> array = new Array<JsonProto>();
@@ -54,7 +60,7 @@ public class Prototypes {
     }
 
     public static Array<String> getRaces() {
-        if (protos == null) loadUnits(UNIT_FILE);
+        if (protos == null) loadUnits(unitFile);
         Array<String> races = new Array<String>();
         for (String race: protos.keySet()) {
             races.add(race);
@@ -132,7 +138,7 @@ public class Prototypes {
 		if (protos == null) protos = new HashMap<String, Array<JsonProto>>();
 		
 		JsonReader reader = new JsonReader();
-		JsonValue json = reader.parse(Gdx.files.internal(file));
+		JsonValue json = reader.parse(Gdx.files.internal("rules/" + file + ".json"));
 
         for (JsonValue race: json) {
             Array<JsonProto> raceProtos = new Array<JsonProto>();

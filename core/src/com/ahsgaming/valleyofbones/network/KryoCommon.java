@@ -116,7 +116,7 @@ public class KryoCommon {
 	public static class GameDetails {
         public int hostId;
         public String map;
-        public int rules;
+        public String rules;
         public int firstMove = 0;
         public int spawn;
         public int baseTimer;
