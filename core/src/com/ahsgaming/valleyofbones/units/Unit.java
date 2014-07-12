@@ -101,6 +101,7 @@ public class Unit extends AbstractUnit {
             unit.abilityBehavior = new StealthAbility(unit);
         } else if (ability.equals("sabotage")) {
             unit.attackBehavior = new SabotageAttack(unit);
+            unit.turnBehavior = new SabotageTurnListener(unit.turnBehavior);
             unit.getData().setDetector(true);
             unit.getData().setInvisible(true);
             unit.getData().setControllable(false);
