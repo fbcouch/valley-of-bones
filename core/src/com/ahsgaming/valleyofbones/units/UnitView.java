@@ -47,7 +47,8 @@ public class UnitView {
         view.buildImage = 0;
         view.buildOverlayImage = 0;
 
-        view.setSize(view.image.getRegionWidth(), view.image.getRegionHeight());
+        if (view.image != null)
+            view.setSize(view.image.getRegionWidth(), view.image.getRegionHeight());
 
         view.healthBar = new ProgressBar();
         view.healthBar.setSize(view.getWidth(), 4f * VOBGame.SCALE);
@@ -209,6 +210,8 @@ public class UnitView {
             if (actions.first().isDone())
                 actions.removeIndex(0);
         }
+
+        if (buildImages.size == 0) return;
 
         buildAnimTimer -= delta;
         if (buildAnimTimer <= 0) {

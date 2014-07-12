@@ -33,13 +33,13 @@ public class VOBServer extends VOBGame {
 
     @Override
     public void create() {
-        textureManager = new TextureManager();
+        textureManager = new ServerTextureManager();
 
-        setScreen(getServerScreen());
+//        setScreen(getServerScreen());
 
-//        MPGameSetupScreen.GameSetupConfig cfg = new MPGameSetupScreen.GameSetupConfig();
-//        cfg.isMulti = true;
-//        createGame(cfg);
+        GameSetupConfig cfg = new GameSetupConfig();
+        cfg.isMulti = true;
+        createGame(cfg);
     }
 
     @Override
