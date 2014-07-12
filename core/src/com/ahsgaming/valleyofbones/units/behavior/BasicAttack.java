@@ -2,6 +2,7 @@ package com.ahsgaming.valleyofbones.units.behavior;
 
 import com.ahsgaming.valleyofbones.units.AbstractUnit;
 import com.ahsgaming.valleyofbones.units.UnitManager;
+import com.badlogic.gdx.Gdx;
 
 /**
  * valley-of-bones
@@ -22,6 +23,11 @@ public class BasicAttack implements AttackBehavior {
         unit.getData().setAttacksLeft(unit.getData().getAttacksLeft() - 1);
         float damage = unit.getData().getAttackDamage() * unit.getData().getBonus(defender.getData().getSubtype());
         defender.defend(damage);
+
+        if (unit.getData().isStealthActive()) {
+            unit.getData().setStealthActive(false);
+            unit.getData().setInvisible(false);
+        }
 
         unit.getView().attackAnim();
         return true;
