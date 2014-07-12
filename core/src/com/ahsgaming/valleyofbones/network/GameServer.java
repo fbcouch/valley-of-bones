@@ -141,6 +141,7 @@ public class GameServer implements NetController {
 		try {
 			server.bind(gameConfig.hostPort);
 			server.start();
+            Gdx.app.log("Server", "Listening on port " + gameConfig.hostPort);
 		} catch (Exception ex) {
             Gdx.app.log(LOG, "Server failed to start");
 			Gdx.app.log(LOG, ex.getMessage());

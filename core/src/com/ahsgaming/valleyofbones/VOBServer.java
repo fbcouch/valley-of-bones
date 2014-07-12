@@ -18,10 +18,16 @@ public class VOBServer extends VOBGame {
     public static final String LOG = "VOBServer";
 
     Array<GameServer> gameServers;
+    GameSetupConfig cfg;
 
-    public VOBServer() {
+    public VOBServer(String name, int port, boolean pub) {
         super();
         gameServers = new Array<GameServer>();
+        cfg = new GameSetupConfig();
+        cfg.isMulti = true;
+        cfg.hostName = name;
+        cfg.hostPort = port;
+        cfg.isPublic = pub;
     }
 
     @Override
@@ -34,11 +40,6 @@ public class VOBServer extends VOBGame {
     @Override
     public void create() {
         textureManager = new ServerTextureManager();
-
-//        setScreen(getServerScreen());
-
-        GameSetupConfig cfg = new GameSetupConfig();
-        cfg.isMulti = true;
         createGame(cfg);
     }
 
