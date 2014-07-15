@@ -78,6 +78,7 @@ public class MPGameSetupScreen extends AbstractScreen {
 		super(game);
 		config = cfg;
 		client = game.createGame(cfg);
+		needsUpdate = true;  // always send an update on setup, just so we're all on the same page
 	}
 	
 	public void setupScreen() {
@@ -261,8 +262,6 @@ public class MPGameSetupScreen extends AbstractScreen {
         setupTable.add(mapLbl).left();
 
         if (config.isHost) {
-            needsUpdate = true;  // always send an update on setup, just so we're all on the same page
-
             JsonReader reader = new JsonReader();
             JsonValue val = reader.parse(Gdx.files.internal("maps/maps.json").readString());
 
